@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>Animint: Interactive Web-Based Animations Using Ggplot2's Grammar of Graphics</title>
+
+	<meta name="description" content="Animint Presentation Slides">
+	<meta name="author" content="Susan VanderPlas">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, minimal-ui">
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+	<link rel="stylesheet" href="css/Presentation.css">
+
+	<!-- Code syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement( 'link' );
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
+
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+<div class="reveal">
+	<!-- Any section element inside of this container is displayed as a slide -->
+	<div class="slides">
+
+
+<section>
+  <!-- Introduction -->
+
+  <h1>Animint:</h1>
+  <h2>Interactive Web-Based Animations Using<br>Ggplot2's Grammar of Graphics</h2>
+
+  <h4 class='padding'><b>Susan VanderPlas</b>, Kevin Ferris, Tony Tsai,<br>Carson Sievert, and Toby Hocking</h4>
+
+  <h4>August 10, 2015</h4>
+</section>
+
+<!-- begin.rcode setup, echo=FALSE, include=FALSE
+  require(knitr)
+  opts_chunk$set(cache=TRUE,out.width='60%',message=FALSE,warning=FALSE)
+
+	c0 <- knitr::knit_hooks$get('chunk')
+	
+	knitr::knit_hooks$set(
+	  list(
+		chunk=function(x,options){
+		  if(is.null(options$class) & is.null(options$fragIndex)){
+			c0(x, options)
+		  } else if(is.null(options$fragIndex)) {
+			classidx <- which(names(options)=="class")
+			paste0(
+			  paste0("<span class='", options$class, "'>"),
+			  c0(x, options[-classidx]),
+			  '</span>\n'
+			)
+		  }
+		  else if(length(options$fragIndex)==1) {
+			classidx <- which(names(options)%in%c("class", "fragIndex"))
+			str_replace(
+			  paste0(
+				paste0("<span class='", options$class, "' data-fragment-index=", options$fragIndex,">"),
+				c0(x, options[-classidx]),
+				'</span>\n'
+			  ),
+			  "<div class=\"chunk\" id=\"(.*?)\">\\s*<div class=\"rimage default\">(.*)</div>\\s*</div>",
+			  "\\2"
+			)
+		  } else {
+			classidx <- which(names(options)%in%c("class", "fragIndex"))
+			str_replace(
+			  paste0(
+				paste0("<span class='", options$class, " fade-in' data-fragment-index=", options$fragIndex[1],">"),
+				paste0(
+				  paste0("<span class='", options$class, " fade-out' data-fragment-index=", options$fragIndex[2],">"),
+				  c0(x, options[-classidx]),
+				  '</span>\n'
+				  ),
+				'</span>\n'
+				),
+			  "<div class=\"chunk\" id=\"(.*?)\">\\s*<div class=\"rimage default\">(.*)</div>\\s*</div>",
+			  "\\2"
+			)
+		  }
+		}
+	  )
+	)
+	
+	opts_chunk$set(cache.path='cache/', cache=T, autodep=T, 
+				   fig.align='center', fig.width=6, fig.height=6, fig.show='hold', 
+				   echo=F, message=F, warning=F, error=F, dpi=300)
+	
+	theme_transparent <- function(){
+		theme(panel.grid.major=element_blank(), 
+					plot.background = element_rect(fill = "transparent", colour = NA))
+	}
+end.rcode-->
+
+<section>
+	<section>
+		<h2> Grammar of Graphics </h2>
+		<img src="Image/HistogramGrammar.svg" width="60%" height="auto">
+	</section>
+	<section>
+	<h2> Grammar of Graphics </h2>
+<!-- begin.rcode hist, echo=-c(1:7), include=T, fig.width=6, fig.height=3
+	library(stringr)
+	library(dplyr)
+	library(ggplot2)
+	profile <- read.csv("Data/OkCupid.csv")
+	profile$height.ft <- word(profile$Height, sep="ft ")
+  profile$height.in <- word(word(profile$Height, sep="in "), start=-1)
+	profile <- mutate(profile, height=as.numeric(height.ft)+as.numeric(height.in)/12)
+	
+	ggplot(data=profile, aes(x=height, fill=gender)) + 
+	  geom_bar(aes(y=..count..), position="stack", stat="bin")
+end.rcode-->		
+
+  ggplot2 is a widely used implementation of the grammar of graphics for R.
+	</section>
+	<section>
+	<h2> Animint </h2>
+	<h3 style="align:center" class="padding"> extends ggplot2 with interactive aesthetics </h3>
+
+	</section>
+  </section>
+</section>
+
+</div> <!-- slides -->
+</div> <!-- reveal -->
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+<script>
+	// Full list of configuration options available at:
+	// https://github.com/hakimel/reveal.js#configuration
+	Reveal.initialize({
+		controls: true,
+		progress: true,
+		history: true,
+		center: false,
+		slideNumber: true,
+		width: 1200,
+		height: 800,
+		margin: 0.05,
+		transition: 'fade', // none/fade/slide/convex/concave/zoom
+		// Optional reveal.js plugins
+		dependencies: [
+			{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+			{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: 'plugin/zoom-js/zoom.js', async: true },
+			{ src: 'plugin/notes/notes.js', async: true },
+			{ src: 'plugin/math/math.js', async: true }
+		]
+	});
+</script>
+</body>
+</html>
