@@ -1,0 +1,64 @@
+---
+title: "Presentations"
+author: "Susan VanderPlas"
+date: "July 24, 2015"
+output:
+  knitrBootstrap::bootstrap_document:
+    title: "Presentations"
+    theme: cerulean
+    highlight: sunburst
+    theme.chooser: FALSE
+    highlight.chooser: FALSE
+    toc: TRUE
+---
+<div class="jumbotron">
+<h1> Presentations </h1>
+</div>
+
+# 2015
+
+## Joint Statistical Meetings
+<small>
+Seattle, WA    
+August 10, 2015
+</small>
+
+[Abstract](https://www.amstat.org/meetings/jsm/2015/onlineprogram/AbstractDetails.cfm?abstractid=314184)    
+[Presentation](JSM2015/Animint.html)
+
+## Corning Inc.
+<small>
+Corning, NY    
+February 20, 2015
+</small>
+
+[Presentation](JobTalks/Corning/Presentation.html)
+
+## University of Iowa
+<small>
+Iowa City, IA    
+January 15, 2015
+</small>
+
+[Presentation](JobTalks/UI/Presentation.html)
+
+# 2014
+## Joint Statistical Meetings
+<small>
+Boston, MA    
+August 4, 2014
+</small>
+
+### Do You See What I See? Formal Usability Testing and Statistical Graphics
+[Presentation: Using Shiny for User Testing](JSM2014/UserTesting/UserTesting.html)
+
+### Statistical Computing and Graphics Student Paper Competition
+[Presentation: The Curse of Three Dimensions: Why Your Brain Is Lying to You](JSM2014/WhyYourBrainIsLyingToYou/JSM2014.html)
+
+## Great Plains R User Group
+<small>
+Sioux Center, IA    
+May 30, 2014
+</small>
+
+[Animint: Animated, Interactive, Web-ready Graphics with R](RUserGroups - Animint/animint.html)
