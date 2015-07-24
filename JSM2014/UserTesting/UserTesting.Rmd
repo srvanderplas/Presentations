@@ -1,0 +1,61 @@
+---
+title: "Using Shiny for User Testing"
+author: ""
+output:
+  revealjs_presentation:
+    theme: sky
+    center: false
+    transition: fade
+    fig_caption: true
+    fig_retina: false
+    width: 1388
+    height: 768
+---
+
+# It's So Shiny!
+
+- RStudio package to write interactive web applets in R     
+<br>
+- Extremely simple to set up applets that can be used for data collection     
+<br>
+- Paired with other packages (gridSVG, animint, ggvis), could be used to allow direct interaction with graphs     
+<br>
+- User interactions can be recorded to a database for analysis
+
+# Using Shiny to Get Data
+<img src="ShinySineIllusion.png", width='90%', alt="A Shiny Web Applet">
+
+# Using Shiny to Get Data
+
+- Users can adjust the graphic until it looks "right"     
+<br>
+- Time stamps are collected along with graph parameters, window resolution, etc.     
+<br>
+- Additional javascript extensions provide user data (IP Address and corresponding geolocation) and a "fingerprint" composed of browser characteristics, screen resolution, etc. hashed for user privacy     
+<br>
+- Backend: MySQL database; each user interaction results in a new entry     
+
+
+# Advantages of Web Applets for Useability Studies
+
+- Wider population for testing (the entire internet vs. undergraduates)     
+<br>
+- Easier scheduling     
+<br>
+- Data is available faster (users do the data entry themselves)     
+<br>
+- Services like Amazon Turk make it easier to get reliable users
+
+# Disadvantages
+
+- Users may not be statistically literate or familiar with statistical graphics     
+<br>
+- Verification questions (or other data controls) are essential to ensure participants are taking the task seriously     
+<br>
+- Some users have multiple accounts, others are malicious     
+<br>
+- Studies are vulnerable to network issues or software bugs     
+<br>
+- Greater variability in computer hardware may cause unpredictable bugs (differences in screen resolution, Mac vs. PC, Internet Explorer vs. Chrome/Firefox)
+
+
