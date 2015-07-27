@@ -1,0 +1,61 @@
+unnamed-chunk-1	cars	plot
+sineillusion-original	c	coord_equal	createSine	element_blank	element_rect	f	f2prime	fprime	qplot	theme	unit	x	xend	yend	ystart
+body	
+preattentive-features	abs	aes	c	element_blank	element_rect	F	factor	geom_point	geom_segment	geom_text	ggplot	rnorm	scale_alpha_continuous	scale_color_discrete	scale_shape_manual	theme	theme_minimal	unit
+color-shape-palette	aes	c	element_blank	element_rect	geom_point	ggplot	scale_color_identity	scale_shape_identity	theme	theme_minimal	unit	xlab	xlim	ylab	ylim
+preattentive-interference	[<-	$	$<-	aes	c	data.frame	element_blank	element_rect	factor	geom_point	ggplot	runif	scale_color_manual	scale_shape_manual	set.seed	shape1	theme	theme_minimal	unit	x	xlab	y	ylab
+closure-fig	<	$	$<-	c	cos	data.frame	element_blank	element_rect	factor	group	I	idx	pi	qplot	sample	sapply	scale_color_manual	seq	sin	sort	sum	theme	theme_minimal	unit	x	xlab	y	ylab
+goodgestalt-fig	aes	c	data.frame	element_blank	element_rect	geom_point	geom_segment	ggplot	theme	theme_minimal	unit	x	xend	xlab	xlim	y	yend	ylab	ylim
+proximity-fig	c	data.frame	element_blank	element_rect	I	qplot	rep	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+similarity-fig	aes	c	data.frame	element_blank	element_rect	factor	geom_point	group	I	qplot	rep	scale_color_manual	scale_shape_manual	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+goodcontinuation-fig1	^	$	$<-	aes	c	data.frame	element_blank	element_rect	geom_line	geom_point	ggplot	seq	theme	theme_minimal	unit	x	xlab	xlim	y	y1	ylab	ylim
+goodcontinuation-fig2	^	>=	$	$<-	abs	aes	c	data.frame	element_blank	element_rect	factor	geom_line	ggplot	group	melt	scale_color_manual	seq	theme	theme_minimal	variable	which.min	with	x	xlab	xlim	y	y1	ylab	ylim
+commonregion-fig	aes	c	data.frame	element_blank	element_rect	F	geom_point	geom_rect	I	qplot	rep	theme	theme_minimal	unit	x	xlab	xlim	xmax	xmin	y	ylab	ylim	ymax	ymin
+experiment-setup	<	<=	==	>	>=	|	!	!=	.	[<-	$	$<-	&	%>%	age	answer.type	apply	as.numeric	best.combo	c	codedir	datadir	dataset	ddply	droplevels	end_time	F	factor	filter	grepl	gsub	ifelse	individualID	ip_address	is.na	k	length	max	melt	merge	message	min	names	names<-	nick_name	nrow	ntrials	order	param_value	paste	paste0	pic_id	plottype	rank	read.csv	response.id	sd.cluster	sd.line	source	sprintf	start_time	str_extract	str_replace	str_split	str_trim	substr	sum	summarize	T	table	test_param	transform	trial.num	unique	unlist	which	with	ymd_hms
+gestaltplots	
+gestaltplots1	aes	c	element_blank	element_rect	F	geom_text	I	mixture.sim	qplot	set.seed	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots2	~	$	aes	c	data.frame	diff	element_blank	element_rect	fit	geom_line	geom_text	I	lm	max	min	mixture.sim	predict.lm	qplot	seq	set.seed	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots4	aes	c	element_blank	element_rect	geom_text	I	mixture.sim	qplot	set.seed	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots5	aes	c	element_blank	element_rect	factor	geom_text	group	I	mixture.sim	qplot	scale_shape_manual	set.seed	shape5pal	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots6	aes	c	color5pal	element_blank	element_rect	factor	geom_text	group	I	mixture.sim	qplot	scale_color_manual	scale_shape_manual	set.seed	shape5pal	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots3	~	$	aes	c	data.frame	diff	element_blank	element_rect	fit	geom_line	geom_text	I	lm	lwr	max	min	mixture.sim	predict.lm	qplot	seq	set.seed	theme	theme_minimal	unit	upr	x	xlab	xlim	y	ylab	ylim
+gestaltplots7	aes	c	color5pal	element_blank	element_rect	factor	geom_text	group	I	mixture.sim	qplot	scale_color_manual	scale_shape_manual	set.seed	shape5pal	stat_ellipse	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots8	~	$	aes	c	color5pal	data.frame	diff	element_blank	element_rect	factor	fit	geom_line	geom_text	group	I	lm	max	min	mixture.sim	predict.lm	qplot	scale_color_manual	seq	set.seed	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots9	~	$	aes	c	color5pal	data.frame	diff	element_blank	element_rect	factor	fit	geom_line	geom_text	group	I	lm	max	min	mixture.sim	predict.lm	qplot	scale_color_manual	seq	set.seed	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots10	~	$	aes	c	color5pal	data.frame	diff	element_blank	element_rect	factor	fit	geom_line	geom_text	group	I	lm	max	min	mixture.sim	predict.lm	qplot	scale_color_manual	seq	set.seed	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots11	~	$	aes	c	color5pal	data.frame	diff	element_blank	element_rect	factor	fit	geom_line	geom_text	group	I	lm	lwr	max	min	mixture.sim	predict.lm	qplot	scale_color_manual	seq	set.seed	stat_ellipse	theme	theme_minimal	unit	upr	x	xlab	xlim	y	ylab	ylim
+gestaltplots12	~	$	aes	c	color5pal	data.frame	diff	element_blank	element_rect	factor	fit	geom_line	geom_text	group	I	lm	lwr	max	min	mixture.sim	predict.lm	qplot	scale_color_manual	seq	set.seed	stat_ellipse	theme	theme_minimal	unit	upr	x	xlab	xlim	y	ylab	ylim
+gestaltplots13	~	$	aes	c	color5pal	data.frame	diff	element_blank	element_rect	factor	fit	geom_line	geom_text	group	I	lm	lwr	max	min	mixture.sim	predict.lm	qplot	scale_color_manual	seq	set.seed	stat_ellipse	theme	theme_minimal	unit	upr	x	xlab	xlim	y	ylab	ylim
+datamodels	aes	c	element_blank	element_rect	geom_text	I	mixture.sim	qplot	set.seed	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+testlineup	gen.plot	read.csv
+gestaltplots5-1	aes	c	color5pal	element_blank	element_rect	factor	geom_text	group	I	mixture.sim	qplot	scale_color_manual	set.seed	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+gestaltplots6-1	aes	c	color5pal	element_blank	element_rect	factor	geom_text	group	I	mixture.sim	qplot	scale_color_manual	set.seed	stat_ellipse	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+target-aggregate	$	$<-	%>%	aes	as.data.frame	c	cluster.correct	geom_line	geom_point	ggplot	ggtitle	group_by	individualID	length	melt	modeldata	names<-	scale_colour_brewer	scale_shape_discrete	sum	summarize	table	theme	theme_bw	trend.correct	value	variable	x	xlab	ylab
+line-target	~	$	$<-	%>%	aes	binomial	c	cld	confint	coord_flip	data.frame	exp	factor	geom_hline	geom_text	ggtitle	glht	glmer	glmerControl	grepl	gsub	label	LB	letters	mcp	modeldata	names<-	OR	order	qplot	rownames	str_replace	summary	T	theme_bw	UB	xlab	ylab
+cluster-target	~	$	$<-	%>%	aes	binomial	c	cld	confint	coord_flip	data.frame	exp	factor	geom_hline	geom_text	ggtitle	glht	glmer	glmerControl	gsub	label	LB	letters	mcp	modeldata	names<-	OR	order	qplot	rownames	scale_y_continuous	str_replace	summary	T	theme_bw	UB	xlab
+cluster-vs-line	~	|	$	$<-	%>%	aes	binomial	c	cld	cluster.correct	confint	coord_flip	data.frame	exp	fixef	geom_hline	geom_pointrange	geom_text	ggplot	ggtitle	glht	glmer	glmerControl	gsub	label	LB	letters	mcp	modeldata	names	names<-	OR	reorder	require	scale_y_continuous	str_replace	subset	suppressMessages	theme_bw	trend.correct	UB	xlab
+wordles	!=	$	$<-	%>%	as.matrix	brewer.pal	c	choice_reason	Corpus	data.frame	DataframeSource	filter	for	group_by	gsub	library	modeldata	names	paste	plottype	removePunctuation	rowSums	simpleoutcome	sort	summarize	T	TermDocumentMatrix	tm_map	tolower	wordcloud
+wordles2	$	as.matrix	brewer.pal	c	Corpus	data.frame	DataframeSource	for	names	removePunctuation	rowSums	sort	T	TermDocumentMatrix	tm_map	wordcloud	words
+wordles3	$	as.matrix	brewer.pal	c	Corpus	data.frame	DataframeSource	for	names	removePunctuation	rowSums	sort	T	TermDocumentMatrix	tm_map	wordcloud	words
+wordles4	$	as.matrix	brewer.pal	c	Corpus	data.frame	DataframeSource	for	names	removePunctuation	rowSums	sort	T	TermDocumentMatrix	tm_map	wordcloud	words
+wordles-plain	!=	$	$<-	%>%	as.matrix	brewer.pal	c	choice_reason	Corpus	data.frame	DataframeSource	filter	for	group_by	gsub	library	modeldata	names	paste	plottype	removePunctuation	rowSums	simpleoutcome	sort	summarize	T	TermDocumentMatrix	tm_map	tolower	wordcloud
+wordles-line	$	as.matrix	brewer.pal	c	Corpus	data.frame	DataframeSource	for	names	removePunctuation	rowSums	sort	T	TermDocumentMatrix	tm_map	wordcloud	words
+wordles-color	$	as.matrix	brewer.pal	c	Corpus	data.frame	DataframeSource	for	names	removePunctuation	rowSums	sort	T	TermDocumentMatrix	tm_map	wordcloud	words
+wordles-colorEllipse	$	as.matrix	brewer.pal	c	Corpus	data.frame	DataframeSource	for	names	removePunctuation	rowSums	sort	T	TermDocumentMatrix	tm_map	wordcloud	words
+response-time-aes	~	$	aes	c	coefs	estimate	facet_grid	geom_segment	ggtitle	high	I	levels	low	outcome	pos	qplot	scale_colour_brewer	scale_shape_manual	scale_y_continuous	theme	theme_bw	xlab	ylab
+response-time-parms	~	!=	$	$<-	aes	as.numeric	c	confint	data.frame	estimate	exp	facet_grid	factor	fixef	geom_segment	ggtitle	gsub	high	I	ldply	levels<-	lmer	low	modeldata	names	names<-	outcome	paste0	pos	qplot	scale_colour_manual	scale_shape_discrete	scale_y_continuous	strsplit	subset	theme_bw	trend.diff	unique	xlab	ylab
+lexical-analysis	~	==	>	!	[<-	$	$<-	&	%>%	c	choice_reason	data.frame	facet_wrap	factor	ggtitle	if	length	modeldata	mutate	outcome	qplot	reason	rep	return	rowSums	scale_fill_brewer	str_detect	str_replace	sum	theme_bw	tolower	unlist	warning	xlab	ylab
+gestalt	==	!=	aes	c	data.frame	element_blank	element_rect	exp	F	factor	geom_path	geom_point	geom_rect	geom_text	ggplot	group	label	rbind	rep	rev	scale_color_manual	seq	subset	theme	theme_minimal	unit	x	xlab	y	ylab	ylim
+motivation	c	element_blank	element_rect	F	factor	geom_smooth	group	I	mixture.sim	qplot	scale_color_discrete	set.seed	theme	theme_minimal	unit	x	xlab	xlim	y	ylab	ylim
+lineup-pic-stats	==	.	$	&	c	data.frame	dataset	ddply	for	length	modeldata	plottype	rbind	response.id	sapply	sprintf	str_split	subset	sum	unlist
+trends	~	.	[<-	$	$<-	c	data.frame	ddply	element_rect	facet_grid	I	ldply	max	min	paste	qplot	scale	scale_x_continuous	scale_y_continuous	sd.trend	sim.line	theme	theme_bw	unit	x	y
+clusters	~	.	[<-	$	$<-	aes	c	color	color3pal	color5pal	data.frame	ddply	element_rect	facet_grid	geom_point	ggplot	K	ldply	paste	rbind	scale	scale_color_identity	scale_shape_identity	sd.cluster	set.seed	shape	shape3pal	shape5pal	sim.clusters	theme	theme_bw	x	xlab	y	ylab
+plot-aes-demo	~	==	$	&	as.logical	c	color5pal	data.frame	diff	element_blank	element_rect	expand.grid	F	factor	for	geom_line	geom_point	geom_ribbon	geom_smooth	ggplot	group	if	length	lm	lwr	max	min	mixture.sim	predict.lm	print	scale_color_manual	scale_fill_manual	scale_shape_discrete	scale_shape_manual	seq	set.seed	shape5pal	stat_ellipse	theme	theme_lineup	theme_minimal	unit	upr	which	x	xlab	y	ylab
+color-shape-palettes	aes	c	color3pal	color5pal	element_blank	element_rect	geom_point	ggplot	rep	scale_color_identity	scale_shape_identity	shape3pal	shape5pal	theme	theme_minimal	unit	xlab	xlim	ylab	ylim
+lambda	~	$	$<-	aes	c	color	color3pal	color5pal	data.frame	element_rect	facet_grid	geom_point	ggplot	ldply	mixture.sim	paste	rbind	scale_color_identity	scale_shape_identity	set.seed	shape	shape3pal	shape5pal	theme	theme_bw	unit	x	xlab	y	ylab
+simulation1	~	==	!=	[<-	$	$<-	c	..density..	dist	facet_grid	factor	grepl	gsub	I	label_parsed	load	melt	qplot	res	scale_color_manual	scale_fill_manual	Statistic	subset	T	theme	theme_bw	value	xlim
+simulation2	~	==	[<-	$	$<-	aes	c	dist	expression	facet_grid	factor	geom_point	LB	load	paste	qplot	round	scale_color_brewer	sd.cluster	sd.trend	sprintf	subset	theme	theme_bw	type	UB	with	xlab	ylab
+simulation3	~	==	aes	c	dataset.criteria	dist	expression	facet_grid	geom_point	LB	qplot	scale_color_brewer	sd.trend	subset	theme	theme_bw	type	UB	xlab	ylab
+colorShapeEllipseExampleStats	==	.	$	&	c	data.frame	dataset	ddply	for	length	modeldata	plottype	rbind	response.id	sapply	sprintf	str_split	subset	sum	unlist
+giniExampleStats	==	.	$	&	c	data.frame	dataset	ddply	for	length	modeldata	plottype	rbind	response.id	sapply	sprintf	str_split	subset	sum	unlist
+response-time-aes-small	~	==	.	$	$<-	%>%	aes	as.character	as.numeric	avg.est	c	confint	data.frame	ddply	estimate	exp	facet_grid	factor	fixef	geom_segment	ggtitle	gsub	high	I	ldply	levels	levels<-	library	lmer	low	mean	modeldata	names	names<-	outcome	plottype	pos	qplot	reorder	scale_colour_brewer	scale_shape_manual	scale_y_continuous	str_replace	strsplit	theme	theme_bw	transform	with	xlab	ylab

@@ -1,0 +1,61 @@
+unnamed-chunk-1	
+sineillusion-original	.Random.seed
+body	
+preattentive-features	
+color-shape-palette	
+preattentive-interference	data
+closure-fig	blanks	data
+goodgestalt-fig	segment.df
+proximity-fig	data
+similarity-fig	data
+goodcontinuation-fig1	data
+goodcontinuation-fig2	data	data2	y.breakpoint
+commonregion-fig	data	rects
+experiment-setup	color3pal	color5pal	colors	colortm	correct.ans	extra.participant.data	incomplete.participant.data	incomplete.participants	lineups	modeldata	modeldata.long	parameter.design	plot.eval.tab	shape3pal	shape5pal	shapes	shapetm	tmp	totaltime	useranswers	userdata	users	best.combo	cluster	eval.data	eval.data.quantiles	eval.df	gen.data	gen.plot	gen.test.data	gini	interactive_lineup	mixture.sim	save.pics	sim.clusters	sim.line	theme_lineup
+gestaltplots	
+gestaltplots1	data
+gestaltplots2	ci	data	model	newdata	range
+gestaltplots4	data
+gestaltplots5	data
+gestaltplots6	data
+gestaltplots3	ci	data	model	newdata	range
+gestaltplots7	data
+gestaltplots8	ci	data	model	newdata	range
+gestaltplots9	ci	data	model	newdata	range
+gestaltplots10	ci	data	model	newdata	range
+gestaltplots11	ci	data	model	newdata	range
+gestaltplots12	ci	data	model	newdata	range
+gestaltplots13	ci	data	model	newdata	range
+datamodels	data
+testlineup	data
+gestaltplots5-1	data
+gestaltplots6-1	data
+target-aggregate	clm	clusters	trends	user.data
+line-target	line.fixef	line.fixef.aes	line.model	type_compare
+cluster-target	group.fixef	group.fixef2	group.model	type_compare
+cluster-vs-line	gvl.fixef	gvl.fixef.old	gvl.model	type_compare
+wordles	d	i	lexicaldata	m	pal	tdm	v	words	words.corpus
+wordles2	d	i	m	pal	tdm	v	words.corpus
+wordles3	d	i	m	pal	tdm	v	words.corpus
+wordles4	d	i	m	pal	tdm	v	words.corpus
+wordles-plain	d	i	lexicaldata	m	pal	tdm	v	words	words.corpus
+wordles-line	d	i	m	pal	tdm	v	words.corpus
+wordles-color	d	i	m	pal	tdm	v	words.corpus
+wordles-colorEllipse	d	i	m	pal	tdm	v	words.corpus
+response-time-aes	
+response-time-parms	coefs	ll	time.model2
+lexical-analysis	get.reason	lexicaldata
+gestalt	data	logit
+motivation	data
+lineup-pic-stats	plot48ans	sample.lineup.pcts
+trends	res	sd	xlim	ylim
+clusters	res	res2	sd
+plot-aes-demo	aes	data	get.aes	get.stats	i	model	newdata	plot	plot.parms	pointsize	range	stats	tmp
+color-shape-palettes	
+lambda	lambda	res	res2
+simulation1	K	longres	M	N	sC	sT
+simulation2	dataset.criteria
+simulation3	
+colorShapeEllipseExampleStats	plot1ans	plot1ans.pcts
+giniExampleStats	plot1ans	plot1ans.pcts
+response-time-aes-small	coefs	ll	time.model
