@@ -5,30 +5,41 @@ library(dplyr)
 library(magrittr)
 library(lubridate)
 library(stringr)
-library(USAboundaries)
-library(rgdal)
-library(spatstat)
-library(rgeos)
 
-rivers <- readOGR(dsn="Data/", layer="TCEQ_SEGMENTS_LINE_2012") 
-rivers.data <- rivers@data
-rivers <- gSimplify(rivers, .025, topologyPreserve = T) 
-rivers <- SpatialLinesDataFrame(rivers, rivers.data)
-rivers <- merge(rivers %>% fortify(), data.frame(rivers.data, id=0:(nrow(rivers.data)-1))) 
-rivers <- rivers %>% group_by(id) %>%
-  mutate(npts = length(id),
-         isRiver = sum(str_detect(SEG_NAME, "[Rr]iver") | SHAPE_LEN>1)>0) %>%
-  filter(isRiver)
+# library(USAboundaries)
+# library(rgdal)
+# library(spatstat)
+# library(rgeos)
+# 
+# rivers <- readOGR(dsn="Data/", layer="TCEQ_SEGMENTS_LINE_2012") 
+# rivers.data <- rivers@data
+# rivers <- gSimplify(rivers, .025, topologyPreserve = T) 
+# rivers <- SpatialLinesDataFrame(rivers, rivers.data)
+# rivers <- merge(rivers %>% fortify(), data.frame(rivers.data, id=0:(nrow(rivers.data)-1))) 
+# rivers <- rivers %>% group_by(id) %>%
+#   mutate(npts = length(id),
+#          isRiver = sum(str_detect(SEG_NAME, "[Rr]iver") | SHAPE_LEN>1)>0) %>%
+#   filter(isRiver)
+# write.csv(rivers, "Data/TexasRivers.csv")
+# 
+# lakes <- readOGR(dsn="Data/", layer="TCEQ_SEGMENT_POLY_2012") 
+# lakes.data <- lakes@data
+# lakes <- gSimplify(lakes, .05, topologyPreserve = T) 
+# lakes <- SpatialPolygonsDataFrame(lakes, lakes.data)
+# lakes <- merge(lakes %>% fortify(), data.frame(lakes.data, id=0:(nrow(lakes.data)-1))) 
+# lakes <- lakes %>% group_by(id) %>%
+#   mutate(npts = length(id),
+#          isBig = sum(SHAPE_Area>.05)>0) %>%
+#   filter(isBig)
+# write.csv(lakes, "Data/TexasLakes.csv")
+# 
+# tx <- us_states(states="Texas") %>% fortify()
+# write.csv(tx, "Data/TexasBorder.csv")
 
-lakes <- readOGR(dsn="Data/", layer="TCEQ_SEGMENT_POLY_2012") 
-lakes.data <- lakes@data
-lakes <- gSimplify(lakes, .05, topologyPreserve = T) 
-lakes <- SpatialPolygonsDataFrame(lakes, lakes.data)
-lakes <- merge(lakes %>% fortify(), data.frame(lakes.data, id=0:(nrow(lakes.data)-1))) 
-lakes <- lakes %>% group_by(id) %>%
-  mutate(npts = length(id),
-         isBig = sum(SHAPE_Area>.05)>0) %>%
-  filter(isBig)
+rivers <- read.csv("Data/TexasRivers.csv", stringsAsFactors=F, row.names=1)
+lakes <- read.csv("Data/TexasLakes.csv", stringsAsFactors=F, row.names=1)
+tx <- read.csv("Data/TexasBorder.csv", stringsAsFactors=F, row.names=1)
+
 
 
 weather <- read.csv("Data/TexasWeather.csv", na.strings="-9999", stringsAsFactors=F)
@@ -120,8 +131,6 @@ weathersummary <- weather %>%
 weathersummary$station.name %<>% str_replace_all("( \\d{1,}\\.?\\d{1,}?( [NSEW]{0,3})?)|( TX US)|( TEXAS)|( INTERNATIONAL)|( MUNICIPAL)|( REGIONAL)", "")
 
 stations <- weathersummary %>% select(station, station.name, latitude, longitude) %>% unique()
-
-tx <- us_states(states="Texas") %>% fortify()
 
 stations.plot <- ggplot() + 
   geom_path(data=rivers, aes(x=long, y=lat, group=group), color="grey", size=.5) + 
