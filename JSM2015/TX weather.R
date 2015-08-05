@@ -40,18 +40,22 @@ rivers <- read.csv("Data/TexasRivers.csv", stringsAsFactors=F, row.names=1)
 lakes <- read.csv("Data/TexasLakes.csv", stringsAsFactors=F, row.names=1)
 tx <- read.csv("Data/TexasBorder.csv", stringsAsFactors=F, row.names=1)
 
+# weather <- read.csv("Data/TexasWeatherFull.csv", na.strings="-9999", stringsAsFactors=F)
+# names(weather) <- c("station", "station.name", "date", 
+#                     "multiday.precip.total", "number.of.days", 
+#                     "precipitation", "snow.depth", 
+#                     "temp.max", "temp.min", "temp.obs", 
+#                     "wind.movement", 
+#                     "wtype.snow", "wtype.dust", "wtype.fog", 
+#                     "wtype.glz", "wtype.hail", "wtype.heavyfog", 
+#                     "wtype.highwind", "wtype.sleet",
+#                     "wtype.smoke", "wtype.thunder", "wtype.tornado")
+# 
+# weather %<>% 
+#   select(station, station.name, date, precipitation, temp.max, temp.min, temp.obs) 
+# weather %>% write.csv(file="Data/TexasWeather.csv", row.names=FALSE)
 
-
-weather <- read.csv("Data/TexasWeather.csv", na.strings="-9999", stringsAsFactors=F)
-names(weather) <- c("station", "station.name", "date", 
-                    "multiday.precip.total", "number.of.days", 
-                    "precipitation", "snow.depth", 
-                    "temp.max", "temp.min", "temp.obs", 
-                    "wind.movement", 
-                    "wtype.snow", "wtype.dust", "wtype.fog", 
-                    "wtype.glz", "wtype.hail", "wtype.heavyfog", 
-                    "wtype.highwind", "wtype.sleet",
-                    "wtype.smoke", "wtype.thunder", "wtype.tornado")
+weather <- read.csv("Data/TexasWeather.csv", stringsAsFactors=F)
 
 weather <- weather %>% 
   select(1:22) %>% 

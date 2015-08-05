@@ -222,60 +222,20 @@ end.rcode-->
 	  </div>
 	</section>
 	
-<!--begin.rcode formatweatherdata, echo=FALSE, include=FALSE, eval=FALSE
+<!--begin.rcode formatweatherdata, echo=FALSE, include=FALSE, eval=TRUE
+rivers <- read.csv("Data/TexasRivers.csv", stringsAsFactors=F, row.names=1)
+lakes <- read.csv("Data/TexasLakes.csv", stringsAsFactors=F, row.names=1)
+tx <- read.csv("Data/TexasBorder.csv", stringsAsFactors=F, row.names=1)
 
-rivers <- readOGR(dsn="Data/", layer="TCEQ_SEGMENTS_LINE_2012") 
-rivers.data <- rivers@data
-rivers <- gSimplify(rivers, .025, topologyPreserve = T) 
-rivers <- SpatialLinesDataFrame(rivers, rivers.data)
-rivers <- merge(rivers %>% fortify(), data.frame(rivers.data, id=0:(nrow(rivers.data)-1))) 
-rivers <- rivers %>% group_by(id) %>%
-  mutate(npts = length(id),
-         isRiver = sum(str_detect(SEG_NAME, "[Rr]iver") | SHAPE_LEN>1)>0) %>%
-  filter(isRiver)
-
-lakes <- readOGR(dsn="Data/", layer="TCEQ_SEGMENT_POLY_2012") 
-lakes.data <- lakes@data
-lakes <- gSimplify(lakes, .05, topologyPreserve = T) 
-lakes <- SpatialPolygonsDataFrame(lakes, lakes.data)
-lakes <- merge(lakes %>% fortify(), data.frame(lakes.data, id=0:(nrow(lakes.data)-1))) 
-lakes <- lakes %>% group_by(id) %>%
-  mutate(npts = length(id),
-         isBig = sum(SHAPE_Area>.05)>0) %>%
-  filter(isBig)
-
-
-weather <- read.csv("Data/TexasWeather.csv", na.strings="-9999", stringsAsFactors=F)
-names(weather) <- c("station", "station.name", "date", 
-                    "multiday.precip.total", "number.of.days", 
-                    "precipitation", "snow.depth", 
-                    "temp.max", "temp.min", "temp.obs", 
-                    "wind.movement", 
-                    "wtype.snow", "wtype.dust", "wtype.fog", 
-                    "wtype.glz", "wtype.hail", "wtype.heavyfog", 
-                    "wtype.highwind", "wtype.sleet",
-                    "wtype.smoke", "wtype.thunder", "wtype.tornado")
-
-weather <- weather %>% 
-  select(1:22) %>% 
-  mutate(date = ymd(date), 
-         temp.max = temp.max/10*1.8+32,  # Convert temps to F
-         temp.min = temp.min/10*1.8+32, 
-         temp.obs = temp.obs/10*1.8+32,
-         precipitation = precipitation/10/10*.39370,
-         station.type = str_sub(station, 1, 5),
-         station = str_sub(station, 7, -1)) # Convert precip to inches
-
-weather <- weather %>% filter(!is.na(precipitation) | !is.na(temp.min))
-
-# colSums(apply(weather, 2, is.na))
+weather <- read.csv("Data/TexasWeather.csv", stringsAsFactors=F)
 
 stations <- read.fwf("Data/stations.txt", widths=c(11, 9, 10, 7, 3, 31, 4, 4, 6), na.strings="", stringsAsFactors=F, header=F, comment.char="!")
 names(stations) <- c("station", "latitude", "longitude", "elevation", "state", "station.name", "network", "wmo.id")
-stations <- stations %>% select(station,station.name, elevation,latitude,longitude) %>% unique() %>%
-  filter(station%in%weather$station)
+stations <- stations %>% select(station,station.name, elevation,latitude,longitude) %>% unique()
 
-weather <- merge(weather, stations[,-2], stringsAsFactors=F)
+weather <- weather %>% 
+  filter(!is.na(precipitation) | !is.na(temp.min)) %>% 
+  merge( y=stations[,-2], stringsAsFactors=F, by="station", all.x=T, all.y=F)
 
 floor.week <- function(x){
   tmp <- ymd("2015-01-01") 
@@ -283,83 +243,86 @@ floor.week <- function(x){
   tmp
 }
 
+statesummary <- weather %>% 
+  mutate(
+    week = floor.week(date),
+    min.day = week,
+    max.day = week + days(7),
+    station.name = str_replace_all(station.name,"( TX US)|( TEXAS)|( INTERNATIONAL)|( MUNICIPAL)|( REGIONAL)", "")
+  ) %>%
+  group_by(week, station, station.name) %>%
+  summarize(
+    precip = sum(precipitation[!is.na(precipitation) & !is.nan(precipitation) & !is.infinite(precipitation)])
+  ) %>% ungroup %>%
+  group_by(week) %>% 
+  summarize(
+    precip.mean = mean(precip),
+    precip.median = median(precip),
+    precip.max = max(precip),
+    station.max = station[which.max(precip)],
+    station.max.name = station.name[which.max(precip)]
+  ) %>% 
+  ungroup() %>%
+  mutate(
+    min.day = week,
+    day = week + days(3) + hours(12),
+    max.day = week + days(7),
+    label = sprintf("Max Precip at: %s", station.max.name)) %>%
+  mutate(label = as.character(label))
+
 weathersummary <- weather %>% 
-  mutate(lat = round(latitude/2, digits = 1)*2,
-         long = round(longitude/2, digits = 1)*2,
+  mutate(lat = round(latitude/3, digits = 1)*3,
+         long = round(longitude/3, digits = 1)*3,
          week = floor.week(date)) %>%
-  group_by(lat, long, station, week) %>% 
-  mutate(precip.wk = sum(precipitation, na.rm=T),
-         min.day = week,
-         max.day = week + days(7)) %>%
+  group_by(station, week) %>% 
+  mutate(precip.wk = sum(precipitation, na.rm=T)) %>%
   ungroup() %>% 
-  group_by(lat, long, date, week) %>% 
-  summarize(elevation = mean(elevation, na.rm=T),
-            temp.max = mean(temp.max, na.rm=T),
-            temp.min = mean(temp.min, na.rm=T),
-            temp.obs = mean(temp.obs, na.rm=T),
-            precip.wk = mean(precip.wk, na.rm=T),
+  group_by(lat, long, week) %>% 
+  summarize(precip.wk = mean(precip.wk, na.rm=T),
             idx = which.min((lat-latitude)^2+(long-longitude)^2),
             station = station[idx],
-            station.name = station.name[idx],
+            station.name = str_replace_all(station.name[idx],"( TX US)|( TEXAS)|( INTERNATIONAL)|( MUNICIPAL)|( REGIONAL)", ""),
             latitude = latitude[idx],
             longitude = longitude[idx],
-            precip = mean(precipitation, na.rm=T),
-            min.day = min(min.day, na.rm=T),
-            max.day = max(max.day, na.rm=T)
+            precip = mean(precipitation, na.rm=T)
             ) %>%
   group_by(station) %>% 
-  mutate(max.temp.gap = max(diff(date[!is.na(temp.min)])),
-         month.span = length(unique(month(date)))) %>%
-  filter(max.temp.gap<15 & month.span>6) %>% 
+  mutate(min.day = week,
+         max.day = week + days(7)) %>%
   ungroup()
 
-weathersummary$station.name %<>% str_replace_all("( \\d{1,}\\.?\\d{1,}?( [NSEW]{0,3})?)|( TX US)|( TEXAS)|( INTERNATIONAL)|( MUNICIPAL)|( REGIONAL)", "")
+weeks <- unique(select(weathersummary, min.day, max.day, week))
 
 stations <- weathersummary %>% select(station, station.name, latitude, longitude) %>% unique()
 
-tx <- us_states(states="Texas") %>% fortify()
-
-save(lakes, rivers, stations, tx, weathersummary, file="Data/weatherData.RData")
+save(lakes, rivers, stations, tx, statesummary, weathersummary, weeks, file="Data/weatherData.RData")
 end.rcode-->
 
 	<section>
 		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
-<!-- begin.rcode texas-outline, echo=-2, include=TRUE, fig.width=8, fig.height=7.2, out.width="40%"
-texasOutline <- ggplot() + 
-  geom_path(data=rivers, aes(x=long, y=lat, group=group), color="grey", size=.5) + 
-  geom_polygon(data=lakes, aes(x=long, y=lat, group=group), fill="grey", size=.5) + 
-  geom_path(data=tx, aes(x=long, y=lat, group=group)) + 
-  theme(axis.line = element_blank(), axis.text = element_blank(), 
-        axis.ticks = element_blank(), axis.title = element_blank())
-texasOutline
+<!-- begin.rcode texas-precipitation, echo=TRUE, include=TRUE, fig.width=8, fig.height=7.2, out.width="40%"
+texasPrecipitation <- ggplot() + 
+  geom_tallrect(aes(xmin=min.day, xmax=max.day, clickSelects=week),  
+                data=statesummary, alpha=.1, fill="black", color="black") + 
+  geom_rect(aes(xmin=min.day, xmax=max.day, ymin=0, ymax=precip.median, 
+                clickSelects=week), data=statesummary) + 
+  geom_point(aes(x=day, y=precip.max), size=4, fill="transparent", color="black", data=statesummary) +
+  geom_text(aes(x=ymd("2015-04-15"), y=16, label=label, showSelected=week), data=statesummary) + 
+  xlab("") + ylab("Weekly Precipitation (in)") + 
+  ggtitle("Precipitation across Texas, 2015") +
+  theme_animint(width=350, height=540)
 end.rcode-->
-  </section>
-  <section>
-		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
-		<h4> Interactivity within a single plot </h4>
-<!-- begin.rcode texas-stations, echo=T, include=T, fig.width=8, fig.height=7.2, out.width="30%"
-weatherStations <- texasOutline + ggtitle("Weather Stations") +
-  geom_point(data=stations, 
-             aes(x=longitude, y=latitude, # Standard aesthetics
-                 clickSelects=station, tooltip=station.name), # animint aes
-             size=4, fill="transparent", color="black", alpha=.75) + 
-              # animint specifies fill and color separately for points
-  geom_text(data=stations, aes(x=-100, y=37, label=station.name, showSelected=station)) + 
-    # In ggplot2, all of the labels will show up, 
-    # but in animint only the selected station's name will be displayed
-  theme_animint(width=600, height=540) # Size of the plot when rendered in HTML
+<!-- begin.rcode print-texas-precip, echo=F, class="fragment", fragIndex=1, include=T, fig.width=8, fig.height=7.2, out.width="100%"
+texasPrecipitation
 end.rcode-->
-<!-- begin.rcode print-texas-stations, echo=F, class="fragment", fragIndex=1, include=T, fig.width=8, fig.height=7.2, out.width="100%"
-weatherStations
-end.rcode-->
-    <div id="texas-stations-animint-all" class="fragment" data-fragment-index=2>
+    <div id="texas-precip-animint-all" class="fragment" data-fragment-index=2>
       <h5> Compile to HTML: </h5>
-<!-- begin.rcode texas-stations-animint, echo=T, include=T, eval=F
+<!-- begin.rcode texas-precip-animint, echo=T, include=T, eval=F
 animint2dir(
   list(
   # list of all of the plots to 
   # render with animint
-    stations = weatherStations
+    precip = texasPrecipitation
   ) 
 )
 end.rcode-->	
@@ -368,59 +331,56 @@ end.rcode-->
 	<section>
 		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
 		<h4> Interactivity within a single plot </h4>
-<!-- begin.rcode texas-stations-animint-render, echo=F, include=T, cache=F
-structure(list(stations = weatherStations), class="animint")
+<!-- begin.rcode texas-precipitation-animint-render, echo=F, include=T, cache=F
+structure(list(precip = texasPrecipitation), class="animint")
 end.rcode-->
 	</section>
 	<section>
 		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
 		<h4> Adding linked plots </h4>
-		<ul class="smpadding">
-		  <li> If we select a weather station (clickSelects) on the stations graph, <br/>
-		  we might want to see the precipitation over time (showSelected)</li>
-		  <li> We might also (someday) want to select a time period (clickSelects) and see the entire state's precipitation on another graph</li>
-		</ul>
-<!-- begin.rcode station-precipitation, echo=T, include=T, fig.width=4, fig.height=3, out.width="40%"
-weeks <- unique(select(weathersummary, min.day, max.day, week))
-precipPlot <- ggplot() + 
-  geom_tallrect(aes(xmin = min.day, xmax = max.day, # Define x-boundaries
-                    clickSelects=week), # Animint selector
-                data=weeks, alpha=.1, fill="black", color="black") +
-  geom_text(data=stations, 
-            aes(x=ymd("2015-04-14"), y=10, label=station.name, # label values
-                showSelected=station)) + 
-  geom_segment(data=subset(weathersummary, !is.infinite(precip) & !is.nan(precip)), 
-               aes(x=date, xend=date, y=precip, yend=0, 
-                   showSelected=station) # display only the selected station
-               ) + 
-  xlab("") + ylab("Precipitation (in)") + 
-  ggtitle("Average Regional Precipitation") + 
-  theme_animint(width=400, height=540) 
-    # Size of the plot when rendered in HTML
+		If we select a week (clickSelects) on the precipitation graph, <br/>
+		  we might want to see the statewide precipitation (showSelected)
+<!-- begin.rcode texas-outline, echo=-2, include=TRUE, fig.width=8, fig.height=7.2, out.width="30%"
+texasOutline <- ggplot() + 
+  geom_path(data=rivers, aes(x=long, y=lat, group=group), color="grey", size=.5) + 
+  geom_polygon(data=lakes, aes(x=long, y=lat, group=group), fill="grey", size=.5) + 
+  geom_path(data=tx, aes(x=long, y=lat, group=group)) + 
+  theme(axis.line = element_blank(), axis.text = element_blank(), 
+        axis.ticks = element_blank(), axis.title = element_blank()) +
+  theme_animint(width=600, height=540) # Size of the plot when rendered in HTML
+texasOutline
+end.rcode-->
+	</section>
+	<section>		
+	  <h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+		<h4> Adding linked plots </h4>
+<!-- begin.rcode texas-stations, echo=-2, include=T, fig.width=8, fig.height=7.2, out.width="30%"
+weatherStations <- texasOutline + ggtitle("Weekly Precipitation") +
+  geom_point(data=weathersummary, 
+             aes(x=longitude, y=latitude, # Standard aesthetics
+                 showSelected=week, tooltip=station.name,# animint aes 
+                 fill=precip.wk), color="black", size=4) + 
+             # animint specifies fill and color separately for points
+  scale_fill_gradient2("Precip (in)", low="white", mid="steelblue1", midpoint=10, high="steelblue3") + 
+  geom_text(data=stations, aes(x=-100, y=37, label=station.name, showSelected=station)) 
+weatherStations
 end.rcode-->
 	</section>
 	<section>
 	  <h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
 		<h4> Adding linked plots </h4>
 <!-- begin.rcode station-precipitation-render, echo=F, include=T, cache=F
-precipPlot <- ggplot() + 
-  geom_tallrect(aes(xmin = min.day, xmax = max.day, # Define x-boundaries
-                    clickSelects=week), # Animint selector
-                data=weeks, alpha=.1, fill="black", color="black") +
-  geom_text(data=stations, 
-            aes(x=ymd("2015-04-14"), y=10, label=station.name, # label values
-                showSelected=station), chunk_vars=character()) + 
-  geom_segment(data=subset(weathersummary, !is.infinite(precip) & !is.nan(precip)), 
-               aes(x=date, xend=date, y=precip, yend=0, 
-                   showSelected=station) # display only the selected station
-               ) + 
-  xlab("") + ylab("Precipitation (in)") + 
-  ggtitle("Average Regional Precipitation") + 
-  theme_animint(width=400, height=540) 
+weatherStations <- texasOutline + ggtitle("Weekly Precipitation") +
+  geom_point(data=weathersummary, 
+             aes(x=longitude, y=latitude, # Standard aesthetics
+                 showSelected=week, tooltip=station.name,# animint aes 
+                 fill=sqrt(precip.wk)), color="black", size=4, chunk.vars=list("week")) + 
+             # animint specifies fill and color separately for points
+  scale_fill_gradient2("Precip (in)", low="white", mid="steelblue1", midpoint=2, high="steelblue4", limits=c(0, 4), breaks=c(0:4), labels=c(0:4)^2) + 
+  geom_text(data=stations, aes(x=-100, y=37, label=station.name, showSelected=station)) 
 
-structure(list(stations = weatherStations, 
-               precip = precipPlot, 
-          first=list(station="US1TXED0022")), 
+structure(list(precip = texasPrecipitation, 
+               stations = weatherStations),
           class="animint")
 end.rcode-->
 	</section>

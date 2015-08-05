@@ -160,21 +160,21 @@ li.smalleqns span.MathJax{
   box-shadow: none;
 }
 
-span > #print-texas-stations {
+span > #print-texas-precip {
   display:inline-block;
   width:30%;
   margin:auto;
   vertical-align:middle;
 }
 
-#texas-stations-animint-all {
+#texas-precip-animint-all {
   display:inline-block;
   width:50%;
   vertical-align:middle;
   text-align:center;
 }
 
-#texas-stations-animint-all > div {
+#texas-precip-animint-all > div {
   width:80%;
   margin:auto;
 }
