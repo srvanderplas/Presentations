@@ -52,7 +52,6 @@ body {
   margin:0em;
 }
 
-
 .reveal .br {
   border-right:1px solid;
   border-right-width:1px;
@@ -115,10 +114,92 @@ li.smalleqns span.MathJax{
 	margin:30px;
 }
 
+.reveal ul.smpadding li {
+	margin:10px;
+}
 .reveal .small {
 	font-size:75%;
 }
 
 .reveal .padding {
 	margin:40px;
+}
+
+.reveal code.sm {
+  font-size:90%;
+}
+
+#slideshow { 
+    margin: 0px auto; 
+    position: relative; 
+    width: 1000px; 
+    height: 600px; 
+    padding: 0px; 
+    box-shadow: 0 0 0 0; 
+}
+
+#slideshow > div { 
+    position: absolute; 
+    top: 0px; 
+    left: auto; 
+    right: auto; 
+    bottom: 0px; 
+}
+
+
+.reveal pre.knitr {
+  display: block;
+  position: relative;
+  max-width: 100%;
+  margin: 10px auto;
+  text-align: left;
+  font-size: 0.50em;
+  font-family: monospace;
+  line-height: 1.2em;
+  word-wrap: break-word;
+  box-shadow: none;
+}
+
+span > #print-texas-stations {
+  display:inline-block;
+  width:30%;
+  margin:auto;
+  vertical-align:middle;
+}
+
+#texas-stations-animint-all {
+  display:inline-block;
+  width:50%;
+  vertical-align:middle;
+  text-align:center;
+}
+
+#texas-stations-animint-all > div {
+  width:80%;
+  margin:auto;
+}
+
+button:nth-last-child(4) {
+  display:none;
+}
+#show_hide_animation_controls{
+  display:none;
+}
+
+#ytitle, #xtitle {
+  font-size:14px !important;
+}
+
+#plottitle {
+  font-size:24px !important;
+}
+
+.tick > text {
+  font-size:14px !important;
+}
+
+strong {
+  font-variant:small-caps !important;
+  font-weight:normal !important;
+  font-family: Monaco, "Lucida Console", "Courier New", Courier, monospace; !important;
 }

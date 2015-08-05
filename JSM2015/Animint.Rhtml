@@ -28,6 +28,20 @@
 		link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 		document.getElementsByTagName( 'head' )[0].appendChild( link );
 	</script>
+	
+	<!-- Slideshow autoplay -->
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script>
+  	$("#slideshow > div:gt(0)").hide();
+    setInterval(function() { 
+      $('#slideshow > div:first')
+        .fadeOut(1000)
+        .next()
+        .fadeIn(1000)
+        .end()
+        .appendTo('#slideshow');
+    },  3000);
+  </script>
 
 	<!--[if lt IE 9]>
 	<script src="lib/js/html5shiv.js"></script>
@@ -103,12 +117,22 @@
 	
 	opts_chunk$set(cache.path='cache/', cache=T, autodep=T, 
 				   fig.align='center', fig.width=6, fig.height=6, fig.show='hold', 
-				   echo=F, message=F, warning=F, error=F, dpi=300)
-	
+				   echo=F, message=F, warning=F, error=F, dpi=300, dev.args = list(bg = 'transparent'))
+	options(width=90)
 	theme_transparent <- function(){
 		theme(panel.grid.major=element_blank(), 
 					plot.background = element_rect(fill = "transparent", colour = NA))
 	}
+	
+		
+  library(ggplot2)
+  library(animint)
+  library(dplyr)
+  library(magrittr)
+  library(lubridate)
+  library(stringr)
+	load("Data/weatherData.RData")
+	theme_set(theme_bw(24))
 end.rcode-->
 
 <section>
@@ -116,12 +140,10 @@ end.rcode-->
 		<h2> Grammar of Graphics </h2>
 		<img src="Image/HistogramGrammar.svg" width="60%" height="auto">
 	</section>
+	
 	<section>
 	<h2> Grammar of Graphics </h2>
-<!-- begin.rcode hist, echo=-c(1:7), include=T, fig.width=6, fig.height=3
-	library(stringr)
-	library(dplyr)
-	library(ggplot2)
+<!-- begin.rcode hist, echo=-c(1:4), include=T, fig.width=6, fig.height=3
 	profile <- read.csv("Data/OkCupid.csv")
 	profile$height.ft <- word(profile$Height, sep="ft ")
   profile$height.in <- word(word(profile$Height, sep="in "), start=-1)
@@ -131,16 +153,340 @@ end.rcode-->
 	  geom_bar(aes(y=..count..), position="stack", stat="bin")
 end.rcode-->		
 
-  ggplot2 is a widely used implementation of the grammar of graphics for R.
+  <strong>ggplot2</strong> is a widely used implementation of the grammar of graphics for R. <br>
+  It allows for specification of complex plots consisting of multiple layers. 
 	</section>
+	
 	<section>
-	<h2> Animint </h2>
-	<h3 style="align:center" class="padding"> extends ggplot2 with interactive aesthetics </h3>
-
+  	<h3> <strong>Animint</strong> </h3>
+  	<h4 style="align:center" class="padding"> extends <strong>ggplot2</strong> with interactive aesthetics </h3>
+  	<ul>
+    	<li><b> clickSelects </b> is an aesthetic which indicates which variable to use as a key when a plot object is clicked.</li>
+    	
+    	<li><b> showSelected </b> is an aesthetic which indicates the variable to show in response to selection of a plot object. </li>
+    	
+    	<li> The combination of these two aesthetics allows us to create linked, interactive plots. </li>
+  	</ul>
 	</section>
-  </section>
+	
+	<section>
+	  <h3> Animint </h3>
+	  <h4 style="align:center" class="padding"> extends ggplot2 with interactive aesthetics </h4>
+	  <ul>
+	    <li> Statistically, this allows us to interactively show conditional distributions (when the conditioning variable is categorical or discretized) </li>
+	
+	    <li> Animint also adds other aesthetics to this framework: <b> hoverSelects </b>, <b> tooltip </b>, and <b> time </b> (for automatic iteration between cases, that is, animation) </li>
+	  </ul>
+	</section>
 </section>
 
+<section>
+	<section>
+		<h2 class="title"> Building Plots with <strong>Animint</strong><br> and <strong>ggplot2</strong></h2>
+	</section>
+	
+	<section>
+	  <h3> Demo Dataset </h3>
+	  <ul>
+	    <li style="margin-bottom:5px;"> 
+	      Weather records from stations in Texas, Jan - July 2015 <br>
+	      <small>
+	        From the <a href="https://www.ncdc.noaa.gov/data-access/quick-links#ghcn">Global Historical Climatology Network</a>
+	      </small>
+	    </li>
+	    <li style="margin-top:5px;">
+	      Multiple stations within a small area have been combined and labeled as the most central station in the region. 
+	    </li>
+	  </ul>
+	  <div id="slideshow">
+	    <div>
+	      <img src="Image/before-after.jpg" width="65%" height="auto"/>
+	      <br>
+	      <b> May 2015 flooding in Houston, TX </b>
+	    </div>
+	    <div style="display:none">
+	      <img src="Image/lightning.jpg" width="65%" height="auto"/>
+	      <br>
+	      <b> May 2015 flooding in Houston, TX </b>
+	    </div>
+	    <div style="display:none">
+	      <img src="Image/blancoriver.jpg" width="65%" height="auto"/>
+	      <br>
+	      <b> May 2015 flooding along the Blanco River (TX) </b>
+	    </div>	    
+	    <div style="display:none">
+	      <img src="Image/blancoriver2.jpg" width="65%" height="auto"/>
+	      <br>
+	      <b> May 2015 flooding along the Blanco River (TX) </b>
+	    </div>
+	  </div>
+	</section>
+	
+<!--begin.rcode formatweatherdata, echo=FALSE, include=FALSE, eval=FALSE
+
+rivers <- readOGR(dsn="Data/", layer="TCEQ_SEGMENTS_LINE_2012") 
+rivers.data <- rivers@data
+rivers <- gSimplify(rivers, .025, topologyPreserve = T) 
+rivers <- SpatialLinesDataFrame(rivers, rivers.data)
+rivers <- merge(rivers %>% fortify(), data.frame(rivers.data, id=0:(nrow(rivers.data)-1))) 
+rivers <- rivers %>% group_by(id) %>%
+  mutate(npts = length(id),
+         isRiver = sum(str_detect(SEG_NAME, "[Rr]iver") | SHAPE_LEN>1)>0) %>%
+  filter(isRiver)
+
+lakes <- readOGR(dsn="Data/", layer="TCEQ_SEGMENT_POLY_2012") 
+lakes.data <- lakes@data
+lakes <- gSimplify(lakes, .05, topologyPreserve = T) 
+lakes <- SpatialPolygonsDataFrame(lakes, lakes.data)
+lakes <- merge(lakes %>% fortify(), data.frame(lakes.data, id=0:(nrow(lakes.data)-1))) 
+lakes <- lakes %>% group_by(id) %>%
+  mutate(npts = length(id),
+         isBig = sum(SHAPE_Area>.05)>0) %>%
+  filter(isBig)
+
+
+weather <- read.csv("Data/TexasWeather.csv", na.strings="-9999", stringsAsFactors=F)
+names(weather) <- c("station", "station.name", "date", 
+                    "multiday.precip.total", "number.of.days", 
+                    "precipitation", "snow.depth", 
+                    "temp.max", "temp.min", "temp.obs", 
+                    "wind.movement", 
+                    "wtype.snow", "wtype.dust", "wtype.fog", 
+                    "wtype.glz", "wtype.hail", "wtype.heavyfog", 
+                    "wtype.highwind", "wtype.sleet",
+                    "wtype.smoke", "wtype.thunder", "wtype.tornado")
+
+weather <- weather %>% 
+  select(1:22) %>% 
+  mutate(date = ymd(date), 
+         temp.max = temp.max/10*1.8+32,  # Convert temps to F
+         temp.min = temp.min/10*1.8+32, 
+         temp.obs = temp.obs/10*1.8+32,
+         precipitation = precipitation/10/10*.39370,
+         station.type = str_sub(station, 1, 5),
+         station = str_sub(station, 7, -1)) # Convert precip to inches
+
+weather <- weather %>% filter(!is.na(precipitation) | !is.na(temp.min))
+
+# colSums(apply(weather, 2, is.na))
+
+stations <- read.fwf("Data/stations.txt", widths=c(11, 9, 10, 7, 3, 31, 4, 4, 6), na.strings="", stringsAsFactors=F, header=F, comment.char="!")
+names(stations) <- c("station", "latitude", "longitude", "elevation", "state", "station.name", "network", "wmo.id")
+stations <- stations %>% select(station,station.name, elevation,latitude,longitude) %>% unique() %>%
+  filter(station%in%weather$station)
+
+weather <- merge(weather, stations[,-2], stringsAsFactors=F)
+
+floor.week <- function(x){
+  tmp <- ymd("2015-01-01") 
+  week(tmp) <- week(x)
+  tmp
+}
+
+weathersummary <- weather %>% 
+  mutate(lat = round(latitude/2, digits = 1)*2,
+         long = round(longitude/2, digits = 1)*2,
+         week = floor.week(date)) %>%
+  group_by(lat, long, station, week) %>% 
+  mutate(precip.wk = sum(precipitation, na.rm=T),
+         min.day = week,
+         max.day = week + days(7)) %>%
+  ungroup() %>% 
+  group_by(lat, long, date, week) %>% 
+  summarize(elevation = mean(elevation, na.rm=T),
+            temp.max = mean(temp.max, na.rm=T),
+            temp.min = mean(temp.min, na.rm=T),
+            temp.obs = mean(temp.obs, na.rm=T),
+            precip.wk = mean(precip.wk, na.rm=T),
+            idx = which.min((lat-latitude)^2+(long-longitude)^2),
+            station = station[idx],
+            station.name = station.name[idx],
+            latitude = latitude[idx],
+            longitude = longitude[idx],
+            precip = mean(precipitation, na.rm=T),
+            min.day = min(min.day, na.rm=T),
+            max.day = max(max.day, na.rm=T)
+            ) %>%
+  group_by(station) %>% 
+  mutate(max.temp.gap = max(diff(date[!is.na(temp.min)])),
+         month.span = length(unique(month(date)))) %>%
+  filter(max.temp.gap<15 & month.span>6) %>% 
+  ungroup()
+
+weathersummary$station.name %<>% str_replace_all("( \\d{1,}\\.?\\d{1,}?( [NSEW]{0,3})?)|( TX US)|( TEXAS)|( INTERNATIONAL)|( MUNICIPAL)|( REGIONAL)", "")
+
+stations <- weathersummary %>% select(station, station.name, latitude, longitude) %>% unique()
+
+tx <- us_states(states="Texas") %>% fortify()
+
+save(lakes, rivers, stations, tx, weathersummary, file="Data/weatherData.RData")
+end.rcode-->
+
+	<section>
+		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+<!-- begin.rcode texas-outline, echo=-2, include=TRUE, fig.width=8, fig.height=7.2, out.width="40%"
+texasOutline <- ggplot() + 
+  geom_path(data=rivers, aes(x=long, y=lat, group=group), color="grey", size=.5) + 
+  geom_polygon(data=lakes, aes(x=long, y=lat, group=group), fill="grey", size=.5) + 
+  geom_path(data=tx, aes(x=long, y=lat, group=group)) + 
+  theme(axis.line = element_blank(), axis.text = element_blank(), 
+        axis.ticks = element_blank(), axis.title = element_blank())
+texasOutline
+end.rcode-->
+  </section>
+  <section>
+		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+		<h4> Interactivity within a single plot </h4>
+<!-- begin.rcode texas-stations, echo=T, include=T, fig.width=8, fig.height=7.2, out.width="30%"
+weatherStations <- texasOutline + ggtitle("Weather Stations") +
+  geom_point(data=stations, 
+             aes(x=longitude, y=latitude, # Standard aesthetics
+                 clickSelects=station, tooltip=station.name), # animint aes
+             size=4, fill="transparent", color="black", alpha=.75) + 
+              # animint specifies fill and color separately for points
+  geom_text(data=stations, aes(x=-100, y=37, label=station.name, showSelected=station)) + 
+    # In ggplot2, all of the labels will show up, 
+    # but in animint only the selected station's name will be displayed
+  theme_animint(width=600, height=540) # Size of the plot when rendered in HTML
+end.rcode-->
+<!-- begin.rcode print-texas-stations, echo=F, class="fragment", fragIndex=1, include=T, fig.width=8, fig.height=7.2, out.width="100%"
+weatherStations
+end.rcode-->
+    <div id="texas-stations-animint-all" class="fragment" data-fragment-index=2>
+      <h5> Compile to HTML: </h5>
+<!-- begin.rcode texas-stations-animint, echo=T, include=T, eval=F
+animint2dir(
+  list(
+  # list of all of the plots to 
+  # render with animint
+    stations = weatherStations
+  ) 
+)
+end.rcode-->	
+    </div>
+	</section>
+	<section>
+		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+		<h4> Interactivity within a single plot </h4>
+<!-- begin.rcode texas-stations-animint-render, echo=F, include=T, cache=F
+structure(list(stations = weatherStations), class="animint")
+end.rcode-->
+	</section>
+	<section>
+		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+		<h4> Adding linked plots </h4>
+		<ul class="smpadding">
+		  <li> If we select a weather station (clickSelects) on the stations graph, <br/>
+		  we might want to see the precipitation over time (showSelected)</li>
+		  <li> We might also (someday) want to select a time period (clickSelects) and see the entire state's precipitation on another graph</li>
+		</ul>
+<!-- begin.rcode station-precipitation, echo=T, include=T, fig.width=4, fig.height=3, out.width="40%"
+weeks <- unique(select(weathersummary, min.day, max.day, week))
+precipPlot <- ggplot() + 
+  geom_tallrect(aes(xmin = min.day, xmax = max.day, # Define x-boundaries
+                    clickSelects=week), # Animint selector
+                data=weeks, alpha=.1, fill="black", color="black") +
+  geom_text(data=stations, 
+            aes(x=ymd("2015-04-14"), y=10, label=station.name, # label values
+                showSelected=station)) + 
+  geom_segment(data=subset(weathersummary, !is.infinite(precip) & !is.nan(precip)), 
+               aes(x=date, xend=date, y=precip, yend=0, 
+                   showSelected=station) # display only the selected station
+               ) + 
+  xlab("") + ylab("Precipitation (in)") + 
+  ggtitle("Average Regional Precipitation") + 
+  theme_animint(width=400, height=540) 
+    # Size of the plot when rendered in HTML
+end.rcode-->
+	</section>
+	<section>
+	  <h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+		<h4> Adding linked plots </h4>
+<!-- begin.rcode station-precipitation-render, echo=F, include=T, cache=F
+precipPlot <- ggplot() + 
+  geom_tallrect(aes(xmin = min.day, xmax = max.day, # Define x-boundaries
+                    clickSelects=week), # Animint selector
+                data=weeks, alpha=.1, fill="black", color="black") +
+  geom_text(data=stations, 
+            aes(x=ymd("2015-04-14"), y=10, label=station.name, # label values
+                showSelected=station), chunk_vars=character()) + 
+  geom_segment(data=subset(weathersummary, !is.infinite(precip) & !is.nan(precip)), 
+               aes(x=date, xend=date, y=precip, yend=0, 
+                   showSelected=station) # display only the selected station
+               ) + 
+  xlab("") + ylab("Precipitation (in)") + 
+  ggtitle("Average Regional Precipitation") + 
+  theme_animint(width=400, height=540) 
+
+structure(list(stations = weatherStations, 
+               precip = precipPlot, 
+          first=list(station="US1TXED0022")), 
+          class="animint")
+end.rcode-->
+	</section>
+</section>
+
+<section>
+  <section>
+    <h2 class="title"> <strong>Animint</strong> Internals </h2>
+  </section>
+  
+  <section>
+    <h3> R to d3 compiler </h3>
+    <h4> (R code, runs once) </h4>
+    <ul>
+      <li> Saves data file(s) for each plot layer </li>
+      <li> Creates a JSON file which contains
+        <ul> 
+          <li> Descriptions of each plot layer (aesthetic mappings, scales, ...) </li>
+          <li> Locations of data file(s) for each layer </li>
+          <li> A map of links between layers due to interactive aesthetics (clickSelects, hoverSelects, showSelected, tooltip, ...) </li>
+          <li> Theme information </li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  
+  <section>
+    <h3> <strong>Animint</strong> Renderer </h3>
+    <h4> (JavaScript code, runs in browser on page load) </h4>
+    <ul>
+      <li> Downloads the JSON file using d3.json() </li>
+      <li> Builds the plot, legend, and selectors </li>
+      <li> Loads the data for each (currently selected/displayed) geom </li> 
+      <li> Draws selected geoms </li>
+      <li> Re-draws geoms based on selection events </li>
+    </ul>
+  </section>
+  
+  <section>
+    <h3> <strong>Animint</strong> Bindings </h3>
+    <ul>
+      <li> HTML: <code>animint2dir()</code> saves an index.html file, required javascript files, the JSON plot description, and data to a local directory </li>
+      <li> Gist: <code>animint2gist()</code> posts a gist to your github account (which can be viewed using <a href="http://bl.ocks.org/">http://bl.ocks.org/</a>) </li>
+      <li> <strong>knitr</strong> bindings: <code>structure(..., class="animint")</code> will create an interactive applet when knitting output to HTML </li>
+      <li> <strong>shiny</strong> bindings: <code>renderAnimint() and animintOutput()</code> create an animint applet within a <strong>shiny</strong> app </li>
+    </ul>
+    
+    An R backend is not required to share <strong>animint</strong> graphics online <br/>
+    (except within a <strong>shiny</strong> applet or interactive markdown document)
+  </section>
+  
+  <section>
+    <h3>Other Features </h3>
+    <ul class="smpadding" style="margin-left:24px">
+      <li class="fragment"> Multiple selection: 
+      <code class="sm">selector.types = list(station  = "multiple")</code> </li>
+      <li class="fragment"> Tooltips: <code class="sm">aes(tooltip = label)</code></li>
+      <li class="fragment"> CSS ID variables: <code class="sm">aes(id = idvar)</code> allows for customization with CSS </li>
+      <li class="fragment"> Links: <code class="sm">aes(href = url) </code> creates links that open in a new tab </li>
+      <li class="fragment"> Transitions: <code class="sm">aes(key = variable)</code> creates smooth transitions </li>
+<!--      <li class="fragment"> Data Export control: <code class="sm"> chunk_vars = c("var1", "var2") </code> creates separate data files for each combination of var1 and var2, so that geoms can be more efficiently loaded and drawn </li>-->
+      <li class="fragment"> Initial selector values: <code class="sm"> first = list(variable = value) </code> will select "value" on initial load </li>
+    </ul>
+  </section>
+</section>
+  
 </div> <!-- slides -->
 </div> <!-- reveal -->
 
@@ -153,7 +499,7 @@ end.rcode-->
 		controls: true,
 		progress: true,
 		history: true,
-		center: false,
+		center: true,
 		slideNumber: true,
 		width: 1200,
 		height: 800,

@@ -90,6 +90,20 @@
 		link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 		document.getElementsByTagName( 'head' )[0].appendChild( link );
 	</script>
+	
+	<!-- Slideshow autoplay -->
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script>
+  	$("#slideshow > div:gt(0)").hide();
+    setInterval(function() { 
+      $('#slideshow > div:first')
+        .fadeOut(1000)
+        .next()
+        .fadeIn(1000)
+        .end()
+        .appendTo('#slideshow');
+    },  3000);
+  </script>
 
 	<!--[if lt IE 9]>
 	<script src="lib/js/html5shiv.js"></script>
@@ -120,6 +134,7 @@
 		<h2> Grammar of Graphics </h2>
 		<img src="Image/HistogramGrammar.svg" width="60%" height="auto">
 	</section>
+	
 	<section>
 	<h2> Grammar of Graphics </h2>
 <div class="chunk" id="hist"><div class="rcode"><div class="source"><pre class="knitr r">        <span class="hl kwd">ggplot</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=profile,</span> <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=height,</span> <span class="hl kwc">fill</span><span class="hl std">=gender))</span> <span class="hl opt">+</span>
@@ -127,16 +142,223 @@
 </pre></div>
 </div><div class="rimage center"><img src="figure/hist-1.png" title="plot of chunk hist" alt="plot of chunk hist" width="60%" class="plot" /></div></div>
 
-  ggplot2 is a widely used implementation of the grammar of graphics for R.
+  <strong>ggplot2</strong> is a widely used implementation of the grammar of graphics for R. <br>
+  It allows for specification of complex plots consisting of multiple layers. 
 	</section>
+	
 	<section>
-	<h2> Animint </h2>
-	<h3 style="align:center" class="padding"> extends ggplot2 with interactive aesthetics </h3>
-
+  	<h3> <strong>Animint</strong> </h3>
+  	<h4 style="align:center" class="padding"> extends <strong>ggplot2</strong> with interactive aesthetics </h3>
+  	<ul>
+    	<li><b> clickSelects </b> is an aesthetic which indicates which variable to use as a key when a plot object is clicked.</li>
+    	
+    	<li><b> showSelected </b> is an aesthetic which indicates the variable to show in response to selection of a plot object. </li>
+    	
+    	<li> The combination of these two aesthetics allows us to create linked, interactive plots. </li>
+  	</ul>
 	</section>
-  </section>
+	
+	<section>
+	  <h3> Animint </h3>
+	  <h4 style="align:center" class="padding"> extends ggplot2 with interactive aesthetics </h4>
+	  <ul>
+	    <li> Statistically, this allows us to interactively show conditional distributions (when the conditioning variable is categorical or discretized) </li>
+	
+	    <li> Animint also adds other aesthetics to this framework: <b> hoverSelects </b>, <b> tooltip </b>, and <b> time </b> (for automatic iteration between cases, that is, animation) </li>
+	  </ul>
+	</section>
 </section>
 
+<section>
+	<section>
+		<h2 class="title"> Building Plots with <strong>Animint</strong><br> and <strong>ggplot2</strong></h2>
+	</section>
+	
+	<section>
+	  <h3> Demo Dataset </h3>
+	  <ul>
+	    <li style="margin-bottom:5px;"> 
+	      Weather records from stations in Texas, Jan - July 2015 <br>
+	      <small>
+	        From the <a href="https://www.ncdc.noaa.gov/data-access/quick-links#ghcn">Global Historical Climatology Network</a>
+	      </small>
+	    </li>
+	    <li style="margin-top:5px;">
+	      Multiple stations within a small area have been combined and labeled as the most central station in the region. 
+	    </li>
+	  </ul>
+	  <div id="slideshow">
+	    <div>
+	      <img src="Image/before-after.jpg" width="65%" height="auto"/>
+	      <br>
+	      <b> May 2015 flooding in Houston, TX </b>
+	    </div>
+	    <div style="display:none">
+	      <img src="Image/lightning.jpg" width="65%" height="auto"/>
+	      <br>
+	      <b> May 2015 flooding in Houston, TX </b>
+	    </div>
+	    <div style="display:none">
+	      <img src="Image/blancoriver.jpg" width="65%" height="auto"/>
+	      <br>
+	      <b> May 2015 flooding along the Blanco River (TX) </b>
+	    </div>	    
+	    <div style="display:none">
+	      <img src="Image/blancoriver2.jpg" width="65%" height="auto"/>
+	      <br>
+	      <b> May 2015 flooding along the Blanco River (TX) </b>
+	    </div>
+	  </div>
+	</section>
+	
+
+
+	<section>
+		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+<div class="chunk" id="texas-outline"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">texasOutline</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">ggplot</span><span class="hl std">()</span> <span class="hl opt">+</span>
+  <span class="hl kwd">geom_path</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=rivers,</span> <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=long,</span> <span class="hl kwc">y</span><span class="hl std">=lat,</span> <span class="hl kwc">group</span><span class="hl std">=group),</span> <span class="hl kwc">color</span><span class="hl std">=</span><span class="hl str">&quot;grey&quot;</span><span class="hl std">,</span> <span class="hl kwc">size</span><span class="hl std">=</span><span class="hl num">.5</span><span class="hl std">)</span> <span class="hl opt">+</span>
+  <span class="hl kwd">geom_polygon</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=lakes,</span> <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=long,</span> <span class="hl kwc">y</span><span class="hl std">=lat,</span> <span class="hl kwc">group</span><span class="hl std">=group),</span> <span class="hl kwc">fill</span><span class="hl std">=</span><span class="hl str">&quot;grey&quot;</span><span class="hl std">,</span> <span class="hl kwc">size</span><span class="hl std">=</span><span class="hl num">.5</span><span class="hl std">)</span> <span class="hl opt">+</span>
+  <span class="hl kwd">geom_path</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=tx,</span> <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=long,</span> <span class="hl kwc">y</span><span class="hl std">=lat,</span> <span class="hl kwc">group</span><span class="hl std">=group))</span> <span class="hl opt">+</span>
+  <span class="hl kwd">theme</span><span class="hl std">(</span><span class="hl kwc">axis.line</span> <span class="hl std">=</span> <span class="hl kwd">element_blank</span><span class="hl std">(),</span> <span class="hl kwc">axis.text</span> <span class="hl std">=</span> <span class="hl kwd">element_blank</span><span class="hl std">(),</span>
+        <span class="hl kwc">axis.ticks</span> <span class="hl std">=</span> <span class="hl kwd">element_blank</span><span class="hl std">(),</span> <span class="hl kwc">axis.title</span> <span class="hl std">=</span> <span class="hl kwd">element_blank</span><span class="hl std">())</span>
+</pre></div>
+</div><div class="rimage center"><img src="figure/texas-outline-1.png" title="plot of chunk texas-outline" alt="plot of chunk texas-outline" width="40%" class="plot" /></div></div>
+  </section>
+  <section>
+		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+		<h4> Interactivity within a single plot </h4>
+<div class="chunk" id="texas-stations"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">weatherStations</span> <span class="hl kwb">&lt;-</span> <span class="hl std">texasOutline</span> <span class="hl opt">+</span> <span class="hl kwd">ggtitle</span><span class="hl std">(</span><span class="hl str">&quot;Weather Stations&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span>
+  <span class="hl kwd">geom_point</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=stations,</span>
+             <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=longitude,</span> <span class="hl kwc">y</span><span class="hl std">=latitude,</span> <span class="hl com"># Standard aesthetics</span>
+                 <span class="hl kwc">clickSelects</span><span class="hl std">=station,</span> <span class="hl kwc">tooltip</span><span class="hl std">=station.name),</span> <span class="hl com"># animint aes</span>
+             <span class="hl kwc">size</span><span class="hl std">=</span><span class="hl num">4</span><span class="hl std">,</span> <span class="hl kwc">fill</span><span class="hl std">=</span><span class="hl str">&quot;transparent&quot;</span><span class="hl std">,</span> <span class="hl kwc">color</span><span class="hl std">=</span><span class="hl str">&quot;black&quot;</span><span class="hl std">,</span> <span class="hl kwc">alpha</span><span class="hl std">=</span><span class="hl num">.75</span><span class="hl std">)</span> <span class="hl opt">+</span>
+              <span class="hl com"># animint specifies fill and color separately for points</span>
+  <span class="hl kwd">geom_text</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=stations,</span> <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=</span><span class="hl opt">-</span><span class="hl num">100</span><span class="hl std">,</span> <span class="hl kwc">y</span><span class="hl std">=</span><span class="hl num">37</span><span class="hl std">,</span> <span class="hl kwc">label</span><span class="hl std">=station.name,</span> <span class="hl kwc">showSelected</span><span class="hl std">=station))</span> <span class="hl opt">+</span>
+    <span class="hl com"># In ggplot2, all of the labels will show up, </span>
+    <span class="hl com"># but in animint only the selected station's name will be displayed</span>
+  <span class="hl kwd">theme_animint</span><span class="hl std">(</span><span class="hl kwc">width</span><span class="hl std">=</span><span class="hl num">600</span><span class="hl std">,</span> <span class="hl kwc">height</span><span class="hl std">=</span><span class="hl num">540</span><span class="hl std">)</span> <span class="hl com"># Size of the plot when rendered in HTML</span>
+</pre></div>
+</div></div>
+<span class='fragment' data-fragment-index=1><div class="chunk" id="print-texas-stations"><div class="rimage center"><img src="figure/print-texas-stations-1.png" title="plot of chunk print-texas-stations" alt="plot of chunk print-texas-stations" width="100%" class="plot" /></div></div></span>
+
+    <div id="texas-stations-animint-all" class="fragment" data-fragment-index=2>
+      <h5> Compile to HTML: </h5>
+<div class="chunk" id="texas-stations-animint"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">animint2dir</span><span class="hl std">(</span>
+  <span class="hl kwd">list</span><span class="hl std">(</span>
+  <span class="hl com"># list of all of the plots to </span>
+  <span class="hl com"># render with animint</span>
+    <span class="hl kwc">stations</span> <span class="hl std">= weatherStations</span>
+  <span class="hl std">)</span>
+<span class="hl std">)</span>
+</pre></div>
+</div></div>
+    </div>
+	</section>
+	<section>
+		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+		<h4> Interactivity within a single plot </h4>
+<div class="chunk" id="texas-stations-animint-render"><div class="rcode"><script type="text/javascript" src="texasstationsanimintrender/vendor/d3.v3.js"></script>
+<script type="text/javascript" src="texasstationsanimintrender/animint.js"></script><p></p>
+<div id='texasstationsanimintrender'></div>
+<script>var plot = new animint("#texasstationsanimintrender", "texasstationsanimintrender/plot.json");</script></div></div>
+	</section>
+	<section>
+		<h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+		<h4> Adding linked plots </h4>
+		<ul class="smpadding">
+		  <li> If we select a weather station (clickSelects) on the stations graph, <br/>
+		  we might want to see the precipitation over time (showSelected)</li>
+		  <li> We might also (someday) want to select a time period (clickSelects) and see the entire state's precipitation on another graph</li>
+		</ul>
+<div class="chunk" id="station-precipitation"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">weeks</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">unique</span><span class="hl std">(</span><span class="hl kwd">select</span><span class="hl std">(weathersummary, min.day, max.day, week))</span>
+<span class="hl std">precipPlot</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">ggplot</span><span class="hl std">()</span> <span class="hl opt">+</span>
+  <span class="hl kwd">geom_tallrect</span><span class="hl std">(</span><span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">xmin</span> <span class="hl std">= min.day,</span> <span class="hl kwc">xmax</span> <span class="hl std">= max.day,</span> <span class="hl com"># Define x-boundaries</span>
+                    <span class="hl kwc">clickSelects</span><span class="hl std">=week),</span> <span class="hl com"># Animint selector</span>
+                <span class="hl kwc">data</span><span class="hl std">=weeks,</span> <span class="hl kwc">alpha</span><span class="hl std">=</span><span class="hl num">.1</span><span class="hl std">,</span> <span class="hl kwc">fill</span><span class="hl std">=</span><span class="hl str">&quot;black&quot;</span><span class="hl std">,</span> <span class="hl kwc">color</span><span class="hl std">=</span><span class="hl str">&quot;black&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span>
+  <span class="hl kwd">geom_text</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=stations,</span>
+            <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=</span><span class="hl kwd">ymd</span><span class="hl std">(</span><span class="hl str">&quot;2015-04-14&quot;</span><span class="hl std">),</span> <span class="hl kwc">y</span><span class="hl std">=</span><span class="hl num">10</span><span class="hl std">,</span> <span class="hl kwc">label</span><span class="hl std">=station.name,</span> <span class="hl com"># label values</span>
+                <span class="hl kwc">showSelected</span><span class="hl std">=station))</span> <span class="hl opt">+</span>
+  <span class="hl kwd">geom_segment</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=</span><span class="hl kwd">subset</span><span class="hl std">(weathersummary,</span> <span class="hl opt">!</span><span class="hl kwd">is.infinite</span><span class="hl std">(precip)</span> <span class="hl opt">&amp; !</span><span class="hl kwd">is.nan</span><span class="hl std">(precip)),</span>
+               <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=date,</span> <span class="hl kwc">xend</span><span class="hl std">=date,</span> <span class="hl kwc">y</span><span class="hl std">=precip,</span> <span class="hl kwc">yend</span><span class="hl std">=</span><span class="hl num">0</span><span class="hl std">,</span>
+                   <span class="hl kwc">showSelected</span><span class="hl std">=station)</span> <span class="hl com"># display only the selected station</span>
+               <span class="hl std">)</span> <span class="hl opt">+</span>
+  <span class="hl kwd">xlab</span><span class="hl std">(</span><span class="hl str">&quot;&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl kwd">ylab</span><span class="hl std">(</span><span class="hl str">&quot;Precipitation (in)&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span>
+  <span class="hl kwd">ggtitle</span><span class="hl std">(</span><span class="hl str">&quot;Average Regional Precipitation&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span>
+  <span class="hl kwd">theme_animint</span><span class="hl std">(</span><span class="hl kwc">width</span><span class="hl std">=</span><span class="hl num">400</span><span class="hl std">,</span> <span class="hl kwc">height</span><span class="hl std">=</span><span class="hl num">540</span><span class="hl std">)</span>
+    <span class="hl com"># Size of the plot when rendered in HTML</span>
+</pre></div>
+</div></div>
+	</section>
+	<section>
+	  <h3> Building Plots with <strong>Animint</strong> and <strong>ggplot2</strong></h3>
+		<h4> Adding linked plots </h4>
+<div class="chunk" id="station-precipitation-render"><div class="rcode"><p></p>
+<div id='stationprecipitationrender'></div>
+<script>var plot = new animint("#stationprecipitationrender", "stationprecipitationrender/plot.json");</script></div></div>
+	</section>
+</section>
+
+<section>
+  <section>
+    <h2 class="title"> <strong>Animint</strong> Internals </h2>
+  </section>
+  
+  <section>
+    <h3> R to d3 compiler </h3>
+    <h4> (R code, runs once) </h4>
+    <ul>
+      <li> Saves data file(s) for each plot layer </li>
+      <li> Creates a JSON file which contains
+        <ul> 
+          <li> Descriptions of each plot layer (aesthetic mappings, scales, ...) </li>
+          <li> Locations of data file(s) for each layer </li>
+          <li> A map of links between layers due to interactive aesthetics (clickSelects, hoverSelects, showSelected, tooltip, ...) </li>
+          <li> Theme information </li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  
+  <section>
+    <h3> <strong>Animint</strong> Renderer </h3>
+    <h4> (JavaScript code, runs in browser on page load) </h4>
+    <ul>
+      <li> Downloads the JSON file using d3.json() </li>
+      <li> Builds the plot, legend, and selectors </li>
+      <li> Loads the data for each (currently selected/displayed) geom </li> 
+      <li> Draws selected geoms </li>
+      <li> Re-draws geoms based on selection events </li>
+    </ul>
+  </section>
+  
+  <section>
+    <h3> <strong>Animint</strong> Bindings </h3>
+    <ul>
+      <li> HTML: <code>animint2dir()</code> saves an index.html file, required javascript files, the JSON plot description, and data to a local directory </li>
+      <li> Gist: <code>animint2gist()</code> posts a gist to your github account (which can be viewed using <a href="http://bl.ocks.org/">http://bl.ocks.org/</a>) </li>
+      <li> <strong>knitr</strong> bindings: <code>structure(..., class="animint")</code> will create an interactive applet when knitting output to HTML </li>
+      <li> <strong>shiny</strong> bindings: <code>renderAnimint() and animintOutput()</code> create an animint applet within a <strong>shiny</strong> app </li>
+    </ul>
+    
+    An R backend is not required to share <strong>animint</strong> graphics online <br/>
+    (except within a <strong>shiny</strong> applet or interactive markdown document)
+  </section>
+  
+  <section>
+    <h3>Other Features </h3>
+    <ul class="smpadding" style="margin-left:24px">
+      <li class="fragment"> Multiple selection: 
+      <code class="sm">selector.types = list(station  = "multiple")</code> </li>
+      <li class="fragment"> Tooltips: <code class="sm">aes(tooltip = label)</code></li>
+      <li class="fragment"> CSS ID variables: <code class="sm">aes(id = idvar)</code> allows for customization with CSS </li>
+      <li class="fragment"> Links: <code class="sm">aes(href = url) </code> creates links that open in a new tab </li>
+      <li class="fragment"> Transitions: <code class="sm">aes(key = variable)</code> creates smooth transitions </li>
+<!--      <li class="fragment"> Data Export control: <code class="sm"> chunk_vars = c("var1", "var2") </code> creates separate data files for each combination of var1 and var2, so that geoms can be more efficiently loaded and drawn </li>-->
+      <li class="fragment"> Initial selector values: <code class="sm"> first = list(variable = value) </code> will select "value" on initial load </li>
+    </ul>
+  </section>
+</section>
+  
 </div> <!-- slides -->
 </div> <!-- reveal -->
 
@@ -149,7 +371,7 @@
 		controls: true,
 		progress: true,
 		history: true,
-		center: false,
+		center: true,
 		slideNumber: true,
 		width: 1200,
 		height: 800,
