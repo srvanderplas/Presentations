@@ -203,3 +203,7 @@ strong {
   font-weight:normal !important;
   font-family: Monaco, "Lucida Console", "Courier New", Courier, monospace; !important;
 }
+
+#stations_legend{
+  font-size:75% !important;
+}
