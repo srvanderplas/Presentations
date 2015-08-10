@@ -361,8 +361,7 @@ weatherStations <- texasOutline + ggtitle("Weekly Precipitation") +
                  showSelected=week, tooltip=station.name,# animint aes 
                  fill=precip.wk), color="black", size=4) + 
              # animint specifies fill and color separately for points
-  scale_fill_gradient2("Precip (in)", low="white", mid="steelblue1", midpoint=10, high="steelblue3") + 
-  geom_text(data=stations, aes(x=-100, y=37, label=station.name, showSelected=station)) 
+  scale_fill_gradient2("Precip (in)", low="white", mid="steelblue1", midpoint=10, high="steelblue3")
 weatherStations
 end.rcode-->
 	</section>
@@ -376,8 +375,7 @@ weatherStations <- texasOutline + ggtitle("Weekly Precipitation") +
                  showSelected=week, tooltip=station.name,# animint aes 
                  fill=sqrt(precip.wk)), color="black", size=4, chunk.vars=list("week")) + 
              # animint specifies fill and color separately for points
-  scale_fill_gradient2("Precip (in)", low="white", mid="steelblue1", midpoint=2, high="steelblue4", limits=c(0, 4), breaks=c(0:4), labels=c(0:4)^2) + 
-  geom_text(data=stations, aes(x=-100, y=37, label=station.name, showSelected=station)) 
+  scale_fill_gradient2("Precip (in)", low="white", mid="steelblue1", midpoint=2, high="steelblue4", limits=c(0, 4), breaks=c(0:4), labels=c(0:4)^2) 
 
 structure(list(precip = texasPrecipitation, 
                stations = weatherStations),

@@ -266,38 +266,7 @@
 "chunk_order": [
  "week" 
 ],
-"nest_order": [],
-"nextgeom": "geom9_text_stations" 
-},
-"geom9_text_stations": {
- "geom": "text",
-"classed": "geom9_text_stations",
-"aes": {
- "x": "-100",
-"y": "37",
-"label": "station.name",
-"showSelected": "station" 
-},
-"params": {
- "parse": false 
-},
-"subset_order": [
- "showSelected" 
-],
-"types": {
- "x": "numeric",
-"y": "numeric",
-"label": "factor",
-"showSelected": "factor",
-"PANEL": "integer" 
-},
-"PANEL": 1,
-"chunks": 1,
-"total": 1,
-"chunk_order": [],
-"nest_order": [
- "showSelected" 
-] 
+"nest_order": [] 
 } 
 },
 "selectors": {
@@ -311,13 +280,6 @@
 "geom8_point_stations" 
 ],
 "chunks": "week" 
-},
-"station": {
- "selected": "US1TXCMR008",
-"type": "single",
-"update": [
- "geom9_text_stations" 
-] 
 } 
 },
 "plots": {
@@ -555,8 +517,7 @@
  "geom5_path_stations",
 "geom6_polygon_stations",
 "geom7_path_stations",
-"geom8_point_stations",
-"geom9_text_stations" 
+"geom8_point_stations" 
 ],
 "panel_background": {
  "fill": "#FFFFFF",
@@ -582,11 +543,10 @@
 0.78198 
 ],
 "y": [
- 0.18067,
-0.38432,
-0.58797,
-0.79162,
-0.99528 
+ 0.18701,
+0.4002,
+0.6134,
+0.82659 
 ] 
 } 
 },
@@ -603,11 +563,11 @@
 0.92047 
 ],
 "y": [
- 0.078844,
-0.2825,
-0.48615,
-0.6898,
-0.89345 
+ 0.080409,
+0.2936,
+0.5068,
+0.71999,
+0.93319 
 ] 
 } 
 },
@@ -621,13 +581,12 @@
 "xline": false,
 "xticks": false,
 "y": [
- 0.18067,
-0.38432,
-0.58797,
-0.79162,
-0.99528 
+ 0.18701,
+0.4002,
+0.6134,
+0.82659 
 ],
-"yrange": [ 25.282, 37.558 ],
+"yrange": [ 25.307, 37.033 ],
 "yline": false,
 "yticks": false 
 },
