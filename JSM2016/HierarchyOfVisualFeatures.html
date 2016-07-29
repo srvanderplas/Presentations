@@ -149,23 +149,7 @@
           <p style="color: #add9e4;"> Trend target: 12, Cluster target: 5 </p>
         </td>
         <td width="54%" style="margin-left:30px;text-align:left;vertical-align:top;">
-          <div class="fragment" data-fragment-index=2 style="text-align:center;display:inline-block;margin-top:30px;">
-            <h4> <b> Participant Responses </b> </h4>
-            <table>
-              <tr>
-                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 12: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">52.2</code>% </td>
-                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Trend target)</td>
-              </tr>
-              <tr>
-                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 5: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">17.4</code>% </td>
-                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Cluster target)</td>
-              </tr>
-              <tr>
-                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Other: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">30.3</code>% </td>
-              </tr>
-            </table>
-            Sample size: 22
-          </div>
+
         </td>
       </tr>
     </table>
@@ -199,6 +183,37 @@
               </tr>
             </table>
             Sample size: 31
+          </div>
+        </td>
+      </tr>
+    </table>
+  </section>
+
+    <section>
+    <h2> Which plot is the most different? </h2>
+    <table width="100%">
+      <tr>
+        <td width="45%" style="text-align:center;vertical-align:top;">
+          <img src="image/set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png" width='100%' height='auto'/>
+          <p style="color: #add9e4;"> Trend target: 12, Cluster target: 5 </p>
+        </td>
+        <td width="54%" style="margin-left:30px;text-align:left;vertical-align:top;">
+          <div class="fragment" data-fragment-index=2 style="text-align:center;display:inline-block;margin-top:30px;">
+            <h4> <b> Participant Responses </b> </h4>
+            <table>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 12: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">52.2</code>% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Trend target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 5: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">17.4</code>% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Cluster target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Other: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">30.3</code>% </td>
+              </tr>
+            </table>
+            Sample size: 22
           </div>
         </td>
       </tr>
@@ -302,7 +317,7 @@
           </div>
         </td>
         <td style="padding-left:50px;vertical-align:top;">
-          <div class="fragment" data-fragment-index=3>
+          <div>
           <h5> <b>Plot Level</b> </h5>
           <div style="font-size:75%;">
             <ul>
@@ -317,7 +332,7 @@
       </tr>
       <tr>
         <td style="padding-right:50px;vertical-align:top;">
-          <div class="fragment" data-fragment-index=2>
+          <div>
           <h4 style="text-align:center"> <b>Plot Aesthetics</b> </h4>
           <div style="font-size:70%;display:inline-block;">
             <ul>
@@ -340,7 +355,7 @@
           </div>
         </td>
         <td style="padding-left:50px;vertical-align:bottom;">
-        <div class="fragment" data-fragment-index=4>
+        <div>
           <h5> <b> Evaluation Level </b> </h5>
           <div style="font-size:75%;" >
             <ul>
@@ -359,26 +374,11 @@
 
   <section>
     <h2>Data Collection</h2>
-      <ul style="margin-bottom:30px">
-        <li> Participants recruited through Amazon Mechanical Turk </li>
-        <li> Experiment ran for <code class="knitr inline">23.72</code> hours </li>
-        <li> 1356  individuals completed 13519 evaluations </li> <br>
-        <li> Data removed: </li>
-        <ul>
-          <li> Participants who did not complete 10 trials: <br>
-               159 participants, 1060 trials </li>
-          <li> Any trials in excess of 10 for each participant (421 trials)</li>
-        </ul>
-      </ul>
-      <p> Final dataset: <code class="knitr inline">12010</code> trials completed by <code class="knitr inline">1201</code> participants. </p>
-  </section>
-
-  <section>
-    <h2>Data Collection</h2>
-      <h3> Participants provided: </h3>
+    <h6>(via Amazon Mechanical Turk)</h6>
+      <h3> <code class="knitr inline">1201</code> participants provided: </h3>
       <ul style="margin:.2em">
         <li> Demographic information: age range, gender, education level </li>
-        <li> 10 plot evaluations
+        <li> 10 plot evaluations (<code class="knitr inline">12010</code> total)
         <ul>
           <li> Target plot identification (one or more sub-plots) </li>
           <li> Level of confidence in their answer (1 = least, 5=most)  </li>
@@ -544,18 +544,30 @@ $$\text{logit }P(C_{ijk}|C_{ijk}\cup T_{ijk}) = \textbf{W}\alpha + \textbf{X}\be
       <li style="margin:20px"> Aesthetic effects are not additive: <br>
       Conflict conditions don't show similar/neutral results </li>
       <li style="margin:20px"> Aesthetics which recruit new gestalt heuristics have more influence, and we can quantify the size of that influence </li>
-      <li style="margin:20px"> Uneven groups in null plots emphasize different features <br>(but still show the importance of aesthetic/heuristic interactions) </li>
-      <ul style="font-size:75%">
-      <li style="margin:20px"> The lineup method allows us to examine <u>why</u> participants switched hypotheses from "Linear relationship" or "Clusters of points" to "Uneven groups" <br>
-      <p> Similar to a Type III error: the error of giving the right answer to the wrong problem (A.W. Kimball) </p></li></ul>
     </ul>
   </section>
+
   <section>
     <h2> More Information </h2>
     <ul>
       <li style="margin:20px"> Github Repository (Data, paper, code)<br>
       <a href="http://github.com/srvanderplas/FeatureHierarchy/" style="font-size:80%">http://github.com/srvanderplas/FeatureHierarchy/</a> </li>
       <li style="margin:20px"> JCGS Paper: Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics<br><a href="http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116" style="font-size:80%">http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116</a> </li>
+      <ul>
+        <li> Lots of models examining trial completion time, parameter strength, and participant confidence </li>
+        <li> Much more in-depth treatment of gestalt perception </li>
+        <li> Simulation-based modeling of null plot characteristics </li>
+      </ul>
+    </ul>
+  </section>
+
+  <section>
+    <h2> Future Work </h2>
+    <ul>
+      <li style="margin:20px"> Restrict group sizes so null plots have the same objects as target plots </li>
+      <li style="margin:20px"> Explore the effect of different types of error bands and ellipses - shading, bounding boxes, etc. </li>
+      <li style="margin:20px"> Test ellipse and error band aesthetics alone and with trend lines and color to examine interaction effects</li>
+      <li style="margin:20px"> Test plotted statistics (trend line, ellipses, error bands) with and without data points to examine interactions between heuristics from the data and heuristics from summary statistics</li>
     </ul>
   </section>
 </section><!--Conclusion-->
