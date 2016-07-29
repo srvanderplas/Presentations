@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+
+
+<head>
+<style type="text/css">
+.knitr .inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage .left {
+  text-align: left;
+}
+.rimage .right {
+  text-align: right;
+}
+.rimage .center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+	<meta charset="utf-8">
+
+	<title>Hierarchy of Visual Features</title>
+
+	<meta name="description" content="JSM 2016 Presentation">
+	<meta name="author" content="Susan VanderPlas">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, minimal-ui">
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+	<link rel="stylesheet" href="css/Presentation.css">
+
+	<!-- Code syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement( 'link' );
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
+
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+</head>
+
+
+<body>
+<div class="reveal">
+	<!-- Any section element inside of this container is displayed as a slide -->
+	<div class="slides">
+
+<section>
+  <h1 style='font-size:2.5em;'> Clusters beat Trend!?<br>Testing Feature Hierarchy in Statistical Graphics</h1>
+  <br></br>
+  <h3>Susan VanderPlas & Heike Hofmann,</h3><br>
+  <h4>Iowa State University</h4><br>
+  <h4>August 1, 2016</h4>
+</section>
+
+<section>
+  <section>
+  	<h2> Outline </h2>
+  	<ul>
+  	  <li style="margin:20px"> <a href="#/setup">Introduction</a> </li>
+      <li style="margin:20px"> <a href="#/experiment">Experiment Setup</a> </li>
+        <ul style="font-size:80%">
+          <li> <a href="#/model">Model</a> </li>
+          <li> <a href="#/plot-aesthetics">Plot Aesthetics</a> </li>
+        </ul>
+      <li style="margin:20px"> <a href="#/results">Results</a> </li>
+        <ul style="font-size:80%">
+          <li> <a href="#/target-id">Target Identification</a> </li>
+          <li> <a href="#/faceoff">Clusters vs. Trend</a> </li>
+          <li> <a href="#/verbal-reasoning">Participant Reasoning</a> </li>
+        </ul>
+      <li style="margin:20px"> <a href="#/conclusion">Conclusions & Future Work</a> </li>
+    </ul>
+  </section>
+</section>
+
+
+
+<section id="setup"><!-- Introduction -->
+  <section class="center">
+    <h2> Introduction </h2>
+  </section>
+
+  <section>
+    <h2> Which plot is the most different? </h2>
+    <table width="100%">
+      <tr>
+        <td width="45%" style="text-align:center;vertical-align:top;">
+          <img src="image/set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png" width='100%' height='auto'/>
+          <p style="color: #add9e4;"> Trend target: 12, Cluster target: 5 </p>
+        </td>
+        <td width="54%" style="margin-left:30px;text-align:left;vertical-align:top;">
+          <div class="fragment" data-fragment-index=2 style="text-align:center;display:inline-block;margin-top:30px;">
+            <h4> <b> Participant Responses </b> </h4>
+            <table>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 12: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">52.2</code>% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Trend target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 5: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">17.4</code>% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Cluster target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Other: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">30.3</code>% </td>
+              </tr>
+            </table>
+            Sample size: 22
+          </div>
+        </td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <h2> Which plot is the most different? </h2>
+    <table width="100%">
+      <tr>
+        <td width="45%" style="text-align:center;vertical-align:top;">
+          <img src="image/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png" width='100%' height='auto'/>
+          <p style="color: #add9e4;"> Trend target: 12, Cluster target: 5 </p>
+        </td>
+        <td width="54%" style="margin-left:30px;text-align:left;vertical-align:top;">
+          <div class="fragment" data-fragment-index=2 style="text-align:center;display:inline-block;margin-top:30px;">
+            <h4> <b> Participant Responses </b> </h4>
+            <table>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 12: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">9.4</code>% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Trend target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 5: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">28.1</code>% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Cluster target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 18: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">31.2</code>% </td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Other: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">31.1</code>% </td>
+              </tr>
+            </table>
+            Sample size: 31
+          </div>
+        </td>
+      </tr>
+    </table>
+  </section>
+</section>
+
+<section id = "experiment">
+  <section class="center">
+    <h2> Experiment Design </h2>
+  </section>
+
+  <section id="model">
+    <h2> Data-Generating Models </h2>
+<div class="chunk" id="datamodels"><div class="rimage default"><img src="figure/datamodels-1.png" title="plot of chunk datamodels" alt="plot of chunk datamodels" width="300px" height="300px" class="plot" />
+<img src="figure/datamodels-2.png" title="plot of chunk datamodels" alt="plot of chunk datamodels" width="300px" height="300px" class="plot" />
+<img src="figure/datamodels-3.png" title="plot of chunk datamodels" alt="plot of chunk datamodels" width="300px" height="300px" class="plot" /></div></div>
+    <div style="font-size:75%;margin-top:30px;">
+    <table class="noborder nowidth">
+      <tr>
+        <td colspan=3 style="text-align:center;border-bottom: 1px solid;"> Parameters </td>
+      </tr><tr>
+        <td width="300px" style="text-align:center;vertical-align:middle;" rowspan=2> $\sigma_T$: Variability in $y$</td>
+        <td width="300px" style="text-align:center;vertical-align:middle;" rowspan=2> $\lambda$: Mixing parameter </td>
+        <td width="300px" style="text-align:center;vertical-align:middle;"> $K$: # clusters </td>
+      </tr><tr>
+        <td width="300px" style="text-align:center;vertical-align:middle;">$\sigma_C$: Variability around cluster centers</td>
+      </tr><tr>
+        <td colspan=3 style="text-align:center;border-top: 1px solid;">
+    </table>
+    </div>
+  </section>
+  <section id="plot-aesthetics">
+    <h2> Plot Aesthetic Combinations </h2>
+    <table style="border-collapse: collapse; font-size:75%; margin-bottom:40px;">
+      <tr>
+        <td colspan=2></td><td class="bb" colspan=3 style="text-align:center;">Trend Emphasis</td>
+      </tr><tr style="text-align:center;">
+        <td></td>
+        <td class="bb br">Strength</td>
+        <td class="bb" style="text-align:center;background-color:#d3ebf1;">0</td>
+        <td class="bb" style="text-align:center;background-color:#9ad0de;">1</td>
+        <td class="bb br" style="text-align:center;background-color:#87c7d7;">2</td>
+      </tr><tr>
+        <td rowspan=4 style="vertical-align:middle;">Cluster<br>Emphasis</td>
+        <td class="br bl" style="text-align:center;background-color:#d3ebf1;">0</td>
+        <td style="text-align:center;background-color:#d3ebf1;">Plain</td>
+        <td style="text-align:center;background-color:#9ad0de;">Line</td>
+        <td class="br" style="text-align:center;background-color:#87c7d7;">Line + Pred. Interval</td>
+      </tr><tr>
+        <td class="br bl" style="text-align:center;background-color:#9ad0de;">1</td>
+        <td style="text-align:center;background-color:#9ad0de;">Color<br>Shape</td>
+        <td style="text-align:center;background-color:#d3ebf1">Color + Line</td>
+        <td class="br"></td>
+      </tr><tr>
+        <td class="br bl" style="text-align:center;background-color:#87c7d7;">2</td>
+        <td style="text-align:center;background-color:#87c7d7;">Color + Shape<br>Color + Ellipse</td>
+        <td></td>
+        <td class="br" style="text-align:center;background-color:#d3ebf1;">Color + Ellipse + <br>Line + Pred. Interval</td>
+      </tr><tr>
+        <td class="br bb bl" style="text-align:center;background-color:#73bed1;">3</td>
+        <td class="bb" style="text-align:center;background-color:#73bed1;">Color + Shape + Ellipse</td>
+        <td class="bb"></td>
+        <td class="bb br"></td>
+      </tr>
+    </table>
+    <div style="display:inline-block;width:40%;vertical-align:middle;">
+<div class="chunk" id="color-shape-palettes"><div class="rimage default"><img src="figure/color-shape-palettes-1.png" title="plot of chunk color-shape-palettes" alt="plot of chunk color-shape-palettes" width="90%" height="auto" class="plot" /></div></div>
+  </div><div style="display:inline-block;width:50%;vertical-align:middle;font-size:80%;">
+    <p>Palettes selected to provide maximum perceptual distance (&#199;. Demiralp, et al., 2014).</p>
+    <p>Shapes conform to guidelines in Robinson (2003) and Lewandowsky & Spence (1989).</p>
+  </div>
+  </section>
+  <section>
+    <h2> Plot Aesthetic Combinations </h2>
+<div class="chunk" id="plot-aes-demo"><div class="rimage default"><img src="figure/plot-aes-demo-1.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" />
+<img src="figure/plot-aes-demo-2.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" />
+<img src="figure/plot-aes-demo-3.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" />
+<img src="figure/plot-aes-demo-4.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" />
+<img src="figure/plot-aes-demo-5.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" />
+<img src="figure/plot-aes-demo-6.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" />
+<img src="figure/plot-aes-demo-7.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" />
+<img src="figure/plot-aes-demo-8.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" />
+<img src="figure/plot-aes-demo-9.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" />
+<img src="figure/plot-aes-demo-10.png" title="plot of chunk plot-aes-demo" alt="plot of chunk plot-aes-demo" width="200px" height="200px" class="plot" /></div></div>
+  </section>
+  <section>
+    <h2> Experimental Structure </h2>
+    <table class="noborder">
+      <tr>
+        <td style="padding-right:50px;vertical-align:top;">
+          <div style="vertical-align:top;display:inline-block;">
+            <h5> <b>Model Parameters</b> </h5>
+            <div style="font-size:70%;">
+              <ul>
+                <li> Trend Strength <span style="text-align:right">$\sigma_T =$ easy, med., hard </span></li>
+                <li> Cluster Strength <span style="text-align:right">$\sigma_C =$ easy, med., hard </span></li>
+                <li> Number of Clusters <span style="text-align:right">$K =$ 3, 5 </span></li>
+              <ul>
+            </div>
+          </div>
+        </td>
+        <td style="padding-left:50px;vertical-align:top;">
+          <div class="fragment" data-fragment-index=3>
+          <h5> <b>Plot Level</b> </h5>
+          <div style="font-size:75%;">
+            <ul>
+              <li> 18 parameter combinations </li>
+              <li> 3 datasets/parameter combination </li>
+              <li> 10 plot types for each dataset <br>
+                   = 540 total plots </li>
+            </ul>
+          </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-right:50px;vertical-align:top;">
+          <div class="fragment" data-fragment-index=2>
+          <h4 style="text-align:center"> <b>Plot Aesthetics</b> </h4>
+          <div style="font-size:70%;display:inline-block;">
+            <ul>
+              <li> Plain </li>
+              <li> Trend </li>
+              <li> Trend + Pred. Int. </li>
+              <li> Color + Trend </li>
+              <li> Color + Ellipse<br>+ Trend + Pred. Int. </li>
+            </ul>
+          </div>
+          <div style="font-size:70%;display:inline-block;">
+            <ul>
+              <li> Color </li>
+              <li> Shape </li>
+              <li> Color + Shape </li>
+              <li> Color + Ellipse </li>
+              <li> Color + Shape<br>+ Ellipse </li>
+            </ul>
+          </div>
+          </div>
+        </td>
+        <td style="padding-left:50px;vertical-align:bottom;">
+        <div class="fragment" data-fragment-index=4>
+          <h5> <b> Evaluation Level </b> </h5>
+          <div style="font-size:75%;" >
+            <ul>
+              <li> Participants evaluate 10 plots: </li>
+              <ul>
+                <li> 1 of each aesthetic </li>
+                <li> 1 of each combination of $\sigma_T$ and $\sigma_C$<br>randomized over $K$ </li>
+              </ul>
+            </ul>
+          </div>
+        	</div>
+        </td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Data Collection</h2>
+      <ul style="margin-bottom:30px">
+        <li> Participants recruited through Amazon Mechanical Turk </li>
+        <li> Experiment ran for <code class="knitr inline">23.72</code> hours </li>
+        <li> 1356  individuals completed 13519 evaluations </li> <br>
+        <li> Data removed: </li>
+        <ul>
+          <li> Participants who did not complete 10 trials: <br>
+               159 participants, 1060 trials </li>
+          <li> Any trials in excess of 10 for each participant (421 trials)</li>
+        </ul>
+      </ul>
+      <p> Final dataset: <code class="knitr inline">12010</code> trials completed by <code class="knitr inline">1201</code> participants. </p>
+  </section>
+
+  <section>
+    <h2>Data Collection</h2>
+      <h3> Participants provided: </h3>
+      <ul style="margin:.2em">
+        <li> Demographic information: age range, gender, education level </li>
+        <li> 10 plot evaluations
+        <ul>
+          <li> Target plot identification (one or more sub-plots) </li>
+          <li> Level of confidence in their answer (1 = least, 5=most)  </li>
+          <li> Reasoning <br> (i.e. "Strongest linear relationship", "Clustered points", "Odd shape") </li>
+        </ul>
+      </ul>
+  </section>
+</section> <!--experiment-->
+
+<section>
+  <section class="center" id="results">
+    <h2>Results</h2>
+    <ul>
+      <li style="margin:10px"> <a href="#/target-id">Target Identification</a> </li>
+      <li style="margin:10px"> <a href="#/faceoff">Cluster vs. Trend Target Selection</a> </li>
+      <li style="margin:10px"> <a href="#/verbal-reasoning">Participant Reasoning</a> </li>
+    </ul>
+  </section>
+
+  <section id="target-id">
+    <h2> Target Identification </h2>
+<div class="chunk" id="target-aggregate"><div class="rimage default"><img src="figure/target-aggregate-1.png" title="plot of chunk target-aggregate" alt="plot of chunk target-aggregate" width="70%" height="auto" class="plot" /></div></div>
+    <p> Participants selected more cluster targets than line targets.</p>
+    <p> 5 plot types were expected to emphasize clustering; only 2 plot types were expected to emphasize trends. </p>
+  </section>
+<!--
+  <section>
+    <h2> Overall Accuracy </h2> -->
+
+<!--  </section>-->
+
+
+
+  <section class="center" id="faceoff">
+    <h2> Faceoff: Cluster vs. Trend? </h2>
+  </section>
+
+  <section>
+    <h2> Cluster vs. Trend </h2>
+    <p style="text-align:left;margin-bottom:2em">Define $C_{ijk}$ to be the event</p>
+    <p>
+    {Participant $k$ selects the <br>cluster target for dataset $j$ <br>with aesthetic set $i$},</p>
+    <p> and $T_{ijk}$ to be the analogous selection of the trend target.</p>
+$$\text{logit }P(C_{ijk}|C_{ijk}\cup T_{ijk}) = \textbf{W}\alpha + \textbf{X}\beta + \textbf{J}\gamma + \textbf{K}\eta$$ </td>
+
+  </section>
+
+  <section>
+    <h2> Cluster vs. Trend </h2>
+    <p> Given that participants identified one of the two target plots...</p>
+    <table>
+    	<td style="text-align:center;">$\alpha$</td>
+    	<td> data model fixed effects</td>
+    </tr>
+    <tr>
+      <td style="text-align:center;">$\beta$</td>
+    	<td> effect of specific plot types</td>
+    </tr>
+    <tr>
+    	<td style="text-align:center;">$\gamma_j \overset{iid}{\sim} N\left(0, \sigma^2_{\text{dataset}}\right)$</td>
+    	<td> Dataset random effects </td>
+    </tr>
+    <tr>
+    	<td style="text-align:center;">$\eta_k \overset{iid}{\sim} N\left(0, \sigma^2_{\text{participant}}\right)$</td>
+    	<td> Participant random effects </td>
+    </tr>
+    <tr>
+    	<td style="font-size:80%;text-align:center;">$\epsilon_{ijk} \overset{iid}{\sim}  N\left(0, \sigma^2_e\right)$</td>
+    	<td style="font-size:80%"> Individual evaluation errors </td>
+    </tr>
+    </table>
+    <p> Dataset and participant effects are orthogonal by design </p>
+  </section>
+
+  <section>
+    <h2> Cluster vs. Trend </h2>
+<div class="chunk" id="cluster-vs-line"><div class="rimage default"><img src="figure/cluster-vs-line-1.png" title="plot of chunk cluster-vs-line" alt="plot of chunk cluster-vs-line" width="80%" height="auto" class="plot" /></div></div>
+    <p style="font-size:50%;text-align:center;">Plot types are significantly different if they do not share a letter</p>
+
+    <table>
+    <tr>
+      <td width="50%" style="font-size:70%;vertical-align:top;">
+      <p> Participants are <code class="knitr inline">0.52</code> times as likely to select cluster targets when plots have trend line and prediction interval aesthetics. </p>
+      </td><td style="font-size:70%;vertical-align:top;">
+        <p style="margin-bottom:10px"> Participants are <code class="knitr inline">1.77</code> times as likely to select cluster targets when plots have color, shape, and ellipse aesthetics. </p>
+      </td>
+    </tr>
+  </table>
+  </section>
+
+
+  <section class="center" id="verbal-reasoning">
+    <h2> Participant Reasoning </h2>
+  </section>
+
+  <section>
+    <h2> Participant Reasoning </h2>
+      <h3> Plain Plots </h3>
+<div class="chunk" id="wordles-plain"><div class="rimage default"><img src="figure/wordles-plain-1.png" title="plot of chunk wordles-plain" alt="plot of chunk wordles-plain" width="350px" height="350px" class="plot" />
+<img src="figure/wordles-plain-2.png" title="plot of chunk wordles-plain" alt="plot of chunk wordles-plain" width="350px" height="350px" class="plot" />
+<img src="figure/wordles-plain-3.png" title="plot of chunk wordles-plain" alt="plot of chunk wordles-plain" width="350px" height="350px" class="plot" /></div></div>
+    <div align="center">
+    <table class="noborder nowidth nopadding">
+      <tr>
+        <td width='350px' style="text-align:center;"> Neither Target<br>(N=127) </td><td width='350px' style="text-align:center;"> Cluster Target<br>(N=712) </td> <td width='350px' style="text-align:center;"> Trend Target<br>(N=355) </td>
+      </tr>
+    </table>
+    </div>
+  </section>
+  <section>
+    <h2> Participant Reasoning </h2>
+      <h3> Trend line </h3>
+<div class="chunk" id="wordles-line"><div class="rimage default"><img src="figure/wordles-line-1.png" title="plot of chunk wordles-line" alt="plot of chunk wordles-line" width="350px" height="350px" class="plot" />
+<img src="figure/wordles-line-2.png" title="plot of chunk wordles-line" alt="plot of chunk wordles-line" width="350px" height="350px" class="plot" />
+<img src="figure/wordles-line-3.png" title="plot of chunk wordles-line" alt="plot of chunk wordles-line" width="350px" height="350px" class="plot" /></div></div>
+    <div align="center">
+    <table class="noborder nowidth nopadding">
+      <tr>
+        <td width='350px' style="text-align:center;"> Neither Target<br>(N=159) </td><td width='350px' style="text-align:center;"> Cluster Target<br>(N=694) </td> <td width='350px' style="text-align:center;"> Trend Target<br>(N=333) </td>
+      </tr>
+    </table>
+    </div>
+  </section>
+  <section>
+    <h2> Participant Reasoning </h2>
+      <h3> Color Plots </h3>
+<div class="chunk" id="wordles-color"><div class="rimage default"><img src="figure/wordles-color-1.png" title="plot of chunk wordles-color" alt="plot of chunk wordles-color" width="350px" height="350px" class="plot" />
+<img src="figure/wordles-color-2.png" title="plot of chunk wordles-color" alt="plot of chunk wordles-color" width="350px" height="350px" class="plot" />
+<img src="figure/wordles-color-3.png" title="plot of chunk wordles-color" alt="plot of chunk wordles-color" width="350px" height="350px" class="plot" /></div></div>
+    <div align="center">
+    <table class="noborder nowidth nopadding">
+      <tr>
+        <td width='350px' style="text-align:center;"> Neither Target<br>(N=188)</td><td width='350px' style="text-align:center;"> Cluster Target<br>(N=715) </td> <td width='350px' style="text-align:center;"> Trend Target<br>(N=292) </td>
+      </tr>
+    </table>
+    </div>
+  </section>
+  <section>
+    <h2> Participant Reasoning </h2>
+      <h3> Color + Ellipse Plots </h3>
+<div class="chunk" id="wordles-colorEllipse"><div class="rimage default"><img src="figure/wordles-colorEllipse-1.png" title="plot of chunk wordles-colorEllipse" alt="plot of chunk wordles-colorEllipse" width="350px" height="350px" class="plot" />
+<img src="figure/wordles-colorEllipse-2.png" title="plot of chunk wordles-colorEllipse" alt="plot of chunk wordles-colorEllipse" width="350px" height="350px" class="plot" />
+<img src="figure/wordles-colorEllipse-3.png" title="plot of chunk wordles-colorEllipse" alt="plot of chunk wordles-colorEllipse" width="350px" height="350px" class="plot" /></div></div>
+    <div align="center">
+    <table class="noborder nowidth nopadding">
+      <tr>
+        <td width='350px' style="text-align:center;"> Neither Target<br>(N=347) </td><td width='350px' style="text-align:center;"> Cluster Target<br>(N=621) </td> <td width='350px' style="text-align:center;"> Trend Target<br>(N=222) </td>
+      </tr>
+    </table>
+    </div>
+  </section>
+</section><!--results-->
+
+<section id="conclusion">
+  <section class='center'>
+    <h2> Discussion </h2>
+  </section>
+
+  <section>
+    <h2> Conclusions </h2>
+    <ul>
+      <li style="margin:20px"> Plot aesthetics influence perception of ambiguous data displays </li>
+      <li style="margin:20px"> Aesthetic effects are not additive: <br>
+      Conflict conditions don't show similar/neutral results </li>
+      <li style="margin:20px"> Aesthetics which recruit new gestalt heuristics have more influence, and we can quantify the size of that influence </li>
+      <li style="margin:20px"> Uneven groups in null plots emphasize different features <br>(but still show the importance of aesthetic/heuristic interactions) </li>
+      <ul style="font-size:75%">
+      <li style="margin:20px"> The lineup method allows us to examine <u>why</u> participants switched hypotheses from "Linear relationship" or "Clusters of points" to "Uneven groups" <br>
+      <p> Similar to a Type III error: the error of giving the right answer to the wrong problem (A.W. Kimball) </p></li></ul>
+    </ul>
+  </section>
+  <section>
+    <h2> More Information </h2>
+    <ul>
+      <li style="margin:20px"> Github Repository (Data, paper, code)<br>
+      <a href="http://github.com/srvanderplas/FeatureHierarchy/" style="font-size:80%">http://github.com/srvanderplas/FeatureHierarchy/</a> </li>
+      <li style="margin:20px"> JCGS Paper: Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics<br><a href="http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116" style="font-size:80%">http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116</a> </li>
+    </ul>
+  </section>
+</section><!--Conclusion-->
+</div> <!-- slides -->
+</div> <!-- reveal -->
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+<script>
+	// Full list of configuration options available at:
+	// https://github.com/hakimel/reveal.js#configuration
+	Reveal.initialize({
+		controls: true,
+		progress: true,
+		history: true,
+		center: false,
+		slideNumber: true,
+		width: 1200,
+		height: 800,
+		margin: 0.05,
+		transition: 'fade', // none/fade/slide/convex/concave/zoom
+		// Optional reveal.js plugins
+		dependencies: [
+			{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+			{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: 'plugin/zoom-js/zoom.js', async: true },
+			{ src: 'plugin/notes/notes.js', async: true },
+			{ src: 'plugin/math/math.js', async: true }
+		]
+	});
+</script>
+</body>
+</html>
