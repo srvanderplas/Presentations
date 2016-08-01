@@ -198,7 +198,7 @@
           <p style="color: #add9e4;"> Trend target: 12, Cluster target: 5 </p>
         </td>
         <td width="54%" style="margin-left:30px;text-align:left;vertical-align:top;">
-          <div class="fragment" data-fragment-index=2 style="text-align:center;display:inline-block;margin-top:30px;">
+          <div style="text-align:center;display:inline-block;margin-top:30px;">
             <h4> <b> Participant Responses </b> </h4>
             <table>
               <tr>
@@ -412,6 +412,10 @@
 
 
 
+
+
+
+
   <section class="center" id="faceoff">
     <h2> Faceoff: Cluster vs. Trend? </h2>
   </section>
@@ -530,6 +534,40 @@ $$\text{logit }P(C_{ijk}|C_{ijk}\cup T_{ijk}) = \textbf{W}\alpha + \textbf{X}\be
     </table>
     </div>
   </section>
+  
+  <section>
+    <h2> Which plot is the most different? </h2>
+    <table width="100%">
+      <tr>
+        <td width="45%" style="text-align:center;vertical-align:top;">
+          <img src="image/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png" width='100%' height='auto'/>
+          <p style="color: #add9e4;"> Trend target: 12, Cluster target: 5 </p>
+        </td>
+        <td width="54%" style="margin-left:30px;text-align:left;vertical-align:top;">
+          <div style="text-align:center;display:inline-block;margin-top:30px;">
+            <h4> <b> Participant Responses </b> </h4>
+            <table>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 12: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">9.4</code>% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Trend target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 5: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">28.1</code>% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Cluster target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 18: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">31.2</code>% </td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Other: </td> <td style="text-align:right;padding-top:20px;"> <code class="knitr inline">31.1</code>% </td>
+              </tr>
+            </table>
+            Sample size: 31
+          </div>
+        </td>
+      </tr>
+    </table>
+  </section>
 </section><!--results-->
 
 <section id="conclusion">
@@ -548,6 +586,16 @@ $$\text{logit }P(C_{ijk}|C_{ijk}\cup T_{ijk}) = \textbf{W}\alpha + \textbf{X}\be
   </section>
 
   <section>
+    <h2> Future Work </h2>
+    <ul>
+      <li style="margin:20px"> Restrict group sizes so null plots have the same objects as target plots </li>
+      <li style="margin:20px"> Explore the effect of different types of error bands and ellipses - shading, bounding boxes, etc. </li>
+      <li style="margin:20px"> Test plotted statistics (trend line, ellipses, error bands) with and without data points to examine interactions between heuristics from the data and heuristics from summary statistics</li>
+      <li style="margin:20px"> Test ellipse and error band aesthetics with and without trend lines (but with data points) and color to examine interaction effects</li>
+    </ul>
+  </section>
+  
+  <section>
     <h2> More Information </h2>
     <ul>
       <li style="margin:20px"> Github Repository (Data, paper, code)<br>
@@ -561,15 +609,6 @@ $$\text{logit }P(C_{ijk}|C_{ijk}\cup T_{ijk}) = \textbf{W}\alpha + \textbf{X}\be
     </ul>
   </section>
 
-  <section>
-    <h2> Future Work </h2>
-    <ul>
-      <li style="margin:20px"> Restrict group sizes so null plots have the same objects as target plots </li>
-      <li style="margin:20px"> Explore the effect of different types of error bands and ellipses - shading, bounding boxes, etc. </li>
-      <li style="margin:20px"> Test ellipse and error band aesthetics alone and with trend lines and color to examine interaction effects</li>
-      <li style="margin:20px"> Test plotted statistics (trend line, ellipses, error bands) with and without data points to examine interactions between heuristics from the data and heuristics from summary statistics</li>
-    </ul>
-  </section>
 </section><!--Conclusion-->
 </div> <!-- slides -->
 </div> <!-- reveal -->

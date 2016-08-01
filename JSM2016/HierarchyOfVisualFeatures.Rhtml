@@ -133,6 +133,7 @@ end.rcode-->
 library(stringr) # strings
 library(lubridate) # dates/times
 library(reshape2) # manipulating data
+library(plyr)
 library(dplyr) # cleaning/summarizing data
 library(magrittr) # pipes
 
@@ -468,7 +469,7 @@ end.rcode-->
           <p style="color: #add9e4;"> Trend target: 12, Cluster target: 5 </p>
         </td>
         <td width="54%" style="margin-left:30px;text-align:left;vertical-align:top;">
-          <div class="fragment" data-fragment-index=2 style="text-align:center;display:inline-block;margin-top:30px;">
+          <div style="text-align:center;display:inline-block;margin-top:30px;">
             <h4> <b> Participant Responses </b> </h4>
             <table>
               <tr>
@@ -942,7 +943,7 @@ sub.totals$tendency <- factor(sub.totals$tendency,
 end.rcode-->
 <!--  </section>-->
 
-<!--begin.rcode faceoff-model, echo=F, include=T, fig.width=8, fig.height=4, out.width='70%', out.height='auto'
+<!--begin.rcode faceoff-model, echo=F, include=F
 
 ### Fit ALL the models!
 modeldata$one.correct <- 1 - modeldata$neither.correct
@@ -953,12 +954,18 @@ gvl.4 <-  glmer(cluster.correct~sdline_new + sdgroup_new +
                 family = binomial(),
                 control = glmerControl(optimizer = "bobyqa"))
 
-gvl.fixef <- data.frame(confint(gvl.4, method = "Wald"))[-(1:2),] # exclude sigmas
+end.rcode-->
+
+<!--begin.rcode2 faceoff-model, echo=F, include=F
+gvl.fixef <- data.frame(confint(gvl.4, method = "Wald"))
 names(gvl.fixef) <- c("LB", "UB")
 gvl.fixef$OR <- fixef(gvl.4)
 gvl.fixef <- rbind(gvl.fixef, c(0,0,0))
 row.names(gvl.fixef)[14] <- "plottypePlain"
+gvl.fixef <- gvl.fixef[-(1:4),] # exclude sigmas
+end.rcode-->
 
+<!--begin.rcode3 faceoff-model, echo=F, include=F
 gvl.all <- gvl.fixef
 gvl.fixef <- gvl.fixef[c(14,5:13),]
 
@@ -1174,6 +1181,40 @@ end.rcode-->
     </table>
     </div>
   </section>
+  
+  <section>
+    <h2> Which plot is the most different? </h2>
+    <table width="100%">
+      <tr>
+        <td width="45%" style="text-align:center;vertical-align:top;">
+          <img src="image/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png" width='100%' height='auto'/>
+          <p style="color: #add9e4;"> Trend target: 12, Cluster target: 5 </p>
+        </td>
+        <td width="54%" style="margin-left:30px;text-align:left;vertical-align:top;">
+          <div style="text-align:center;display:inline-block;margin-top:30px;">
+            <h4> <b> Participant Responses </b> </h4>
+            <table>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 12: </td> <td style="text-align:right;padding-top:20px;"> <!--rinline sample.lineup.pcts[1,13]-->% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Trend target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 5: </td> <td style="text-align:right;padding-top:20px;"> <!--rinline sample.lineup.pcts[1, 6]-->% </td>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;">(Cluster target)</td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Plot 18: </td> <td style="text-align:right;padding-top:20px;"> <!--rinline sample.lineup.pcts[1, 19]-->% </td>
+              </tr>
+              <tr>
+                <td style="text-align:right;padding-left:20px;padding-top:20px;padding-right:20px;"> Other: </td> <td style="text-align:right;padding-top:20px;"> <!--rinline sprintf("%.1f", sum(as.numeric(sample.lineup.pcts[1, c(2:21)[-c(12, 5, 18)]])))-->% </td>
+              </tr>
+            </table>
+            Sample size: 31
+          </div>
+        </td>
+      </tr>
+    </table>
+  </section>
 </section><!--results-->
 
 <section id="conclusion">
@@ -1192,6 +1233,16 @@ end.rcode-->
   </section>
 
   <section>
+    <h2> Future Work </h2>
+    <ul>
+      <li style="margin:20px"> Restrict group sizes so null plots have the same objects as target plots </li>
+      <li style="margin:20px"> Explore the effect of different types of error bands and ellipses - shading, bounding boxes, etc. </li>
+      <li style="margin:20px"> Test plotted statistics (trend line, ellipses, error bands) with and without data points to examine interactions between heuristics from the data and heuristics from summary statistics</li>
+      <li style="margin:20px"> Test ellipse and error band aesthetics with and without trend lines (but with data points) and color to examine interaction effects</li>
+    </ul>
+  </section>
+  
+  <section>
     <h2> More Information </h2>
     <ul>
       <li style="margin:20px"> Github Repository (Data, paper, code)<br>
@@ -1205,15 +1256,6 @@ end.rcode-->
     </ul>
   </section>
 
-  <section>
-    <h2> Future Work </h2>
-    <ul>
-      <li style="margin:20px"> Restrict group sizes so null plots have the same objects as target plots </li>
-      <li style="margin:20px"> Explore the effect of different types of error bands and ellipses - shading, bounding boxes, etc. </li>
-      <li style="margin:20px"> Test ellipse and error band aesthetics alone and with trend lines and color to examine interaction effects</li>
-      <li style="margin:20px"> Test plotted statistics (trend line, ellipses, error bands) with and without data points to examine interactions between heuristics from the data and heuristics from summary statistics</li>
-    </ul>
-  </section>
 </section><!--Conclusion-->
 </div> <!-- slides -->
 </div> <!-- reveal -->
