@@ -962,7 +962,7 @@ names(gvl.fixef) <- c("LB", "UB")
 gvl.fixef$OR <- fixef(gvl.4)
 gvl.fixef <- rbind(gvl.fixef, c(0,0,0))
 row.names(gvl.fixef)[14] <- "plottypePlain"
-gvl.fixef <- gvl.fixef[-(1:4),] # exclude sigmas
+# gvl.fixef <- gvl.fixef[-(1:4),] # exclude sigmas
 end.rcode-->
 
 <!--begin.rcode3 faceoff-model, echo=F, include=F
