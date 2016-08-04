@@ -962,7 +962,7 @@ names(gvl.fixef) <- c("LB", "UB")
 gvl.fixef$OR <- fixef(gvl.4)
 gvl.fixef <- rbind(gvl.fixef, c(0,0,0))
 row.names(gvl.fixef)[14] <- "plottypePlain"
-# gvl.fixef <- gvl.fixef[-(1:4),] # exclude sigmas
+# gvl.fixef <- gvl.fixef[-(1:4),] # exclude sigmas 
 end.rcode-->
 
 <!--begin.rcode3 faceoff-model, echo=F, include=F
@@ -970,7 +970,7 @@ gvl.all <- gvl.fixef
 gvl.fixef <- gvl.fixef[c(14,5:13),]
 
 type_compare <- glht(gvl.4, mcp(plottype = "Tukey"))
-gvl.fixef$letters <- cld(type_compare)$mcletters$Letters
+gvl.fixef$letters <- cld(type_compare)$mcletters$Letters 
 
 end.rcode-->
 
@@ -1017,9 +1017,9 @@ $$\text{logit }P(C_{ijk}|C_{ijk}\cup T_{ijk}) = \textbf{W}\alpha + \textbf{X}\be
 
   <section>
     <h2> Cluster vs. Trend </h2>
-<!--begin.rcode cluster-vs-line, echo=F, include=T, fig.width=8, fig.height=3.5, out.width='80%', out.height='auto'
+<!--begin.rcode cluster-vs-line, echo=F, include=T, fig.width=8, fig.height=3.5, out.width='80%', out.height='auto' 
 ### Figure 10 ###
-
+load("gvlfixef.Rdata")
 faceoff$one.ellipse <- faceoff$no.ellipse == 1
 
 gvl.fixef$label <- gsub("plottype", "", row.names(gvl.fixef))
