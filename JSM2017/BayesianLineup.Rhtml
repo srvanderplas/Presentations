@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+<!-- begin.rcode setup, echo=FALSE, include=FALSE
+library(knitr)
+
+c0 <- knitr::knit_hooks$get('chunk')
+
+knitr::knit_hooks$set(
+  list(
+    chunk=function(x,options){
+      if(is.null(options$class) & is.null(options$fragIndex)){
+        c0(x, options)
+      } else if(is.null(options$fragIndex)) {
+        classidx <- which(names(options)=="class")
+        paste0(
+          paste0("<span class='", options$class, "'>"),
+          c0(x, options[-classidx]),
+          '</span>\n'
+        )
+      }
+      else if(length(options$fragIndex)==1) {
+        classidx <- which(names(options)%in%c("class", "fragIndex"))
+        str_replace(
+          paste0(
+            paste0("<span class='", options$class, "' data-fragment-index=", options$fragIndex,">"),
+            c0(x, options[-classidx]),
+            '</span>\n'
+          ),
+          "<div class=\"chunk\" id=\"(.*?)\">\\s*<div class=\"rimage default\">(.*)</div>\\s*</div>",
+          "\\2"
+        )
+      } else {
+        classidx <- which(names(options)%in%c("class", "fragIndex"))
+        str_replace(
+          paste0(
+            paste0("<span class='", options$class, " fade-in' data-fragment-index=", options$fragIndex[1],">"),
+            paste0(
+              paste0("<span class='", options$class, " fade-out' data-fragment-index=", options$fragIndex[2],">"),
+              c0(x, options[-classidx]),
+              '</span>\n'
+              ),
+            '</span>\n'
+            ),
+          "<div class=\"chunk\" id=\"(.*?)\">\\s*<div class=\"rimage default\">(.*)</div>\\s*</div>",
+          "\\2"
+        )
+
+      }
+
+    }
+  )
+)
+
+opts_chunk$set(cache.path='cache/', fig.width=5, fig.height=5, fig.show='hold', echo=FALSE, cache=TRUE, autodep=TRUE, message=F, warning=F, error=F, dpi=300)
+end.rcode-->
+
+<head>
+	<meta charset="utf-8">
+
+	<title>A Bayesian Approach to Visual Inference</title>
+
+	<meta name="description" content="JSM 2017 Presentation">
+	<meta name="author" content="Susan VanderPlas">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, minimal-ui">
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+	<link rel="stylesheet" href="css/Presentation.css">
+	
+	<!-- Mathjax -->
+	<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+
+	<!-- Code syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement( 'link' );
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
+
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+</head>
+
+<!-- begin.rcode body, echo=FALSE, include=FALSE
+
+end.rcode-->
+<body>
+<div class="reveal">
+	<!-- Any section element inside of this container is displayed as a slide -->
+	<div class="slides">
+
+<section>
+  <h1 style='font-size:2.5em;'> A Bayesian Approach to Visual Inference</h1>
+  <br></br>
+  <h3>Susan VanderPlas*, Eric Hare, and Heike Hofmann</h3><br>
+  <h4>Iowa State University</h4>
+  <h4>*Nebraska Public Power District</h4><br>
+  <h4>August 2, 2017</h4>
+</section>
+
+<section>
+  <section>
+  	<h2> Outline </h2>
+  	<ul>
+  	  <li style="margin:20px"> <a href="#/setup">Introduction</a> </li>
+      <li style="margin:20px"> <a href="#/frequentist">Frequentist Analysis</a> </li>
+      <li style="margin:20px"> <a href="#/bayes">Bayes Factors for Lineups</a> </li>
+      <li style="margin:20px"> <a href="#/conclusion">Conclusions & Future Work</a> </li>
+    </ul>
+  </section>
+</section>
+
+<!--begin.rcode experiment-setup, echo=FALSE, include=FALSE, cache=TRUE
+###########################################
+# --- Main Article - Code and Figures --- #
+###########################################
+# --- Packages -----------------------------------------------------------------
+
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(gtools)
+library(ggplot2)
+
+#--- Prior Parameters ----------------------------------------------------------
+m <- 20
+alpha <- rep(1/2, m)
+alpha_2 <- rep(20, m)
+
+#--- Posterior Functions and Data ----------------------------------------------
+getCounts <- function(response) {
+  results <- strsplit(response,split=",")
+  wt <- sapply(results, length)
+  wt <- 1/rep(wt, wt)
+  picks <- factor(as.numeric(unlist(results)), levels=1:20)
+
+  counts <- xtabs(wt~picks)
+  as.vector(counts)
+}
+
+bfactors <- function(a1, a2, counts) {
+  # x <- seq(0,1, by=0.001)
+  bf <- lapply(1:20, function(i) {
+    # m2 <- pbeta(x, shape1 = a2[i] + counts,
+    #             shape2 = sum(a2) - a2[i] + sum(counts) - counts[i],
+    #             lower.tail=FALSE)
+    # m1 <- pbeta(x, shape1=a1[i] + counts[i],
+    #             shape2 = sum(a1) - a1[i] + sum(counts) - counts[i],
+    #             lower.tail=FALSE)
+    # sum(m1)/sum(m2)
+
+    beta(a2[i], sum(a2) - a2[i])/beta(a1[i], sum(a1) - a1[i]) *
+      beta(counts[i] + a1[i], sum(counts) - counts[i] + sum(a1) - a1[i])/
+      beta(counts[i] + a2[i], sum(counts) - counts[i] + sum(a2) - a2[i])
+  })
+  # This version sums first and then divides.
+
+  # now get averages
+  # bfavg <- bf %>% lapply(sum) %>% unlist
+  # bfmode <- bf %>% lapply(max) %>% unlist
+
+  bf
+}
+
+lmbeta <- function(a) {
+  sum(lgamma(a)) - lgamma(sum(a))
+}
+
+overallBF <- function(a1, a2, counts) {
+  # Work in log space to preserve numerical accuracy
+  logBF <- lmbeta(a2) - lmbeta(a1) + lmbeta(counts + a1) - lmbeta(counts + a2)
+  exp(logBF)
+}
+
+pre_post_picks <- function(data) {
+  # needs to have a picture id
+  data.picks <- data %>% group_by(pic_id) %>% do(
+    counts = getCounts(.$response_no))
+  data.picks <- data.picks %>% group_by(pic_id) %>% mutate(
+    picks = sum(counts[[1]]),
+    post_mean = list((alpha + counts[[1]])/sum(alpha + counts[[1]])),
+    post_mode = list((alpha + counts[[1]] - 1)/sum(alpha + counts[[1]]-1)),
+    bfactor = list(bfactors(alpha, alpha_2, counts[[1]])),
+    overallBF = overallBF(alpha, alpha_2, counts[[1]]),
+    pre_prob  = list(pbeta(1/20*2, shape1=alpha, shape2=sum(alpha)-alpha,
+                           lower.tail=FALSE)),
+    post_prob = list(pbeta(1/20*2, shape1=alpha+counts[[1]],
+                           shape2=sum(alpha)-alpha + sum(counts[[1]]) - counts[[1]],
+                           lower.tail=FALSE))
+  )
+  data.picks
+}
+
+turk19 <- read.csv("data/turk19_results_anon.csv", stringsAsFactors = FALSE)
+turk16 <- read.csv("data/turk16_results.csv", stringsAsFactors = FALSE)
+turk1013 <- read.csv("data/turk1013_results.csv", stringsAsFactors = FALSE)
+
+pics19 <- read.csv("data/picture-details-turk19.csv", stringsAsFactors = FALSE)
+pics16 <- read.csv("data/picture-details-turk16.csv", stringsAsFactors = FALSE)
+pics10 <- read.csv("data/picture-details-turk10.csv", stringsAsFactors = FALSE)
+
+turk19.picks <- pre_post_picks(turk19)
+turk16.picks <- pre_post_picks(turk16)
+turk1013.picks <- pre_post_picks(turk1013)
+
+
+end.rcode-->
+
+<section id="setup"><!-- Introduction -->
+  <section class="center">
+    <h2> Introduction </h2>
+  </section>
+
+  <section>
+    <h2> Which plot is the most different? </h2>
+    <table width="100%">
+      <tr>
+        <td width ="24%" style="margin-left:30px;text-align:left;vertical-align:top;"></td>
+        <td width="50%" style="text-align:center;vertical-align:top;">
+          <img src="lineup-images/34fcf946135adb1c03b147897f20b33d.png" width='100%' height='auto'/>
+          <p style="color: #add9e4;"> Trend target: 20, Cluster target: 11 </p>
+        </td>
+        <td width="24%" style="margin-left:30px;text-align:left;vertical-align:top;">
+        </td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <h2> Visual Inference </h2>
+    <p><b>Lineups</b> consist of \(M\) plots (usually 20) which are evaluated by \(K\) individuals. </p><br/>
+    <p>We can examine visual statistics (plots) and conduct tests using participant plot evaluations.</p><br/>
+    <p>If most participants select a single plot, we conclude there's a visually significant difference.</p>
+  </section>
+</section><!-- Introduction -->
+
+<section id = "frequentist"><!-- Frequentist Stuff -->
+  <section class="center">
+    <h2> Frequentist Approach to Lineups </h2>
+  </section>
+
+  <section>
+    <h2> Frequentist Approach to Lineups </h2>
+    <h3> (Simple version) </h3>
+      \begin{align*}
+      & m \text{ panels}, K \text{ evaluations}\\\\
+      H_0 &:= \text{all plots are equally likely to be selected}\\
+      H_1 &:= \text{one plot is visually distinguishable}\\\\
+      P(X \geq x) &= 1 - \text{Binom}_{K, 1/m}(x-1)\\
+      & = \sum_{i = x}^K \binom{K}{i} \left(\frac{1}{m}\right)^i\left(\frac{m-1}{m}\right)^{K-i}
+      \end{align*}
+
+    
+    <p> We reject \(H_0\) if the calculated p-value is less than 0.05</p>
+  </section>
+  
+  <section>
+    <h2> Frequentist Approach to Lineups </h2>
+    <h3> (Complex version) </h3>
+    <ul>
+      <li>Evaluations of the same lineup aren't independent</li>
+      <li>The <code class='bold'>vinference</code> R package calculates p-values accounting for this scenario (using simulation)</li>
+      <li>P-values from the <code class='bold'>V3</code> reference distribution are used for comparison purposes in this study</li>
+    </ul>
+  </section>
+  
+  <section>
+  show a lineup and corresponding p-value...
+  </section>
+</section><!--Frequentist Stuff-->
+
+<section id="bayes"><!-- Bayes Stuff -->
+  <section class="center">
+    <h2>Bayesian Lineups</h2>
+    <ul>
+      <li style="margin:10px"> <a href="#/multinomial">Multinomial Model</a> </li>
+      <li style="margin:10px"> <a href="#/bayesfactors">Bayes Factors</a> </li>
+      <li style="margin:10px"> <a href="#/simulationstudy">Simulation Study</a> </li>
+    </ul>
+  </section>
+
+  <section id="multinomial">
+    <h2> Multinomial Model for Lineups </h2>
+    <ul>
+      <li>Data: counts \(c_i\), where \(\sum c_i = K\), <br/>where \(c_i\) is the number of individuals selecting lineup plot \(i\)</li><br/>
+      <li>Prior: \(\mathbf{p} \sim \) Dirichlet(\(\mathbf{\alpha}\))</li>
+      <li>Likelihood: \(\mathbf{c} \sim\) Multinomial(\(K, \mathbf{p}\))</li>
+      <li>Posterior: \(\mathbf{p}|\mathbf{c}, \mathbf{\alpha} \sim \) Dirichlet(\(\mathbf{\alpha} + \mathbf{c}\))</li>
+    </ul>
+    <p>This model accounts for all panels in a lineup</p>
+  </section>
+  
+  <section>
+    <h2> Beta-Binomial Model </h2>
+    <p>The marginal distributions of the Multinomial model reduce to Beta-Binomials, each representing one panel of the lineup.</p>
+        <ul>
+      <li>Data: count \(c\), out of \(K\) evaluations</li><br/>
+      <li>Prior: \(p \sim\) Beta(\(\alpha, (m-1)\alpha\))</li>
+      <li>Likelihood: \(c \sim \) Binomial(\(K, p\))</li>
+      <li>Posterior: \(p | c, K, \alpha \sim\) Beta(\(\alpha + c, (m-1)\alpha + K - c\))</li>
+    </ul>
+    <p> We will mostly work with the beta-binomial/marginal models</p>
+  </section>
+  
+  <section>
+    <h2> Approach</h2>
+    <ul>
+      <li>All models will be of the Multinomial (multidimensional) or Beta-Binomial form</li>
+      <li>The hyperparameters for the prior will change to reflect one of two possible options:
+        <ul>
+          <li>All plots are equally likely to be selected (strong prior belief)</li>
+          <li>One or more plots might be more likely to be selected,<br/>
+              but we don't know which ones (weak prior)</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  
+  <section>
+    <h2> Model 1: Noninformative </h2>
+    <p>Allow the evaluation data to dominate any prior beliefs</p>
+<!--begin.rcode prior-noninformative, echo = F, out.width = "45%"
+lps <- data.frame(rdirichlet(5000, alpha))
+
+lpsm <- gather(lps, key = "variable")
+lpsm$variable <- as.numeric(gsub("X", "", lpsm$variable))
+
+qplot(value, geom="density", data=lpsm, fill=I("grey50"),
+      colour=I("grey45"), alpha=I(0.5)) +
+  facet_wrap(~variable) + xlim(c(0,1)) +
+  theme_bw() +
+  xlab("Probability to pick plot") +
+  ggtitle("Noninformative (alpha = 1/2)")
+end.rcode-->
+  </section>
+  
+  <section>
+    <h2> Model 2: Strongly Informative </h2>
+    <p>We strongly believe all plots are equal</p>
+<!--begin.rcode prior-informative, echo = F, out.width = "45%"
+lps <- data.frame(rdirichlet(5000, alpha_2))
+
+lpsm <- gather(lps, key = "variable")
+lpsm$variable <- as.numeric(gsub("X", "", lpsm$variable))
+
+qplot(value, geom="density", data=lpsm, fill=I("grey50"),
+      colour=I("grey45"), alpha=I(0.5)) +
+  facet_wrap(~variable) + xlim(c(0,1)) +
+  theme_bw() +
+  xlab("Probability to pick plot") +
+  ggtitle("Strongly Informative (alpha = 20)")
+end.rcode-->
+  </section>
+  
+  <section>
+    <h2> Model 2: Strongly Informative </h2>
+    <p>But perhaps some plots are more equal than other plots?</p>
+<!--begin.rcode prior-informative2, echo = F, out.width = "45%"
+qplot(value, geom="density", data=lpsm, fill=I("grey50"),
+      colour=I("grey45"), alpha=I(0.5)) +
+  facet_wrap(~variable) + xlim(c(0,1)) +
+  theme_bw() +
+  xlab("Probability to pick plot") +
+  ggtitle("Strongly Informative (alpha = 20)")
+end.rcode-->
+  </section>
+  
+  <section  id="bayesfactors">
+    <h2>Bayes Factors</h2>
+    <p> We compare Model 1 to Model 2 using Bayes Factors</p>
+    <table width="100%">
+      <tr>
+        <td width="50%" style="text-align:center;vertical-align:top;">
+          <img src="lineup-images/filebab6558ba4c4-multiple.png" width='95%' height='auto'/>
+        </td>
+        <td width="50%" style="text-align:center;vertical-align:top;">
+<!--begin.rcode pics-turk1013, echo=FALSE,  fig.width=6, fig.height =6, out.width='95%'
+# show one of the results:
+i <- 1
+
+lpsXXX <- data.frame(rdirichlet(5000, alpha+turk1013.picks$counts[i][[1]]))
+lpsXXXm <- gather(lpsXXX, key = "variable")
+lpsXXXm$variable <- as.numeric(gsub("X", "", lpsXXXm$variable))
+
+counts <- turk1013.picks[i, "counts"][[1]][[1]]
+#probs <- turk1013.picks[i, "post_prob"][[1]][[1]]
+#preprobs <- turk1013.picks[i, "pre_prob"][[1]][[1]]
+# bfactor <- turk1013.picks[i, "bfactor"]$bfactor[[1]]$avg
+bfactor <- turk1013.picks[i, "bfactor"]$bfactor[[1]] %>% unlist()
+dframe <- data.frame(variable = 1:20, Bfactor= round(bfactor,2))
+
+ymax <- 1:20 %>% lapply(function(i) max(density(subset(lpsXXXm, variable == i)$value)$y)) %>% unlist %>% max
+
+qplot(value, geom="density", data=lpsXXXm, fill=I("grey50"),
+      colour=I("grey45"), alpha=I(0.5)) +
+  facet_wrap(~variable) + xlim(c(0,1)) +
+  theme_bw() +
+  xlab("Posterior probability to pick plot") +
+  ggtitle(sprintf("Pic ID %s (based on %.1f picks), alpha = 0.5", turk1013.picks$pic_id[i],
+                  sum(turk1013.picks$counts[i][[1]]))) +
+  geom_text(data=dframe, aes(label = Bfactor), x = 1, y = 0.95*ymax, size = 5,
+            colour="grey70", hjust="inward", vjust="inward")
+
+end.rcode-->
+        </td>
+      </tr>
+    </table>
+  </section>
+  
+  <section>
+    <h2>Bayes Factors</h2>
+    \begin{align}
+      M_1 & :=  \text{Beta-Binomial model with a weak prior}\nonumber\\
+      M_2 & :=  \text{Beta-Binomial model with strong prior, mass around }\alpha = 0.05\nonumber\\
+      BF & =  P(M_1|c)/P(M_2|c)\\
+         & =  \frac{\int_{p} P(M_1) f_1(c|p) \pi(p) dp}{\int_p P(M_2) f_2(c|p)\pi(p) dp}\nonumber
+    \end{align}
+    We will set the prior odds of $M_1$ to be equal to the prior odds of $M_2$, that is, $P(M_1) = P(M_2)$.
+  </section>  
+  
+  <section>
+    <h2>Bayes Factors</h2>
+      \begin{align}
+        BF(M_1, M_2) & = \frac{\int_p P(M_1) f(c_i, K|p) \pi_1(p) dp}{\int_p P(M_2) f(c_i, K|p) \pi_2(p)}\nonumber\\
+        & = \frac{P(M_1)}{P(M_2)}
+            \frac{\int_p \binom{K}{c_i} p^{c_i}(1-p)^{K - c_i} \cdot \frac{1}{B(\frac{1}{2}, \frac{19}{2})} p^{-\frac{1}{2}}(1-p)^{-\frac{17}{2}}}
+                 {\int_p \binom{K}{c_i} p^{c_i}(1-p)^{K - c_i} \cdot \frac{1}{B(20, 380)} p^{19}(1-p)^{379}}\nonumber\\\\
+        & \text{... more math...}\\\\
+        & = \frac{B(20, 380)}{B(\frac{1}{2}, \frac{19}{2})}
+            \frac{B(c_i + \frac{1}{2}, K - c_i + \frac{19}{2})}{B(c_i + 20, K - c_i + 380)}
+      \end{align}
+  </section>
+  
+    <section>
+    <h2>Bayes Factors</h2>
+    <table width="100%">
+      <tr>
+        <td width="50%" style="text-align:center;vertical-align:top;">
+          <img src="lineup-images/34fcf946135adb1c03b147897f20b33d.png" width='95%' height='auto'/>
+        </td>
+        <td width="50%" style="text-align:center;vertical-align:top;">
+<!--begin.rcode pics, echo=FALSE,  fig.width=6, fig.height =6, out.width='95%'
+# show one of the results:
+i <- 1
+
+lpsXXX <- data.frame(rdirichlet(5000, alpha+turk19.picks$counts[i][[1]]))
+lpsXXXm <- gather(lpsXXX, key = "variable")
+lpsXXXm$variable <- as.numeric(gsub("X", "", lpsXXXm$variable))
+
+counts <- turk19.picks[i, "counts"][[1]][[1]]
+probs <- turk19.picks[i, "post_prob"][[1]][[1]]
+preprobs <- turk19.picks[i, "pre_prob"][[1]][[1]]
+# bfactor <- turk19.picks[i, "bfactor"]$bfactor[[1]]$avg
+bfactor <- turk19.picks[i, "bfactor"]$bfactor[[1]] %>% unlist()
+bfs <- turk19.picks[i, "bfactor"]$bfactor[[1]]$factor
+dframe <- data.frame(variable = 1:20, Bfactor= round(bfactor,2))
+
+ymax <- 1:20 %>% lapply(function(i) max(density(subset(lpsXXXm, variable == i)$value)$y)) %>% unlist %>% max
+
+qplot(value, geom="density", data=lpsXXXm, fill=I("grey50"),
+      colour=I("grey45"), alpha=I(0.5)) +
+  facet_wrap(~variable) + xlim(c(0,1)) +
+  theme_bw() +
+  xlab("Posterior probability to pick plot") +
+  ggtitle(sprintf("Pic ID %s (based on %.1f picks)", turk19.picks$pic_id[i],
+                  sum(turk19.picks$counts[i][[1]]))) +
+  geom_text(data=dframe, aes(label = Bfactor), x = 1, y = 0.9*ymax, size = 5,
+            colour="grey70", hjust="inward", vjust="inward")
+
+end.rcode-->
+        </td>
+      </tr>
+    </table>
+  </section>
+    
+  <section>
+    <h2>Bayes Factors</h2>
+    <table width="100%">
+      <tr>
+        <td width="50%" style="text-align:center;vertical-align:top;">
+          <img src="lineup-images/e30ff06449a4b7664fe3109f7e2e996f.png" width='95%' height='auto'/>
+        </td>
+        <td width="50%" style="text-align:center;vertical-align:top;">
+<!--begin.rcode pics2, echo=FALSE,  fig.width=6, fig.height =6, out.width='95%'
+# show one of the results:
+i <- 2
+
+lpsXXX <- data.frame(rdirichlet(5000, alpha+turk19.picks$counts[i][[1]]))
+lpsXXXm <- gather(lpsXXX, key = "variable")
+lpsXXXm$variable <- as.numeric(gsub("X", "", lpsXXXm$variable))
+
+counts <- turk19.picks[i, "counts"][[1]][[1]]
+#probs <- turk19.picks[i, "post_prob"][[1]][[1]]
+#preprobs <- turk19.picks[i, "pre_prob"][[1]][[1]]
+# bfactor <- turk19.picks[i, "bfactor"]$bfactor[[1]]$avg
+bfactor <- turk19.picks[i, "bfactor"]$bfactor[[1]] %>% unlist()
+dframe <- data.frame(variable = 1:20, Bfactor= round(bfactor,2))
+
+ymax <- 1:20 %>% lapply(function(i) max(density(subset(lpsXXXm, variable == i)$value)$y)) %>% unlist %>% max
+
+qplot(value, geom="density", data=lpsXXXm, fill=I("grey50"),
+      colour=I("grey45"), alpha=I(0.5)) +
+  facet_wrap(~variable) + xlim(c(0,1)) +
+  theme_bw() +
+  xlab("Posterior probability to pick plot") +
+  ggtitle(sprintf("Pic ID %s (based on %.1f picks)", turk19.picks$pic_id[i],
+                  sum(turk19.picks$counts[i][[1]]))) +
+  geom_text(data=dframe, aes(label = Bfactor), x = 1, y = 0.9*ymax, size = 5,
+            colour="grey70", hjust="inward", vjust="inward")
+end.rcode-->
+        </td>
+      </tr>
+    </table>
+  </section>
+  
+  <section id = "simulationstudy">
+    <h2>Comparing Frequentist and Bayesian Methods</h2>
+    <ul>
+      <li>p-values aren't meaningful beyond "Is it less than 0.05", <br/>
+          The larger the Bayes Factor, the more evidence for Model 1 over Model 2</li> <br/>
+      <li>The two methods evaluate the same hypotheses</li> <br/>
+      <li>Do they result in similar conclusions?</li>
+    </ul>
+  </section>
+
+<!--begin.rcode bayes-factor-investigation, echo = F
+Nruns <- 100
+Npicks <- 20
+
+if (!file.exists("data/simulationResults.Rdata")){
+  # Investigate Bayes factor of different scenarios, i.e. 10 evaluations with different number of data picks and null picks.
+  library(purrr)
+  # Plot 1 = data plot
+  bf.sim <- 0:Npicks %>%
+    map_df(.f = function(i) {
+      1:Nruns %>%
+        map_df(.f = function(j){
+          data.frame(
+            pic_id = sprintf("%02d.%02d", i, j),
+            response_no = as.character(c(rep(1, i), sample(2:20, size = (Npicks - i), replace = T))))
+        })
+    })
+  tmp <- pre_post_picks(bf.sim)
+  tmp %<>%
+    mutate(data.picks = stringr::str_extract(pic_id, "^\\d{1,}") %>%
+             as.numeric) %>%
+    arrange(data.picks)
+  
+  # Get Bayes factors for signal and null plots out
+  bf <- 1:nrow(tmp) %>%
+    map_df(.f = function(i) {
+      x <- tmp[i,]
+      data_frame(
+        pic_id = x[["pic_id"]],
+        type = c("target", rep("null", 19)),
+        bf = unlist(x$bfactor[[1]]))
+    }) %>%
+    mutate(
+      target_picks = stringr::str_extract(pic_id, "^\\d{2}") %>% as.numeric()
+    )
+  
+  # Get p-values:
+  library(vinference)
+  p.sim <- 0:Npicks %>%
+    map_df(.f = function(i) {
+      pVsim(x = i, K = Npicks, m = 20, scenario = 3) %>% as.data.frame()
+    }) %>%
+    select(target_picks = x, p.simulated = simulated, p.binom = binom)
+  
+  bf.p.compare <- filter(bf, type == "target") %>%
+    select(-pic_id, -type) %>%
+    unique() %>%
+    left_join(p.sim)
+  save(bf.sim, tmp, bf, p.sim, bf.p.compare, file = "data/simulationResults.Rdata")
+} else {
+  load("data/simulationResults.Rdata")
+}
+
+end.rcode-->
+
+
+  <section>
+    <h2>Comparing Frequentist and Bayesian Methods</h2>
+    <h3>Simulation</h3>
+    <ul>
+      <li><!--rinline Nruns --> iterations of:
+        <ul>
+          <li>Lineups with 20 panels, with <!--rinline Npicks--> evaluations</li>
+          <li>Generate data with \(x\) target plot selections; remaining evaluations are distributed among null plots, 0\( \leq x \leq \)<!--rinline Npicks--></li>
+        </ul>
+      </li>
+      <li>Calculate the Bayes Factor and <code>V3</code> p-value for each scenario</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Simulation Results</h2>
+<!--begin.rcode bayes-factor-investigation-Target-trunc, echo = F, fig.width = 7, fig.height = 3.5
+ggplot(data = filter(bf, type == "target") %>% select(-pic_id) %>% unique()) +
+  geom_line(aes(x = target_picks, y = pmin(20, bf))) +
+  xlab(sprintf("# Target Picks out of %d Total Picks", Npicks)) +
+  ylab("Bayes Factor of Target Plot") +
+  ggtitle("Change in Bayes Factor of Target Plots with Increasing Signal")
+end.rcode-->
+  </section>
+  
+  <section>
+    <h2>Simulation Results</h2>
+<!--begin.rcode bayes-factor-investigation-Target, echo = F, fig.width = 7, fig.height = 3.5
+ggplot(data = filter(bf, type == "target") %>% select(-pic_id) %>% unique()) +
+  geom_line(aes(x = target_picks, y = bf)) +
+  xlab(sprintf("# Target Picks out of %d Total Picks", Npicks)) +
+  scale_y_log10("Bayes Factor of Target Plot") +
+  ggtitle("Change in Bayes Factor of Target Plots with Increasing Signal")
+end.rcode-->
+  </section> 
+  
+  <section>
+    <h2>Simulation Results</h2>
+<!--begin.rcode bayes-factor-investigation-Null, echo = F, fig.width = 7, fig.height = 3.5
+ggplot() +
+  geom_hline(aes(yintercept = 1), color = "red") +
+  geom_text(aes(x = 21, y = 1, label = "BF = 1"), vjust = 1, color = "red") +
+  geom_boxplot(aes(x = target_picks, y = pmin(10, bf), group = cut_width(target_picks, 1)),
+               data = filter(bf, type == "null"),
+               outlier.shape = 1) +
+  geom_smooth(aes(x = target_picks, y = pmin(10, bf)), fullrange = F,
+               data = filter(bf, type == "null")) +
+  xlab(sprintf("# Target Picks out of %d Total Picks", Npicks)) +
+  scale_y_continuous("Bayes Factor of Null Plots", limits = c(0, 10)) +
+  ggtitle("Change in Bayes Factor of Null Plots with Increasing Signal")
+end.rcode-->
+  </section> 
+    
+  <section>
+    <h2>Simulation Results</h2>
+    <h3>Comparison to V3 p-values</h3>
+<!--begin.rcode bayes-factor-V3-compare, echo = F, fig.width = 7, fig.height = 3.5
+ggplot() +
+  geom_rect(aes(xmin = 0.05, xmax = 5, ymin = 0, ymax = Inf, fill = "Insufficient Evidence in favor of Model 1"), alpha = .25) +
+  geom_rect(aes(xmin = 0.05, xmax = Inf, ymin = 0.05, ymax = Inf, fill = "Insufficient Evidence to reject H0"), alpha = .25) +
+  geom_text(aes(x = bf, y = p.simulated, label = target_picks, color = "# Plot Evaluations"), data = bf.p.compare) +
+  geom_hline(aes(yintercept = 0.05, color = "Threshold to reject H0")) +
+  geom_vline(aes(xintercept = 5, color = "Threshold for evidence in favor of Model 1")) +
+  scale_color_manual("", values = c("# Plot Evaluations" = "black", "Threshold to reject H0" = "red", "Threshold for evidence in favor of Model 1" = "blue"), guide = F) +
+  scale_fill_manual("", values = c("# Plot Evaluations" = "transparent", "Insufficient Evidence to reject H0" = "red", "Insufficient Evidence in favor of Model 1" = "blue")) +
+  scale_x_log10() +
+  scale_y_sqrt() +
+  xlab("Bayes Factor") +
+  ylab("Simulated P-value (V3 distribution)") +
+  ggtitle(sprintf("Comparison of Bayesian and Frequentist Lineup Analysis Methods\nwith %d Lineup Evaluations", Npicks)) +
+  theme(legend.position = c(1, 1), legend.justification = c(1, 1), legend.title = element_blank(), legend.background = element_rect(fill = "transparent"))
+end.rcode-->
+  </section> 
+</section><!--Bayes Stuff-->
+
+<section id="conclusion">
+  <section class='center'>
+    <h2> Discussion </h2>
+  </section>
+
+  <section>
+    <h2> Conclusions </h2>
+    
+  </section>
+
+  <section>
+    <h2> Future Work </h2>
+    
+  </section>
+  
+  <section>
+    <h2> More Information </h2>
+    <ul>
+      <li style="margin:20px"> Github Repository (Data, paper, code)<br>
+      <a href="http://github.com/heike/bayesian-vinference/" style="font-size:80%">http://github.com/heike/bayesian-vinference/</a> </li>
+      <li style="margin:20px"> JCGS Paper: Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics<br><a href="http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116" style="font-size:80%">http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116</a> </li>
+    </ul>
+  </section>
+
+</section><!--Conclusion-->
+</div> <!-- slides -->
+</div> <!-- reveal -->
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+<script>
+	// Full list of configuration options available at:
+	// https://github.com/hakimel/reveal.js#configuration
+	Reveal.initialize({
+		controls: true,
+		progress: true,
+		history: true,
+		center: false,
+		slideNumber: true,
+		width: 1200,
+		height: 800,
+		margin: 0.05,
+		transition: 'fade', // none/fade/slide/convex/concave/zoom
+		// Optional reveal.js plugins
+		dependencies: [
+			{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+			{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: 'plugin/zoom-js/zoom.js', async: true },
+			{ src: 'plugin/notes/notes.js', async: true },
+			{ src: 'plugin/math/math.js', async: true }
+		]
+	});
+</script>
+</body>
+</html>
