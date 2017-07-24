@@ -70,7 +70,7 @@ end.rcode-->
 	<link rel="stylesheet" href="css/reveal.css">
 	<link rel="stylesheet" href="css/theme/simple.css" id="theme">
 	<link rel="stylesheet" href="css/Presentation.css">
-	
+
 	<!-- Mathjax -->
 	<script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -265,10 +265,10 @@ end.rcode-->
       & = \sum_{i = x}^K \binom{K}{i} \left(\frac{1}{m}\right)^i\left(\frac{m-1}{m}\right)^{K-i}
       \end{align*}
 
-    
+
     <p> We reject \(H_0\) if the calculated p-value is less than 0.05</p>
   </section>
-  
+
   <section>
     <h2> Frequentist Approach to Lineups </h2>
     <h3> (Complex version) </h3>
@@ -278,7 +278,7 @@ end.rcode-->
       <li>P-values from the <code class='bold'>V3</code> reference distribution are used for comparison purposes in this study</li>
     </ul>
   </section>
-  
+
   <section>
   show a lineup and corresponding p-value...
   </section>
@@ -304,7 +304,7 @@ end.rcode-->
     </ul>
     <p>This model accounts for all panels in a lineup</p>
   </section>
-  
+
   <section>
     <h2> Beta-Binomial Model </h2>
     <p>The marginal distributions of the Multinomial model reduce to Beta-Binomials, each representing one panel of the lineup.</p>
@@ -316,7 +316,7 @@ end.rcode-->
     </ul>
     <p> We will mostly work with the beta-binomial/marginal models</p>
   </section>
-  
+
   <section>
     <h2> Approach</h2>
     <ul>
@@ -330,7 +330,7 @@ end.rcode-->
       </li>
     </ul>
   </section>
-  
+
   <section>
     <h2> Model 1: Noninformative </h2>
     <p>Allow the evaluation data to dominate any prior beliefs</p>
@@ -348,7 +348,7 @@ qplot(value, geom="density", data=lpsm, fill=I("grey50"),
   ggtitle("Noninformative (alpha = 1/2)")
 end.rcode-->
   </section>
-  
+
   <section>
     <h2> Model 2: Strongly Informative </h2>
     <p>We strongly believe all plots are equal</p>
@@ -366,7 +366,7 @@ qplot(value, geom="density", data=lpsm, fill=I("grey50"),
   ggtitle("Strongly Informative (alpha = 20)")
 end.rcode-->
   </section>
-  
+
   <section>
     <h2> Model 2: Strongly Informative </h2>
     <p>But perhaps some plots are more equal than other plots?</p>
@@ -379,7 +379,7 @@ qplot(value, geom="density", data=lpsm, fill=I("grey50"),
   ggtitle("Strongly Informative (alpha = 20)")
 end.rcode-->
   </section>
-  
+
   <section  id="bayesfactors">
     <h2>Bayes Factors</h2>
     <p> We compare Model 1 to Model 2 using Bayes Factors</p>
@@ -421,7 +421,7 @@ end.rcode-->
       </tr>
     </table>
   </section>
-  
+
   <section>
     <h2>Bayes Factors</h2>
     \begin{align}
@@ -431,8 +431,8 @@ end.rcode-->
          & =  \frac{\int_{p} P(M_1) f_1(c|p) \pi(p) dp}{\int_p P(M_2) f_2(c|p)\pi(p) dp}\nonumber
     \end{align}
     We will set the prior odds of $M_1$ to be equal to the prior odds of $M_2$, that is, $P(M_1) = P(M_2)$.
-  </section>  
-  
+  </section>
+
   <section>
     <h2>Bayes Factors</h2>
       \begin{align}
@@ -445,7 +445,7 @@ end.rcode-->
             \frac{B(c_i + \frac{1}{2}, K - c_i + \frac{19}{2})}{B(c_i + 20, K - c_i + 380)}
       \end{align}
   </section>
-  
+
     <section>
     <h2>Bayes Factors</h2>
     <table width="100%">
@@ -487,7 +487,7 @@ end.rcode-->
       </tr>
     </table>
   </section>
-    
+
   <section>
     <h2>Bayes Factors</h2>
     <table width="100%">
@@ -527,7 +527,7 @@ end.rcode-->
       </tr>
     </table>
   </section>
-  
+
   <section id = "simulationstudy">
     <h2>Comparing Frequentist and Bayesian Methods</h2>
     <ul>
@@ -560,7 +560,7 @@ if (!file.exists("data/simulationResults.Rdata")){
     mutate(data.picks = stringr::str_extract(pic_id, "^\\d{1,}") %>%
              as.numeric) %>%
     arrange(data.picks)
-  
+
   # Get Bayes factors for signal and null plots out
   bf <- 1:nrow(tmp) %>%
     map_df(.f = function(i) {
@@ -573,7 +573,7 @@ if (!file.exists("data/simulationResults.Rdata")){
     mutate(
       target_picks = stringr::str_extract(pic_id, "^\\d{2}") %>% as.numeric()
     )
-  
+
   # Get p-values:
   library(vinference)
   p.sim <- 0:Npicks %>%
@@ -581,7 +581,7 @@ if (!file.exists("data/simulationResults.Rdata")){
       pVsim(x = i, K = Npicks, m = 20, scenario = 3) %>% as.data.frame()
     }) %>%
     select(target_picks = x, p.simulated = simulated, p.binom = binom)
-  
+
   bf.p.compare <- filter(bf, type == "target") %>%
     select(-pic_id, -type) %>%
     unique() %>%
@@ -618,7 +618,7 @@ ggplot(data = filter(bf, type == "target") %>% select(-pic_id) %>% unique()) +
   ggtitle("Change in Bayes Factor of Target Plots with Increasing Signal")
 end.rcode-->
   </section>
-  
+
   <section>
     <h2>Simulation Results</h2>
 <!--begin.rcode bayes-factor-investigation-Target, echo = F, fig.width = 7, fig.height = 3.5
@@ -628,8 +628,8 @@ ggplot(data = filter(bf, type == "target") %>% select(-pic_id) %>% unique()) +
   scale_y_log10("Bayes Factor of Target Plot") +
   ggtitle("Change in Bayes Factor of Target Plots with Increasing Signal")
 end.rcode-->
-  </section> 
-  
+  </section>
+
   <section>
     <h2>Simulation Results</h2>
 <!--begin.rcode bayes-factor-investigation-Null, echo = F, fig.width = 7, fig.height = 3.5
@@ -645,8 +645,8 @@ ggplot() +
   scale_y_continuous("Bayes Factor of Null Plots", limits = c(0, 10)) +
   ggtitle("Change in Bayes Factor of Null Plots with Increasing Signal")
 end.rcode-->
-  </section> 
-    
+  </section>
+
   <section>
     <h2>Simulation Results</h2>
     <h3>Comparison to V3 p-values</h3>
@@ -666,7 +666,7 @@ ggplot() +
   ggtitle(sprintf("Comparison of Bayesian and Frequentist Lineup Analysis Methods\nwith %d Lineup Evaluations", Npicks)) +
   theme(legend.position = c(1, 1), legend.justification = c(1, 1), legend.title = element_blank(), legend.background = element_rect(fill = "transparent"))
 end.rcode-->
-  </section> 
+  </section>
 </section><!--Bayes Stuff-->
 
 <section id="conclusion">
@@ -676,20 +676,30 @@ end.rcode-->
 
   <section>
     <h2> Conclusions </h2>
-    
+    <ul>
+      <li>Bayes Factors work nicely to determine which panels do not conform to the "equally likely" hypothesis</li>
+      <li>Bayes Factors are nicer to work with than p-values (big numbers are easier to grasp)</li>
+      <li>Two-target lineups are conceptually easier to handle with Bayes Factors</li>
+    </ul>
   </section>
 
   <section>
     <h2> Future Work </h2>
-    
+    <ul>
+      <li>Explore alternate models which would better represent the "equally likely" hypothesis</li>
+      <li>Explore the sensitivity of the bayes factor to prior specifications for both models</li>
+    </ul>
   </section>
-  
+
   <section>
     <h2> More Information </h2>
     <ul>
-      <li style="margin:20px"> Github Repository (Data, paper, code)<br>
-      <a href="http://github.com/heike/bayesian-vinference/" style="font-size:80%">http://github.com/heike/bayesian-vinference/</a> </li>
-      <li style="margin:20px"> JCGS Paper: Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics<br><a href="http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116" style="font-size:80%">http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116</a> </li>
+      <li style="margin:20px"> Github Repository (Data, paper, code)<br/>
+        <a href="http://github.com/heike/bayesian-vinference/" style="font-size:80%">http://github.com/heike/bayesian-vinference/</a> </li>
+      <li style="margin:20px"> JCGS Paper: Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics<br/>
+        <a href="http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116" style="font-size:80%">http://www.tandfonline.com/doi/abs/10.1080/10618600.2016.1209116</a> </li>
+      <li style="margin:20px">Vinference Github Repository - p-value calculations for lineups<br/>
+        <a href="http://github.com/heike/vinference/" style="font-size:80%">http://github.com/heike/vinference/</a> </li>
     </ul>
   </section>
 
