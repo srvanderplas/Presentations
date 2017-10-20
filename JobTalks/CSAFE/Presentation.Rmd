@@ -1,0 +1,283 @@
+---
+title: 'A Modern Applied Statistics Sampler'
+author: 'Susan VanderPlas<br><h4 style="margin-bottom:5px;padding-bottom:0px;">Statistical Analyst</h4><br><h3 style="margin-top:5px;padding-top:0px;">Nebraska Public Power District</h3>'
+css: Presentation.css
+output: 
+  revealjs::revealjs_presentation:
+    pandoc_args: [ "--slide-level", "2" ]
+    center: false
+    transition: fade
+    fig_caption: true
+    width: 1920
+    height: 1080
+---
+
+```{r setup, fig.keep='all',echo=FALSE, eval=TRUE, error=FALSE, warning=FALSE, message=FALSE}
+# Get maps stuff first
+options(replace.assign=TRUE,width=70)
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(magrittr)
+library(gridExtra)
+
+opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', fig.width=5, fig.height=5, fig.show='hold', par=TRUE, cache=TRUE, concordance=TRUE, autodep=TRUE, warning=FALSE, message=FALSE, echo=FALSE)
+
+
+```
+
+
+# Introduction
+
+## Brief Explanation of my history
+
+- Iowa State
+- NPPD
+
+## Outline
+
+- Tornado Guided Missiles
+- HR Turnover Prediction
+- Equal Pay Act
+- USDA Soybean Genetics
+
+# Tornado Guided Missiles
+
+## Background
+
+<div class = "right">
+
+<img src = "figure/CNS.png" width = "100%" style = "border:'0'"/>
+
+</div>
+
+<div class = "left">
+
+- Preventing "beyond design basis" accidents
+- FLEX mods: standardized emergency equipment to power cooling systems
+- Each plant needs to have two sets of FLEX equipment on site
+
+</div>
+
+## Tornado Guided Missiles
+
+<ul>
+<li class="fragment">
+Reactor containment can withstand a direct hit from an airplane
+  <ul>
+  <li>Tornadoes aren't an issue for most critical equipment</li>
+  <li>Auxiliary equipment/buildings not as protected</li>
+  </ul>
+</li>
+<li class="fragment">FLEX equipment - Tornado resistance 
+  <ul>
+  <li>NRC must be convinced that placement is safe</li>
+  <li>Building distance</li>
+  <li>Angle between buildings</li>
+  </ul>
+</li>
+</ul>
+    
+## Tornado Characteristics in Nebraska
+
+<ul>
+<li> NRC used National Weather Service database of tornadoes used to create regulatory guidelines
+  <ul><li> covers 1950-2003</li>
+  <li> "probably available in PDF or microfilm form somewhere"</li>
+  </ul>
+</li>
+
+<li class="fragment">Goal: Quantify characteristics of tornadoes within a certain distance of the plant
+    <ul><li> help the engineers defend equipment placement to the NRC</li></ul>
+    
+<li class = "fragment">Need a report in the next 4 hours</li>
+</ul>
+
+```{r tornado-setup}
+# --- Packages -----------------------------------------------------------------
+library(maps)
+library(readr)
+library(fields) # rdist.earth() function
+library(mapdata)
+library(ggmapr)
+# ------------------------------------------------------------------------------
+
+
+data(states)
+# states %>%
+#   shift(NAME == "Hawaii", shift_by = c(52.5, 5.5)) %>%
+#   scale(NAME == "Alaska", scale=0.3, set_to=c(-117, 27)) %>%
+#   filter(lat > 20) %>%
+#  ggplot(aes(long, lat)) + geom_path(aes(group=group)) +
+#   ggthemes::theme_map() 
+
+USpolygons <- states
+USpolygons$state <- USpolygons$STUSPS
+
+# --- Read in Data -------------------------------------------------------------
+# Data source: http://www.spc.noaa.gov/wcm/#data
+tornado.names <- c("ID", "year", "month", "day", "date", "time", "time zone",
+                   "state", "fips", "state.number", "strength", "injuries",
+                   "fatalities", "property.loss", "crop.loss",
+                   "start.lat", "start.long", "end.lat", "end.long", "len",
+                   "width", "num.states", "one.state", "segment",
+                   "county.fips.1", "county.fips.2", "county.fips.3", "county.fips.4",
+                   "estimated.f.scale")
+tornadoes <- read_csv("Data/Actual_tornadoes.csv", col_names = tornado.names,
+                      col_types = "iiiiDccccidddddddddddiiiccccd")
+tornadoes.orig <- tornadoes
+# ------------------------------------------------------------------------------
+
+# --- Get tornadoes data formatted ---------------------------------------------
+tornadoes %<>%
+  mutate(
+    both.points.missing = (end.lat == 0 & end.long == 0 & start.lat == 0 & start.long == 0),
+    single.point = (end.lat == 0 & end.long == 0) | (start.lat == 0 & start.long == 0) | 
+      (end.lat == start.lat & end.long == start.long),
+    dist.cns.start = rdist.earth(matrix(c(-95.6547, 40.3597), ncol = 2),
+                                 matrix(c(start.long, start.lat), ncol = 2)) %>%
+      as.numeric(),
+
+    dist.cns.end = rdist.earth(matrix(c(-95.6547, 40.3597), ncol = 2),
+                               matrix(c(start.long, start.lat), ncol = 2)) %>%
+      as.numeric()
+  ) %>%
+  mutate(
+    xdir = (end.long - start.long)/sqrt(((end.long - start.long) ^ 2 +
+                                           (end.lat - start.lat) ^ 2)),
+    ydir = (end.lat - start.lat)/sqrt(((end.long - start.long) ^ 2 +
+                                         (end.lat - start.lat) ^ 2))
+  ) %>%
+  mutate(
+    angle = atan2(ydir, xdir),
+    angle = ifelse(is.nan(angle), pi/2 * sign(ydir), angle),
+    angle = ifelse(single.point, NA, angle),
+    angle = ifelse(angle > pi,  angle - 2*pi, angle)
+  ) %>%
+  mutate(
+    year.id = paste(year, ID, sep = "-"),
+    end.lat = ifelse(single.point, start.lat, end.lat),
+    end.long = ifelse(single.point, start.long, end.long)) 
+
+tornadoes.conus <- tornadoes %>%
+  filter(!both.points.missing) %>%
+  filter(!state %in% c("AK", "HI", "PR") )
+
+limits.conus <- tornadoes.conus %>% select(start.long, start.lat, end.long, end.lat) %>%
+  summarize(
+    long.min = min(c(start.long, end.long)),
+    long.max = max(c(start.long, end.long)),
+    lat.min = min(c(start.lat, end.lat)),
+    lat.max = max(c(start.lat, end.lat))
+  )
+
+tornado.qs <- filter(tornadoes.conus, state %in% c("NE", "MO", "IA", "KS")) %>%
+  filter(!(year == 1964 & ID == 143), !(year == 1964 & ID == 144))
+limits.qs <- tornado.qs %>% select(start.long, start.lat, end.long, end.lat) %>%
+  summarize(
+    long.min = min(c(start.long, end.long)),
+    long.max = max(c(start.long, end.long)),
+    lat.min = min(c(start.lat, end.lat)),
+    lat.max = max(c(start.lat, end.lat))
+  )
+
+tornado.250 <- filter(tornadoes.conus, dist.cns.end <= 250 | dist.cns.start <= 250)
+
+limits.250 <- tornado.250 %>% select(start.long, start.lat, end.long, end.lat) %>%
+  summarize(
+    long.min = min(c(start.long, end.long)),
+    long.max = max(c(start.long, end.long)),
+    lat.min = min(c(start.lat, end.lat)),
+    lat.max = max(c(start.lat, end.lat))
+  )
+
+# ------------------------------------------------------------------------------
+
+```
+
+
+## Tornado Characteristics
+
+NOAA Tornado dataset: recorded tornadoes between 1950 and 2015    
+
+  - `r nrow(tornadoes)` separate tornado segments
+  - path width
+  - start/end coordinates
+  - intensity
+
+
+## Tornado Characteristics
+
+```{r qs-map, fig.width = 6, fig.height = 6}
+ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group),
+               data = USpolygons, fill = "white", colour = "black") +
+  geom_point(aes(x = -95.6547, y = 40.3597), size = 2, color = "red") +
+  theme_void() +
+  geom_segment(aes(x = start.long, y = start.lat, xend = end.long, yend = end.lat),
+               colour = "#55B1F7", data = tornado.qs) +
+  ggtitle("Recorded Tornadoes, 1950-2015") +
+  coord_quickmap(xlim = c(limits.qs$long.min, limits.qs$long.max),
+                 ylim = c(limits.qs$lat.min, limits.qs$lat.max-2))
+
+```
+
+## Tornado Characteristics
+
+```{r qs-tornado-width}
+ggplot(data = tornado.qs) +
+  geom_histogram(aes(x = width), fill = "grey", color = "black", bins = 50) +
+  scale_x_log10("Width (yards)", breaks = c(1, 10, 100, 1000)) +
+  ylab("# Tornadoes") +
+  ggtitle("Distribution of Tornado Width")
+```
+
+## Tornado Characteristics
+
+```{r qs-tornado-strength}
+tornado.qs$angle <- ifelse(tornado.qs$angle > pi, tornado.qs$angle - 2*pi, tornado.qs$angle)
+
+ggplot(data = tornado.qs) +
+  geom_bar(aes(x = strength), fill = "grey", color = "black") +
+  xlab("Strength (F/EF scale)") +
+  ylab("# Tornadoes") +
+  ggtitle("Distribution of Tornado Strength")
+```
+
+
+## Tornado Characteristics
+```{r qs-tornado-direction, warning = F, dpi = 300}
+# ggplot(data = tornado.qs) + 
+#   geom_segment(aes(x = 0, y = 0, xend = xdir, yend = ydir), alpha = .1) + 
+#   coord_fixed()
+
+ggplot(data = tornado.qs) +
+  geom_area(aes(x = angle), stat = "density") +
+  coord_polar(start = pi/2, direction = -1) +
+  scale_x_continuous(breaks = seq(-pi, 3*pi/4, by = pi/4), labels = c("W", "SW", "S", "SE", "E", "NE", "N", "NW"), limits = c(-pi, pi)) + 
+  theme(axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.x = element_blank()) +
+  ggtitle("Tornado Trajectory")
+```
+
+## Lessons Learned
+
+<ul>
+<li class="fragment">
+Visualizations are often more effective than tables, raw statistics, or other more complicated methods
+  <ul>
+  <li>Generally faster</li>
+  <li>Less intimidating</li>
+  </ul>
+</li>
+<li class="fragment">
+In some contexts, polar charts may not be 100% awful
+  <ul>
+  <li>Utilize familiar contexts (map compass) to make data more relatable</li>
+  <li>Remove extra details (e.g. y-axis) to draw attention to the important part of the graph</li>
+  </ul>
+</li>
+<li class="fragment">
+If the regulator isn't convinced, wait for a big windstorm to come along to prove your point.
+</li>
+</ul>
