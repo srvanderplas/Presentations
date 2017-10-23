@@ -28,7 +28,7 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 ```
 
 
-# Introduction
+# Introduction <!-- .slide: class="center" -->
 
 ## Brief Explanation of my history
 
@@ -39,10 +39,10 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 
 - Tornado Guided Missiles
 - HR Turnover Prediction
-- Equal Pay Act
+- Assessing Compensation
 - USDA Soybean Genetics
 
-# Tornado Guided Missiles
+# Tornado Guided Missiles <!-- .slide: class="center" -->
 
 ## Background
 
@@ -286,3 +286,168 @@ In some contexts, polar charts may not be 100% awful
 If the regulator isn't convinced, wait for a big windstorm to come along to prove your point.
 </li>
 </ul>
+
+
+# HR Turnover Prediction <!-- .slide: class="center" -->
+
+## Who's going to leave?
+
+- NPPD has a very low turnover rate (usually < 8%/year)
+- Most employees retire after 20+ years
+- Training costs are high
+
+<br><br>
+
+### Goal: Predict which individuals are likely to leave/retire
+
+## Why do people leave?
+
+- Career advancement
+- Dislike Nebraska/rural life
+- Better opportunities elsewhere
+- Problems with management/coworkers
+- Retirement
+- Two-body problem
+- Family reasons
+
+## Why do people leave?
+
+- Career advancement
+- Dislike Nebraska/rural life (maybe)
+- Better opportunities elsewhere (maybe)
+- Problems with management/coworkers (maybe)
+- ~~Two-body problem~~
+- Retirement
+- ~~Family reasons~~
+
+## Available Data
+
+- Salary information, Years of service
+- Race, Gender, Age, Marital Status
+- Education level
+- Work location
+- Job description    
+(security, engineering, operations, maintenance)
+- Birthplace
+
+## Model Errors
+
+- Identify individuals with a high probability of leaving who have not yet left
+- Perfect prediction isn't reasonable -     
+too many factors that don't have corresponding data
+- Failure to predict someone leaving is the only good metric to go on
+  - How to prove that someone with a 90% prob of leaving won't quit tomorrow?
+
+## Method
+
+3 Random Forest Models
+
+  1. Resignation probability
+  2. Probability of leaving (resignation or retirement)
+  3. Predict resignation, retirement, or stay in a single model
+
+If any model predicts someone has $p > 0.5$ of leaving, examine more closely
+
+  - HR can intervene and possibly resolve any issues
+  - Succession planning - prepare to hire/train replacements for key positions
+  
+## Outcome
+
+- Uncanny predictions
+- Early retirement program
+- Currently missing some engineers & operations people who leave for better opportunities
+- Approximately 67% accuracy rate (67% of people who left were predicted to leave by at least one model)
+
+## Lessons
+
+<ul>
+<li class="fragment">Databases never have all of the information you want for problems like this
+  <ul>
+  <li>Some of it would probably be illegal to ask for</li>
+  </ul>
+</li>
+<li class="fragment">Spelling is the bane of my existence
+  <ul>
+  <li>26 ways to spell "Columbus, NE"</li>
+  </ul>
+</li>
+<li class="fragment">Not all model errors are bad
+  <ul>
+  <li>We're depending on errors to identify individuals likely to leave</li>
+  <li>Changing interpretation of model errors does make model validation interesting</li>
+  </ul>
+</li>
+<li class="fragment">Cost/benefit:
+  <ul>
+  <li>Surprise resignation: very bad</li>
+  <li>Talking to someone who has no intention of leaving: slightly awkward?</li>
+  </ul>
+</li>
+</ul>
+
+
+# Assessing Compensation <!-- .slide: class="center" -->
+
+## Lilly Ledbetter Act & Equal Pay Act
+
+- Require employers to make a good faith effort to detect & address discrepancies in pay based on race or gender
+- "Similarly Situated Employee Groups" (SSEG) - ensure like jobs are compared
+- Goal: Regularly audit compensation records and address any discrepancies that are discovered
+  - Significant results -> manual review
+
+## NPPD's workforce
+
+### > 80% male, > 97% white
+
+### Most potential SSEGs have one or two minority members (at best)
+
+## Approach
+
+<ul>
+<li>Compare 2016 total compensation</li>
+<li>Methods:
+  <ul>
+  <li class="fragment">Overall regression (all SSEGs) with gender*SSEG interaction + other covariates</li>
+  <li class="fragment">Individual regressions for SSEGs flagged by overall regression, using significant covariates</li>
+  <li class="fragment">Randomization tests for all SSEGs by gender and ethnicity
+  <ul>
+  <li>no covariates</li>
+  <li>can detect effects with small #s of women or minorities</li>
+  </ul>
+  </li>
+  </ul>
+</li>
+</ul>
+
+## Results
+
+\<Censored\>
+
+## Issues
+
+<ul>
+<li class="fragment">Compensation changes + position changes
+  <ul>
+  <li>Comparing previous position's compensation based on new position SSEG</li>
+  </ul>
+</li>
+<li class="fragment">Not everyone is salaried; some individuals may request more overtime
+  <ul>
+  <li>Potential gender bias/self-selection</li>
+  </ul>
+</li>
+<li class="fragment">Linear Regression - unestimable coefficients
+  <ul>
+  <li>Not using the regression for prediction</li>
+  <li>Follow up overall regression with individual regressions that aren't rank-deficient</li>
+  </ul>
+</li>
+<li class="fragment">Multiple testing
+  <ul>
+  <li>Goal is to identify any potential problems</li>
+  <li>More work for HR!</li>
+  </ul>
+</li>
+</ul>
+
+
