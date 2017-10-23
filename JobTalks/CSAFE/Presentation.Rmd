@@ -150,9 +150,14 @@ tornadoes %<>%
                                          (end.lat - start.lat) ^ 2))
   ) %>%
   mutate(
-    angle = atan2(ydir, xdir),
+    # Compute angle between -pi and pi
+    angle = atan2(ydir, xdir), 
+    # If angle does not exist, it is either pi/2 or -pi/2
+    # Use sign of y direction to determine which
     angle = ifelse(is.nan(angle), pi/2 * sign(ydir), angle),
+    # If there's only a single set of coordinates, angle is NA
     angle = ifelse(single.point, NA, angle),
+    # Adjust range so that the break is at pi instead of at 0
     angle = ifelse(angle > pi,  angle - 2*pi, angle)
   ) %>%
   mutate(
