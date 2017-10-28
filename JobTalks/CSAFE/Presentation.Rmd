@@ -1,0 +1,589 @@
+---
+title: 'A Modern Applied Statistics Sampler'
+author: 'Susan VanderPlas<br><h4 style="margin-bottom:5px;padding-bottom:0px;">Statistical Analyst</h4><br><h3 style="margin-top:5px;padding-top:0px;">Nebraska Public Power District</h3>'
+css: Presentation.css
+output: 
+  revealjs::revealjs_presentation:
+    pandoc_args: [ "--slide-level", "2" ]
+    center: false
+    transition: fade
+    fig_caption: true
+    width: 1920
+    height: 1080
+---
+
+```{r setup, fig.keep='all',echo=FALSE, eval=TRUE, error=FALSE, warning=FALSE, message=FALSE}
+# Get maps stuff first
+options(replace.assign=TRUE,width=70)
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(magrittr)
+library(gridExtra)
+
+opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', fig.width=5, fig.height=5, fig.show='hold', par=TRUE, cache=TRUE, concordance=TRUE, autodep=TRUE, warning=FALSE, message=FALSE, echo=FALSE)
+
+
+```
+
+
+# Introduction <!-- .slide: class="center" -->
+
+## Brief Explanation of my history
+
+- Iowa State
+- NPPD
+
+## Outline
+
+- Tornado Guided Missiles
+- HR Turnover Prediction
+- Assessing Compensation
+- USDA Soybean Genetics
+
+# Tornado Guided Missiles <!-- .slide: class="center" -->
+
+## Background
+
+<div class = "right">
+
+<img src = "figure/CNS.png" width = "100%" style = "border:'0'"/>
+
+</div>
+
+<div class = "left">
+
+- Preventing "beyond design basis" accidents
+- FLEX mods: standardized emergency equipment to power cooling systems
+- Each plant needs to have two sets of FLEX equipment on site
+
+</div>
+
+## Tornado Guided Missiles
+
+<ul>
+<li class="fragment">
+Reactor containment can withstand a direct hit from an airplane
+  <ul>
+  <li>Tornadoes aren't an issue for most critical equipment</li>
+  <li>Auxiliary equipment/buildings not as protected</li>
+  </ul>
+</li>
+<li class="fragment">FLEX equipment - Tornado resistance 
+  <ul>
+  <li>NRC must be convinced that placement is safe</li>
+  <li>Building distance</li>
+  <li>Angle between buildings</li>
+  </ul>
+</li>
+</ul>
+    
+## Tornado Characteristics in Nebraska
+
+<ul>
+<li> NRC used National Weather Service database of tornadoes used to create regulatory guidelines
+  <ul><li> covers 1950-2003</li>
+  <li> "probably available in PDF or microfilm form somewhere"</li>
+  </ul>
+</li>
+
+<li class="fragment">Goal: Quantify characteristics of tornadoes within a certain distance of the plant
+    <ul><li> help the engineers defend equipment placement to the NRC</li></ul>
+    
+<li class = "fragment">Need a report in the next 4 hours</li>
+</ul>
+
+```{r tornado-setup}
+# --- Packages -----------------------------------------------------------------
+library(maps)
+library(readr)
+library(fields) # rdist.earth() function
+library(mapdata)
+library(ggmapr)
+# ------------------------------------------------------------------------------
+
+
+data(states)
+# states %>%
+#   shift(NAME == "Hawaii", shift_by = c(52.5, 5.5)) %>%
+#   scale(NAME == "Alaska", scale=0.3, set_to=c(-117, 27)) %>%
+#   filter(lat > 20) %>%
+#  ggplot(aes(long, lat)) + geom_path(aes(group=group)) +
+#   ggthemes::theme_map() 
+
+USpolygons <- states
+USpolygons$state <- USpolygons$STUSPS
+
+# --- Read in Data -------------------------------------------------------------
+# Data source: http://www.spc.noaa.gov/wcm/#data
+tornado.names <- c("ID", "year", "month", "day", "date", "time", "time zone",
+                   "state", "fips", "state.number", "strength", "injuries",
+                   "fatalities", "property.loss", "crop.loss",
+                   "start.lat", "start.long", "end.lat", "end.long", "len",
+                   "width", "num.states", "one.state", "segment",
+                   "county.fips.1", "county.fips.2", "county.fips.3", "county.fips.4",
+                   "estimated.f.scale")
+tornadoes <- read_csv("Data/Actual_tornadoes.csv", col_names = tornado.names,
+                      col_types = "iiiiDccccidddddddddddiiiccccd")
+tornadoes.orig <- tornadoes
+# ------------------------------------------------------------------------------
+
+# --- Get tornadoes data formatted ---------------------------------------------
+tornadoes %<>%
+  mutate(
+    both.points.missing = (end.lat == 0 & end.long == 0 & start.lat == 0 & start.long == 0),
+    single.point = (end.lat == 0 & end.long == 0) | (start.lat == 0 & start.long == 0) | 
+      (end.lat == start.lat & end.long == start.long),
+    dist.cns.start = rdist.earth(matrix(c(-95.6547, 40.3597), ncol = 2),
+                                 matrix(c(start.long, start.lat), ncol = 2)) %>%
+      as.numeric(),
+
+    dist.cns.end = rdist.earth(matrix(c(-95.6547, 40.3597), ncol = 2),
+                               matrix(c(start.long, start.lat), ncol = 2)) %>%
+      as.numeric()
+  ) %>%
+  mutate(
+    xdir = (end.long - start.long)/sqrt(((end.long - start.long) ^ 2 +
+                                           (end.lat - start.lat) ^ 2)),
+    ydir = (end.lat - start.lat)/sqrt(((end.long - start.long) ^ 2 +
+                                         (end.lat - start.lat) ^ 2))
+  ) %>%
+  mutate(
+    # Compute angle between -pi and pi
+    angle = atan2(ydir, xdir), 
+    # If angle does not exist, it is either pi/2 or -pi/2
+    # Use sign of y direction to determine which
+    angle = ifelse(is.nan(angle), pi/2 * sign(ydir), angle),
+    # If there's only a single set of coordinates, angle is NA
+    angle = ifelse(single.point, NA, angle),
+    # Adjust range so that the break is at pi instead of at 0
+    angle = ifelse(angle > pi,  angle - 2*pi, angle)
+  ) %>%
+  mutate(
+    year.id = paste(year, ID, sep = "-"),
+    end.lat = ifelse(single.point, start.lat, end.lat),
+    end.long = ifelse(single.point, start.long, end.long)) 
+
+tornadoes.conus <- tornadoes %>%
+  filter(!both.points.missing) %>%
+  filter(!state %in% c("AK", "HI", "PR") )
+
+limits.conus <- tornadoes.conus %>% select(start.long, start.lat, end.long, end.lat) %>%
+  summarize(
+    long.min = min(c(start.long, end.long)),
+    long.max = max(c(start.long, end.long)),
+    lat.min = min(c(start.lat, end.lat)),
+    lat.max = max(c(start.lat, end.lat))
+  )
+
+tornado.qs <- filter(tornadoes.conus, state %in% c("NE", "MO", "IA", "KS")) %>%
+  filter(!(year == 1964 & ID == 143), !(year == 1964 & ID == 144))
+limits.qs <- tornado.qs %>% select(start.long, start.lat, end.long, end.lat) %>%
+  summarize(
+    long.min = min(c(start.long, end.long)),
+    long.max = max(c(start.long, end.long)),
+    lat.min = min(c(start.lat, end.lat)),
+    lat.max = max(c(start.lat, end.lat))
+  )
+
+tornado.250 <- filter(tornadoes.conus, dist.cns.end <= 250 | dist.cns.start <= 250)
+
+limits.250 <- tornado.250 %>% select(start.long, start.lat, end.long, end.lat) %>%
+  summarize(
+    long.min = min(c(start.long, end.long)),
+    long.max = max(c(start.long, end.long)),
+    lat.min = min(c(start.lat, end.lat)),
+    lat.max = max(c(start.lat, end.lat))
+  )
+
+# ------------------------------------------------------------------------------
+
+```
+
+
+## Tornado Characteristics
+
+NOAA Tornado dataset: recorded tornadoes between 1950 and 2015    
+
+  - `r nrow(tornadoes)` separate tornado segments
+  - path width
+  - start/end coordinates
+  - intensity
+
+
+## Tornado Characteristics
+
+```{r qs-map, fig.width = 6, fig.height = 6}
+ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group),
+               data = USpolygons, fill = "white", colour = "black") +
+  geom_point(aes(x = -95.6547, y = 40.3597), size = 2, color = "red") +
+  theme_void() +
+  geom_segment(aes(x = start.long, y = start.lat, xend = end.long, yend = end.lat),
+               colour = "#55B1F7", data = tornado.qs) +
+  ggtitle("Recorded Tornadoes, 1950-2015") +
+  coord_quickmap(xlim = c(limits.qs$long.min, limits.qs$long.max),
+                 ylim = c(limits.qs$lat.min, limits.qs$lat.max-2))
+
+```
+
+## Tornado Characteristics
+
+```{r qs-tornado-width}
+ggplot(data = tornado.qs) +
+  geom_histogram(aes(x = width), fill = "grey", color = "black", bins = 50) +
+  scale_x_log10("Width (yards)", breaks = c(1, 10, 100, 1000)) +
+  ylab("# Tornadoes") +
+  ggtitle("Distribution of Tornado Width")
+```
+
+## Tornado Characteristics
+
+```{r qs-tornado-strength}
+tornado.qs$angle <- ifelse(tornado.qs$angle > pi, tornado.qs$angle - 2*pi, tornado.qs$angle)
+
+ggplot(data = tornado.qs) +
+  geom_bar(aes(x = strength), fill = "grey", color = "black") +
+  xlab("Strength (F/EF scale)") +
+  ylab("# Tornadoes") +
+  ggtitle("Distribution of Tornado Strength")
+```
+
+
+## Tornado Characteristics
+```{r qs-tornado-direction, warning = F, dpi = 300}
+# ggplot(data = tornado.qs) + 
+#   geom_segment(aes(x = 0, y = 0, xend = xdir, yend = ydir), alpha = .1) + 
+#   coord_fixed()
+
+ggplot(data = tornado.qs) +
+  geom_area(aes(x = angle), stat = "density") +
+  coord_polar(start = pi/2, direction = -1) +
+  scale_x_continuous(breaks = seq(-pi, 3*pi/4, by = pi/4), labels = c("W", "SW", "S", "SE", "E", "NE", "N", "NW"), limits = c(-pi, pi)) + 
+  theme(axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.x = element_blank()) +
+  ggtitle("Tornado Trajectory")
+```
+
+## Lessons Learned
+
+<ul>
+<li class="fragment">
+Visualizations are often more effective than tables, raw statistics, or other more complicated methods
+  <ul>
+  <li>Generally faster</li>
+  <li>Less intimidating</li>
+  </ul>
+</li>
+<li class="fragment">
+In some contexts, polar charts may not be 100% awful
+  <ul>
+  <li>Utilize familiar contexts (map compass) to make data more relatable</li>
+  <li>Remove extra details (e.g. y-axis) to draw attention to the important part of the graph</li>
+  </ul>
+</li>
+<li class="fragment">
+If the regulator isn't convinced, wait for a big windstorm to come along to prove your point.
+</li>
+</ul>
+
+
+# HR Turnover Prediction <!-- .slide: class="center" -->
+
+## Who's going to leave?
+
+- NPPD has a very low turnover rate (usually < 8%/year)
+- Most employees retire after 20+ years
+- Training costs are high
+
+<br><br>
+
+### Goal: Predict which individuals are likely to leave/retire
+
+## Why do people leave?
+
+- Career advancement
+- Dislike Nebraska/rural life
+- Better opportunities elsewhere
+- Problems with management/coworkers
+- Retirement
+- Two-body problem
+- Family reasons
+
+## Why do people leave?
+
+- Career advancement
+- Dislike Nebraska/rural life (maybe)
+- Better opportunities elsewhere (maybe)
+- Problems with management/coworkers (maybe)
+- ~~Two-body problem~~
+- Retirement
+- ~~Family reasons~~
+
+## Available Data
+
+- Salary information, Years of service
+- Race, Gender, Age, Marital Status
+- Education level
+- Work location
+- Job description    
+(security, engineering, operations, maintenance)
+- Birthplace
+
+## Model Errors
+
+- Identify individuals with a high probability of leaving who have not yet left
+- Perfect prediction isn't reasonable -     
+too many factors that don't have corresponding data
+- Failure to predict someone leaving is the only good metric to go on
+  - How to prove that someone with a 90% prob of leaving won't quit tomorrow?
+
+## Method
+
+3 Random Forest Models
+
+  1. Resignation probability
+  2. Probability of leaving (resignation or retirement)
+  3. Predict resignation, retirement, or stay in a single model
+
+If any model predicts someone has $p > 0.5$ of leaving, examine more closely
+
+  - HR can intervene and possibly resolve any issues
+  - Succession planning - prepare to hire/train replacements for key positions
+  
+## Outcome
+
+- Uncanny predictions
+- Early retirement program
+- Currently missing some engineers & operations people who leave for better opportunities
+- Approximately 67% accuracy rate (67% of people who left were predicted to leave by at least one model)
+
+## Lessons
+
+<ul>
+<li class="fragment">Databases never have all of the information you want for problems like this
+  <ul>
+  <li>Some of it would probably be illegal to ask for</li>
+  </ul>
+</li>
+<li class="fragment">Spelling is the bane of my existence
+  <ul>
+  <li>26 ways to spell "Columbus, NE"</li>
+  </ul>
+</li>
+<li class="fragment">Not all model errors are bad
+  <ul>
+  <li>We're depending on errors to identify individuals likely to leave</li>
+  <li>Changing interpretation of model errors does make model validation interesting</li>
+  </ul>
+</li>
+<li class="fragment">Cost/benefit:
+  <ul>
+  <li>Surprise resignation: very bad</li>
+  <li>Talking to someone who has no intention of leaving: slightly awkward?</li>
+  </ul>
+</li>
+</ul>
+
+
+# Assessing Compensation <!-- .slide: class="center" -->
+
+## Lilly Ledbetter Act & Equal Pay Act
+
+- Require employers to make a good faith effort to detect & address discrepancies in pay based on race or gender
+- "Similarly Situated Employee Groups" (SSEG) - ensure like jobs are compared
+- Goal: Regularly audit compensation records and address any discrepancies that are discovered
+  - Significant results -> manual review
+
+## NPPD's workforce
+
+### > 80% male, > 97% white
+
+### Most potential SSEGs have one or two minority members (at best)
+
+## Approach
+
+<ul>
+<li>Compare 2016 total compensation</li>
+<li>Methods:
+  <ul>
+  <li class="fragment">Overall regression (all SSEGs) with gender*SSEG interaction + other covariates</li>
+  <li class="fragment">Individual regressions for SSEGs flagged by overall regression, using significant covariates</li>
+  <li class="fragment">Randomization tests for all SSEGs by gender and ethnicity
+  <ul>
+  <li>no covariates</li>
+  <li>can detect effects with small #s of women or minorities</li>
+  </ul>
+  </li>
+  </ul>
+</li>
+</ul>
+
+## Results
+
+\<Censored\>
+
+## Issues
+
+<ul>
+<li class="fragment">Compensation changes + position changes
+  <ul>
+  <li>Comparing previous position's compensation based on new position SSEG</li>
+  </ul>
+</li>
+<li class="fragment">Not everyone is salaried; some individuals may request more overtime
+  <ul>
+  <li>Potential gender bias/self-selection</li>
+  </ul>
+</li>
+<li class="fragment">Linear Regression - unestimable coefficients
+  <ul>
+  <li>Not using the regression for prediction</li>
+  <li>Follow up overall regression with individual regressions that aren't rank-deficient</li>
+  </ul>
+</li>
+<li class="fragment">Multiple testing
+  <ul>
+  <li>Goal is to identify any potential problems</li>
+  <li>More work for HR!</li>
+  </ul>
+</li>
+</ul>
+
+
+
+
+# Big Data Problems {.title}
+
+## Big Data Problems
+
+- "Needle in a Haystack"     
+Finding one interesting thing in 100+ GB of data
+
+- "Needle in a stack of needles"     
+100 interesting things - how to investigate them all?
+
+<br></br>
+
+<h3 class = "fragment">Limited bandwidth </h3>
+
+## Big Data
+
+Visualization is an important tool for working with big data  
+<br></br>
+
+Adaptations must be made:  
+
+- Overplotting (large $n$)
+- High-dimensional data (large $p$)
+- Distributed/multi-source data, hierarchical data
+- No solution (binning, dimension reduction, tours) works for every situation
+
+## Interactive Graphics  
+  
+- Provide additional information in response to user action  
+<br>
+- Simultaneously show more than 2-3 variables and their relationship (multiple linked plots)  
+<br>
+- Accommodate complex data structures  
+<br>
+
+BUT...  
+<br>  
+Web-based interactive graphics may be even more size-sensitive than static graphics. 
+
+
+
+# Interactive Visualization of Soybean Population Genetic Data {.title}
+
+---
+
+<img src="figure/SoybeanProject.png" width="100%" height="auto" alt="Soybean Project: People and Institutions">
+
+---
+
+## Overall Project Goals: 
+- Understand historical yield increases  
+<small>100% increase in past 100 years; additional 70% increase by 2050 to meet food needs (World Bank)</small>  
+- Associate genetic features with phenotypic traits 
+<small>Disease resistance, yield, nutritional content, time to maturity</small>  
+
+- Communicate analysis results intuitively:
+    - Target: Soybean farmers, plant geneticists
+    - Provide full results (tables) and graphical summaries
+    - Interface with existing databases and web resources
+
+## Data
+<br>  
+
+- Sequencing Data    
+(79 varieties, 75GB processed and compressed)  
+  <br>
+- Field Trials    
+(168 varieties, 30 varieties with genetic data)  
+  <br>
+- New crosses with highest yield varieties  
+<small>(sequencing + field trials)</small>  
+  <br>
+- Genealogy as reported in the breeding literature (1600 varieties)  
+
+## Visualizing SNPs
+
+<ul>
+<li style="margin:.5em"> SNP: Single Nucleotide Polymorphism, a single basepair mutation  
+(A -> T, G -> A, C -> G)</li>
+<li class="fragment" style="margin:.5em"> [Shiny](www.shiny.rstudio.com) applet: Responsive applet for user-directed data subsets</li>
+<li class="fragment" style="margin:.5em"> Show multiple levels of detail (less detail = lower computational load)</li>
+<li class="fragment" style="margin:.5em"> Provide resources in the applet for user exploration (not just a reference tool)</li>
+</ul>
+
+## Visualizing SNPs:  
+<ul>
+<li class="fragment" style="margin:.5em"> Huge number of interesting genes (70 million ID'd SNPs)  
+<img src="figure/Chr18Snps.png" width='90%' style="border:0px;"></li>
+</ul>
+
+## Visualizing SNPs:  
+<ul>
+<li style="margin:.5em"> Huge number of interesting genes (70 million ID'd SNPs)</li>
+<li style="margin:.5em"> 79 varieties, 20 chromosomes</li>
+<li class="fragment" style="margin:.5em"> Phenotype and genealogy information</li>
+<li class="fragment" style="margin:.5em"> Researchers tend to work on gene subsets:<br>
+Must be able to zoom and filter</li>
+<li class="fragment" style="margin:.5em"> Optimized files for SNP results are still large (10 GB) and require significant computational resources</li>
+</ul>  
+
+<p class="fragment" style="margin-top:1em;">Above all, need an interface to allow people to pull new discoveries from the data systematically. </p>
+
+
+
+## Applet Design
+
+<a href="http://localhost:3838/USDAsoybeans/Shiny/SNP/"><img src="figure/snpapp.svg", width="80%", height="auto", style="border:0px;"></a>
+
+---
+
+### SNP Population Distribution 
+
+<img src="figure/SNP-Overview.jpg" width="90%" height="auto" alt="SNP Applet Overview" style="border:0px;">
+
+---
+
+### Density of SNPs: Chromosome Level
+
+<img src="figure/SNP-Density.jpg" width="90%" height="auto" alt="SNP Density" style="border:0px;">
+
+---
+
+### Individual SNPs: Comparing Varieties
+
+<img src="figure/SNP-VarietyLevel.jpg" width="90%" height="auto" alt="Variety-Level SNP Browser" style="border:0px;">
+
+---
+
+### Genealogy and Phenotypes
+
+<a href="/storage/Rprojects/USDAsoybeans/Shiny/SNP/www/animint/index.html">Link</a>
+
+<img src="figure/SNP-LinkedPlots1.jpg" width="90%" height="auto" alt="SNP Linked Plots" style="border:0px;">
+
