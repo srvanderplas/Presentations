@@ -300,7 +300,7 @@ If the regulator isn't convinced, wait for a big windstorm to come along to prov
 
 ### Goal: Predict which individuals are likely to leave/retire
 
-## Why do people leave?
+## Why do people leave? {.left}
 
 - Career advancement
 - Dislike Nebraska/rural life
@@ -310,20 +310,25 @@ If the regulator isn't convinced, wait for a big windstorm to come along to prov
 - Two-body problem
 - Family reasons
 
-## Why do people leave?
+## Why do people leave? {.left}
 
-- Career advancement
+- **Career advancement**
 - Dislike Nebraska/rural life (maybe)
 - Better opportunities elsewhere (maybe)
 - Problems with management/coworkers (maybe)
-- ~~Two-body problem~~
 - Retirement
+- ~~Two-body problem~~
 - ~~Family reasons~~
+
+---
+
+<img src="figure/CatOut.gif" width="50%" height="auto" alt="I'm out gif">
 
 ## Available Data
 
 - Salary information, Years of service
-- Race, Gender, Age, Marital Status
+- Race, Gender, Age
+- Number of dependents
 - Education level
 - Work location
 - Job description    
@@ -342,7 +347,7 @@ too many factors that don't have corresponding data
 
 3 Random Forest Models
 
-  1. Resignation probability
+  1. Resignation probability (ignore retirement)
   2. Probability of leaving (resignation or retirement)
   3. Predict resignation, retirement, or stay in a single model
 
@@ -354,9 +359,9 @@ If any model predicts someone has $p > 0.5$ of leaving, examine more closely
 ## Outcome
 
 - Uncanny predictions
-- Early retirement program
-- Currently missing some engineers & operations people who leave for better opportunities
-- Approximately 67% accuracy rate (67% of people who left were predicted to leave by at least one model)
+- Currently missing some highly trained individuals who leave for better opportunities
+- Approximately 67% accuracy rate over the past 6 months (67% of people who left were predicted to leave by at least one model)
+  - Early retirement program influence
 
 ## Lessons
 
@@ -453,9 +458,11 @@ If any model predicts someone has $p > 0.5$ of leaving, examine more closely
 
 
 
-# Big Data Problems {.title}
+# Interactive Visualization of Soybean Population Genetic Data {.title}
 
 ## Big Data Problems
+
+<div class="left">
 
 - "Needle in a Haystack"     
 Finding one interesting thing in 100+ GB of data
@@ -463,9 +470,13 @@ Finding one interesting thing in 100+ GB of data
 - "Needle in a stack of needles"     
 100 interesting things - how to investigate them all?
 
-<br></br>
+</div>
 
-<h3 class = "fragment">Limited bandwidth </h3>
+<div class = "right">
+
+<img src="figure/GoldenRetrieverTreats.gif" width="100%" height="auto" alt="Big Data paralysis">
+
+</div>
 
 ## Big Data
 
@@ -492,9 +503,7 @@ BUT...
 <br>  
 Web-based interactive graphics may be even more size-sensitive than static graphics. 
 
-
-
-# Interactive Visualization of Soybean Population Genetic Data {.title}
+## Interactive Visualization of Soybean Population Genetic Data {.title}
 
 ---
 
@@ -525,13 +534,14 @@ Web-based interactive graphics may be even more size-sensitive than static graph
 - New crosses with highest yield varieties  
 <small>(sequencing + field trials)</small>  
   <br>
-- Genealogy as reported in the breeding literature (1600 varieties)  
+- Genealogy as reported in the breeding literature    
+(1600 varieties)  
 
 ## Visualizing SNPs
 
 <ul>
-<li style="margin:.5em"> SNP: Single Nucleotide Polymorphism, a single basepair mutation  
-(A -> T, G -> A, C -> G)</li>
+<li style="margin:.5em"> SNP: Single Nucleotide Polymorphism<br/>
+a single basepair mutation (A -> T, G -> A, C -> G)</li>
 <li class="fragment" style="margin:.5em"> [Shiny](www.shiny.rstudio.com) applet: Responsive applet for user-directed data subsets</li>
 <li class="fragment" style="margin:.5em"> Show multiple levels of detail (less detail = lower computational load)</li>
 <li class="fragment" style="margin:.5em"> Provide resources in the applet for user exploration (not just a reference tool)</li>
@@ -559,31 +569,32 @@ Must be able to zoom and filter</li>
 
 ## Applet Design
 
-<a href="http://localhost:3838/USDAsoybeans/Shiny/SNP/"><img src="figure/snpapp.svg", width="80%", height="auto", style="border:0px;"></a>
+<a href="http://localhost:3838/USDAsoybeans/Shiny/SNP/"><img src="figure/snpapp.svg", width="95%", height="auto", style="border:0px;"></a>
 
 ---
 
 ### SNP Population Distribution 
 
-<img src="figure/SNP-Overview.jpg" width="90%" height="auto" alt="SNP Applet Overview" style="border:0px;">
+<img src="figure/SNP-Density.jpg" width="95%" height="auto" alt="SNP Density" style="border:0px;">
+
 
 ---
 
 ### Density of SNPs: Chromosome Level
 
-<img src="figure/SNP-Density.jpg" width="90%" height="auto" alt="SNP Density" style="border:0px;">
+<img src="figure/SNP-Overview.jpg" width="95%" height="auto" alt="SNP Applet Overview" style="border:0px;">
 
 ---
 
 ### Individual SNPs: Comparing Varieties
 
-<img src="figure/SNP-VarietyLevel.jpg" width="90%" height="auto" alt="Variety-Level SNP Browser" style="border:0px;">
+<img src="figure/SNP-VarietyLevel.jpg" width="95%" height="auto" alt="Variety-Level SNP Browser" style="border:0px;">
 
 ---
 
 ### Genealogy and Phenotypes
 
-<a href="/storage/Rprojects/USDAsoybeans/Shiny/SNP/www/animint/index.html">Link</a>
-
-<img src="figure/SNP-LinkedPlots1.jpg" width="90%" height="auto" alt="SNP Linked Plots" style="border:0px;">
+<a href="/storage/Rprojects/USDAsoybeans/Shiny/SNP/www/animint/index.html">
+  <img src="figure/SNP-LinkedPlots1.jpg" width="90%" height="auto" alt="SNP Linked Plots" style="border:0px;">
+</a>
 
