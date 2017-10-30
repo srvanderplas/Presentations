@@ -30,16 +30,25 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 
 # Introduction <!-- .slide: class="center" -->
 
-## Brief Explanation of my history
+## Background Information
 
-- Iowa State
-- NPPD
+- PhD from Iowa State in 2015
+  - Dissertation: The Perception of Statistical Graphics
+  - RA with USDA - Soybean Genetics
+- Postdoc: Office of the Vice President for Research
+  - Faculty startup packages and career success
+- Statistical Analyst at Nebraska Public Power District
+  - Started an internal data science program
+  - Analytics projects
+  - Worked with IT to set up data science infrastructure
+- Consultant (side projects)
 
 ## Outline
 
-- Tornado Guided Missiles
-- HR Turnover Prediction
-- Assessing Compensation
+- NPPD Projects
+  - Tornado Guided Missiles
+  - Employee Turnover Prediction
+  - Assessing Compensation
 - USDA Soybean Genetics
 
 # Tornado Guided Missiles <!-- .slide: class="center" -->
@@ -450,7 +459,7 @@ If any model predicts someone has $p > 0.5$ of leaving, examine more closely
 <li class="fragment">Multiple testing
   <ul>
   <li>Goal is to identify any potential problems</li>
-  <li>More work for HR!</li>
+  <li>More work for HR</li>
   </ul>
 </li>
 </ul>
