@@ -32,23 +32,32 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 
 ## Background Information
 
-- PhD from Iowa State in 2015
-  - Dissertation: The Perception of Statistical Graphics
-  - RA with USDA - Soybean Genetics
-- Postdoc: Office of the Vice President for Research
-  - Faculty startup packages and career success
-- Statistical Analyst at Nebraska Public Power District
-  - Started an internal data science program
-  - Analytics projects
-  - Worked with IT to set up data science infrastructure
-- Consultant (side projects)
+<ul>
+<li class="fragment">
+PhD from Iowa State in 2015
+  <ul>
+  <li>Dissertation: The Perception of Statistical Graphics</li>
+  <li> RA with USDA - Soybean Genetics</li>
+  </ul>
+</li>
+<li class="fragment">Postdoc: Office of the Vice President for Research<br>
+Faculty startup packages and career success</li>
+<li class="fragment">Statistical Analyst at Nebraska Public Power District
+  <ul>
+  <li>Started an internal data science training program</li>
+  <li>Analytics projects</li>
+  <li>Worked with IT to set up data science infrastructure</li>
+  </ul>
+</li>
+<li class="fragment">Consultant - Made Shiny applications for Iowa Soybean Assoc. and an Agronomy lab at ISU. </li>
+</ul>
 
 ## Outline
 
 - NPPD Projects
-  - Tornado Guided Missiles
-  - Employee Turnover Prediction
-  - Assessing Compensation
+    - Tornado Guided Missiles
+    - Employee Turnover Prediction
+    - Assessing Compensation
 - USDA Soybean Genetics
 
 # Tornado Guided Missiles <!-- .slide: class="center" -->
@@ -73,33 +82,147 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 
 <ul>
 <li class="fragment">
-Reactor containment can withstand a direct hit from an airplane
-  <ul>
-  <li>Tornadoes aren't an issue for most critical equipment</li>
-  <li>Auxiliary equipment/buildings not as protected</li>
-  </ul>
+Reactor containment can withstand a direct hit from an airplane, tornado, or hurricane
 </li>
-<li class="fragment">FLEX equipment - Tornado resistance 
+<li class="fragment">Tornado resistant FLEX equipment 
   <ul>
   <li>NRC must be convinced that placement is safe</li>
-  <li>Building distance</li>
-  <li>Angle between buildings</li>
+  <li>Building distance (tornado width)</li>
+  <li>Angle between buildings relative to tornado path</li>
   </ul>
 </li>
 </ul>
     
+## FLEX Placement
+
+```{r out.width = "80%", fig.width = 8, fig.height = 5}
+buildings <- data.frame(
+  xmin = c(-3.5, 2),
+  xmax = c(-2.5, 3),
+  ymin = c(1.25, -2.5),
+  ymax = c(2, -1.75),
+  labelx = c(-3, 2.5),
+  labely = c(1.625, -2.125),
+  label = c("FLEX\n#1", "FLEX\n#2")
+)
+
+axisLabs <- data.frame(
+  x = c(0, Inf, 0, -Inf),
+  y = c(Inf, 0, -Inf, 0),
+  label = c("N", "E", "S", "W"),
+  hjust = c(0.5, 1.5, 0.5, -0.5),
+  vjust = c(1.5, 0.5, -0.5, 0.5)
+)
+
+axisLines <- data.frame(
+  x = c(-4, 0),
+  xend = c(4, 0),
+  y = c(0, -2.5),
+  yend = c(0, 2.5)
+)
+
+a <- 4
+b <- 2.5
+
+tornado <- data.frame(
+  x = c(-Inf, -b*.3),
+  xend = c(a, b*.3),
+  y = c(-Inf, a*.3),
+  yend = c(b, -a*.3),
+  xlab = c(.6*a, -b*.15),
+  ylab = c(.6*b, a*.15),
+  label = c("\"Typical\"\nTornado\nPath", "\"Typical\"\nTornado\nWidth"),
+  color = c("red", "blue")
+)
+
+ggplot() + 
+  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), data = buildings,
+            fill = "white", color = "black") + 
+  geom_text(aes(x = labelx, y = labely, label = label, hjust = hjust, vjust = vjust), data = buildings, hjust = .5, vjust = .5) + 
+  coord_fixed(xlim = c(-4, 4), ylim = c(-2.5, 2.5), ratio = 1) +
+  theme_void() + 
+  geom_segment(aes(x = x, xend = xend, y = y, yend = yend), data = axisLines,
+               color = "grey", arrow = arrow(length = unit(0.03, "npc"), ends = "both")) + 
+  geom_text(aes(x = x, y = y, label = label, vjust = vjust, hjust = hjust), 
+            color = "grey30", data = axisLabs) + 
+  geom_segment(aes(x = x, xend = xend, y = y, yend = yend, color = color), data = tornado,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "both")) + 
+  geom_label(aes(x = xlab, y = ylab, label = label, color = color), data = tornado) +
+  scale_color_identity() + 
+  geom_rect(aes(xmin = -Inf, ymin = -Inf, xmax = -4, ymax = -2.5), fill = "white", color = "white")
+```
+
+## FLEX Placement
+
+```{r out.width = "80%", fig.width = 8, fig.height = 5}
+buildings <- data.frame(
+  xmin = c(4, -2),
+  xmax = c(3, -3),
+  ymin = c(1.25, -2),
+  ymax = c(2, -1.25),
+  labelx = c(3.5, -2.5),
+  labely = c(1.625, -1.625),
+  label = c("FLEX\n#1", "FLEX\n#2")
+)
+
+axisLabs <- data.frame(
+  x = c(0, Inf, 0, -Inf),
+  y = c(Inf, 0, -Inf, 0),
+  label = c("N", "E", "S", "W"),
+  hjust = c(0.5, 1.5, 0.5, -0.5),
+  vjust = c(1.5, 0.5, -0.5, 0.5)
+)
+
+axisLines <- data.frame(
+  x = c(-4, 0),
+  xend = c(4, 0),
+  y = c(0, -2.5),
+  yend = c(0, 2.5)
+)
+
+a <- 4
+b <- 2.5
+
+tornado <- data.frame(
+  x = c(-Inf, -b*.3),
+  xend = c(a, b*.3),
+  y = c(-Inf, a*.3),
+  yend = c(b, -a*.3),
+  xlab = c(.6*a, -b*.15),
+  ylab = c(.6*b, a*.15),
+  label = c("\"Typical\"\nTornado\nPath", "\"Typical\"\nTornado\nWidth"),
+  color = c("red", "blue")
+)
+
+ggplot() + 
+  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), data = buildings,
+            fill = "white", color = "black") + 
+  geom_text(aes(x = labelx, y = labely, label = label, hjust = hjust, vjust = vjust), data = buildings, hjust = .5, vjust = .5) + 
+  coord_fixed(xlim = c(-4, 4), ylim = c(-2.5, 2.5), ratio = 1) +
+  theme_void() + 
+  geom_segment(aes(x = x, xend = xend, y = y, yend = yend), data = axisLines,
+               color = "grey", arrow = arrow(length = unit(0.03, "npc"), ends = "both")) + 
+  geom_text(aes(x = x, y = y, label = label, vjust = vjust, hjust = hjust), 
+            color = "grey30", data = axisLabs) + 
+  geom_segment(aes(x = x, xend = xend, y = y, yend = yend, color = color), data = tornado,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "both")) + 
+  geom_label(aes(x = xlab, y = ylab, label = label, color = color), data = tornado) +
+  scale_color_identity() + 
+  geom_rect(aes(xmin = -Inf, ymin = -Inf, xmax = -4, ymax = -2.5), fill = "white", color = "white")
+```
+
 ## Tornado Characteristics in Nebraska
 
 <ul>
+<li class="fragment">Goal: Quantify characteristics of tornadoes within a certain distance of the plant
+    <ul><li> help the engineers defend equipment placement to the NRC</li></ul>
+</li>
+
 <li> NRC used National Weather Service database of tornadoes used to create regulatory guidelines
   <ul><li> covers 1950-2003</li>
   <li> "probably available in PDF or microfilm form somewhere"</li>
   </ul>
 </li>
-
-<li class="fragment">Goal: Quantify characteristics of tornadoes within a certain distance of the plant
-    <ul><li> help the engineers defend equipment placement to the NRC</li></ul>
-    
 <li class = "fragment">Need a report in the next 4 hours</li>
 </ul>
 
@@ -213,13 +336,17 @@ limits.250 <- tornado.250 %>% select(start.long, start.lat, end.long, end.lat) %
 
 ## Tornado Characteristics
 
-NOAA Tornado dataset: recorded tornadoes between 1950 and 2015    
+NOAA Tornado dataset:      
 
+  - all recorded tornadoes between 1950 and 2015  
   - `r nrow(tornadoes)` separate tornado segments
   - path width
   - start/end coordinates
   - intensity
 
+<div class="fragment">
+Assumption: Tornadoes travel in straight lines
+</div>
 
 ## Tornado Characteristics
 
@@ -261,7 +388,7 @@ ggplot(data = tornado.qs) +
 
 
 ## Tornado Characteristics
-```{r qs-tornado-direction, warning = F, dpi = 300}
+```{r qs-tornado-direction, warning = F, dpi = 300, fig.width = 4, fig.height = 4, out.width = "60%"}
 # ggplot(data = tornado.qs) + 
 #   geom_segment(aes(x = 0, y = 0, xend = xdir, yend = ydir), alpha = .1) + 
 #   coord_fixed()
@@ -329,10 +456,6 @@ If the regulator isn't convinced, wait for a big windstorm to come along to prov
 - ~~Two-body problem~~
 - ~~Family reasons~~
 
----
-
-<img src="figure/CatOut.gif" width="50%" height="auto" alt="I'm out gif">
-
 ## Available Data
 
 - Salary information, Years of service
@@ -343,6 +466,10 @@ If the regulator isn't convinced, wait for a big windstorm to come along to prov
 - Job description    
 (security, engineering, operations, maintenance)
 - Birthplace
+
+---
+
+<img src="figure/CatOut.gif" width="50%" height="auto" alt="I'm out gif">
 
 ## Model Errors
 
@@ -377,7 +504,7 @@ If any model predicts someone has $p > 0.5$ of leaving, examine more closely
 <ul>
 <li class="fragment">Databases never have all of the information you want for problems like this
   <ul>
-  <li>Some of it would probably be illegal to ask for</li>
+  <li>Some of it would probably be illegal to use</li>
   </ul>
 </li>
 <li class="fragment">Spelling is the bane of my existence
@@ -391,6 +518,11 @@ If any model predicts someone has $p > 0.5$ of leaving, examine more closely
   <li>Changing interpretation of model errors does make model validation interesting</li>
   </ul>
 </li>
+</ul>
+
+## Lessons
+
+<ul>
 <li class="fragment">Cost/benefit:
   <ul>
   <li>Surprise resignation: very bad</li>
