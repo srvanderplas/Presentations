@@ -550,7 +550,8 @@ If any model predicts someone has $p > 0.5$ of leaving, examine more closely
 ## Approach
 
 <ul>
-<li>Compare 2016 total compensation</li>
+<li>Compare 2016 total compensation    
+(base pay + overtime, shift differentials, bonuses)</li>
 <li>Methods:
   <ul>
   <li class="fragment">Overall regression (all SSEGs) with gender*SSEG interaction + other covariates</li>
@@ -563,6 +564,7 @@ If any model predicts someone has $p > 0.5$ of leaving, examine more closely
   </li>
   </ul>
 </li>
+<li> Repeat the same analysis using annual compensation (base pay only)</li>
 </ul>
 
 ## Results
