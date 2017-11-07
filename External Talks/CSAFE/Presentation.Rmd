@@ -543,15 +543,31 @@ If any model predicts someone has $p > 0.5$ of leaving, examine more closely
 
 ## NPPD's workforce
 
-### > 80% male, > 97% white
+<h3 class = "fragment"> 80% male, > 97% white </h3>
 
-### Most potential SSEGs have one or two minority members (at best)
+<h3 class = "fragment"> Most potential SSEGs have one or two minority members (at best) </h3>
 
 ## Approach
 
 <ul>
-<li>Compare 2016 total compensation    
-(base pay + overtime, shift differentials, bonuses)</li>
+<li class = "fragment">2016 total compensation    
+(base pay + overtime, shift differentials, bonuses)    
+<ul>
+<li> Lagging indicator</li>
+<li> Job changes mid-year</li>
+</ul>
+</li>
+<li class = "fragment">Current base pay 
+<ul>
+<li>Instantaneous indicator</li>
+<li>Overtime availability may vary by gender/race</li>
+</ul>
+</li>
+</ul>
+
+## Approach
+
+<ul>
 <li>Methods:
   <ul>
   <li class="fragment">Overall regression (all SSEGs) with gender*SSEG interaction + other covariates</li>
@@ -564,12 +580,13 @@ If any model predicts someone has $p > 0.5$ of leaving, examine more closely
   </li>
   </ul>
 </li>
-<li> Repeat the same analysis using annual compensation (base pay only)</li>
 </ul>
 
 ## Results
 
 \<Censored\>
+
+<img src="figure/Hiding.gif" width="70%" height="auto" alt="Censored">
 
 ## Issues
 
