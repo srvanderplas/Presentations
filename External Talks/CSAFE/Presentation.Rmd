@@ -758,3 +758,12 @@ Must be able to zoom and filter</li>
   <img src="figure/SNP-LinkedPlots1.jpg" width="90%" height="auto" alt="SNP Linked Plots" style="border:0px;">
 </a>
 
+# Conclusion
+
+## Conclusion
+
+- Analyses are never as simple as they were in class
+- It's important to be grounded in theory, but willing to adapt to a specific situation
+- Visualizations are critical for communication
+- Communicating statistical results without technical details is very important
+- Messy data will get you every time
