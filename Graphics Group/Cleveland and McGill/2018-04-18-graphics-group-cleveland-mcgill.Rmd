@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, cache = F, echo = F, include = F}
-knitr::opts_chunk$set(echo = F, message = F, warning = F)
+knitr::opts_chunk$set(echo = F, message = F, warning = F, cache = T)
 
 library(tidyverse)
 library(gridExtra)
@@ -21,7 +21,6 @@ library(gridExtra)
 
 <p class="double">
 <img src="elementary-perceptual-tasks.png" class="one-col-image"/>    
-<br/>
 "a viewer performs one or more of these mental-visual tasks to extract the values of real variables represented on most graphs"    
 <br/>
 Not pictured: color hue, texture
@@ -31,7 +30,7 @@ Not pictured: color hue, texture
 
 <p class="double">
 <img src="position-common-scale.png" class="one-col-image"/>    
-<br/><br>
+<br/>
 Goal: perceive relative magnitude of the values    
 <br/>
 Perceptual Task: compare position on a common scale
@@ -64,9 +63,9 @@ grid.arrange(bar, pie, ncol = 2)
 
 <p class="double">
 <img src="2018-04-18-graphics-group-cleveland-mcgill_files/figure-revealjs/bar-pie-1.png" class="one-col-image center"/>    
-<br/>
+<br/><br>
 <b>bar</b>: position/length along a common scale, also area
-<br/>
+<br/><br>
 <b>pie</b>: angle (arc length, area)
 </p>
 
