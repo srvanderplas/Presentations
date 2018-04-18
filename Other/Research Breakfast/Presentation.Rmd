@@ -1,0 +1,81 @@
+---
+title: ""
+author: "Susan VanderPlas"
+output:
+  rmdshower::shower_presentation:
+    self_contained: false
+    ratio: 16x10
+    css: shower.css
+---
+
+```{r setup, cache = F, echo = F, include = F}
+knitr::opts_chunk$set(echo = F, message = F, warning = F, cache = T)
+
+library(tidyverse)
+library(ShoeprintCleanR)
+library(gridExtra)
+library(imager)
+
+pic_paths <- list.files("/storage/CSAFE/Test Shoes/Prints/", 
+                        full.names = T, 
+                        pattern = "(\\d{1,}[LR]_\\d{8}_\\d_\\d_\\d_csafe_[a-z]{1,}).tif$")
+i <- which(str_detect(pic_paths, "006070R_20171113_6_1_1_csafe_jekruse"))
+orig_shoe <- shoe <- load.image(pic_paths[i])
+```
+# Matching Footwear Impressions
+
+## (Ideal version) Original Data
+```{r out.width = "90%", fig.width = 6, fig.height = 4}
+cleanshoe <- shoe %>%
+  quantize_colors(8) %>%
+  remove_print_label(thr = "10%") %>%
+  remove_local_background() %>%
+  quantize_colors(4) %>%
+  remove_border_lines(maxiter = 10) %>%
+  crop_border(axis = "xy", tol = .1) %>%
+  align_shoe_print() %>%
+  crop_border()
+
+plot(imrotate(shoe, 90), axes = F)
+# plot(imrotate(cleanshoe, 90), axes = F)
+```
+
+
+## (Ideal version) Cleaned Data
+```{r out.width = "90%", fig.width = 6, fig.height = 4}
+# plot(imrotate(shoe, 90), axes = F)
+plot(imrotate(cleanshoe, 90), axes = F)
+```
+Intelligent automatic processing of images to remove background artifacts
+
+## (Ideal version) Analysis
+
+- Identify important features of the shoe
+- Extract the features
+- Compare to a database of shoeprint features or a set of suspect shoe prints
+- Find a candidate set of shoes to examine further
+- Use image matching algorithms to identify correspondance between test image and database images
+- Determine probability of match
+- Compare to current methods (human perception)
+
+
+## Less Ideal version
+
+- Partial prints
+- Smears
+- Incomplete databases
+- Hard to identify shoe model from print or partial print to get comparison prints
+
+## Computational Methods
+
+- Random Forests
+- Image analysis methods- SIFT, SURF, etc.
+- ???
+- R package development to make code available to crime labs and practitioners
+
+## Data size
+
+- 15,315 images (color, black and white, smudged, unsmudged, 2D, 3D) 
+    - growing weekly
+- 4902 black and white powder prints 
+    - = 207 GB

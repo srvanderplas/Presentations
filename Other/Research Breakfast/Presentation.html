@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="Presentation_files/shower-ribbon/package/styles/screen-16x10.css">
+  <link rel="stylesheet" href="Presentation_files/rmdshower/style-common.css">
+  <link rel="stylesheet" href="Presentation_files/rmdshower/style-ribbon.css">
+  <link rel="stylesheet" href="Presentation_files/shower-ribbon/style-override.css">
+  
+  
+  
+            <link rel="stylesheet" href="shower.css"/>
+      
+  
+</head>
+
+<body class="shower list">
+
+  <header class="caption">
+    <h1></h1>
+    <p>Susan VanderPlas</p>
+  </header>
+
+  
+  
+<section id="matching-footwear-impressions" class="titleslide slide level1"><h2 class="shout">Matching Footwear Impressions</h2></section><section id="ideal-version-original-data" class="slide level2">
+<h2>(Ideal version) Original Data</h2>
+<p><img src="Presentation_files/figure-revealjs/unnamed-chunk-1-1.png" width="90%" /></p>
+</section><section id="ideal-version-cleaned-data" class="slide level2">
+<h2>(Ideal version) Cleaned Data</h2>
+<p><img src="Presentation_files/figure-revealjs/unnamed-chunk-2-1.png" width="90%" /> Intelligent automatic processing of images to remove background artifacts</p>
+</section><section id="ideal-version-analysis" class="slide level2">
+<h2>(Ideal version) Analysis</h2>
+<ul>
+<li>Identify important features of the shoe</li>
+<li>Extract the features</li>
+<li>Compare to a database of shoeprint features or a set of suspect shoe prints</li>
+<li>Find a candidate set of shoes to examine further</li>
+<li>Use image matching algorithms to identify correspondance between test image and database images</li>
+<li>Determine probability of match</li>
+<li>Compare to current methods (human perception)</li>
+</ul>
+</section><section id="less-ideal-version" class="slide level2">
+<h2>Less Ideal version</h2>
+<ul>
+<li>Partial prints</li>
+<li>Smears</li>
+<li>Incomplete databases</li>
+<li>Hard to identify shoe model from print or partial print to get comparison prints</li>
+</ul>
+</section><section id="computational-methods" class="slide level2">
+<h2>Computational Methods</h2>
+<ul>
+<li>Random Forests</li>
+<li>Image analysis methods- SIFT, SURF, etc.</li>
+<li>???</li>
+<li>R package development to make code available to crime labs and practitioners</li>
+</ul>
+</section><section id="data-size" class="slide level2">
+<h2>Data size</h2>
+<ul>
+<li>15,315 images (color, black and white, smudged, unsmudged, 2D, 3D)
+<ul>
+<li>growing weekly</li>
+</ul></li>
+<li>4902 black and white powder prints
+<ul>
+<li>= 207 GB</li>
+</ul></li>
+</ul>
+</section>
+
+  <!--
+  To hide progress bar from entire presentation
+  just remove “progress” element.
+  -->
+  <!-- <div class="progress"></div> -->
+  <script src="Presentation_files/rmdshower/node_modules/shower/node_modules/shower-core/shower.min.js"></script>
+  <!-- Copyright © 2015 Yours Truly, Famous Inc. -->
+  <!-- Photos by John Carey, fiftyfootshadows.net -->
+
+  
+  
+</body>
+</html>
