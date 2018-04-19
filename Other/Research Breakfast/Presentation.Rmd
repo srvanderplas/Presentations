@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Shoeprint Identification"
 author: "Susan VanderPlas"
 output:
   rmdshower::shower_presentation:
