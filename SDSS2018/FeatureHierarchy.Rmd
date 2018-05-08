@@ -79,8 +79,8 @@ We know that certain features are processed automatically, without any extra eff
 
 <div class = "double">
 <p class = "double-flow">
-<blockquote>The whole is different than the sum of the parts</blockquote>
-<img src="triangle.svg" style="display:block;margin-left:auto;margin-right:auto;" width="50%">    
+<img src="triangle.svg" style="display:block;margin-left:auto;margin-right:auto;" width="50%">   
+<blockquote>The whole is different than the sum of the parts</blockquote> 
 </p>
 <p class="double-flow">
 <ul><li>Rules that make sense of complex visual information using experience</li>
@@ -96,21 +96,27 @@ x2 <- rnorm(25, mean=0, sd=0.5)
 y1 <- rnorm(25, mean=1, sd=0.5)
 y2 <- rnorm(25, mean=2, sd=0.5)
 p1 <- qplot(c(x1,x2), c(y1,y2)) + theme_bw() + xlab("x") + ylab("y") + 
-  theme(axis.title = element_blank(), axis.text = element_blank()) + 
+  theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank()) + 
+  ggtitle("Proximity", subtitle = "Two Groups of Points")
 
 x <- rnorm(60)
 y <- rnorm(60)
 group <- rep(1:4, length=60)
 p2 <- qplot(x,y, color=factor(group%/%2), shape=factor(group%/%2)) + theme_bw() + xlab("x") + ylab("y") + scale_color_brewer(palette="Set1") + theme(legend.position="none") + 
-  theme(axis.title = element_blank(), axis.text = element_blank())
+  theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank()) + 
+  ggtitle("Similarity", subtitle = "Three Groups of Points")
 
-x1 <- runif(50,-.75,1.25)
-y1 <- x1^2 - x1 + rnorm(50, sd=0.1)
-x2 <- runif(25,-.75,1.25)
-y2 <- x2 + rnorm(25, sd=0.1)
+x3 <- runif(50,-.75,1.25)
+y3 <- x3^2 - x3 + rnorm(50, sd=0.1)
+x4 <- runif(25,-.75,1.25)
+y4 <- x4 + rnorm(25, sd=0.1)
 
-p3 <- qplot(c(x1,x2),c(y1,y2)) + theme_bw() + xlab("x") + ylab("y")  + 
-  theme(axis.title = element_blank(), axis.text = element_blank())
+p3 <- qplot(c(x3,x4),c(y3,y4)) + theme_bw() + xlab("x") + ylab("y")  + 
+  theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank()) + 
+  ggtitle("Good Continuation", subtitle = "Two Curves")
 
 grid.arrange(p1, p2, p3, nrow = 1)
 ```
+
+## Statistical Lineups
+
