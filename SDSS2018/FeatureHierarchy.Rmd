@@ -48,9 +48,9 @@ shape5pal <- best.combo(5, shapes, shapetm)
 ### Iowa State University
 
 
-<!-- 
+<footer class="footer">
 We're not good at processing information in raw form - graphics increase the bandwidth and allow us to see things in the data that are not obvious from looking at the numbers alone.
--->
+</footer>
 
 ## Graphics and Perception
 
@@ -59,11 +59,13 @@ We're not good at processing information in raw form - graphics increase the ban
 John Tukey
 
 ## {.fullpage}
-<!-- 
+
+<footer class="footer">
 This is the Hertzsprung-Russell Diagram, which shows the temperature and brightness of stars. As stars age, in most cases they lose brightness and begin to cool, progressing along the main sequence. 
 
 This simple scatterplot provided an incredible amount of information about stars as they age - the data had been available for many years in tabular form, but once it was plotted, the data was transformed into useable information.
--->
+</footer>
+
 
 ```{r HR-diagram, message = F, warning = F, echo = F}
 # download.file("https://github.com/astronexus/HYG-Database/blob/master/hygfull.csv?raw=true", destfile = "stars.csv")
@@ -97,12 +99,13 @@ ggplot(data = filter(stars, Distance < 500)) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 ```
 
-<!-- 
+<footer class="footer"> 
 What is it about graphics that facilitates this information processing? 
 Do the aesthetics used impact the conclusions we draw?
 
 We know that certain features are processed automatically, without any extra effort on our part - color, line orientation, and shape are examples.
--->
+</footer>
+
 
 ## Gestalt Laws of Perception
 
@@ -147,11 +150,11 @@ p3 <- qplot(c(x3,x4),c(y3,y4)) + theme_bw() + xlab("x") + ylab("y")  +
 grid.arrange(p1, p2, p3, nrow = 1)
 ```
 
-How do plot aesthetics (color, shape, trend lines, error bands) change our perception the plotted data?
+How do plot aesthetics change our perception of the plotted data?
 
 ## Statistical Lineups
 
-<!--
+<footer class="footer">
 It's tough to design experiments to ask people about mental processes which are subconscious.
 
 Psychologists design really complicated experiments that allow them to infer what's going on "underneath the surface" without activating people's conscious awareness.
@@ -159,7 +162,8 @@ Psychologists design really complicated experiments that allow them to infer wha
 In statistical graphics, it's much easier. We can use a graphical hypothesis test to examine competing hypotheses and look at the rate at which participants detect the target plot.
 
 These graphical hypothesis tests are called lineups
--->
+</footer>
+
 <p class = "double">
 ```{r single-target-lineup, out.width = "50%", fig.width = 6, fig.height = 6, out.extra="class='one-col-image'"}
 df <- data_frame(x = seq(-10, 10, length.out = 30) + rnorm(30, 0, .1),
@@ -172,14 +176,14 @@ ggplot(aes(x = x, y = y), data = lineupdf) +
   theme_lineup()
 
 ```
-Which plot is the most different?<br/><br/>
+Which plot is the most different?<br/>
 Null plot data is from a data-generating method consistent with the null hypothesis<br/><br/>
 The `nullabor` package helps with null data creation
-<!-- 
-Null plots are generated using a method consistent with the specified null hypothesis - in this case, that there is no relationship between x and y. 
--->
 </p>
 
+<footer class="footer">
+Null plots are generated using a method consistent with the specified null hypothesis - in this case, that there is no relationship between x and y. 
+</footer>
 
 
 ## Two-Target Lineups
@@ -207,16 +211,16 @@ Null plots are generated using a method consistent with the specified null hypot
 - Generate null data from a mixture model $M_0$ with $n_c$ observations from $M_C$ and $n_t = N - n_c$ observations from $M_T$
 
 ## Linear Model
-Parameter: $\sigma_T$, the amount of variability around the trend line
+<div style="display:inline-block">
+Parameter: $\sigma_T$, the variability around the trend line
 
 1. Generate evenly spaced $x_i$ in $[-1, 1]$
 2. Jitter $x_i$
 3. Generate $y_i = x_i + e_i$, $e_i \sim N(0, \sigma_T^2)$
 4. Center and scale $x_i, y_i$
-
-## Linear Model
-
-```{r linear-model-params, fig.width = 6, fig.height = 2}
+</div>
+<div style="display:inline-block;margin-left:auto;text-align:right">
+```{r linear-model-params, fig.width = 2, fig.height = 6}
 sd <- c(.25, .35, .45)
 res <- map_df(sd, ~sim.line(N=45, sd.trend=.x), .id = "sd.trend") %>%
   as_data_frame() %>%
@@ -228,14 +232,15 @@ res <- map_df(sd, ~sim.line(N=45, sd.trend=.x), .id = "sd.trend") %>%
 xlim <- c(min(c(-2, res$x)), max(c(2, res$x)))+c(-0.1, 0.1)
 ylim <- c(min(c(-2, res$y)), max(c(2, res$y)))+c(-0.1, 0.1)
   
-qplot(x,y, data=res, pch=I(1), ylab=NULL, xlab=NULL) + facet_grid(facets=.~label, labeller="label_parsed") + 
+qplot(x,y, data=res, pch=I(1), ylab=NULL, xlab=NULL) + 
+  facet_grid(facets=label~., labeller="label_parsed") + 
   theme(aspect.ratio=1, plot.margin=unit(c(0,0,0,0), "cm")) + theme_bw() +
   scale_x_continuous(breaks=c(-2, -1, 0, 1, 2), limits=xlim) + 
   scale_y_continuous(breaks=c(-2, -1, 0, 1, 2), limits=ylim)   + 
   theme(panel.border = element_rect(fill=NA, color="black"),
         plot.background = element_rect(fill = "transparent", colour = NA))
 ```
-
+</div>
 
 
 ## Cluster Model
@@ -344,7 +349,6 @@ ggplot(aes(x=x, y=y, color=color, shape=shape), data=res) +
 ## Experimental Design - Plot Aesthetics
 
 ```{r aes-combo, fig.width = 15, fig.height = 6.5, out.width = "90%"}
-
 set.seed(325095273)
 data <- mixture.sim(K=5, N=75, sd.cluster=.20, sd.trend=.25, lambda=0.5)
 plot.parms <- expand.grid(
@@ -481,6 +485,39 @@ grid.rect(x = 0, y = 0, width = 1, height = .5, gp = gpar(lwd = 2, col = "black"
 ```
 
 10 Aesthetics  $\times$ 54 data sets = 540 plots
+
+## Which plots are the most different?
+
+<div class = "double">
+<p class="double-flow">
+<ul>
+<li>22 Evaluations</li>
+<li class = "fragment">Plot 12: 59.1% (Trend Target)</li>
+<li class = "fragment">Plot 5: 9.1% (Cluster Target)</li>
+<li class = "fragment">Other: 31.7%</li>
+</ul>
+</p>
+<p class = "double-flow">
+<img src="figure/set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png"  style="display:block;margin-left:auto;margin-right:auto;" width="100%"/>
+</p>
+</div>
+
+## Which plots are the most different?
+
+<div class = "double">
+<p class="double-flow">
+<ul>
+<li>31 Evaluations</li>
+<li class = "fragment">Plot 12: 9.7% (Trend Target)</li>
+<li class = "fragment">Plot 5: 29.0% (Cluster Target)</li>
+<li class = "fragment">Plot 18: 32.3%</li>
+<li class = "fragment">Other: 29.1%</li>
+</ul>
+</p>
+<p class = "double-flow">
+<img src="figure/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png"  style="display:block;margin-left:auto;margin-right:auto;" width="100%"/>
+</p>
+</div>
 
 ## Experimental Design
 
@@ -643,3 +680,13 @@ ggplot(data=gvl.fixef) +
         panel.margin=grid::unit(c(0,0,0,0), unit="cm"))
 
 ```
+
+<footer class="footer">
+Overall, when there are multiple aesthetics which emphasize point similarity over linear continuity, participants are more likely to identify the cluster target relative to the trend target. When viewing graphical displays, the Gestalt principal of similarity tends to dominate over the gestalt principal of 
+
+Interestingly, the two conflict conditions produce opposite effects - with color, ellipse, trend, and error, participants are significantly more likely to select the trend target; with color and trend, participants are significantly more likely to select the cluster target. This may be because the ellipses in the linear target are all in a line, which, when combined with the error bands may serve to further highlight the continuity of the points. This effect is related to the gestalt principal of common region, which, when combined with the continuity effect would strengthen the likelihood of participant detection of the trend target plot. When the ellipses and error bands are not present, the principal of common region is not recruited and the similarity effect dominates over the continuity effect created by the trend line. 
+
+In addition, while not shown here, the estimates for parameters alpha_C and alpha_T are highly significant: as variability increases, the strength of the target's signal decreases and the probability of detecting the corresponding target also decreases.
+</footer>
+
+
