@@ -211,7 +211,7 @@ Null plots are generated using a method consistent with the specified null hypot
 - Generate null data from a mixture model $M_0$ with $n_c$ observations from $M_C$ and $n_t = N - n_c$ observations from $M_T$
 
 ## Linear Model
-<div style="display:inline-block">
+<div style="display:inline-block;vertical-align:top;">
 Parameter: $\sigma_T$, the variability around the trend line
 
 1. Generate evenly spaced $x_i$ in $[-1, 1]$
@@ -219,7 +219,7 @@ Parameter: $\sigma_T$, the variability around the trend line
 3. Generate $y_i = x_i + e_i$, $e_i \sim N(0, \sigma_T^2)$
 4. Center and scale $x_i, y_i$
 </div>
-<div style="display:inline-block;margin-left:auto;text-align:right">
+<div style="display:inline-block;margin-left:auto;text-align:right;vertical-align:top;">
 ```{r linear-model-params, fig.width = 2, fig.height = 6}
 sd <- c(.25, .35, .45)
 res <- map_df(sd, ~sim.line(N=45, sd.trend=.x), .id = "sd.trend") %>%
