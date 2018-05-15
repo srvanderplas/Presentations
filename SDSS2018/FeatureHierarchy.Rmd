@@ -194,8 +194,8 @@ Null plots are generated using a method consistent with the specified null hypot
 <p class="double-flow">
 <ul>
 <li>22 Evaluations</li>
-<li class = "fragment">Plot 12: 59.1% (Trend Target)</li>
-<li class = "fragment">Plot 5: 9.1% (Cluster Target)</li>
+<li class = "fragment">Plot 12: 59.1%</li>
+<li class = "fragment">Plot 5: 9.1%</li>
 <li class = "fragment">Other: 31.7%</li>
 </ul>
 </p>
@@ -210,8 +210,8 @@ Null plots are generated using a method consistent with the specified null hypot
 <p class="double-flow">
 <ul>
 <li>31 Evaluations</li>
-<li class = "fragment">Plot 12: 9.7% (Trend Target)</li>
-<li class = "fragment">Plot 5: 29.0% (Cluster Target)</li>
+<li class = "fragment">Plot 12: 9.7% </li>
+<li class = "fragment">Plot 5: 29.0% </li>
 <li class = "fragment">Plot 18: 32.3%</li>
 <li class = "fragment">Other: 29.1%</li>
 </ul>
@@ -883,7 +883,7 @@ At the beginning of the results section, we talked about how plots with ellipse 
 ## Participant Reasoning - Missing Ellipses
 
 <p class="double">
-<img src="figure/89903c2363590827b167328f09a9f076.png" width = "50%" class="one-col-image" style="margin-bottom:auto;"/><br/>
+<img src="figure/89903c2363590827b167328f09a9f076.png" width = "50%" class="one-col-image" style="margin-bottom:auto;"/><br/><br/>
 Some of the null plots were missing an ellipse - failed to enforce group size constraints on k-means algorithm.
 </p>
 
@@ -910,4 +910,4 @@ We re-ran this experiment with more even null plot cluster allocation, but hit a
     - group size inequality
     - clustering
 - Null data-generating models are hard!    
-  The brain runs 100s of visual "tests" and designing for all of them simultaneously is impossible.oo
+  The brain runs 100s of visual "tests" and designing for all of them simultaneously is impossible
