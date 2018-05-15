@@ -16,6 +16,8 @@ suppressPackageStartupMessages(library(nullabor))
 source("code/MixtureLineups.R")
 source("code/theme_lineup.R")
 ```
+
+
 ```{r color-scheme-setup}
 
 colors <-  c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
@@ -47,16 +49,16 @@ shape5pal <- best.combo(5, shapes, shapetm)
 ### Susan VanderPlas
 ### Iowa State University
 
-
-<footer class="footer">
-We're not good at processing information in raw form - graphics increase the bandwidth and allow us to see things in the data that are not obvious from looking at the numbers alone.
-</footer>
-
 ## Graphics and Perception
 
 > The greatest value of a picture is when it forces us to notice what we never expected to see.
 
 John Tukey
+
+
+<footer class="footer">
+We're not good at processing information in raw form - graphics increase the bandwidth and allow us to see things in the data that are not obvious from looking at the numbers alone.
+</footer>
 
 ## {.fullpage}
 
@@ -186,6 +188,39 @@ Null plots are generated using a method consistent with the specified null hypot
 </footer>
 
 
+## Which plots are the most different?
+
+<div class = "double">
+<p class="double-flow">
+<ul>
+<li>22 Evaluations</li>
+<li class = "fragment">Plot 12: 59.1% (Trend Target)</li>
+<li class = "fragment">Plot 5: 9.1% (Cluster Target)</li>
+<li class = "fragment">Other: 31.7%</li>
+</ul>
+</p>
+<p class = "double-flow">
+<img src="figure/set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png"  style="display:block;margin-left:auto;margin-right:auto;" width="100%"/>
+</p>
+</div>
+
+## Which plots are the most different?
+
+<div class = "double">
+<p class="double-flow">
+<ul>
+<li>31 Evaluations</li>
+<li class = "fragment">Plot 12: 9.7% (Trend Target)</li>
+<li class = "fragment">Plot 5: 29.0% (Cluster Target)</li>
+<li class = "fragment">Plot 18: 32.3%</li>
+<li class = "fragment">Other: 29.1%</li>
+</ul>
+</p>
+<p class = "double-flow">
+<img src="figure/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png"  style="display:block;margin-left:auto;margin-right:auto;" width="100%"/>
+</p>
+</div>
+
 ## Two-Target Lineups
 
 <div class = "double">
@@ -208,7 +243,9 @@ Null plots are generated using a method consistent with the specified null hypot
 
 - Generate data from a linear model $M_T$ (trend)
 - Generate data from a $k$ cluster model $M_C$
-- Generate null data from a mixture model $M_0$ with $n_c$ observations from $M_C$ and $n_t = N - n_c$ observations from $M_T$
+- Generate null data from a mixture model $M_0$ 
+    - $n_c$ observations from $M_C$ 
+    - $n_t = N - n_c$ observations from $M_T$
 
 ## Linear Model
 <div style="display:inline-block;vertical-align:top;">
@@ -219,8 +256,8 @@ Parameter: $\sigma_T$, the variability around the trend line
 3. Generate $y_i = x_i + e_i$, $e_i \sim N(0, \sigma_T^2)$
 4. Center and scale $x_i, y_i$
 </div>
-<div style="display:inline-block;margin-left:auto;text-align:right;vertical-align:top;">
-```{r linear-model-params, fig.width = 2, fig.height = 6}
+<div style="display:inline-block;margin-left:auto;text-align:right;vertical-align:top;margin-top:-50px;">
+```{r linear-model-params, fig.width = 2, fig.height = 5}
 sd <- c(.25, .35, .45)
 res <- map_df(sd, ~sim.line(N=45, sd.trend=.x), .id = "sd.trend") %>%
   as_data_frame() %>%
@@ -255,7 +292,7 @@ Parameters: $K$ clusters, $\sigma_C$ cluster variability
 
 ## Cluster Model
 
-```{r cluster-model-params, fig.width = 6, fig.height = 4.5}
+```{r cluster-model-params, fig.width = 7, fig.height = 4.5}
 parms <- data_frame(K = rep(c(3, 5), each = 3),
                     N = c(45, 45, 45, 75, 75, 75),
                     sd.cluster = c(.25, .3, .35, .2, .25, .3)) %>%
@@ -293,7 +330,8 @@ ggplot(aes(x=x, y=y, color=color, shape=shape), data=res) +
 
 ## Mixture Model
 
-$n_c$ points from $M_C$, $N - n_c = n_T$ points from $M_T$, where $n_c \sim Binomial(N, \lambda)$
+- $n_c$ points from $M_C$, where $n_c \sim Binomial(N, \lambda)$
+- $N - n_c = n_T$ points from $M_T$
 
 Groups created by k-means clustering
 
@@ -333,6 +371,13 @@ ggplot(aes(x=x, y=y, color=color, shape=shape), data=res) +
           plot.background = element_rect(fill = "transparent", colour = NA))
 
 ```
+
+<footer class="footer">
+On the left side of the image are plots that are generated using the trend model; on the right side, plots generated using the cluster model. Mixture model plots are in the middle. All null plots in this experiment are generated using $\lambda = 0.5$, that is, points are equally likely to be generated from trend or cluster models.
+
+The null plots tend to look like slightly lumpy linear trends, but even with cluster model plots, there is a significant linear trend - this ensures that cluster plots don't stick out solely due to differences in point orientation. 
+</footer>
+
 
 ## Experimental Design - Data Parameters
 
@@ -486,49 +531,20 @@ grid.rect(x = 0, y = 0, width = 1, height = .5, gp = gpar(lwd = 2, col = "black"
 
 10 Aesthetics  $\times$ 54 data sets = 540 plots
 
-## Which plots are the most different?
-
-<div class = "double">
-<p class="double-flow">
-<ul>
-<li>22 Evaluations</li>
-<li class = "fragment">Plot 12: 59.1% (Trend Target)</li>
-<li class = "fragment">Plot 5: 9.1% (Cluster Target)</li>
-<li class = "fragment">Other: 31.7%</li>
-</ul>
-</p>
-<p class = "double-flow">
-<img src="figure/set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png"  style="display:block;margin-left:auto;margin-right:auto;" width="100%"/>
-</p>
-</div>
-
-## Which plots are the most different?
-
-<div class = "double">
-<p class="double-flow">
-<ul>
-<li>31 Evaluations</li>
-<li class = "fragment">Plot 12: 9.7% (Trend Target)</li>
-<li class = "fragment">Plot 5: 29.0% (Cluster Target)</li>
-<li class = "fragment">Plot 18: 32.3%</li>
-<li class = "fragment">Other: 29.1%</li>
-</ul>
-</p>
-<p class = "double-flow">
-<img src="figure/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png"  style="display:block;margin-left:auto;margin-right:auto;" width="100%"/>
-</p>
-</div>
 
 ## Experimental Design
 
 - 1201 participants from Mechanical Turk
-- Each participant evaluates 10 plots (1201 evaluations)
+- Each participant evaluates 10 plots (12010 evaluations)
     - Each $\sigma_C \times \sigma_T$ value with one replicate, randomized across $K$ values
     - All 10 aesthetic types
 - Participants select the plot or plots which are most different
     - Provide a short explanation
     - Rate confidence level
 
+<footer class="footer">
+The experiment is set up as a balanced incomplete block design, where each participant sees all 10 aesthetic types, and 9 distinct variability combinations, randomized across number of groups. Participants are instructed to select the plots which are most different, and then asked to briefly explain their reasoning and rate their confidence in their answer. 
+</footer>
 
 ## Results
 ```{r, fig.width = 6, fig.height = 3, out.width = "80%"}
@@ -557,6 +573,10 @@ ggplot() +
 ```
 
 Most participants identified a mix of cluster and trend targets
+
+<footer class="footer">
+We expect that there will be more cluster plot identifications than trend plot identifications, as there are more aesthetic combinations which emphasize clustering. This plot shows that most participants identified some cluster and some trend target plots; that is, that participants were sensitive to the different aesthetics in the charts.
+</footer>
 
 ## Results
 
@@ -615,27 +635,40 @@ ggplot() +
 
 ```
 
+<footer class="footer">
+This plot shows the aesthetic types and proportion of target plot selections. Participants were more likely to choose cluster targets across plot aesthetic types.  When ellipses were present, there were many more participants selecting null plots; we will discuss why this occurred at the end of the presentation. 
+</footer>
 
 ## Faceoff Model
 
 - Examine trials in which participants identified at least one target (`r nrow(faceoff)`)
 - Compare P(select cluster target) to P(select trend target)
 
-$ C_{ijk} := \left\{\text{Participant }k\text{ selects the cluster target for dataset }j\text{ with aesthetic }i\right\}$
+$$C_{ijk} := \left\{\begin{array}{c}\text{Participant }k\text{ selects the cluster target }\\
+\text{for dataset }j\text{ with aesthetic }i\end{array}\right\}$$
+
+<footer class="footer">
+We fit several models to the participant responses, but the most interesting of these models is a conditional model which analyzes only trials in which participants selected one of the target plots. We compare the probability that participants select the cluster target to the probability that participants select the trend target, modeling the implicit choice between the two competing data generating models. 
+</footer>
 
 ## Faceoff Model
 
 $$\text{logit} P(C_{ijk}|C_{ijk}\cup T_{ijk}) = \mathbf{W}\alpha + \mathbf{X}\beta + \mathbf{J}\gamma + \mathbf{K}\eta$$
 
 - $\alpha$: vector of fixed effects describing the effect of data parameters $\sigma_C,\sigma_T, K$
-- $\beta$: vector of fixed effects describing the effect of aesthetics 
-- $\gamma_j$: random effect of dataset, $\gamma_j\overset{iid}{\sim} N(0, \sigma^2_{\text{data}})$
-- $eta_k$: random effect of participantm $\eta_k\overset{iid}{\sim} N(0, \sigma^2_{\text{participant}})$
+- $\beta$: vector of fixed effects describing the effect of aesthetics $1 \leq i \leq 10$
+- $\gamma_j$: random effect of dataset, $\gamma_j\sim N(0, \sigma^2_{\text{data}})$
+- $\eta_k$: random effect of participant $\eta_k\sim N(0, \sigma^2_{\text{participant}})$
 - $\epsilon_{ijk}$: error associated with single evaluation of plot $ij$ by participant $k$, $\epsilon_{ijk}\sim N(0, \sigma^2_e)$
+
+<footer class="footer">
+The faceoff model is a logistic mixed effects model, with fixed effects describing the effects of data parameters sigma C, sigma T, and K, as well as the effects of the aesthetics. We include random effects to describe dataset and participant variability, as well as the error associated with each plot identification by a single participant. All errors are orthogonal due to the study design and are assumed to be iid. 
+</footer>
+
 
 ## Faceoff Model
 
-```{r, fig.width = 6, fig.height = 4, out.width = "75%"}
+```{r, fig.width = 6, fig.height = 4, out.width = "75%", eval = F}
 library(lme4)
 gvl.4 <-  glmer(cluster.correct~sdline_new + sdgroup_new +k_new + plottype + (1|data_name) + (1|individualID), data=faceoff, family=binomial(), control=glmerControl(optimizer="bobyqa"))
 
@@ -663,7 +696,10 @@ gvl.fixef$label <- gvl.fixef$label %>%
   str_replace("\\(Intercept\\)", "Plain + ") %>%
   str_replace("( \\+ )$", "") %>% 
   reorder(gvl.fixef$OR)
-
+save(gvl.4, gvl.fixef, gvl.all, type_compare, file = "data/ModelRes.Rdata")
+```
+```{r fig.width = 6, fig.height = 4, out.width = "75%"}
+load("data/ModelRes.Rdata")
 ggplot(data=gvl.fixef) + 
   geom_hline(yintercept=0, colour="gray70") + 
   geom_pointrange(aes(x=label, y=OR, ymin=LB, ymax=UB), size=.25) + 
@@ -690,3 +726,188 @@ In addition, while not shown here, the estimates for parameters alpha_C and alph
 </footer>
 
 
+
+
+```{r participant-reasoning-setup, include =F, fig.width = 4, fig.height = 4}
+lexicaldata <- modeldata
+lexicaldata$choice_reason <- tolower(lexicaldata$choice_reason)
+lexicaldata$choice_reason <- gsub("^_", "", lexicaldata$choice_reason)
+
+words <- lexicaldata %>% 
+  group_by(plottype, simpleoutcome) %>% 
+  summarize(list = paste(choice_reason, collapse=" ")) %>% 
+  filter(simpleoutcome != "both", plottype %in% c("plain", "color", "trend", "colorEllipse")) %>%
+  ungroup()
+
+library(wordcloud)
+library(tm)
+# devtools::install_github("raivokolde/GOsummaries")
+library(GOsummaries)
+
+makeWordcloud <- function(i) {
+  
+  words.corpus <- i %>%
+    str_split(" ") %>%
+    unlist() %>%
+    removePunctuation() %>%
+    removeWords(stopwords("en")) 
+  
+  words.corpus <- words.corpus %>%
+    stemDocument(language = "english") %>%
+    stemCompletion(dictionary = words.corpus, type = "shortest") %>%
+    VectorSource()  %>%
+    Corpus()
+  
+  tdm <- TermDocumentMatrix(words.corpus)
+  m <- as.matrix(tdm)
+  v <- sort(rowSums(m), decreasing=TRUE)
+  d <- data.frame(word = names(v), freq = v)
+  pal <- brewer.pal(9, "BuGn")
+  pal <- pal[-(1:2)]
+  
+  plotWordcloud(d$word,
+                d$freq, 
+                max_min=c(5,.3),
+                scale = 1,
+                min.freq=2,
+                max.words=100,
+                random.order=F, 
+                tryfit = T,
+                rot.per=.15, 
+                colors="black")
+  
+}
+
+words$plot <- map(words$list, makeWordcloud)
+```
+
+## Participant Reasoning: Plain plots
+
+```{r reasoning-plain, fig.width = 12, fig.height = 4, include = T, out.width = "100%"}
+plain_words <- filter(words, plottype == "plain") %>%
+  arrange(simpleoutcome)
+
+
+fs <- 18
+grid.arrange(
+  arrangeGrob(grobs = plain_words$plot[1], 
+              top = textGrob("Neither Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  arrangeGrob(grobs = plain_words$plot[2], 
+              top = textGrob("Cluster Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  arrangeGrob(grobs = plain_words$plot[3], 
+              top = textGrob("Trend Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  ncol = 3
+)
+```
+
+<footer class="footer">
+We asked participants to briefly describe their reasoning for choosing a specific plot or plots. We removed stopwords and "stemmed" answers so that "groups", "group", "grouping", "grouped" are all the same word, then plotted the words used in the reasoning as wordclouds, where the size of the word is proportional to the frequency of its appearance in the participant explanations. 
+
+These 3 wordclouds show participant reasoning for participants who selected null plots, cluster targets, and trend targets, respectively, when shown a lineup with no additional aesthetics. Participants who selected cluster targets were clearly concerned with the clustered nature of the points; participants who selected the trend target were more concerned with the linear relationship between x and y. Participants who selected null plots were concerned with variability and outliers. As we didn't give the participants guidance on what feature to judge "different" by, it is not surprising that some selected features other than clustering and linear trends. 
+</footer>
+
+## Participant Reasoning: Trend plots
+
+```{r reasoning-trend, fig.width = 12, fig.height = 4, include = T, out.width = "100%"}
+trend_words <- filter(words, plottype == "trend") %>%
+  arrange(simpleoutcome)
+
+
+fs <- 18
+grid.arrange(
+  arrangeGrob(grobs = trend_words$plot[1], 
+              top = textGrob("Neither Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  arrangeGrob(grobs = trend_words$plot[2], 
+              top = textGrob("Cluster Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  arrangeGrob(grobs = trend_words$plot[3], 
+              top = textGrob("Trend Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  ncol = 3
+)
+```
+
+<footer class="footer">
+When a trend line aesthetic is added to the plots, the reasoning changes somewhat for participants identifying cluster target and null plots. Participants who selected cluster targets talk about the separation (presumably, the linear trend line separating the groups) between lines, points, and groups of points; participants who selected null plots talk about the outliers, angle of the trend line, and spread of points around the line.
+</footer>
+
+## Participant Reasoning: Color plots
+
+```{r reasoning-color, fig.width = 12, fig.height = 4, include = T, out.width = "100%"}
+color_words <- filter(words, plottype == "color") %>%
+  arrange(simpleoutcome)
+
+
+fs <- 18
+grid.arrange(
+  arrangeGrob(grobs = color_words$plot[1], 
+              top = textGrob("Neither Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  arrangeGrob(grobs = color_words$plot[2], 
+              top = textGrob("Cluster Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  arrangeGrob(grobs = color_words$plot[3], 
+              top = textGrob("Trend Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  ncol = 3
+)
+```
+
+<footer class="footer">
+When points are colored by group, participants who select null plots use the color of the points to highlight the outliers which they are using as cues. The logic for selecting the cluster or trend target plots does not change much, but the reasoning of those who selected null plots demonstrates that the color aesthetic facilitates description of outlying points. Even though participants selected the wrong plot, in many cases they still used logic indicating that the gestalt organization of the plot through color cues is quite powerful.
+</footer>
+
+
+
+## Participant Reasoning: Color + Ellipse plots
+
+```{r reasoning-colorellipse, fig.width = 12, fig.height = 4, include = T, out.width = "100%"}
+color_ellipse <- filter(words, plottype == "colorEllipse") %>%
+  arrange(simpleoutcome)
+
+
+fs <- 18
+grid.arrange(
+  arrangeGrob(grobs = color_ellipse$plot[1], 
+              top = textGrob("Neither Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  arrangeGrob(grobs = color_ellipse$plot[2], 
+              top = textGrob("Cluster Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  arrangeGrob(grobs = color_ellipse$plot[3], 
+              top = textGrob("Trend Target", gp = gpar(fontsize = fs, col = "blue", lineheight = 2))),
+  ncol = 3
+)
+```
+<footer class="footer">
+When Color and Ellipses are shown, it is clear that participants who selected the cluster targets did so because the clusters were "distinct" or "didn't touch" or didn't overlap. Separation and space, as well as cluster size/cohesion are also commonly expressed sentiments.
+
+The addition of ellipses does also emphasize the linear trend target more than we had initially hoped - in many cases, a line of ellipses serves to create a sense of continuity due to the spatial arrangement of the ellipses. In most cases, though, this effect was minor compared to the visual weight of the small, compact clustered groups of points surrounded by an ellipse.
+
+At the beginning of the results section, we talked about how plots with ellipse aesthetics were more likely to lead to null plot selection. Participant explanations provide some additional insight: Words like "one", "two", "oval", and "missing" provide clues as to what exactly was so different about some of these plots. I've reproduced a plot on the next slide to demonstrate this effect.
+</footer>
+
+## Participant Reasoning - Missing Ellipses
+
+<p class="double">
+<img src="figure/89903c2363590827b167328f09a9f076.png" width = "50%" class="one-col-image" style="margin-bottom:auto;"/><br/>
+Some of the null plots were missing an ellipse - failed to enforce group size constraints on k-means algorithm.
+</p>
+
+<footer class="footer">
+The addition of the ellipse aesthetic highlighted the fact that some groups had as few as one or two points. These groups were assigned using the k-means algorithm, which doesn't by default have a constraint on the sizes of groups. With 540 plots and 10800 panels to proofread before running the experiment, we missed the fact that some null plots were missing an ellipse, as a group needs at least 3 points to have a valid bounding ellipse.
+
+It's safe to say that there was a strong effect of the ellipse aesthetic; however, that effect did not induce participants to act in the hypothesized manner by selecting the target plots. Working with humans is difficult sometimes.
+
+We re-ran this experiment with more even null plot cluster allocation, but hit an additional snag: participants cued in on the odd cluster shapes generated from the mixture model. They were still using the ellipses, but once again, the features participants made their decision on weren't the features we expected them to examine. 
+</footer>
+
+## Conclusion
+
+- Plot aesthetics matter
+    - non-additive effects
+    - what do you want to emphasize?
+- Multiple encoding is useful -     
+  "show the data" in a way that makes it easy to understand
+
+## Conclusion
+
+- Error bands and cluster ellipses highlight "statistical" features
+    - outliers
+    - group size inequality
+    - clustering
+- Null data-generating models are hard!    
+  The brain runs 100s of visual "tests" and designing for all of them simultaneously is impossible.oo
