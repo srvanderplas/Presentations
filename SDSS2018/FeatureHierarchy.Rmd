@@ -46,7 +46,7 @@ shape5pal <- best.combo(5, shapes, shapetm)
 ```
 ## Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics
 
-### Susan VanderPlas
+### Susan VanderPlas & Heike Hofmann
 ### Iowa State University
 
 ## Graphics and Perception
@@ -187,6 +187,13 @@ The `nullabor` package helps with null data creation
 Null plots are generated using a method consistent with the specified null hypothesis - in this case, that there is no relationship between x and y. 
 </footer>
 
+## Which plots are the most different?
+
+<img src="figure/set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png"  style="display:block;margin-left:auto;margin-right:auto;" width="50%"/>
+
+## Which plots are the most different?
+
+<img src="figure/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png"  style="display:block;margin-left:auto;margin-right:auto;" width="50%"/>
 
 ## Which plots are the most different?
 
@@ -388,8 +395,7 @@ The null plots tend to look like slightly lumpy linear trends, but even with clu
 - $\lambda = 0.5$
 
 18 combinations of plot parameters ($2K \times 3\sigma_T \times 3\sigma_C$)    
-3 replicates of each parameter set
-54 total lineup data sets
+3 replicates of each parameter set; 54 total lineup data sets
 
 ## Experimental Design - Plot Aesthetics
 
@@ -668,7 +674,7 @@ The faceoff model is a logistic mixed effects model, with fixed effects describi
 
 ## Faceoff Model
 
-```{r, fig.width = 6, fig.height = 4, out.width = "75%", eval = F}
+```{r, fig.width = 7, fig.height = 4, out.width = "100%", eval = F}
 library(lme4)
 gvl.4 <-  glmer(cluster.correct~sdline_new + sdgroup_new +k_new + plottype + (1|data_name) + (1|individualID), data=faceoff, family=binomial(), control=glmerControl(optimizer="bobyqa"))
 
@@ -745,7 +751,7 @@ library(tm)
 library(GOsummaries)
 
 makeWordcloud <- function(i) {
-  
+  set.seed(340280)
   words.corpus <- i %>%
     str_split(" ") %>%
     unlist() %>%
@@ -884,7 +890,7 @@ At the beginning of the results section, we talked about how plots with ellipse 
 
 <p class="double">
 <img src="figure/89903c2363590827b167328f09a9f076.png" width = "50%" class="one-col-image" style="margin-bottom:auto;"/><br/><br/>
-Some of the null plots were missing an ellipse - failed to enforce group size constraints on k-means algorithm.
+Some of the null plots were missing an ellipse - We failed to enforce group size constraints on k-means algorithm.
 </p>
 
 <footer class="footer">
