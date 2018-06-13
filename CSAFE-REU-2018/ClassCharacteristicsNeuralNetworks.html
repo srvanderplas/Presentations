@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Shoe Tread Characteristics</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Susan Vanderplas and  Miranda Tilton" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="csafe.css" type="text/css" />
+    <link rel="stylesheet" href="csafe-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Shoe Tread Characteristics
+### Susan Vanderplas and <br>Miranda Tilton
+### 2018/06/15<br>
+
+---
+
+
+
+
+class:primary
+# Identifying Characteristics
+
+Goal: Reduce the population of people who could have left a certain print
+
+- Class Characteristics: qualities shared by multiple shoes
+    - Size, tread pattern, make, model
+
+- Wear Characteristics - may not be unique to an individual, but are affected by individual features (weight, exercise practice, etc.)
+
+- Individual characteristics (manufacturing defects, incidental damage) are often not assessed (~5% of cases)
+
+---
+class:primary
+# Class Characteristics
+
+- Size is hard: 
+
+![Adult Chuck Taylor](figure/converse-chuck-taylor-all-star-core-ox-charcoal_product_108000_color_275.png)
+
+
+---
+class:primary
+# Class Characteristics
+
+- Size is hard: 
+
+![Kids Chuck Taylor](figure/converse-kids-chuck-taylor-all-star-core-hi-little-kid-black_product_7553444_color_3.png)
+
+---
+class:primary
+# Class Characteristics
+
+Tread Pattern: Different molds
+![Tread Overlay](figure/TreadOverlay.png)
+
+
+---
+class:primary
+# Design Elements
+
+![Circles](figure/Circle_Element_Examples.png)
+![Herringbone, Chevron](figure/Herringbone_Example.png)
+
+---
+class:primary
+# Brand and Design Elements
+
+&lt;img width="22%" src="figure/birkenstock-islay-black-leather_product_8471993_color_72.png" style="display:inline-block;margin:10;"/&gt;
+&lt;img width="22%" src="figure/birkenstock-arizona-suede-unisex-taupe-suede_product_7223566_color_691.png" style="display:inline-block;margin:10;"/&gt;
+&lt;img width="22%" src="figure/birkenstock-mayari-stone-birkibuc_product_7616338_color_4404.png" style="display:inline-block;margin:10;"/&gt;
+&lt;img width="22%" src="figure/birkenstock-salina-black-birko-florr_product_8640434_color_240994.png" style="display:inline-block;margin:10;"/&gt;
+
+
+---
+class:primary
+# Use for Class Characteristics
+
+- Characterize a shoe or print by the characteristics present
+    - May also include spatial/size information
+- Use this information to identify shoe make/model
+- Speed up database searches by indexing using class characteristics
+- (With spatial information) Modify methods for partial prints
+    - e.g. Filter by "has concentric circles on the ball of the foot"
+    
+---
+class:primary
+# Problem
+
+- New shoes are coming out all the time
+- Can't lock someone up in a room and make them classify objects on shoes forever
+    - Ok, I'm planning to do that this summer
+- It would be nice to generalize -    
+e.g. high likelihood this is a Nike shoe, even if we can't say it's a specific model
+
+Long Term Goal: Use tread elements to characterize the frequency of types of shoes in local populations. (Requires a way to get lots of pictures of shoe tread - future project)
+
+---
+class:secondary
+
+![xkcd image analysis](https://imgs.xkcd.com/comics/tasks.png)
+
+---
+class:primary
+# Approach
+
+- (By hand) Mark design elements on a bunch of shoe tread images
+- Use the marked images to create folders of images with certain tread elements
+- Train a computer vision algorithm (convolutional neural network) to recognize common tread patterns using the images
+- Use the neural network to generate variables describing tread features that can be used in statistical models, shoe identification, etc.
+
+---
+class:primary
+
+# Data Collection
+
+https://bigfoot.csafe.iastate.edu/LabelMe/tool.html?collection=LabelMe&amp;mode=i
+
+User: bigfoot    
+Password: isreal!
+
+---
+class:primary
+# Data Collection
+
+&lt;a href = "https://bigfoot.csafe.iastate.edu/LabelMe/tool.html?collection=LabelMe&amp;mode=i"&gt; ![LabelMe Screenshot](figure/LabelMe.png)&lt;/a&gt;
+
+---
+class:primary
+# Neural Networks
+
+Everything is a number:
+
+&lt;img src="https://cdn-images-1.medium.com/max/1600/1*zY1qFB9aFfZz66YxxoI2aw.gif" width="50%"/&gt;
+
+
+---
+class:primary
+# Training Data
+
+![](https://cdn-images-1.medium.com/max/1200/1*biD9eS5eB6zXzieonNk-VQ.png)
+
+
+---
+class:primary
+# Neural Networks
+
+![Neural Network Feature Detectors](https://cdn-images-1.medium.com/max/1600/1*Ji5QhY9QXBlpNNLH4qAcNA.png)
+
+---
+class:primary
+# Neural Networks
+
+![How classification works](http://cs231n.github.io/assets/cnnvis/occlude.jpeg)
+
+
+
+---
+class:primary
+# End Result
+
+1. Probability that a NxN chunk of the shoe tread image contains each feature
+
+2. Combine the chunks to assess the overall probability that the feature is part of the shoe tread image
+
+3. Examine how unique the class characteristics are and whether they can be used to identify shoe make/model reasonably well
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
