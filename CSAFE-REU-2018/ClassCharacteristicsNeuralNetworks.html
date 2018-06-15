@@ -55,7 +55,8 @@ class:primary
 # Class Characteristics
 
 Tread Pattern: Different molds
-![Tread Overlay](figure/TreadOverlay.png)
+
+&lt;img src="figure/TreadOverlay.png" width = "120%"/&gt;
 
 
 ---
@@ -80,10 +81,20 @@ class:primary
 # Use for Class Characteristics
 
 - Characterize a shoe or print by the characteristics present
+--
+
     - May also include spatial/size information
+--
+
 - Use this information to identify shoe make/model
+--
+
 - Speed up database searches by indexing using class characteristics
+--
+
 - (With spatial information) Modify methods for partial prints
+--
+
     - e.g. Filter by "has concentric circles on the ball of the foot"
     
 ---
@@ -91,10 +102,18 @@ class:primary
 # Problem
 
 - New shoes are coming out all the time
+--
+
 - Can't lock someone up in a room and make them classify objects on shoes forever
-    - Ok, I'm planning to do that this summer
+--
+
+    - Well, maybe we can...?
+--
+
 - It would be nice to generalize -    
 e.g. high likelihood this is a Nike shoe, even if we can't say it's a specific model
+
+--
 
 Long Term Goal: Use tread elements to characterize the frequency of types of shoes in local populations. (Requires a way to get lots of pictures of shoe tread - future project)
 
@@ -108,9 +127,17 @@ class:primary
 # Approach
 
 - (By hand) Mark design elements on a bunch of shoe tread images
-- Use the marked images to create folders of images with certain tread elements
-- Train a computer vision algorithm (convolutional neural network) to recognize common tread patterns using the images
-- Use the neural network to generate variables describing tread features that can be used in statistical models, shoe identification, etc.
+--
+
+
+- Use the marked images to create folders of images with certain tread elements 
+--
+
+
+- Train a computer vision algorithm (convolutional neural network) to recognize common tread patterns using the images 
+--
+
+- Use the neural network to generate variables describing tread features that can be used in statistical models, shoe identification, etc. 
 
 ---
 class:primary
@@ -127,6 +154,9 @@ class:primary
 # Data Collection
 
 &lt;a href = "https://bigfoot.csafe.iastate.edu/LabelMe/tool.html?collection=LabelMe&amp;mode=i"&gt; ![LabelMe Screenshot](figure/LabelMe.png)&lt;/a&gt;
+--
+
+Labeled images will be sliced up and sorted by feature
 
 ---
 class:primary
@@ -141,6 +171,9 @@ Everything is a number:
 class:primary
 # Training Data
 
+We can expand our data by taking different sized chunks of labeled features
+--
+
 ![](https://cdn-images-1.medium.com/max/1200/1*biD9eS5eB6zXzieonNk-VQ.png)
 
 
@@ -149,6 +182,11 @@ class:primary
 # Neural Networks
 
 ![Neural Network Feature Detectors](https://cdn-images-1.medium.com/max/1600/1*Ji5QhY9QXBlpNNLH4qAcNA.png)
+
+---
+class:primary
+# Neural Networks
+![Neural Network Structure](https://www.ais.uni-bonn.de/deep_learning/images/Convolutional_NN_s.jpg)
 
 ---
 class:primary
