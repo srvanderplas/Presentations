@@ -1,0 +1,30 @@
+---
+title: "Title"
+author: "Author Name"
+date: "YYYY/MM/DD"
+output:
+  xaringan::moon_reader:
+    css: ["default", "csafe.css", "csafe-fonts.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+class:primary
+# Slide with title
+
+Content 
+
+---
+class: secondary
+
+Slide without title 
+
+
+

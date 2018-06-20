@@ -1,0 +1,127 @@
+---
+title: "Human Visual<br>System<br><br>"
+output:
+  xaringan::moon_reader:
+    css: ["default", "csafe.css", "csafe-fonts.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+class:primary
+# Visual System
+
+---
+class: secondary
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Neural_pathway_diagram.svg/512px-Neural_pathway_diagram.svg.png" alt="Visual System Map" style ="margin-top:-100px;margin-left:100px;">
+
+.small[source: By Mads00 - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=49282011]
+
+---
+class: primary
+
+## Lateral Geniculate Nucleus
+
+<br>
+
+- Input from: Retina (rods and cones)
+- Outputs to: V1 visual cortex
+- Both sides of the LGN receive input from each eye
+- Correlates information in time and space
+- Important in focusing attention
+
+
+![Visual Pathway (side view)](VisualPathway.png)
+
+
+---
+class:primary
+## Neurons
+
+![Neuron Information](NeuronElectricalSignal.png)
+
+- Time matters
+- Neurons firing in sync = this is part of the same visual object
+
+
+---
+class:primary
+## Visual Cortex
+
+<br>
+
+- Two streams of information:
+    - ventral (bottom) stream - "What pathway"
+        - V1, V2, V4, IT cortex
+        - visual perception
+        
+    - dorsal (top) stream - " Where pathway" or "How pathway"
+        - V1, V2, V6, V5, Posterior Parietal cortex
+        - visual control of skilled actions
+
+
+---
+class:primary
+## Primary Visual Cortex
+
+### Simple cortical cells
+
+![Simple Cortical Cells](CorticalCellOrientation.png)
+
+---
+class:primary
+## Primary Visual Cortex
+
+<br>
+### Kitty Torture
+
+![Cat Torture - Selective Rearing](CatTorture.png)
+
+"Use it or lose it"
+
+---
+class:primary
+## Visual Cortex
+
+<br>
+### Orientation Columns
+
+![Simple Cortical Cells are organized into columns](OrientationColumns.png)
+
+---
+class:primary
+## Visual Cortex
+
+### Tiling
+
+![Orientation columns tile the visual field](Tiling.png)
+
+---
+class:primary
+## Specialization
+
+In the Inferotemporal (IT) cortex, there are areas which specialize in certain classes of stimuli
+
+![Face Neurons](FaceNeurons.png)
+
+---
+class:primary
+## Specialization
+
+In the Inferotemporal (IT) cortex, there are areas which specialize in certain classes of stimuli
+
+![Special Processing Areas](SpecialProcessing.png)
+
+---
+class:primary
+## Perception Difficulties
+
+![The Inverse Projection Problem](InverseProjection.png)
+

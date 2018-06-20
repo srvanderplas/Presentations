@@ -1,0 +1,61 @@
+.primary {
+  background-image: url("img/primaryslideimg.png");
+  background-size: contain;
+  background-position: 0 0;
+  color: #000000;
+  padding-right: 200px;
+}
+
+.primary h1 {
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-left: -10px;
+  margin-bottom: 100px;
+}
+
+.secondary {
+  background: url("img/secondaryslideimg.png");
+  background-size: contain;
+  background-position: 0 0;
+  color: #000000;
+  padding-top: 200px;
+  padding-right: 50px;
+}
+
+.footnote {
+  position: absolute;
+  bottom: 3em;
+  padding-right: 55px;
+  font-size: 90%;
+}
+
+.inverse {
+  background-image: url("img/titlepageimg.png");
+  background-size: cover;
+  color: #ffffff;
+  text-shadow: 0 0 0px;
+}
+
+.inverse h2 {
+  color: #ffffff;
+  text-align: left;
+  padding-left: 20px;
+}
+.inverse h3 {
+  color: #ffffff;
+  text-align: left;
+  padding-left: 20px;
+  font-style: italic;
+}
+
+.inverse h1 {
+  color: #ffffff;
+  text-align: left;
+  padding-left: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  line-height: normal;
+  margin-bottom: -20px;
+}
