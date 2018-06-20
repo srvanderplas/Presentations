@@ -1,0 +1,203 @@
+---
+title: "Shoe Tread Characteristics"
+author: "Susan Vanderplas and <br>Miranda Tilton"
+date: "2018/06/15<br>"
+output:
+  xaringan::moon_reader:
+    css: ["default", "csafe.css", "csafe-fonts.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+class:primary
+# Identifying Characteristics
+
+Goal: Reduce the population of people who could have left a certain print
+
+- Class Characteristics: qualities shared by multiple shoes
+    - Size, tread pattern, make, model
+
+- Wear Characteristics - may not be unique to an individual, but are affected by individual features (weight, exercise practice, etc.)
+
+- Individual characteristics (manufacturing defects, incidental damage) are often not assessed (~5% of cases)
+
+---
+class:primary
+# Class Characteristics
+
+- Size is hard: 
+
+![Adult Chuck Taylor](figure/converse-chuck-taylor-all-star-core-ox-charcoal_product_108000_color_275.png)
+
+
+---
+class:primary
+# Class Characteristics
+
+- Size is hard: 
+
+![Kids Chuck Taylor](figure/converse-kids-chuck-taylor-all-star-core-hi-little-kid-black_product_7553444_color_3.png)
+
+---
+class:primary
+# Class Characteristics
+
+Tread Pattern: Different molds
+
+<img src="figure/TreadOverlay.png" width = "120%"/>
+
+
+---
+class:primary
+# Design Elements
+
+![Circles](figure/Circle_Element_Examples.png)
+![Herringbone, Chevron](figure/Herringbone_Example.png)
+
+---
+class:primary
+# Brand and Design Elements
+
+<img width="22%" src="figure/birkenstock-islay-black-leather_product_8471993_color_72.png" style="display:inline-block;margin:10;"/>
+<img width="22%" src="figure/birkenstock-arizona-suede-unisex-taupe-suede_product_7223566_color_691.png" style="display:inline-block;margin:10;"/>
+<img width="22%" src="figure/birkenstock-mayari-stone-birkibuc_product_7616338_color_4404.png" style="display:inline-block;margin:10;"/>
+<img width="22%" src="figure/birkenstock-salina-black-birko-florr_product_8640434_color_240994.png" style="display:inline-block;margin:10;"/>
+
+
+---
+class:primary
+# Use for Class Characteristics
+
+- Characterize a shoe or print by the characteristics present
+--
+
+    - May also include spatial/size information
+--
+
+- Use this information to identify shoe make/model
+--
+
+- Speed up database searches by indexing using class characteristics
+--
+
+- (With spatial information) Modify methods for partial prints
+--
+
+    - e.g. Filter by "has concentric circles on the ball of the foot"
+    
+---
+class:primary
+# Problem
+
+- New shoes are coming out all the time
+--
+
+- Can't lock someone up in a room and make them classify objects on shoes forever
+--
+
+    - Well, maybe we can...?
+--
+
+- It would be nice to generalize -    
+e.g. high likelihood this is a Nike shoe, even if we can't say it's a specific model
+
+--
+
+Long Term Goal: Use tread elements to characterize the frequency of types of shoes in local populations. (Requires a way to get lots of pictures of shoe tread - future project)
+
+---
+class:secondary
+
+![xkcd image analysis](https://imgs.xkcd.com/comics/tasks.png)
+
+---
+class:primary
+# Approach
+
+- (By hand) Mark design elements on a bunch of shoe tread images
+--
+
+
+- Use the marked images to create folders of images with certain tread elements 
+--
+
+
+- Train a computer vision algorithm (convolutional neural network) to recognize common tread patterns using the images 
+--
+
+- Use the neural network to generate variables describing tread features that can be used in statistical models, shoe identification, etc. 
+
+---
+class:primary
+
+# Data Collection
+
+https://bigfoot.csafe.iastate.edu/LabelMe/tool.html?collection=LabelMe&mode=i
+
+User: bigfoot    
+Password: isreal!
+
+---
+class:primary
+# Data Collection
+
+<a href = "https://bigfoot.csafe.iastate.edu/LabelMe/tool.html?collection=LabelMe&mode=i"> ![LabelMe Screenshot](figure/LabelMe.png)</a>
+--
+
+Labeled images will be sliced up and sorted by feature
+
+---
+class:primary
+# Neural Networks
+
+Everything is a number:
+
+<img src="https://cdn-images-1.medium.com/max/1600/1*zY1qFB9aFfZz66YxxoI2aw.gif" width="50%"/>
+
+
+---
+class:primary
+# Training Data
+
+We can expand our data by taking different sized chunks of labeled features
+--
+
+![](https://cdn-images-1.medium.com/max/1200/1*biD9eS5eB6zXzieonNk-VQ.png)
+
+
+---
+class:primary
+# Neural Networks
+
+![Neural Network Feature Detectors](https://cdn-images-1.medium.com/max/1600/1*Ji5QhY9QXBlpNNLH4qAcNA.png)
+
+---
+class:primary
+# Neural Networks
+![Neural Network Structure](https://www.ais.uni-bonn.de/deep_learning/images/Convolutional_NN_s.jpg)
+
+---
+class:primary
+# Neural Networks
+
+![How classification works](http://cs231n.github.io/assets/cnnvis/occlude.jpeg)
+
+
+
+---
+class:primary
+# End Result
+
+1. Probability that a NxN chunk of the shoe tread image contains each feature
+
+2. Combine the chunks to assess the overall probability that the feature is part of the shoe tread image
+
+3. Examine how unique the class characteristics are and whether they can be used to identify shoe make/model reasonably well
+
