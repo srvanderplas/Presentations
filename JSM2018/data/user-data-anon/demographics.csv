@@ -1,0 +1,96 @@
+Age,Gender,Education,Duration,source
+45 - 54,Female,College Graduate (Master's or Doctorate),163,amazon
+25 - 34,Male,Some college education,104,amazon
+35 - 44,Male,Some college education,111,amazon
+25 - 34,Male,College Graduate (Bachelor's),87,amazon
+35 - 44,Female,Some college education,116,amazon
+25 - 34,Male,Some college education,116,amazon
+18 - 24,Female,College Graduate (Bachelor's),152,amazon
+35 - 44,Female,College Graduate (Bachelor's),119,amazon
+25 - 34,Male,Some college education,141,amazon
+25 - 34,Female,Some college education,125,amazon
+25 - 34,Female,College Graduate (Bachelor's),177,amazon
+25 - 34,Male,High School Graduate,138,amazon
+35 - 44,Female,Some college education,185,amazon
+45 - 54,Male,Some high school education,158,amazon
+25 - 34,Male,Some college education,174,amazon
+35 - 44,Female,Some college education,214,amazon
+25 - 34,Male,College Graduate (Master's or Doctorate),123,amazon
+45 - 54,Male,College Graduate (Bachelor's),215,amazon
+25 - 34,Male,College Graduate (Bachelor's),171,amazon
+25 - 34,Male,College Graduate (Bachelor's),245,amazon
+25 - 34,Male,College Graduate (Bachelor's),209,amazon
+25 - 34,Male,College Graduate (Bachelor's),190,amazon
+45 - 54,Female,College Graduate (Bachelor's),226,amazon
+25 - 34,Female,College Graduate (Master's or Doctorate),264,amazon
+18 - 24,Male,College Graduate (Bachelor's),136,amazon
+25 - 34,Male,College Graduate (Bachelor's),197,amazon
+35 - 44,Female,College Graduate (Bachelor's),228,amazon
+45 - 54,Male,College Graduate (Master's or Doctorate),227,amazon
+35 - 44,Female,High School Graduate,168,amazon
+35 - 44,Male,College Graduate (Bachelor's),356,amazon
+25 - 34,Male,Some college education,173,amazon
+45 - 54,Male,Some college education,232,amazon
+35 - 44,Male,College Graduate (Bachelor's),337,amazon
+55 - 64,Female,High School Graduate,172,amazon
+35 - 44,Female,College Graduate (Bachelor's),150,amazon
+25 - 34,Female,High School Graduate,297,amazon
+25 - 34,Male,College Graduate (Bachelor's),207,amazon
+25 - 34,Female,College Graduate (Bachelor's),141,amazon
+25 - 34,Female,College Graduate (Master's or Doctorate),204,amazon
+35 - 44,Male,College Graduate (Bachelor's),209,amazon
+25 - 34,Female,College Graduate (Bachelor's),145,amazon
+45 - 54,Female,Some college education,144,amazon
+35 - 44,Male,College Graduate (Bachelor's),314,amazon
+55 - 64,Female,High School Graduate,308,amazon
+25 - 34,Male,Some college education,85,amazon
+35 - 44,Male,College Graduate (Bachelor's),364,amazon
+35 - 44,Male,College Graduate (Bachelor's),203,amazon
+18 - 24,Male,College Graduate (Bachelor's),204,amazon
+25 - 34,Female,Some college education,260,amazon
+25 - 34,Male,College Graduate (Bachelor's),232,amazon
+25 - 34,Male,College Graduate (Bachelor's),192,amazon
+18 - 24,Male,College Graduate (Bachelor's),196,amazon
+25 - 34,Female,High School Graduate,238,amazon
+25 - 34,Male,College Graduate (Bachelor's),287,amazon
+25 - 34,Female,College Graduate (Bachelor's),263,amazon
+35 - 44,Female,College Graduate (Master's or Doctorate),223,amazon
+18 - 24,Female,College Graduate (Bachelor's),90,amazon
+25 - 34,Male,College Graduate (Master's or Doctorate),168,amazon
+25 - 34,Male,College Graduate (Master's or Doctorate),319,amazon
+35 - 44,Female,College Graduate (Bachelor's),150,amazon
+35 - 44,Male,College Graduate (Bachelor's),598,amazon
+25 - 34,Male,College Graduate (Bachelor's),111,amazon
+45 - 54,Male,College Graduate (Bachelor's),189,amazon
+45 - 54,Female,College Graduate (Master's or Doctorate),234,reddit
+45 - 54,Male,College Graduate (Master's or Doctorate),423,reddit
+25 - 34,Male,College Graduate (Master's or Doctorate),193,reddit
+25 - 34,Female,College Graduate (Master's or Doctorate),227,reddit
+18 - 24,Female,Some college education,201,reddit
+18 - 24,Male,Some college education,125,reddit
+18 - 24,Male,College Graduate (Master's or Doctorate),393,reddit
+45 - 54,Female,College Graduate (Bachelor's),317,reddit
+18 - 24,Female,Some college education,234,reddit
+35 - 44,Male,College Graduate (Bachelor's),485,reddit
+18 - 24,Male,College Graduate (Bachelor's),296,reddit
+35 - 44,NA,College Graduate (Master's or Doctorate),367,reddit
+25 - 34,Male,College Graduate (Bachelor's),210,reddit
+35 - 44,Male,College Graduate (Master's or Doctorate),196,reddit
+35 - 44,Male,College Graduate (Master's or Doctorate),211,reddit
+35 - 44,Male,Some college education,203,reddit
+35 - 44,Other,College Graduate (Master's or Doctorate),184,reddit
+25 - 34,Male,Some college education,261,reddit
+18 - 24,Male,Some college education,314,reddit
+25 - 34,Male,College Graduate (Master's or Doctorate),397,reddit
+35 - 44,Male,College Graduate (Bachelor's),187,reddit
+18 - 24,Female,Some college education,210,reddit
+25 - 34,Male,College Graduate (Master's or Doctorate),359,reddit
+18 - 24,Male,High School Graduate,129,reddit
+18 - 24,Female,College Graduate (Bachelor's),677,reddit
+18 - 24,Female,Some college education,215,reddit
+18 - 24,Male,High School Graduate,372,reddit
+25 - 34,Male,College Graduate (Master's or Doctorate),224,reddit
+18 - 24,Male,Some college education,138,reddit
+18 - 24,Female,Some college education,226,reddit
+25 - 34,Male,College Graduate (Master's or Doctorate),374,reddit
+25 - 34,Male,College Graduate (Bachelor's),441,reddit
