@@ -4,7 +4,7 @@ author: "Susan VanderPlas"
 output:
   rmdshower::shower_presentation:
     self_contained: false
-    ratio: 16x10
+    ratio: 4x3
     css: shower.css
 ---
 

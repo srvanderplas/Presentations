@@ -886,11 +886,11 @@ The addition of ellipses does also emphasize the linear trend target more than w
 At the beginning of the results section, we talked about how plots with ellipse aesthetics were more likely to lead to null plot selection. Participant explanations provide some additional insight: Words like "one", "two", "oval", and "missing" provide clues as to what exactly was so different about some of these plots. I've reproduced a plot on the next slide to demonstrate this effect.
 </footer>
 
-## Participant Reasoning - Missing Ellipses
+## Participant Reasoning 
 
 <p class="double">
 <img src="figure/89903c2363590827b167328f09a9f076.png" width = "50%" class="one-col-image" style="margin-bottom:auto;"/><br/><br/>
-Some of the null plots were missing an ellipse - We failed to enforce group size constraints on k-means algorithm.
+<p class = "fragment">Some of the null plots were missing an ellipse - We failed to enforce group size constraints on k-means algorithm.</p>
 </p>
 
 <footer class="footer">
@@ -911,9 +911,8 @@ We re-ran this experiment with more even null plot cluster allocation, but hit a
 
 ## Conclusion
 
-- Error bands and cluster ellipses highlight "statistical" features
-    - outliers
-    - group size inequality
-    - clustering
+- Error bands and cluster ellipses highlight important features in the data:    
+  outliers, group size inequality, variability, clustering
 - Null data-generating models are hard!    
   The brain runs 100s of visual "tests" and designing for all of them simultaneously is impossible
+
