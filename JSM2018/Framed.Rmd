@@ -4,6 +4,7 @@ subtitle: "Reproducing 150 Year Old Charts"
 author: "Susan VanderPlas <br/> Ryan Gorluch <br/> Heike Hofmann"
 output:
   xaringan::moon_reader:
+    self_contained: true
     css: ["default", "../xaringan_template/isu_xaringan.css"]
     chakra: libs/remark-latest.min.js
     lib_dir: libs
@@ -276,6 +277,17 @@ background-size: 100%
 class: center, fullscale
 
 ---
+class:center
+
+# Slides
+
+[http://srvanderplas.github.io/Presentations/JSM2018/Framed.html](http://srvanderplas.github.io/Presentations/JSM2018/Framed.html)
+
+# Project Repository
+
+[https://github.com/srvanderplas/Statistical_Atlas](https://github.com/srvanderplas/Statistical_Atlas)
+
+---
 layout:true
 # Introduction
 
@@ -288,36 +300,29 @@ layout:true
 
 ---
 
-- Goal: Show the makeup of the country
+- Goal: Show the composition of the country
     - Maps
   
---
-
 .center[<img src="images/DistributionOfWealth.png" width = "50%" alt = "Map of Distribution of Wealth, 1870 Statistical Atlas" style = "margin-top:-30px;"/>]
 
 
 ---
 
-- Goal: Show the makeup of the country
+- Goal: Show the composition of the country
     - Abstract Charts:
         - age pyramids
-
---
-
 .center[<img src="images/AgePyramid.png" width = "90%" alt = "Age Pyramid, 1870 Statistical Atlas"/>]
 
 ---
-- Goal: Show the makeup of the country
+- Goal: Show the composition of the country
     - Abstract Charts:
         - age pyramids
         - ring charts
 
---
-
 .center[<img src="images/RingChart.jpg" width = "90%" alt = "Ring Chart, 1870 Statistical Atlas"/>]
 
 ---
-- Goal: Show the makeup of the country
+- Goal: Show the composition of the country
     - Abstract Charts:
         - age pyramids
         - ring charts
@@ -326,12 +331,6 @@ layout:true
 ---
 layout: false
 background-image: url(images/Church_Plate31.png)
-background-position: 50% 0%
-background-size: 100%
-class: center, fullscale
-
----
-background-image: url(images/Occupation_Plate32.png)
 background-position: 50% 0%
 background-size: 100%
 class: center, fullscale
@@ -349,6 +348,12 @@ class: center
 - Border: percent of unaccommodated population over the age of 10
 - Shows top 4 denominations in each state, top 8 denominations overall (technical constraints)
 - Denominations ordered from largest to smallest within states - comparisons are hard
+
+---
+background-image: url(images/Occupation_Plate32.png)
+background-position: 50% 0%
+background-size: 100%
+class: center, fullscale
 
 ---
 background-image: url(images/Occupation_USIntroLegend.png)
@@ -529,15 +534,19 @@ percentages %>% filter(abs(log(ratio)) < log(5)) %>%
 class:bottom
 # Conclusions
 
+<br>
 - Estimation of the framed portion of plots is significantly worse than the same area in an unframed plot
 
 --
 
+<br>
 - Framed plots are not great for accurately communicating the data
     - They don't appear in the 1880 or 1890 census
+    - Pie charts largely replaced mosaic and spine plots
 
 --
 
+<br>
 - The Census Bureau and assocciated institutions did a great job of "reproducibility" with data    
 
 --
