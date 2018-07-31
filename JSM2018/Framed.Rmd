@@ -4,7 +4,6 @@ subtitle: "Reproducing 150 Year Old Charts"
 author: "Susan VanderPlas <br/> Ryan Gorluch <br/> Heike Hofmann"
 output:
   xaringan::moon_reader:
-    self_contained: true
     css: ["default", "../xaringan_template/isu_xaringan.css"]
     chakra: libs/remark-latest.min.js
     lib_dir: libs
