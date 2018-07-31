@@ -531,10 +531,8 @@ percentages %>% filter(abs(log(ratio)) < log(5)) %>%
 
 
 ---
-class:bottom
 # Conclusions
 
-<br>
 - Estimation of the framed portion of plots is significantly worse than the same area in an unframed plot
 
 --
@@ -547,8 +545,15 @@ class:bottom
 --
 
 <br>
-- The Census Bureau and assocciated institutions did a great job of "reproducibility" with data    
+- The Census Bureau and assocciated institutions did a great job of preserving the data necessary to reproduce the results and identify flaws in the analysis process
+
+<br>
+
+---
+# Conclusions
+
+.center[## 150 years later, we can use completely different technology to get the same charts]
 
 --
 
-## 150 years later, and we can use completely different technology to get the same charts
+How's that for reproducibility?
