@@ -9,25 +9,25 @@
   <title>Presentations</title>
   <style type="text/css">code{white-space: pre;}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- jQuery -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-  
+
   <!-- bootstrap -->
   <!--<link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet"  id="style">-->
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-  
+
   <!-- highlight.js -->
   <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/default.min.css" rel="stylesheet" id="code-style">-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js"></script>
   <script>
   hljs.LANGUAGES.r=function(a){var b="([a-zA-Z]|\\.[a-zA-Z.])[a-zA-Z0-9._]*";return{c:[a.HCM,{b:b,l:b,k:{keyword:"function if in break next repeat else for return switch while try tryCatch|10 stop warning require library attach detach source setMethod setGeneric setGroupGeneric setClass ...|10",literal:"NULL NA TRUE FALSE T F Inf NaN NA_integer_|10 NA_real_|10 NA_character_|10 NA_complex_|10"},r:0},{cN:"number",b:"0[xX][0-9a-fA-F]+[Li]?\\b",r:0},{cN:"number",b:"\\d+(?:[eE][+\\-]?\\d*)?L\\b",r:0},{cN:"number",b:"\\d+\\.(?!\\d)(?:i\\b)?",r:0},{cN:"number",b:"\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",r:0},{b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[a.BE],r:0},{cN:"string",b:"'",e:"'",c:[a.BE],r:0}]}}(hljs); </script>
   <!--<script type="text/javascript", src="https://yandex.st/highlightjs/7.3/languages/r.min.js"></script>-->
-  
+
   <!-- Manific Popup -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.8.9/jquery.magnific-popup.min.js"></script>
-  
+
   <script type="text/javascript"
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
@@ -46,6 +46,22 @@ Presentations
 </h1>
 </div>
 <h1>2018</h1>
+<div class = "panel panel-warning">
+  <div class="panel-heading">Graphics Group</div>
+  <div class="panel-body">
+    A short overview of my presentation at JSM this summer.
+    <a href = "GraphicsGroup/JSM2018short/Framed.html">Slides</a><br>
+    <a href = "https://github.com/srvanderplas/Statistical_Atlas">Project Repository</a>
+  </div>
+
+  <table class="table">
+<tr>
+<td style="white-space: nowrap;"> Vancouver, Canada </td>
+<td style="width:90%"> </td>
+<td style="white-space: nowrap;"> August 1, 2018 </td>
+</tr>
+</table>
+</div>
 <div class = "panel panel-primary">
   <div class="panel-heading">Joint Statistical Meetings</div>
   <div class="panel-body">
@@ -55,7 +71,7 @@ Presentations
     <a href = "JSM2018/Framed.html">Slides</a><br>
     <a href = "https://github.com/srvanderplas/Statistical_Atlas">Project Repository</a>
   </div>
-  
+
   <table class="table">
 <tr>
 <td style="white-space: nowrap;"> Vancouver, Canada </td>
@@ -73,7 +89,7 @@ Presentations
     <a href = "SDSS2018/FeatureHierarchy.html">Slides</a><br>
     <a href = "https://github.com/srvanderplas/FeatureHierarchy">Project Repository</a>
   </div>
-  
+
   <table class="table">
 <tr>
 <td style="white-space: nowrap;"> Reston, VA </td>
@@ -137,15 +153,15 @@ Graphics are very effective for communicating numerical information quickly and 
   Session: <b>Recent Advances in Interactive Graphics for Data Analysis</b><br>
   <a href="https://www.amstat.org/meetings/jsm/2015/onlineprogram/AbstractDetails.cfm?abstractid=314184">Abstract</a><br>
   <p>
-    Animint is a high-level modification of the grammar of graphics used in ggplot2 for linked, interactive, animated plots. 
-    It builds on top of ggplot2 to create interactive visualizations using web standards (D3 in JavaScript). 
-    In other data visualization systems, interactive animations are difficult to accomplish, 
-    since they must be defined in terms of low-level operations and sometimes 100s of lines of code. 
-    In contrast, Animint's high-level grammar can be used to produce a wide variety of complex interactive visualizations with only 10s of lines of code. 
-    It works by adding 2 new aesthetics to the grammar of graphics used in ggplot2: 
-    clickSelects, which allows users to select elements of the plot, and 
-    showSelected, which displays only elements corresponding to the current selection. 
-    After creating the interactive animation in R code, it is compiled and rendered in a web browser using D3. 
+    Animint is a high-level modification of the grammar of graphics used in ggplot2 for linked, interactive, animated plots.
+    It builds on top of ggplot2 to create interactive visualizations using web standards (D3 in JavaScript).
+    In other data visualization systems, interactive animations are difficult to accomplish,
+    since they must be defined in terms of low-level operations and sometimes 100s of lines of code.
+    In contrast, Animint's high-level grammar can be used to produce a wide variety of complex interactive visualizations with only 10s of lines of code.
+    It works by adding 2 new aesthetics to the grammar of graphics used in ggplot2:
+    clickSelects, which allows users to select elements of the plot, and
+    showSelected, which displays only elements corresponding to the current selection.
+    After creating the interactive animation in R code, it is compiled and rendered in a web browser using D3.
     We discuss the design of Animint, then compare to related libraries, and show several example visualizations of high-dimensional time series data.
   </p>
   <a href="JSM2015/Animint.html">Slides</a>
@@ -254,8 +270,8 @@ Session: <b>Statistical Computing and Graphics Student Paper Competition</b><br>
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-        <span class="icon-bar"></span> 
-        <span class="icon-bar"></span> 
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
     </div>
