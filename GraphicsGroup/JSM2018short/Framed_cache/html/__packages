@@ -1,0 +1,16 @@
+base
+methods
+fcuk
+datasets
+utils
+grDevices
+graphics
+stats
+digest
+readr
+dplyr
+tidyr
+RColorBrewer
+munsell
+stringr
+bindrcpp
