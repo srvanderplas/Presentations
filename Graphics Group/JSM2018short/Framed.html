@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Framed!</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Susan VanderPlas   Ryan Gorluch   Heike Hofmann" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../xaringan_template/isu_xaringan.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Framed!
+## Reproducing 150 Year Old Charts
+### Susan VanderPlas <br/> Ryan Gorluch <br/> Heike Hofmann
+
+---
+
+
+
+
+
+
+
+
+
+
+background-image: url(images/StatisticalAtlasCover.png)
+background-position: 50% 50%
+background-size: 100%
+class: center, fullscale
+
+---
+class:center
+
+# Slides
+
+[http://srvanderplas.github.io/Presentations/JSM2018/Framed.html](http://srvanderplas.github.io/Presentations/JSM2018/Framed.html)
+
+# Project Repository
+
+[https://github.com/srvanderplas/Statistical_Atlas](https://github.com/srvanderplas/Statistical_Atlas)
+
+---
+layout:true
+# Introduction
+
+- Statistical Atlas published for the 9th, 10th, and 11th census    
+(1870, 1880, 1890)
+
+- Charts created by hand and reproduced using lithography
+
+
+
+---
+
+- Goal: Show the composition of the country
+    - Maps
+  
+.center[&lt;img src="images/DistributionOfWealth.png" width = "50%" alt = "Map of Distribution of Wealth, 1870 Statistical Atlas" style = "margin-top:-30px;"/&gt;]
+
+
+---
+
+- Goal: Show the composition of the country
+    - Abstract Charts:
+        - age pyramids
+.center[&lt;img src="images/AgePyramid.png" width = "90%" alt = "Age Pyramid, 1870 Statistical Atlas"/&gt;]
+
+---
+- Goal: Show the composition of the country
+    - Abstract Charts:
+        - age pyramids
+        - ring charts
+
+.center[&lt;img src="images/RingChart.jpg" width = "90%" alt = "Ring Chart, 1870 Statistical Atlas"/&gt;]
+
+---
+- Goal: Show the composition of the country
+    - Abstract Charts:
+        - age pyramids
+        - ring charts
+        - framed mosaic and spine plots
+
+---
+layout: false
+background-image: url(images/Church_Plate31.png)
+background-position: 50% 0%
+background-size: 100%
+class: center, fullscale
+
+---
+background-image: url(images/ChurchAccommodations_USIntroLegend.png)
+background-position: 50% 50%
+background-size: 95%
+class: center
+
+???
+
+- Spine plots
+- Percent of religious sittings by denomination for each state
+- Border: percent of unaccommodated population over the age of 10
+- Shows top 4 denominations in each state, top 8 denominations overall (technical constraints)
+- Denominations ordered from largest to smallest within states - comparisons are hard
+
+---
+background-image: url(images/Occupation_Plate32.png)
+background-position: 50% 0%
+background-size: 100%
+class: center, fullscale
+
+---
+background-image: url(images/Occupation_USIntroLegend.png)
+background-position: 50% 50%
+background-size: 95%
+class: center
+
+???
+
+- Mosaic plot - a novel type of plot in 1874
+- Georg von Mayr didn't publish mosaic plots until 1877 (Friendly, 2002)
+- Proportion of males and females in each occupation shown in the interior of the chart
+- Proportion of unaccounted-for persons in the outer band (not separated by gender)
+
+---
+# Statistical Archaeology
+
+### Reproduce the plots with modern methods
+
+Data Sources:
+
+- National Historical Geographic Information System 
+- Original 1870 Census tables
+- Unaccomodated population estimates using 1% microsample data from Integrated Public Use Microdata Series (IPUMS). 
+
+- Pixel measurements (by hand) of the area of each chart (for comparison)
+
+---
+## Occupation
+
+.center[&lt;img src="images/Occupation_Framed_Redone.png" width = "100%" alt="Re-created framed and unframed mosaic plots"/&gt;]
+
+- Frame cuts the uncounted population into quarters visually
+- No segmentation of the uncounted population - 97% of uncounted population is female
+
+---
+## Occupation
+
+&lt;img src="Framed_files/figure-html/unnamed-chunk-1-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+class: bottom
+## Church Accommodation
+
+--
+
+.center[&lt;img src="images/Church_Framed_Orig.png" width = "80%" src="Church Accommodations Plots, for 3 states, selected from Plate 32 of the 1870 Statistical Atlas"/&gt;]
+
+--
+
+.center[&lt;img src="images/Church_Framed_Redone.png" width = "80%" src="Re-imagined version of Church Accommodations Plots, for 3 states"/&gt;]
+
+
+---
+## Church Accommodation
+
+.center[&lt;img src="images/Church_Framed_Redone.png" width = "80%" src="Re-imagined version of Church Accommodations Plots, for 3 states"/&gt;]
+
+.center[&lt;img src="images/Church_Unframed_Redone.png" width = "80%" src="Re-imagined version of Church Accommodations Plots, for 3 states, without frame"/&gt;]
+
+---
+## Church Accommodation
+
+&lt;img src="Framed_files/figure-html/religious-bias-plot-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+--
+
+.center[Whoops. The lithographer screwed up.]
+
+---
+# Perception of Framed Plots
+
+- Frame cuts the unaccommodated population into quarters - hard to estimate the size
+
+--
+
+- Difficult to compare between states, as there's no aligned axis due to the frame
+
+--
+
+- Estimation requires a two-stage process: 
+    1. Area of the main plot that is accommodated
+    2. Area of the center region devoted to a specific category
+
+--
+
+- Primary comparisons are on the x-axis; the frame disrupts the ease of these comparisons
+
+---
+# Frames in Practice
+
+- User study with 98 Participants
+
+- Each participant evaluated 18 plots 
+    - Region size: small, medium, large
+    - Pie, Mosaic, Spine plots
+    - Framed or Unframed charts
+
+- 25 seconds per plot
+
+---
+# Frames in Practice
+
+.center[&lt;img src="images/Alabama-pie_without_frame1.png" width = "28%" style="margin-right:10px;"/&gt;
+&lt;img src="images/Maine-mosaic_without_frame1.png" width = "28%" style="margin-right:10px;"/&gt;
+&lt;img src="images/Michigan-spine_without_frame1.png" width = "28%"/&gt;]
+
+.center[&lt;img src="images/Alabama-pie_with_frame1.png" width = "28%" style="margin-right:10px;"/&gt;
+&lt;img src="images/Maine-mosaic_with_frame1.png" width = "28%" style="margin-right:10px;"/&gt;
+&lt;img src="images/Michigan-spine_with_frame1.png" width = "28%"/&gt;]
+
+
+---
+# Results
+
+&lt;img src="Framed_files/figure-html/model-1.png" width="100%" /&gt;
+
+
+---
+# Conclusions
+
+- Estimation of the framed portion of plots is significantly worse than the same area in an unframed plot
+
+--
+
+&lt;br&gt;
+- Framed plots are not great for accurately communicating the data
+    - They don't appear in the 1880 or 1890 census
+    - Pie charts largely replaced mosaic and spine plots
+
+--
+
+&lt;br&gt;
+- The Census Bureau and assocciated institutions did a great job of preserving the data necessary to reproduce the results and identify flaws in the analysis process
+
+&lt;br&gt;
+
+---
+# Conclusions
+
+.center[## 150 years later, we can use completely different technology to get the same charts]
+
+--
+
+How's that for reproducibility?
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
