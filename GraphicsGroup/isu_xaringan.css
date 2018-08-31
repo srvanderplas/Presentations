@@ -1,0 +1,126 @@
+/* Let's load some fonts */
+/* Modified from http://svmiller.com/blog/2018/02/r-markdown-xaringan-theme/ */
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto:700');
+/*
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+*/
+
+
+/* Generic stuff */
+
+.remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+
+body { font-family: 'Open Sans' }
+
+.grViz {
+  margin-left:auto; margin-right:auto; display:block;
+}
+
+/* Pretty sure this is all me messing with the title slide */
+
+
+div.remark-slide-container h1 {
+	font-family: 'Roboto', sans-serif;
+	color: #006BA6;
+  font-size: 50px;
+}
+
+.inverse h1 {
+    line-height: 0.5em;
+}
+.title-slide h1 {
+	margin-top: -130px;
+}
+
+div.remark-slide-container h2 {
+	font-family: 'Roboto', sans-serif;
+	color: #9A3324;
+	letter-spacing: -1px;
+	font-size: 40px
+}
+
+div.remark-slide-container h3 {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: normal;
+	color: #000;
+	letter-spacing: -1px;
+	font-size: 32px;
+}
+
+.title-slide {
+	background-color: #fff;
+  <!--background-image:  url(https://raw.githubusercontent.com/srvanderplas/Presentations/gh-pages/xaringan_template/ISU_logo.png);-->
+	background-position: center bottom 30px;
+	background-size: 30%;
+	border-bottom: 0 solid #C8102E;
+	box-shadow:  0 55px 0 #fff;
+}
+
+
+.title-slide h3 {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: normal;
+	color: #000;
+	letter-spacing: -1px;
+	font-size: 32px;
+	padding-top: 70px
+}
+
+.title-slide .remark-slide-number {
+  display: none;
+}
+
+/* Hmm. How about the slide number. */
+
+
+.remark-slide-number {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	color: #7A99AC;
+}
+
+/* Okay, now let's add a simple bottom border */
+
+
+div.remark-slide {
+  border-bottom: 3px solid  #C8102E;
+  box-shadow:  0 5px 0 #7C2529 ;
+}
+
+/* Let's play with .inverse and a new class, .fullscale, a little more */
+
+.inverse {
+    color: #fafafa;
+    text-shadow: 0 0 0px #333;
+}
+
+div.remark-slide-container .fullscale {
+    color: #d6d6d6;
+    text-shadow: 0 0 24px #333;
+}
+
+div.remark-slide-container .fullscale h1 {
+	color: #fff;
+
+}
+
+div.remark-slide-container .fullscale p {
+	color: #000;
+
+}
+.remark-slide-content {
+	font-size: 24px;
+	text-shadow: 0 0 0px #333;
+
+}
+
+img {
+  display:block;
+  margin:auto;
+}
+.huge { font-size: 200% }
+.large { font-size: 150% }
+.small { font-size: 70% }
+.tiny { font-size: 40% }
