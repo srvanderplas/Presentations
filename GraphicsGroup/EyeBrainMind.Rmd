@@ -1,7 +1,8 @@
 ---
-title: "Graphical Perception"
-subtitle: "Creating Charts People Can Read"
+title: "Eye, Brain, and Mind"
+subtitle: "Perception and Statistical Graphics"
 author: "Susan VanderPlas"
+date: "September 14, 2018"
 output:
   xaringan::moon_reader:
     css: ["default", "isu_xaringan.css"]
