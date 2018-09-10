@@ -36,8 +36,7 @@ theme_set(theme_bw(base_size = 14))
     - Hardware
     - Software
         - From retina to mental representation
-        - Design choices
-        - Bugs
+        - Design choices & Bugs
 - Statistical Graphics
     - Simple Graphs
     - Additional Complexity
@@ -270,7 +269,7 @@ background-size: 60%
 
 <!--https://www.pexels.com/photo/dalmatian-sitting-white-surface-933498/-->
 
-.large[What do you see?]
+.center[.large[What do you see?]]
 
 --
 
@@ -297,18 +296,24 @@ available context clues
 
 <img src="images/gestalt.jpg" width = "100%"/>
 
+???
+
+Gestalt heuristics are used to organize the world around us.
+
+Dimension reduction issues: 3D world, 2D retina = information loss. There are infinitely many different 3D scenes that can produce a 2D projection, and infinitely many 2D projections from the same scene (lighting, angle). The brain has to handle this intelligently...
+
 ---
 background-image: url(images/DuckRabbitIllusion.jpg)
 background-position: 100% 20%
-background-size: 40%
+background-size: 30%
 ### Step 4: Visual Memory
 
-.large[What do you see?]
+.center[.large[What do you see?]]
 
 ---
 background-image: url(images/DuckRabbitIllusion.jpg)
 background-position: 100% 20%
-background-size: 40%
+background-size: 30%
 ### Step 4: Visual Memory
 
 - Memories are stored as "gist" - the idea of the thing, rather than the actual perception
@@ -320,7 +325,7 @@ background-size: 40%
 ---
 layout:true
 # Human Visual System
-## Software: Design Choices
+## Software: Design Choices & Bugs
 
 ---
 ### Logarithmic Perception
@@ -336,3 +341,20 @@ Holds for weight, color, sound, light intensity, and more
 
 - More efficient compression of stimuli over limited bandwidth    
 .small[See Varshney and Sun (2013) - "Why do we perceive logarithmically"]
+
+---
+### Optical Illusions
+
+- Physiological Illusions occur due to receptor "wiring"
+
+![Grid illusion](https://en.wikipedia.org/wiki/Grid_illusion#/media/File:Grid_illusion.svg)
+
+---
+### Optical Illusions
+
+- Gestalt heuristic illusions
+
+
+<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Cup_or_faces_paradox.svg/174px-Cup_or_faces_paradox.svg width="40%"/>
+.right[![Kanizsa triangle illusion](https://en.wikipedia.org/wiki/Illusory_contours#/media/File:Kanizsa_triangle.svg)]
+
