@@ -13,6 +13,8 @@ output:
       highlightLines: true
       countIncrementalSlides: false
     self_contained: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -42,10 +44,13 @@ theme_set(theme_bw(base_size = 14))
     - Additional Complexity
     
 ---
+
+# Human Visual System
+
+---
 layout: true
 style: primary
 
-# Human Visual System
 ## Hardware
 
 ---
@@ -97,7 +102,6 @@ As a result, the visual system doesn't perceive all colors equally well. Rainbow
 
 ---
 layout:true
-# Human Visual System
 ## Software: Initial Processing
 
 ---
@@ -269,7 +273,7 @@ background-size: 60%
 
 <!--https://www.pexels.com/photo/dalmatian-sitting-white-surface-933498/-->
 
-.center[.large[What do you see?]]
+.large[What do you see?]
 
 --
 
@@ -316,7 +320,8 @@ background-position: 100% 20%
 background-size: 30%
 ### Step 4: Visual Memory
 
-- Memories are stored as "gist" - the idea of the thing, rather than the actual perception
+- Memories are stored as "gist" - the idea of the thing,     
+rather than the actual perception
 - Most people don't have photographic memory
     - Ambiguous images are stored as they were perceived at the time
 
@@ -324,7 +329,6 @@ background-size: 30%
 
 ---
 layout:true
-# Human Visual System
 ## Software: Design Choices & Bugs
 
 ---
@@ -345,16 +349,56 @@ Holds for weight, color, sound, light intensity, and more
 ---
 ### Optical Illusions
 
-- Physiological Illusions occur due to receptor "wiring"
+- Physiological Illusions    
+occur due to receptor "wiring"
 
-![Grid illusion](https://en.wikipedia.org/wiki/Grid_illusion#/media/File:Grid_illusion.svg)
+.center[<img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/HermannGrid.gif" height="200px" style="display:inline-block;margin-right:50px;margin-left:50px;"/> <img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Grid_illusion.svg" height="200px" style="display:inline-block;margin-right:50px;margin-left:50px;"/> ]
 
 ---
 ### Optical Illusions
 
-- Gestalt heuristic illusions
+- Gestalt heuristic illusions    
+occur due to perceptual grouping mechanisms
+
+Figure/Ground Illusion | Kanizsa triangle 
+---------------------- | ----------------
+<img src=https://upload.wikimedia.org/wikipedia/commons/7/74/Cup_or_faces_paradox.svg height="200px"/> | <img src=https://upload.wikimedia.org/wikipedia/commons/5/55/Kanizsa_triangle.svg height="200px"/>
 
 
-<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Cup_or_faces_paradox.svg/174px-Cup_or_faces_paradox.svg width="40%"/>
-.right[![Kanizsa triangle illusion](https://en.wikipedia.org/wiki/Illusory_contours#/media/File:Kanizsa_triangle.svg)]
+---
+### Optical Illusions
+
+- Depth perception illusions    
+occur when 3D experience is applied to 2D stimuli
+
+Muller-Lyer | Color-constancy
+----------- | ---------------
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/M%C3%BCller-Lyer_illusion.svg" height = "200px" style="margin-left:30px;margin-right:30px;"/> | <img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Grey_square_optical_illusion.PNG" height="200px"/>
+
+---
+### Optical Illusions
+
+- Depth perception illusions
+
+```{r sine-illusion, echo = F, fig.width = 6, fig.height = 4, out.width = "70%", dpi = 300}
+data_frame(
+  x = seq(0, 4*pi, length.out = 60),
+  ymin = 2*sin(x) - 1,
+  ymax = 2*sin(x) + 1
+) %>%
+  ggplot() + 
+  geom_segment(aes(x = x, xend = x, y = ymin, yend = ymax)) + 
+  coord_equal() + 
+  theme_minimal() + 
+  theme(axis.text = element_blank(), axis.title = element_blank()) + 
+  ggtitle("Sine Illusion")
+```
+
+---
+
+# Statistical Graphics
+
+---
+layout:true
+## Simple Graph Perception
 
