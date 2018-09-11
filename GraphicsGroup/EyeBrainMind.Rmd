@@ -44,12 +44,12 @@ theme_set(theme_bw(base_size = 14))
     - Additional Complexity
     
 ---
-
+class: center,middle 
 # Human Visual System
 
 ---
 layout: true
-style: primary
+class: primary
 
 ## Hardware
 
@@ -395,6 +395,8 @@ data_frame(
 ```
 
 ---
+layout:false
+class:middle,center
 
 # Statistical Graphics
 
@@ -402,3 +404,84 @@ data_frame(
 layout:true
 ## Simple Graph Perception
 
+---
+### Cleveland and McGill
+
+Graphical Tasks by accuracy:
+
+Rank | Task
+---- | ----
+1 | Position - common scale
+2 | Position - non-aligned scale
+3 | Length, Direction, Angle, Slope
+4 | Area
+5 | Volume, Density, Curvature
+6 | Shading, Color saturation, color hue
+
+.small[Cleveland & McGill, 1984, 1985]
+
+---
+### Graphs and Tasks
+
+- Pie charts are more useful for estimation of proportions
+- Chart type affects summary descriptions as well:
+    - bar charts = comparisons
+    - pie charts = proportional judgments
+- Line graphs are usually summarized using slope    
+Even when the x-axis is discrete!
+- Bar graphs are usually summarized with discrete comparisons
+
+.small[Carswell & Wickens, 1987; Simkin & Hastie, 1987; Shah & Carpenter, 2005]
+
+---
+### Human Information Processing
+
+- Graphs are subject to the limits of visual processing and working memory
+
+--
+
+- Color
+    - Not good for reading precise information
+    - Carefully chosen color schemes can provide implicit information that reduces working memory demand
+    
+---
+### Human Information Processing
+- Double Encoding
+    - Using two features to encode the same information
+    - Makes charts more accessible and may make it easier to read
+
+--
+
+- Feature separation: Where possible, use colors/shapes that are highly distinguishable    
+.small[see Heer et al, 2014. for color and shape kernels which are maximally different]
+
+---
+### Visual Statistics
+
+- Estimated correlation from scatterplots is closer to $r^2$ than to $r$ - we implicitly calculate statistics    
+.small[Bobko & Karren, 1979]
+- Visual estimation discounts the effect of outliers - more robust than numerical estimators    
+.small[Lewandowsky (1989)]
+- Visually estimated regression lines are closer to principal components - use variation in $x$ and $y$    
+.small[Mosteller et al., 1981]
+
+---
+layout: true
+## Complex Graphs
+
+---
+### Types of complexity
+
+- Number of x-y functions
+- Working memory requirements
+- Domain knowledge required (e.g. meterological maps)
+- Amount of data
+- Number of layers/geoms
+
+Much harder to study because of the number of variables involved
+
+---
+layout:false
+class:middle,center
+
+# Questions?
