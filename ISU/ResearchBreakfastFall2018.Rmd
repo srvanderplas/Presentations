@@ -1,0 +1,39 @@
+---
+title: "Research Breakfast"
+author: "Susan VanderPlas"
+date: "10/23/2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Computer Vision + Forensics
+
+- Currently shoes, but could also involve fingerprints and bullets
+- Detect ambiguous/complex features in images and 3D data
+- Mimic the power of the human visual system with machine learning!
+
+<img src="images/onehot-1312_labeled_heatmap.png" width = "24%"/>
+<img src="images/onehot-165_labeled_heatmap.png" width = "24%"/>
+<img src="images/onehot-3000_labeled_heatmap.png" width = "24%"/>
+<img src="images/onehot-92_labeled_heatmap.png" width = "24%"/>
+
+## Perception of Statistics
+
+- How do jurors (and others in legal system) interpret charts and statistical information?
+- Do charts and graphics make related claims more credible?
+
+<img src="images/credible.png" width = "60%"/>
+
+## Images
+
+- Forensic pattern evidence often requires analyzing images
+- Essential pre-analysis tasks: 
+    - Alignment
+    - Cleaning
+    - Edge Detection
+- R packages for these tasks are insufficient or nonexistent
+
+<img src="images/ShoeOverlayNikeByCheckin.png" width="90%"/>
