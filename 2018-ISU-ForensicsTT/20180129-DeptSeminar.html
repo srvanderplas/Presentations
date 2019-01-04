@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Some Title</title>
+    <meta charset="utf-8">
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/csafe.css" type="text/css" />
+    <link rel="stylesheet" href="css/csafe-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Some Title
+
+---
+
+
+
+class:primary
+## Outline
+
+- Defining the Problem
+- Identifying features in shoes
+- Convolutional Neural Networks
+
+---
+class:inverse
+&lt;h1&gt;&lt;br/&gt;What is the probability I made this shoeprint?&lt;/h1&gt;
+
+---
+class:primary
+## What is the probability I made this shoeprint?
+
+1. Define the comparison population
+2. Obtain data on the distribution of shoes in the comparison population
+3. Identify shoes in the comparison population which could have produced the shoeprint
+4. Establish whether I have any matching shoes
+
+---
+class:primary
+## Comparison Population
+
+Geographic Area: 
+
+&lt;img src="Snedecor-3105.png" width="24%" style="vertical-align:middle"/&gt;
+&lt;img src="ISU-map.png" width="24%" style="vertical-align:middle"/&gt;
+&lt;img src="Iowa-map.png" width="24%" style="vertical-align:middle"/&gt;
+&lt;img src="US-map.png" width="24%" style="vertical-align:middle"/&gt;
+
+Time window: 
+- weekday, weekend, morning, evening, overnight
+- season
+
+---
+class:primary
+## Comparison Population Shoes
+
+- No 100% complete database of all shoes (manufacturer, model, size, tread molds)
+    &lt;!-- - Too many manufacturers, import/export, online sales, custom shoes, knockoffs --&gt;
+    &lt;!-- - New shoes released all the time --&gt;
+- Shoe purchase data vs. frequency of wear
+    &lt;!-- - shoes purchased outside the defined geographic area or from non-participating retailers --&gt;
+    &lt;!-- - frequency of wear --&gt;
+- Local populations may differ wildly in shoe models
+    &lt;!-- - Styles and trends --&gt;
+    &lt;!-- - Occupational differences --&gt;
+    &lt;!-- - Retailer options --&gt;
+    
+&lt;img src = "snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/&gt;
+&lt;!-- https://pixnio.com/free-images/2017/05/03/2017-05-03-07-35-18-900x456.jpg --&gt;
+
+---
+class:primary
+## Identify Candidate Shoes
+
+Use features other than make/model to characterize shoes
+
+- Knockoffs often have very similar tread patterns to the original
+- Similar styles of shoe may have similar tread patterns across brands
+- Unknown shoes can still be classified
+
+&lt;img src = "https://m.media-amazon.com/images/I/71DCI4ffT-L.jpg" width = "32%" style = "vertical-align:middle"/&gt;
+&lt;img src = "https://m.media-amazon.com/images/I/71ys+pKM76L.jpg" width = "32%" style = "vertical-align:middle"/&gt;
+&lt;img src = "https://m.media-amazon.com/images/I/71lWfFm+qVL.jpg" width = "32%" style = "vertical-align:middle"/&gt;
+
+---
+class:primary
+## Identify Candidate Shoes
+
+Class Characteristics
+- Make, Model, Tread pattern, Size, Type of shoe
+- Cannot be used to identify an individual match
+- Used for exclusion
+
+Geometric Elements
+- Class characteristics
+- Can be used to narrow shoe prints down to make/model with high levels of accuracy [GJN13]
+&lt;!-- TODO: Cite class char studies --&gt;
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
