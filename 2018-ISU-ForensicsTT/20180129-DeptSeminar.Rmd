@@ -7,6 +7,9 @@ output:
     nature:
       countIncrementalSlides: false
 ---
+```{r, echo = F, cache = F, include = F}
+library(tidyverse)
+```
 ```{r, load_refs, echo=FALSE, cache=FALSE}
 library(RefManageR)
 BibOptions(check.entries = FALSE, 
@@ -21,9 +24,11 @@ bb <- ReadBib("./refs.bib", check = FALSE)
 class:primary
 ## Outline
 
+<br/>
 - Defining the Problem
 - Identifying features in shoes
 - Convolutional Neural Networks
+- Future Work
 
 ---
 class:inverse
@@ -42,16 +47,38 @@ class:primary
 class:primary
 ## Comparison Population
 
+.right-column[
+
+<br/>
 Geographic Area: 
 
-<img src="Snedecor-3105.png" width="24%" style="vertical-align:middle"/>
-<img src="ISU-map.png" width="24%" style="vertical-align:middle"/>
-<img src="Iowa-map.png" width="24%" style="vertical-align:middle"/>
-<img src="US-map.png" width="24%" style="vertical-align:middle"/>
+- How local is local?
 
-Time window: 
-- weekday, weekend, morning, evening, overnight
+Time: 
+- weekday, weekend
+- morning, evening, overnight
 - season
+
+]
+
+.left-column[
+
+<img src="Snedecor-3105.png" width="100%" style="vertical-align:middle"/>
+
+<img src="ISU-map.png" width="100%" style="vertical-align:middle"/>
+
+<img src="Iowa-map.png" width="100%" style="vertical-align:middle"/>
+
+<img src="US-map.png" width="100%" style="vertical-align:middle"/>
+
+]
+---
+class:primary
+## Comparison Population
+
+<br/>
+> .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]<br/> - Leslie Hammer, March 2018
+
 
 ---
 class:primary
@@ -63,38 +90,204 @@ class:primary
 - Shoe purchase data vs. frequency of wear
     <!-- - shoes purchased outside the defined geographic area or from non-participating retailers -->
     <!-- - frequency of wear -->
-- Local populations may differ wildly in shoe models
+- Local populations may differ wildly
     <!-- - Styles and trends -->
     <!-- - Occupational differences -->
     <!-- - Retailer options -->
-    
-<img src = "snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/>
+
+<br/><br/>
+.center[<img src = "snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/>]
 <!-- https://pixnio.com/free-images/2017/05/03/2017-05-03-07-35-18-900x456.jpg -->
 
 ---
 class:primary
-## Identify Candidate Shoes
+## Comparison Population Shoes
 
-Use features other than make/model to characterize shoes
+How to collect data from the local population? 
 
-- Knockoffs often have very similar tread patterns to the original
-- Similar styles of shoe may have similar tread patterns across brands
-- Unknown shoes can still be classified
+- Low profile scanner that can be placed in a high traffic area
+- Scan shoes of those walking past
+- Create a local-area database of relevant shoes
 
-<img src = "https://m.media-amazon.com/images/I/71DCI4ffT-L.jpg" width = "32%" style = "vertical-align:middle"/>
-<img src = "https://m.media-amazon.com/images/I/71ys+pKM76L.jpg" width = "32%" style = "vertical-align:middle"/>
-<img src = "https://m.media-amazon.com/images/I/71lWfFm+qVL.jpg" width = "32%" style = "vertical-align:middle"/>
+--
+
+### .center[This is an engineering problem]
 
 ---
 class:primary
-## Identify Candidate Shoes
+## Comparison Population Shoes
 
+Assume a machine exists that can scan shoe outsoles of pedestrians
+
+--
+
+1. Identify relevant features within the images
+
+--
+
+2. Assess the frequency of similar shoes in local population data
+
+--
+
+### .center[These are statistics problems]
+
+---
+class:primary
+## Identify Relevant Features
+
+<br/>
 Class Characteristics
 - Make, Model, Tread pattern, Size, Type of shoe
 - Cannot be used to identify an individual match
 - Used for exclusion
 
-Geometric Elements
-- Class characteristics
-- Can be used to narrow shoe prints down to make/model with high levels of accuracy `r Citep(bb, 'gross_variability_2013')`
-<!-- TODO: Cite class char studies -->
+---
+class:primary
+## Identify Relevant Features
+
+<br/>
+Use features other than make/model to characterize shoes
+
+- Knockoffs often have very similar tread patterns
+- Similar styles have similar tread patterns across brands
+- Unknown shoes can still be classified and assessed
+
+<img src = "star_bar_drmartin.png" width = "16%" style = "vertical-align:middle;padding:30px"/>
+<img src = "star_bar_vibram.png" width = "15%" style = "vertical-align:middle;padding:30px"/>
+<img src = "star_bar_timberland.png" width = "16%" style = "vertical-align:middle;padding:30px"/>
+
+---
+class:primary
+## Identify Relevant Features
+
+<br/>
+Geometric Elements in Shoe Tread
+- One type of class characteristic
+- Can be used to narrow shoe prints down to make/model `r Citep(bb, 'gross_variability_2013')`
+
+| Bowtie | Chevron | Circle |
+| ------ | ------- | ------ |
+| ![Bowtie examples](class_examples/bowtie_examples.png) | ![Chevron examples](class_examples/chevron_examples.png) | ![Circle examples](class_examples/circle_examples.png) |
+
+| Line | Polygon | Quad |
+| ---- | ------- | ---- |
+| ![Line examples](class_examples/line_examples.png) | ![Polygon examples](class_examples/polygon_examples.png) | ![Quad examples](class_examples/quad_examples.png) |
+
+| Star | Text | Triangle |
+| ---- | ---- | -------- |
+| ![Star examples](class_examples/star_examples.png) | ![text examples](class_examples/text_examples.png) | ![Triangle examples](class_examples/triangle_examples.png) |
+
+---
+class:primary
+## Feature Detection
+
+<br/>
+Classic computer vision feature detection methods: 
+- Edge, Corner, Blob, Ridge detection
+- Template matching: Hough transforms for line, circle, ellipse detection
+    - provide location and orientation
+
+--
+
+.pull-left[
+
+Pros
+- Algorithmic; no training data necessary
+
+]
+
+--
+
+.pull-right[
+
+Cons
+- Parameters don't generalize well to different images
+- Computationally intensive to process every image
+- Features lack face validity
+
+]
+
+---
+class:primary
+## Feature Detection
+
+<br/>
+Convolutional neural networks: 
+- Structure built to mimic perceptual pathways in the human visual system
+- Ubiquitous in modern image recognition tasks
+
+--
+
+.pull-left[
+
+Pros
+- Pre-trained networks available for tuning    
+.small[AlexNet, VGG16, ResNet, Inception]
+- Features are interpretable
+- Very fast (after training)
+
+]
+
+--
+
+.pull-right[
+
+Cons
+- Requires labeled training data (lots!)
+- Computationally intensive to train
+- Opaque - parameters are not interpretable
+
+]
+
+---
+class:inverse
+# <br/><br/>Convolutional Neural Networks
+
+---
+class:primary
+## Acquire Data
+
+![Zappos Screenshot showing sole images](zappos.png)
+
+.center[`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since June 2018]
+
+---
+class:primary
+## Label Data
+
+![LabelMe](LabelMe1.png)
+
+.center[~25000 regions labeled with one or more geometric objects]
+
+.center[Labeling courtesy of Jenny Kim, Ben Wonderlin, Holden Jud, and Mya Fisher]
+
+---
+class:primary
+## Train the CNN
+
+<br/>
+- VGG16 pre-trained network    
+![VGG16 architecture](vgg16.png)
+
+---
+class:primary
+## Train the CNN
+
+<br/>
+- VGG16 pre-trained network    
+![VGG16 architecture](vgg16-tune.png)
+- Tune parameters after the last convolutional layer; optimize for problem-specific input
+
+---
+class:primary
+## Train the CNN
+
+<br/>
+- 256 x 256 images
+- "One-hot" encoding - multiple classes are allowed for each image
+- Training data (70%):
+    - Augmented images (rotation, skew, zoom, crop) to prevent overfitting
+    - Approximately equal numbers of images for each class
+- Validation and test data (15% each)
+    - Class frequency representative of population
+
