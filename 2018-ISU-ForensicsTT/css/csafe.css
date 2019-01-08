@@ -45,10 +45,10 @@
   text-align: left;
   padding-left: 20px;
   padding-top: 0px !important;
-  text-transform: uppercase;
+  margin-top: -100px !important;
+  margin-bottom: 0px !important;
   font-weight: bold;
   line-height: normal;
-  margin-bottom: -20px;
 }
 
 .inverse {
@@ -92,4 +92,14 @@
   color: red;
 }
 
+.marginfig {
+  position: absolute;
+  top:225px;
+  right:20px;
+  width:205px;
+}
+
+.moveup {
+  padding-top:-50px !important;
+}
   

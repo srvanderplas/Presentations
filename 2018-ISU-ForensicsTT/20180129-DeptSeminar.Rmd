@@ -1,5 +1,5 @@
 ---
-title: "Some Title"
+title: "CoNNOR: Convolutional Neural Network for Outsole Recognition"
 output:
   xaringan::moon_reader:
     css: ["default", "css/csafe.css", "css/csafe-fonts.css"]
@@ -8,7 +8,11 @@ output:
       countIncrementalSlides: false
 ---
 ```{r, echo = F, cache = F, include = F}
+library(magrittr)
 library(tidyverse)
+library(ggplot2)
+
+knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T)
 ```
 ```{r, load_refs, echo=FALSE, cache=FALSE}
 library(RefManageR)
@@ -251,15 +255,75 @@ class:primary
 
 .center[`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since June 2018]
 
+```{r labeled-data}
+newest_data_file <- list.files("~/models/shoe_nn/RProcessedImages/", "cropped_photos.Rdata", recursive = T, full.names = T) %>%
+  rev() %>% 
+  magrittr::extract(1)
+
+load(newest_data_file)
+
+label_fixes <- c("triangles" = "triangle",
+                 "trianglee" = "triangle",
+                 "circlemtraignle" = "circle_triangle",
+                 "circle triangle" = "circle_triangle",
+                 "circleline" = "circle_line",
+                 "circle text" = "circle_text",
+                 "circle_elongated" = "circle",
+                 "cricle|cirle" = "circle",
+                 "lie" = "line",
+                 "texxt" = "text",
+                 "star quad" = "star_quad",
+                 "exc_idd" = "exclude",
+                 "quad?" = "quad",
+                 "qaud|qud" = "quad", 
+                 "stars|start" = "star", 
+                 "exlude" = "exclude",
+                 "rounded" = "",
+                 "smooth_texture" = "other",
+                 "octagon" = "polygon",
+                 "crepe" = "other",
+                 "hex" = "polygon",
+                 "smooth" = "other"
+                 )
+
+annotated_imgs <- select(dfunion, image, name) %>%
+  mutate(num_labels = str_count(name, "_") + 1, 
+         annot_num = 1:n()) %>%
+  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
+           str_replace_all(label_fixes) %>% 
+           str_split("_")) %>%
+  unnest(labels) %>%
+  mutate(labels = str_replace_all(labels, label_fixes)) %>%
+  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
+  filter(labels != "") %>%
+  filter(labels != "exclude") %>%
+  filter(labels != "ribbon" & labels != "logo")
+```
+
 ---
 class:primary
 ## Label Data
 
 ![LabelMe](LabelMe1.png)
 
-.center[~25000 regions labeled with one or more geometric objects]
-
+.center[`r length(annotated_imgs$image)` shoe images labeled]
+.center[`r length(unique(annotated_imgs$annot_num))` regions labeled with one or more geometric objects]
 .center[Labeling courtesy of Jenny Kim, Ben Wonderlin, Holden Jud, and Mya Fisher]
+
+---
+class:primary
+## Label Data
+<br/>
+```{r, fig.width = 5, fig.height = 3, out.width = "90%", dpi = 300}
+ggplot(data = annotated_imgs) + 
+  geom_bar(aes(x = labels, fill = label_type), color = "black") + 
+  scale_fill_manual("Region\nLabels", values = c("single" = "#6ba2b9", "multi" = "#2e5597")) + 
+  coord_flip() + 
+  ylab("# Labeled Regions") + 
+  xlab("") + 
+  theme(legend.position = c(1, 0), legend.justification = c(1, 0), legend.background = element_rect(fill = "transparent")) + 
+  ggtitle("Current Distribution of Region Labels")
+```
 
 ---
 class:primary
@@ -278,16 +342,75 @@ class:primary
 ![VGG16 architecture](vgg16-tune.png)
 - Tune parameters after the last convolutional layer; optimize for problem-specific input
 
+
+```{r}
+new_img_dir <- dirname(newest_data_file)
+test_imgs <- list.files(file.path(new_img_dir, "test"))
+train_imgs <- list.files(file.path(new_img_dir, "train"))
+valid_imgs <- list.files(file.path(new_img_dir, "validation"))
+```
 ---
 class:primary
 ## Train the CNN
 
 <br/>
-- 256 x 256 images
+- 256 x 256 pixel images
 - "One-hot" encoding - multiple classes are allowed for each image
 - Training data (70%):
     - Augmented images (rotation, skew, zoom, crop) to prevent overfitting
     - Approximately equal numbers of images for each class
 - Validation and test data (15% each)
     - Class frequency representative of population
+
+---
+class:primary
+## Train the CNN
+
+<br/>
+<img alt="Training accuracy increase" src="training.png" width = "90%"/>
+
+---
+class:primary
+## Train the CNN
+
+.right-column[
+<img src="ConfMat.png" alt = "Confusion Matrix" width = "95%"/>
+]
+
+.left-column[
+
+<br/>
+For multi-label images, only incorrect predictions contribute to off-diagonal probabilities
+<br/>
+
+]
+
+???
+
+Slightly more likely to predict quadrilateral for all classes. It's important to note that we don't expect perfect predictions here - there are some shapes that are actually super ambiguous (and were labeled differently -- we're working on correcting that issue)
+
+---
+class:primary
+## Definitions matter...
+
+<br/>
+![Classes get confusing](dc_circle_quad_confusion.png)
+
+--
+
+![Not everything is labeled correctly](circle_pred_correct.png)
+
+???
+
+We created a shiny application to see the images and the model's predictions. Blue means that the image had that label, grey means it does not. 
+
+So in the first image, the design is labeled as a quadrilateral (rounded quadrilateral) rather than a circle. We're still debating how to handle these... 
+
+In the second image, both text and quad are labels, but the model also identifies a circle in the text with probability 0.31; that is, the text contains an O. 
+
+We use the shiny application to screen for these problems so that we can correct the labeled training data. We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things.
+
+---
+class:primary
+## Debugging the model
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Some Title</title>
+    <title>CoNNOR: Convolutional Neural Network for Outsole Recognition</title>
     <meta charset="utf-8">
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/csafe.css" type="text/css" />
@@ -11,18 +11,21 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Some Title
+# CoNNOR: Convolutional Neural Network for Outsole Recognition
 
 ---
+
 
 
 
 class:primary
 ## Outline
 
+&lt;br/&gt;
 - Defining the Problem
 - Identifying features in shoes
 - Convolutional Neural Networks
+- Future Work
 
 ---
 class:inverse
@@ -41,16 +44,38 @@ class:primary
 class:primary
 ## Comparison Population
 
+.right-column[
+
+&lt;br/&gt;
 Geographic Area: 
 
-&lt;img src="Snedecor-3105.png" width="24%" style="vertical-align:middle"/&gt;
-&lt;img src="ISU-map.png" width="24%" style="vertical-align:middle"/&gt;
-&lt;img src="Iowa-map.png" width="24%" style="vertical-align:middle"/&gt;
-&lt;img src="US-map.png" width="24%" style="vertical-align:middle"/&gt;
+- How local is local?
 
-Time window: 
-- weekday, weekend, morning, evening, overnight
+Time: 
+- weekday, weekend
+- morning, evening, overnight
 - season
+
+]
+
+.left-column[
+
+&lt;img src="Snedecor-3105.png" width="100%" style="vertical-align:middle"/&gt;
+
+&lt;img src="ISU-map.png" width="100%" style="vertical-align:middle"/&gt;
+
+&lt;img src="Iowa-map.png" width="100%" style="vertical-align:middle"/&gt;
+
+&lt;img src="US-map.png" width="100%" style="vertical-align:middle"/&gt;
+
+]
+---
+class:primary
+## Comparison Population
+
+&lt;br/&gt;
+&gt; .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]&lt;br/&gt; - Leslie Hammer, March 2018
+
 
 ---
 class:primary
@@ -62,41 +87,254 @@ class:primary
 - Shoe purchase data vs. frequency of wear
     &lt;!-- - shoes purchased outside the defined geographic area or from non-participating retailers --&gt;
     &lt;!-- - frequency of wear --&gt;
-- Local populations may differ wildly in shoe models
+- Local populations may differ wildly
     &lt;!-- - Styles and trends --&gt;
     &lt;!-- - Occupational differences --&gt;
     &lt;!-- - Retailer options --&gt;
-    
-&lt;img src = "snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/&gt;
+
+&lt;br/&gt;&lt;br/&gt;
+.center[&lt;img src = "snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/&gt;]
 &lt;!-- https://pixnio.com/free-images/2017/05/03/2017-05-03-07-35-18-900x456.jpg --&gt;
 
 ---
 class:primary
-## Identify Candidate Shoes
+## Comparison Population Shoes
 
-Use features other than make/model to characterize shoes
+How to collect data from the local population? 
 
-- Knockoffs often have very similar tread patterns to the original
-- Similar styles of shoe may have similar tread patterns across brands
-- Unknown shoes can still be classified
+- Low profile scanner that can be placed in a high traffic area
+- Scan shoes of those walking past
+- Create a local-area database of relevant shoes
 
-&lt;img src = "https://m.media-amazon.com/images/I/71DCI4ffT-L.jpg" width = "32%" style = "vertical-align:middle"/&gt;
-&lt;img src = "https://m.media-amazon.com/images/I/71ys+pKM76L.jpg" width = "32%" style = "vertical-align:middle"/&gt;
-&lt;img src = "https://m.media-amazon.com/images/I/71lWfFm+qVL.jpg" width = "32%" style = "vertical-align:middle"/&gt;
+--
+
+### .center[This is an engineering problem]
 
 ---
 class:primary
-## Identify Candidate Shoes
+## Comparison Population Shoes
 
+Assume a machine exists that can scan shoe outsoles of pedestrians
+
+--
+
+1. Identify relevant features within the images
+
+--
+
+2. Assess the frequency of similar shoes in local population data
+
+--
+
+### .center[These are statistics problems]
+
+---
+class:primary
+## Identify Relevant Features
+
+&lt;br/&gt;
 Class Characteristics
 - Make, Model, Tread pattern, Size, Type of shoe
 - Cannot be used to identify an individual match
 - Used for exclusion
 
-Geometric Elements
-- Class characteristics
-- Can be used to narrow shoe prints down to make/model with high levels of accuracy [GJN13]
-&lt;!-- TODO: Cite class char studies --&gt;
+---
+class:primary
+## Identify Relevant Features
+
+&lt;br/&gt;
+Use features other than make/model to characterize shoes
+
+- Knockoffs often have very similar tread patterns
+- Similar styles have similar tread patterns across brands
+- Unknown shoes can still be classified and assessed
+
+&lt;img src = "star_bar_drmartin.png" width = "16%" style = "vertical-align:middle;padding:30px"/&gt;
+&lt;img src = "star_bar_vibram.png" width = "15%" style = "vertical-align:middle;padding:30px"/&gt;
+&lt;img src = "star_bar_timberland.png" width = "16%" style = "vertical-align:middle;padding:30px"/&gt;
+
+---
+class:primary
+## Identify Relevant Features
+
+&lt;br/&gt;
+Geometric Elements in Shoe Tread
+- One type of class characteristic
+- Can be used to narrow shoe prints down to make/model [GJN13]
+
+| Bowtie | Chevron | Circle |
+| ------ | ------- | ------ |
+| ![Bowtie examples](class_examples/bowtie_examples.png) | ![Chevron examples](class_examples/chevron_examples.png) | ![Circle examples](class_examples/circle_examples.png) |
+
+| Line | Polygon | Quad |
+| ---- | ------- | ---- |
+| ![Line examples](class_examples/line_examples.png) | ![Polygon examples](class_examples/polygon_examples.png) | ![Quad examples](class_examples/quad_examples.png) |
+
+| Star | Text | Triangle |
+| ---- | ---- | -------- |
+| ![Star examples](class_examples/star_examples.png) | ![text examples](class_examples/text_examples.png) | ![Triangle examples](class_examples/triangle_examples.png) |
+
+---
+class:primary
+## Feature Detection
+
+&lt;br/&gt;
+Classic computer vision feature detection methods: 
+- Edge, Corner, Blob, Ridge detection
+- Template matching: Hough transforms for line, circle, ellipse detection
+    - provide location and orientation
+
+--
+
+.pull-left[
+
+Pros
+- Algorithmic; no training data necessary
+
+]
+
+--
+
+.pull-right[
+
+Cons
+- Parameters don't generalize well to different images
+- Computationally intensive to process every image
+- Features lack face validity
+
+]
+
+---
+class:primary
+## Feature Detection
+
+&lt;br/&gt;
+Convolutional neural networks: 
+- Structure built to mimic perceptual pathways in the human visual system
+- Ubiquitous in modern image recognition tasks
+
+--
+
+.pull-left[
+
+Pros
+- Pre-trained networks available for tuning    
+.small[AlexNet, VGG16, ResNet, Inception]
+- Features are interpretable
+- Very fast (after training)
+
+]
+
+--
+
+.pull-right[
+
+Cons
+- Requires labeled training data (lots!)
+- Computationally intensive to train
+- Opaque - parameters are not interpretable
+
+]
+
+---
+class:inverse
+# &lt;br/&gt;&lt;br/&gt;Convolutional Neural Networks
+
+---
+class:primary
+## Acquire Data
+
+![Zappos Screenshot showing sole images](zappos.png)
+
+.center[47607 shoe outsole images scraped since June 2018]
+
+
+
+---
+class:primary
+## Label Data
+
+![LabelMe](LabelMe1.png)
+
+.center[30968 shoe images labeled]
+.center[23534 regions labeled with one or more geometric objects]
+.center[Labeling courtesy of Jenny Kim, Ben Wonderlin, Holden Jud, and Mya Fisher]
+
+---
+class:primary
+## Label Data
+&lt;br/&gt;
+&lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-2-1.png" width="90%" /&gt;
+
+---
+class:primary
+## Train the CNN
+
+&lt;br/&gt;
+- VGG16 pre-trained network    
+![VGG16 architecture](vgg16.png)
+
+---
+class:primary
+## Train the CNN
+
+&lt;br/&gt;
+- VGG16 pre-trained network    
+![VGG16 architecture](vgg16-tune.png)
+- Tune parameters after the last convolutional layer; optimize for problem-specific input
+
+
+
+---
+class:primary
+## Train the CNN
+
+&lt;br/&gt;
+- 256 x 256 pixel images
+- "One-hot" encoding - multiple classes are allowed for each image
+- Training data (70%):
+    - Augmented images (rotation, skew, zoom, crop) to prevent overfitting
+    - Approximately equal numbers of images for each class
+- Validation and test data (15% each)
+    - Class frequency representative of population
+
+---
+class:primary
+## Train the CNN
+
+&lt;br/&gt;
+&lt;img alt="Training accuracy increase" src="training.png" width = "90%"/&gt;
+
+---
+class:primary
+## Train the CNN
+
+.right-column[
+&lt;img src="ConfMat.png" alt = "Confusion Matrix" width = "95%"/&gt;
+]
+
+.left-column[
+
+&lt;br/&gt;
+For multi-label images, only incorrect predictions contribute to off-diagonal probabilities
+&lt;br/&gt;
+
+]
+
+???
+
+Slightly more likely to predict quadrilateral for all classes. It's important to note that we don't expect perfect predictions here - there are some shapes that are actually super ambiguous (and were labeled differently -- we're working on correcting that issue)
+
+---
+class:primary
+## Definitions matter...
+
+&lt;br/&gt;
+![Classes get confusing](dc_circle_quad_confusion.png)
+
+--
+
+![Not everything is labeled correctly](circle_pred_correct.png)
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
