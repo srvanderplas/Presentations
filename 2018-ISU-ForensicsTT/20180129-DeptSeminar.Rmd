@@ -348,12 +348,20 @@ new_img_dir <- dirname(newest_data_file)
 test_imgs <- list.files(file.path(new_img_dir, "test"))
 train_imgs <- list.files(file.path(new_img_dir, "train"))
 valid_imgs <- list.files(file.path(new_img_dir, "validation"))
+img_df <- bind_rows(data_frame(type = "test", img = test_imgs),
+                    data_frame(type = "train", img = train_imgs),
+                    data_frame(type = "validation", img = valid_imgs)) %>%
+  mutate(type = factor(type, levels = c("train", "validation", "test"))) %>%
+  mutate(image_base = str_remove(img, "^(.*?_?){1,}-\\d-"))
+
 ```
+
 ---
 class:primary
 ## Train the CNN
 
 <br/>
+<div style="margin-left:-20px">
 - 256 x 256 pixel images
 - "One-hot" encoding - multiple classes are allowed for each image
 - Training data (70%):
@@ -361,6 +369,7 @@ class:primary
     - Approximately equal numbers of images for each class
 - Validation and test data (15% each)
     - Class frequency representative of population
+</p>
 
 ---
 class:primary
@@ -414,3 +423,5 @@ We use the shiny application to screen for these problems so that we can correct
 class:primary
 ## Debugging the model
 
+- Active area of research: How to debug, interpret, and understand what a CNN is actually doing    
+.small[https://distill.pub/2018/building-blocks/]

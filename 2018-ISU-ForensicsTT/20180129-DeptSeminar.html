@@ -246,7 +246,7 @@ class:primary
 
 ![Zappos Screenshot showing sole images](zappos.png)
 
-.center[47607 shoe outsole images scraped since June 2018]
+.center[47626 shoe outsole images scraped since June 2018]
 
 
 
@@ -285,11 +285,13 @@ class:primary
 
 
 
+
 ---
 class:primary
 ## Train the CNN
 
 &lt;br/&gt;
+&lt;div style="margin-left:-20px"&gt;
 - 256 x 256 pixel images
 - "One-hot" encoding - multiple classes are allowed for each image
 - Training data (70%):
@@ -297,6 +299,7 @@ class:primary
     - Approximately equal numbers of images for each class
 - Validation and test data (15% each)
     - Class frequency representative of population
+&lt;/p&gt;
 
 ---
 class:primary
@@ -335,6 +338,20 @@ class:primary
 --
 
 ![Not everything is labeled correctly](circle_pred_correct.png)
+
+???
+
+We created a shiny application to see the images and the model's predictions. Blue means that the image had that label, grey means it does not. 
+
+So in the first image, the design is labeled as a quadrilateral (rounded quadrilateral) rather than a circle. We're still debating how to handle these... 
+
+In the second image, both text and quad are labels, but the model also identifies a circle in the text with probability 0.31; that is, the text contains an O. 
+
+We use the shiny application to screen for these problems so that we can correct the labeled training data. We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things.
+
+---
+class:primary
+## Debugging the model
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
