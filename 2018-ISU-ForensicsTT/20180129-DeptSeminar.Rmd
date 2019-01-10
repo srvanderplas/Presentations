@@ -25,6 +25,23 @@ BibOptions(check.entries = FALSE,
 bb <- ReadBib("./refs.bib", check = FALSE)
 ```
 
+```{r}
+# Unicode symbols for classes
+unicode_symbols <- c(bowtie = "",
+  star = "\u2605",
+  polygon = "\u2B23",
+  chevron = "\uFE3D",
+  triangle = "\u25BC",
+  other = "\u003F",
+  circle =  "\u23FA",
+  text = "a",
+  quad = "\u25A0",
+  line = "\u2225"
+  )
+unicode_symbols <- data_frame(labels = names(unicode_symbols),
+                              shape = as.character(unicode_symbols))
+```
+
 class:primary
 ## Outline
 
@@ -256,9 +273,20 @@ class:primary
 .center[`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since June 2018]
 
 ```{r labeled-data}
-newest_data_file <- list.files("~/models/shoe_nn/RProcessedImages/", "cropped_photos.Rdata", recursive = T, full.names = T) %>%
-  rev() %>% 
-  magrittr::extract(1)
+model_path <- "~/models/shoe_nn/RProcessedImages/"
+data_dirs <- list.dirs(model_path, full.names = T, recursive = F) %>% rev()
+newest_data_file <- NULL
+startidx <- 1:10
+while (is.null(newest_data_file) & max(startidx) <= length(data_dirs)) {
+ newest_data_file <- data_dirs %>%
+  magrittr::extract(startidx) %>%
+  sapply(function(x) list.files(x, "cropped_photos.Rdata", recursive = F, full.names = T)) %>%
+    unlist() %>%
+    as.character() %>%
+    magrittr::extract(1)
+
+  startidx <- pmin(max(startidx) + 1:10, length(data_dirs))
+}
 
 load(newest_data_file)
 
@@ -270,6 +298,7 @@ label_fixes <- c("triangles" = "triangle",
                  "circle text" = "circle_text",
                  "circle_elongated" = "circle",
                  "cricle|cirle" = "circle",
+                 "chrevron" = "chevron",
                  "lie" = "line",
                  "texxt" = "text",
                  "star quad" = "star_quad",
@@ -285,8 +314,9 @@ label_fixes <- c("triangles" = "triangle",
                  "hex" = "polygon",
                  "smooth" = "other"
                  )
-
+# Merge doesn't work, wtf???
 annotated_imgs <- select(dfunion, image, name) %>%
+  mutate(base_image = basename(image)) %>%
   mutate(num_labels = str_count(name, "_") + 1, 
          annot_num = 1:n()) %>%
   mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
@@ -317,12 +347,12 @@ class:primary
 ```{r, fig.width = 5, fig.height = 3, out.width = "90%", dpi = 300}
 ggplot(data = annotated_imgs) + 
   geom_bar(aes(x = labels, fill = label_type), color = "black") + 
-  scale_fill_manual("Region\nLabels", values = c("single" = "#6ba2b9", "multi" = "#2e5597")) + 
+  scale_fill_manual("Class\nLabels", values = c("single" = "#6ba2b9", "multi" = "#2e5597")) + 
   coord_flip() + 
   ylab("# Labeled Regions") + 
   xlab("") + 
   theme(legend.position = c(1, 0), legend.justification = c(1, 0), legend.background = element_rect(fill = "transparent")) + 
-  ggtitle("Current Distribution of Region Labels")
+  ggtitle("Current Class Distribution (All Labeled Images)")
 ```
 
 ---
@@ -345,15 +375,33 @@ class:primary
 
 ```{r}
 new_img_dir <- dirname(newest_data_file)
-test_imgs <- list.files(file.path(new_img_dir, "test"))
-train_imgs <- list.files(file.path(new_img_dir, "train"))
-valid_imgs <- list.files(file.path(new_img_dir, "validation"))
-img_df <- bind_rows(data_frame(type = "test", img = test_imgs),
-                    data_frame(type = "train", img = train_imgs),
-                    data_frame(type = "validation", img = valid_imgs)) %>%
-  mutate(type = factor(type, levels = c("train", "validation", "test"))) %>%
-  mutate(image_base = str_remove(img, "^(.*?_?){1,}-\\d-"))
 
+ann_df <- select(annotated_imgs, base_image, name, num_labels, annot_num, labels, label_type) %>%
+  group_by(base_image, name) %>%
+  arrange(annot_num) %>%
+  mutate(ln = 1:n())
+
+img_df <- data_frame(img = list.files(file.path(new_img_dir, c("test", "train", "validation")), full.names = T)) %>%
+  mutate(type = str_extract(img, "(test|train|validation)"),
+         image = basename(img),
+         aug = grepl("^aug", image),
+         name = str_extract(image, "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-"),
+         ln = str_extract(name, "-\\d{1,}-$") %>% gsub(pattern = "-", replacement = "") %>% as.numeric(),
+         name = gsub(pattern = "-\\d{1,}-$", "", name),
+         name = gsub(pattern = "aug_", "", name),
+         name = gsub(pattern = "logo|ribbon|logo\\(R\\)|ribbon\\(R\\)", replacement = "other", name),
+         base_image = gsub(image, pattern = "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-", replacement = "") %>%
+           gsub(., pattern = "_\\d_\\d{1,}.jpg", replacement = ".jpg")) %>%
+  select(type, base_image, name, ln, aug, img_path = image) %>%
+  mutate(num_labels = str_count(name, "_") + 1, 
+         annot_num = 1:n()) %>%
+  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
+           str_replace_all(label_fixes) %>% 
+           str_split("_")) %>%
+  unnest(labels) %>%
+  mutate(labels = str_replace_all(labels, label_fixes)) %>%
+  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
+  filter(labels != "" & labels != "hatching" & labels != "exclude" & !is.na(labels))
 ```
 
 ---
@@ -364,11 +412,10 @@ class:primary
 <div style="margin-left:-20px">
 - 256 x 256 pixel images
 - "One-hot" encoding - multiple classes are allowed for each image
-- Training data (70%):
+- Training data (60%):
     - Augmented images (rotation, skew, zoom, crop) to prevent overfitting
-    - Approximately equal numbers of images for each class
-- Validation and test data (15% each)
-    - Class frequency representative of population
+    - Class weights used to counteract uneven class sizes
+- Validation and test data (20% each)
 </p>
 
 ---
@@ -376,7 +423,54 @@ class:primary
 ## Train the CNN
 
 <br/>
+
+```{r class-distribution, fig.width = 6, fig.height = 4, out.width = "90%", eval = F, include = F}
+img_df %>%
+  mutate(type = factor(type, levels = rev(c("train", "test", "validation")))) %>%
+  group_by(labels, type) %>%
+  mutate(labeln = sum(1/num_labels, na.rm = T)) %>%
+  ungroup() %>%
+  arrange(desc(labeln)) %>%
+  mutate(labels = factor(labels, levels = unique(labels), ordered = T)) %>%
+  group_by(type) %>%
+  mutate(weight = 1/n()) %>%
+  ungroup() %>%
+ggplot() + 
+  geom_bar(aes(x = type, fill = labels, weight = weight), color = "black", position = "stack") + 
+  scale_fill_brewer("Class\nLabels", palette = "Paired") + 
+  # facet_grid(~type) + 
+  coord_flip() + 
+  ylab("Proportion of Images") + 
+  xlab("") + 
+  theme(axis.text.y = element_text(angle = 90, hjust = .5, vjust = .5, size = 12)) + 
+  ggtitle("Current Class Distribution (All Labeled Images)")
+```
+
+???
+
+Goal is to increase the relative frequency of the rarer classes (and reduce "everything is a quad")
+
+---
+class:primary
+## Train the CNN
+
+<br/>
 <img alt="Training accuracy increase" src="training.png" width = "90%"/>
+```{r training-accuracy, fig.width = 7, fig.height = 5, out.width = "90%"}
+library(keras)
+model_dir <- file.path("~/models/shoe_nn/TrainedModels", str_extract(new_img_dir, "\\d{8}-\\d{6}$"))
+load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
+data.frame(history$metrics) %>%
+  mutate(epoch = 1:n()) %>%
+  gather(key = "measure", value = "value", -epoch) %>%
+  mutate(Type = ifelse(str_detect(measure, "val"), "Validation", "Training"),
+         measure = ifelse(str_detect(measure, "acc"), "Accuracy", "Loss")) %>%
+  ggplot(aes(x = epoch, y = value, color = Type)) + 
+  geom_point() + 
+  geom_smooth(se = F) + 
+  facet_grid(measure~., scales = "free_y")
+```
+
 
 ---
 class:primary
@@ -425,3 +519,5 @@ class:primary
 
 - Active area of research: How to debug, interpret, and understand what a CNN is actually doing    
 .small[https://distill.pub/2018/building-blocks/]
+
+

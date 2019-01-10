@@ -246,7 +246,7 @@ class:primary
 
 ![Zappos Screenshot showing sole images](zappos.png)
 
-.center[47626 shoe outsole images scraped since June 2018]
+.center[47969 shoe outsole images scraped since June 2018]
 
 
 
@@ -256,8 +256,8 @@ class:primary
 
 ![LabelMe](LabelMe1.png)
 
-.center[30968 shoe images labeled]
-.center[23534 regions labeled with one or more geometric objects]
+.center[31133 shoe images labeled]
+.center[23635 regions labeled with one or more geometric objects]
 .center[Labeling courtesy of Jenny Kim, Ben Wonderlin, Holden Jud, and Mya Fisher]
 
 ---
@@ -296,10 +296,23 @@ class:primary
 - "One-hot" encoding - multiple classes are allowed for each image
 - Training data (70%):
     - Augmented images (rotation, skew, zoom, crop) to prevent overfitting
-    - Approximately equal numbers of images for each class
+    - Down-sampling and additional augmentation to increase proportion of low-frequency classes    
+    .small[Equal class counts complicated by multi-label images]
 - Validation and test data (15% each)
     - Class frequency representative of population
 &lt;/p&gt;
+
+---
+class:primary
+## Train the CNN
+
+&lt;br/&gt;
+
+&lt;img src="20180129-DeptSeminar_files/figure-html/class-distribution-1.png" width="90%" /&gt;
+
+???
+
+Goal is to increase the relative frequency of the rarer classes (and reduce "everything is a quad")
 
 ---
 class:primary
@@ -352,6 +365,9 @@ We use the shiny application to screen for these problems so that we can correct
 ---
 class:primary
 ## Debugging the model
+
+- Active area of research: How to debug, interpret, and understand what a CNN is actually doing    
+.small[https://distill.pub/2018/building-blocks/]
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
