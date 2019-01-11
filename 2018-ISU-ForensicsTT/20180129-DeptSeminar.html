@@ -18,6 +18,8 @@ class: center, middle, inverse, title-slide
 
 
 
+
+
 class:primary
 ## Outline
 
@@ -246,7 +248,7 @@ class:primary
 
 ![Zappos Screenshot showing sole images](zappos.png)
 
-.center[47969 shoe outsole images scraped since June 2018]
+.center[48083 shoe outsole images scraped since June 2018]
 
 
 
@@ -264,7 +266,7 @@ class:primary
 class:primary
 ## Label Data
 &lt;br/&gt;
-&lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-2-1.png" width="90%" /&gt;
+&lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-3-1.png" width="90%" /&gt;
 
 ---
 class:primary
@@ -294,12 +296,10 @@ class:primary
 &lt;div style="margin-left:-20px"&gt;
 - 256 x 256 pixel images
 - "One-hot" encoding - multiple classes are allowed for each image
-- Training data (70%):
+- Training data (60%):
     - Augmented images (rotation, skew, zoom, crop) to prevent overfitting
-    - Down-sampling and additional augmentation to increase proportion of low-frequency classes    
-    .small[Equal class counts complicated by multi-label images]
-- Validation and test data (15% each)
-    - Class frequency representative of population
+    - Class weights used to counteract uneven class sizes
+- Validation and test data (20% each)
 &lt;/p&gt;
 
 ---
@@ -307,19 +307,12 @@ class:primary
 ## Train the CNN
 
 &lt;br/&gt;
-
-&lt;img src="20180129-DeptSeminar_files/figure-html/class-distribution-1.png" width="90%" /&gt;
+&lt;img alt="Training accuracy increase" src="training.png" width = "90%"/&gt;
+&lt;img src="20180129-DeptSeminar_files/figure-html/training-accuracy-1.png" width="90%" /&gt;
 
 ???
 
-Goal is to increase the relative frequency of the rarer classes (and reduce "everything is a quad")
-
----
-class:primary
-## Train the CNN
-
-&lt;br/&gt;
-&lt;img alt="Training accuracy increase" src="training.png" width = "90%"/&gt;
+Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Training loss is still decreasing as well. One concern with retraining the head of a CNN is that with relatively little data (e.g. 20 thousand data points instead of 20 million) it is easy to over-fit models; what we see is that this hasn't yet happened for this model. 
 
 ---
 class:primary
@@ -366,8 +359,45 @@ We use the shiny application to screen for these problems so that we can correct
 class:primary
 ## Debugging the model
 
+&lt;br/&gt;
 - Active area of research: How to debug, interpret, and understand what a CNN is actually doing    
 .small[https://distill.pub/2018/building-blocks/]
+
+- One option: Class Activation Maps
+    - Which regions in the image are relevant to the class?
+
+
+
+
+---
+class:primary
+## Debugging the model
+
+&lt;br/&gt;
+.left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
+.right-column[
+![unscaled heatmapp - DC](heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png)
+]
+
+---
+class:primary
+## Debugging the model
+
+&lt;br/&gt;
+.left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
+.right-column[
+![unscaled heatmapp - uggs](heatmaps/heatmap-triangle_circle_star-1-ugg-kids-bailey-bow-ii-toddler-little-kid-chestnut-pink-azalea_product_8920367_color_705035.png)
+]
+
+---
+class:primary
+## Debugging the model
+
+&lt;br/&gt;
+.left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
+.right-column[
+![unscaled heatmapp - seychelles](heatmaps/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
+]
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

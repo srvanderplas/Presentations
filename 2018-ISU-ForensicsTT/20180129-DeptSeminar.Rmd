@@ -13,6 +13,8 @@ library(tidyverse)
 library(ggplot2)
 
 knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T)
+
+source("/models/shoe_nn/Generate_Model_Images.R")
 ```
 ```{r, load_refs, echo=FALSE, cache=FALSE}
 library(RefManageR)
@@ -273,20 +275,10 @@ class:primary
 .center[`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since June 2018]
 
 ```{r labeled-data}
-model_path <- "~/models/shoe_nn/RProcessedImages/"
-data_dirs <- list.dirs(model_path, full.names = T, recursive = F) %>% rev()
-newest_data_file <- NULL
-startidx <- 1:10
-while (is.null(newest_data_file) & max(startidx) <= length(data_dirs)) {
- newest_data_file <- data_dirs %>%
-  magrittr::extract(startidx) %>%
-  sapply(function(x) list.files(x, "cropped_photos.Rdata", recursive = F, full.names = T)) %>%
-    unlist() %>%
-    as.character() %>%
-    magrittr::extract(1)
+model_path <- "~/models/shoe_nn/TrainedModels/"
 
-  startidx <- pmin(max(startidx) + 1:10, length(data_dirs))
-}
+newest_model <- get_newest(dir = model_path, pattern = "weights.h5")
+newest_data_file <- file.path("~/models/shoe_nn/RProcessedImages/", newest_model$process_dir, "cropped_photos.Rdata")
 
 load(newest_data_file)
 
@@ -312,7 +304,7 @@ label_fixes <- c("triangles" = "triangle",
                  "octagon" = "polygon",
                  "crepe" = "other",
                  "hex" = "polygon",
-                 "smooth" = "other"
+                 "smooth|hatching" = "other"
                  )
 # Merge doesn't work, wtf???
 annotated_imgs <- select(dfunion, image, name) %>%
@@ -327,7 +319,8 @@ annotated_imgs <- select(dfunion, image, name) %>%
   mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
   filter(labels != "") %>%
   filter(labels != "exclude") %>%
-  filter(labels != "ribbon" & labels != "logo")
+  filter(labels != "ribbon" & labels != "logo") %>%
+  filter(labels %in% c(default_classes, "other"))
 ```
 
 ---
@@ -423,54 +416,27 @@ class:primary
 ## Train the CNN
 
 <br/>
-
-```{r class-distribution, fig.width = 6, fig.height = 4, out.width = "90%", eval = F, include = F}
-img_df %>%
-  mutate(type = factor(type, levels = rev(c("train", "test", "validation")))) %>%
-  group_by(labels, type) %>%
-  mutate(labeln = sum(1/num_labels, na.rm = T)) %>%
-  ungroup() %>%
-  arrange(desc(labeln)) %>%
-  mutate(labels = factor(labels, levels = unique(labels), ordered = T)) %>%
-  group_by(type) %>%
-  mutate(weight = 1/n()) %>%
-  ungroup() %>%
-ggplot() + 
-  geom_bar(aes(x = type, fill = labels, weight = weight), color = "black", position = "stack") + 
-  scale_fill_brewer("Class\nLabels", palette = "Paired") + 
-  # facet_grid(~type) + 
-  coord_flip() + 
-  ylab("Proportion of Images") + 
-  xlab("") + 
-  theme(axis.text.y = element_text(angle = 90, hjust = .5, vjust = .5, size = 12)) + 
-  ggtitle("Current Class Distribution (All Labeled Images)")
-```
-
-???
-
-Goal is to increase the relative frequency of the rarer classes (and reduce "everything is a quad")
-
----
-class:primary
-## Train the CNN
-
-<br/>
 <img alt="Training accuracy increase" src="training.png" width = "90%"/>
 ```{r training-accuracy, fig.width = 7, fig.height = 5, out.width = "90%"}
 library(keras)
-model_dir <- file.path("~/models/shoe_nn/TrainedModels", str_extract(new_img_dir, "\\d{8}-\\d{6}$"))
+model_dir <- newest_model$path
 load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
 data.frame(history$metrics) %>%
   mutate(epoch = 1:n()) %>%
   gather(key = "measure", value = "value", -epoch) %>%
   mutate(Type = ifelse(str_detect(measure, "val"), "Validation", "Training"),
          measure = ifelse(str_detect(measure, "acc"), "Accuracy", "Loss")) %>%
+  # filter(Type == "Training") %>%
   ggplot(aes(x = epoch, y = value, color = Type)) + 
   geom_point() + 
   geom_smooth(se = F) + 
-  facet_grid(measure~., scales = "free_y")
+  facet_grid(measure~., scales = "free_y", switch = "both") + 
+  theme(axis.title.y = element_blank())
 ```
 
+???
+
+Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Training loss is still decreasing as well. One concern with retraining the head of a CNN is that with relatively little data (e.g. 20 thousand data points instead of 20 million) it is easy to over-fit models; what we see is that this hasn't yet happened for this model. 
 
 ---
 class:primary
@@ -517,7 +483,55 @@ We use the shiny application to screen for these problems so that we can correct
 class:primary
 ## Debugging the model
 
+<br/>
 - Active area of research: How to debug, interpret, and understand what a CNN is actually doing    
 .small[https://distill.pub/2018/building-blocks/]
 
+- One option: Class Activation Maps
+    - Which regions in the image are relevant to the class?
+
+```{r, include = F}
+model_wts_file <- file.path(newest_model$path, newest_model$base_file)
+loaded_model <- set_weights(model_wts_file)
+image_dir <- file.path("/models/shoe_nn/RProcessedImages", newest_model$process_dir)
+test_images <- list.files(file.path(image_dir, "images"), "*.jpg", full.names = T)
+```
+
+```{r, eval = F, include = F}
+if (!dir.exists("heatmaps")) { dir.create("heatmaps")}
+calc_heatmap(test_images[grepl("dc-pure-se-navy_product_7270757_color_9", test_images) & grepl("quad", test_images)][4], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
+file.rename(from = "heatmaps/heatmap-quad(R)-4-dc-pure-se-navy_product_7270757_color_9.png", 
+            to = "heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png")
+calc_heatmap(test_images[grepl("ugg-kids-bailey-bow-ii-toddler-little-kid-chestnut-pink-azalea_product_8920367_color_705035", test_images) & grepl("circle", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
+calc_heatmap(test_images[grepl("seychelles-slow-down-blush-metallic_product_9017725_color_34700.jpg", test_images) & grepl("text", test_images)][2], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
+```
+---
+class:primary
+## Debugging the model
+
+<br/>
+.left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
+.right-column[
+![unscaled heatmapp - DC](heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png)
+]
+
+---
+class:primary
+## Debugging the model
+
+<br/>
+.left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
+.right-column[
+![unscaled heatmapp - uggs](heatmaps/heatmap-triangle_circle_star-1-ugg-kids-bailey-bow-ii-toddler-little-kid-chestnut-pink-azalea_product_8920367_color_705035.png)
+]
+
+---
+class:primary
+## Debugging the model
+
+<br/>
+.left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
+.right-column[
+![unscaled heatmapp - seychelles](heatmaps/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
+]
 
