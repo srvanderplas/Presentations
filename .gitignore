@@ -1,3 +1,9 @@
 .Rproj.user
 .Rhistory
 .RData
+JSM2018/images/*.tif
+*/*/.directory
+*/*/.gitignore
+*/.gitignore
+*/*_cache/
+*/*_files/
