@@ -66,35 +66,35 @@ class:primary
 3. Identify shoes in the comparison population which could have produced the shoeprint
 4. Establish whether I have any matching shoes
 
----
-class:primary
-## Comparison Population
+<!-- --- -->
+<!-- class:primary -->
+<!-- ## Comparison Population -->
 
-.right-column[
+<!-- .right-column[ -->
 
-<br/>
-Geographic Area: 
+<!-- <br/> -->
+<!-- Geographic Area:  -->
 
-- How local is local?
+<!-- - How local is local? -->
 
-Time: 
-- weekday, weekend
-- morning, evening, overnight
-- season
+<!-- Time:  -->
+<!-- - weekday, weekend -->
+<!-- - morning, evening, overnight -->
+<!-- - season -->
 
-]
+<!-- ] -->
 
-.left-column[
+<!-- .left-column[ -->
 
-<img src="Snedecor-3105.png" width="100%" style="vertical-align:middle"/>
+<!-- <img src="Snedecor-3105.png" width="100%" style="vertical-align:middle"/> -->
 
-<img src="ISU-map.png" width="100%" style="vertical-align:middle"/>
+<!-- <img src="ISU-map.png" width="100%" style="vertical-align:middle"/> -->
 
-<img src="Iowa-map.png" width="100%" style="vertical-align:middle"/>
+<!-- <img src="Iowa-map.png" width="100%" style="vertical-align:middle"/> -->
 
-<img src="US-map.png" width="100%" style="vertical-align:middle"/>
+<!-- <img src="US-map.png" width="100%" style="vertical-align:middle"/> -->
 
-]
+<!-- ] -->
 ---
 class:primary
 ## Comparison Population
@@ -152,7 +152,7 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 --
 
-### .center[These are statistics problems]
+### .center[These are statistics and machine learning problems]
 
 ---
 class:primary
@@ -266,6 +266,56 @@ Cons
 class:inverse
 # <br/><br/>Convolutional Neural Networks
 
+
+---
+class:primary
+## Train the CNN
+
+<br/>
+- VGG16 pre-trained network    
+![VGG16 architecture](vgg16.png)
+
+---
+class:primary
+## Train the CNN
+
+<br/>
+- VGG16 pre-trained network    
+![VGG16 architecture](vgg16-tune.png)
+- Tune parameters after the last convolutional layer; optimize for problem-specific input
+
+
+```{r}
+new_img_dir <- dirname(newest_data_file)
+
+ann_df <- select(annotated_imgs, base_image, name, num_labels, annot_num, labels, label_type) %>%
+  group_by(base_image, name) %>%
+  arrange(annot_num) %>%
+  mutate(ln = 1:n())
+
+img_df <- data_frame(img = list.files(file.path(new_img_dir, c("test", "train", "validation")), full.names = T)) %>%
+  mutate(type = str_extract(img, "(test|train|validation)"),
+         image = basename(img),
+         aug = grepl("^aug", image),
+         name = str_extract(image, "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-"),
+         ln = str_extract(name, "-\\d{1,}-$") %>% gsub(pattern = "-", replacement = "") %>% as.numeric(),
+         name = gsub(pattern = "-\\d{1,}-$", "", name),
+         name = gsub(pattern = "aug_", "", name),
+         name = gsub(pattern = "logo|ribbon|logo\\(R\\)|ribbon\\(R\\)", replacement = "other", name),
+         base_image = gsub(image, pattern = "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-", replacement = "") %>%
+           gsub(., pattern = "_\\d_\\d{1,}.jpg", replacement = ".jpg")) %>%
+  select(type, base_image, name, ln, aug, img_path = image) %>%
+  mutate(num_labels = str_count(name, "_") + 1, 
+         annot_num = 1:n()) %>%
+  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
+           str_replace_all(label_fixes) %>% 
+           str_split("_")) %>%
+  unnest(labels) %>%
+  mutate(labels = str_replace_all(labels, label_fixes)) %>%
+  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
+  filter(labels != "" & labels != "hatching" & labels != "exclude" & !is.na(labels))
+```
+
 ---
 class:primary
 ## Acquire Data
@@ -348,54 +398,6 @@ ggplot(data = annotated_imgs) +
   ggtitle("Current Class Distribution (All Labeled Images)")
 ```
 
----
-class:primary
-## Train the CNN
-
-<br/>
-- VGG16 pre-trained network    
-![VGG16 architecture](vgg16.png)
-
----
-class:primary
-## Train the CNN
-
-<br/>
-- VGG16 pre-trained network    
-![VGG16 architecture](vgg16-tune.png)
-- Tune parameters after the last convolutional layer; optimize for problem-specific input
-
-
-```{r}
-new_img_dir <- dirname(newest_data_file)
-
-ann_df <- select(annotated_imgs, base_image, name, num_labels, annot_num, labels, label_type) %>%
-  group_by(base_image, name) %>%
-  arrange(annot_num) %>%
-  mutate(ln = 1:n())
-
-img_df <- data_frame(img = list.files(file.path(new_img_dir, c("test", "train", "validation")), full.names = T)) %>%
-  mutate(type = str_extract(img, "(test|train|validation)"),
-         image = basename(img),
-         aug = grepl("^aug", image),
-         name = str_extract(image, "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-"),
-         ln = str_extract(name, "-\\d{1,}-$") %>% gsub(pattern = "-", replacement = "") %>% as.numeric(),
-         name = gsub(pattern = "-\\d{1,}-$", "", name),
-         name = gsub(pattern = "aug_", "", name),
-         name = gsub(pattern = "logo|ribbon|logo\\(R\\)|ribbon\\(R\\)", replacement = "other", name),
-         base_image = gsub(image, pattern = "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-", replacement = "") %>%
-           gsub(., pattern = "_\\d_\\d{1,}.jpg", replacement = ".jpg")) %>%
-  select(type, base_image, name, ln, aug, img_path = image) %>%
-  mutate(num_labels = str_count(name, "_") + 1, 
-         annot_num = 1:n()) %>%
-  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
-           str_replace_all(label_fixes) %>% 
-           str_split("_")) %>%
-  unnest(labels) %>%
-  mutate(labels = str_replace_all(labels, label_fixes)) %>%
-  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
-  filter(labels != "" & labels != "hatching" & labels != "exclude" & !is.na(labels))
-```
 
 ---
 class:primary
@@ -416,7 +418,6 @@ class:primary
 ## Train the CNN
 
 <br/>
-<img alt="Training accuracy increase" src="training.png" width = "90%"/>
 ```{r training-accuracy, fig.width = 7, fig.height = 5, out.width = "90%"}
 library(keras)
 model_dir <- newest_model$path
@@ -440,16 +441,29 @@ Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Tr
 
 ---
 class:primary
-## Train the CNN
+## Evaluating the Model
 
-.right-column[
-<img src="ConfMat.png" alt = "Confusion Matrix" width = "95%"/>
-]
+```{r ConfMatrix, out.extra=".right-column", message = F, warning = F, fig.width = 8, fig.height = 8}
+classes <- c(
+  "bowtie", "chevron", "circle", "line", "polygon",
+  "quad", "star", "text", "triangle"
+)
+load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
+get_confusion_matrix(preds, test_labs, str_to_title(classes), threshold = 0.2) %>%
+  set_names(classes) %>%
+  ggcorrplot(., hc.order = F, outline.col = "white", lab = T) +
+  scale_fill_gradient("Classification\nRate", low = "white", high = "cornflowerblue", limits = c(0, 1)) +
+  scale_x_discrete("Reality") + scale_y_discrete("Prediction") +
+  theme(axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14, angle = 90, vjust = 1), plot.title = element_text(size = 18, face = 'bold')) +
+  ggtitle("CNN Multi-Class Confusion Matrix")
+```
 
-.left-column[
+.marginfig[
 
 <br/>
 For multi-label images, only incorrect predictions contribute to off-diagonal probabilities
+
+Class Probability > 0.2 used as a cutoff
 <br/>
 
 ]
@@ -457,6 +471,8 @@ For multi-label images, only incorrect predictions contribute to off-diagonal pr
 ???
 
 Slightly more likely to predict quadrilateral for all classes. It's important to note that we don't expect perfect predictions here - there are some shapes that are actually super ambiguous (and were labeled differently -- we're working on correcting that issue)
+
+This is not a true confusion matrix, as the classes are not mutually exclusive and there are more than two. We've generalized the idea of a confusion matrix, where off-diagonal cells show errors, above-diagonal cells show incorrect classifications, and below-diagonal cells show missed classifications. For multi-label images, additional labels have been excluded from incorrect prediction calculations. Thus, if an image with a circle and a star was labeled with a circle but not a star, it would count as a correct classification for circle and as a missed classification for star, but not as a "circle labeled as a star". 
 
 ---
 class:primary
@@ -481,13 +497,22 @@ We use the shiny application to screen for these problems so that we can correct
 
 ---
 class:primary
+## Evaluating the Model
+
+```{r}
+tmp <- plot_onehot_roc(preds, test_labs, str_to_title(classes))
+tmp$plot + ggtitle("CoNNOR Class Performance")
+```
+
+---
+class:primary
 ## Debugging the model
 
 <br/>
 - Active area of research: How to debug, interpret, and understand what a CNN is actually doing    
 .small[https://distill.pub/2018/building-blocks/]
 
-- One option: Class Activation Maps
+- Class Activation Maps
     - Which regions in the image are relevant to the class?
 
 ```{r, include = F}

@@ -248,7 +248,7 @@ class:primary
 
 ![Zappos Screenshot showing sole images](zappos.png)
 
-.center[48083 shoe outsole images scraped since June 2018]
+.center[49048 shoe outsole images scraped since June 2018]
 
 
 
@@ -318,14 +318,17 @@ Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Tr
 class:primary
 ## Train the CNN
 
-.right-column[
-&lt;img src="ConfMat.png" alt = "Confusion Matrix" width = "95%"/&gt;
-]
+&lt;img src="20180129-DeptSeminar_files/figure-html/ConfMatrix-1.png" .right-column /&gt;
+&lt;!-- .right-column[ --&gt;
+&lt;!-- &lt;img src="ConfMat.png" alt = "Confusion Matrix" width = "95%"/&gt; --&gt;
+&lt;!-- ] --&gt;
 
-.left-column[
+.marginfig[
 
 &lt;br/&gt;
 For multi-label images, only incorrect predictions contribute to off-diagonal probabilities
+
+Class Probability &gt; 0.2 used as a cutoff
 &lt;br/&gt;
 
 ]
