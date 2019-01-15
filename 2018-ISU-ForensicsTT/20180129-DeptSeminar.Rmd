@@ -275,6 +275,8 @@ class:primary
 - VGG16 pre-trained network    
 ![VGG16 architecture](vgg16.png)
 
+
+<!-- Add in information about what the layers are doing: https://www.overleaf.com/project/5bef1722f138c36ed9d572d4 -->
 ---
 class:primary
 ## Train the CNN
