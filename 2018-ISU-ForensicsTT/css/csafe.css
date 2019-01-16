@@ -13,6 +13,7 @@
   margin-top: 0px;
   margin-left: -10px;
   margin-bottom: 100px;
+  padding-bottom: 20px;
 }
 
 .primary > h1 > .mjx-chtml {
@@ -92,7 +93,7 @@
   color: red;
 }
 
-.marginfig {
+.move-margin {
   position: absolute;
   top:225px;
   right:20px;
@@ -102,4 +103,27 @@
 .moveup {
   padding-top:-50px !important;
 }
+
+.moveleft {
+  margin-left:-25px !important;
+}
+
+
+.primary > .figure > img {
+  margin-left: -48px !important;
+}
   
+.tiny { 
+  font-size: 30% 
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  font-size: 50%;
+}
+
+.figure p.caption{
+  display: none;
+  color: white;
+}

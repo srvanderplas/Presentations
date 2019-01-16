@@ -7,12 +7,13 @@ output:
     nature:
       countIncrementalSlides: false
 ---
+class: primary
 ```{r, echo = F, cache = F, include = F}
 library(magrittr)
 library(tidyverse)
 library(ggplot2)
 
-knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T)
+knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T, dpi = 300, dev = 'png')
 
 source("/models/shoe_nn/Generate_Model_Images.R")
 ```
@@ -42,6 +43,8 @@ unicode_symbols <- c(bowtie = "",
   )
 unicode_symbols <- data_frame(labels = names(unicode_symbols),
                               shape = as.character(unicode_symbols))
+classes <- c("bowtie", "chevron", "circle", "line", "polygon", "quad", "star", 
+             "text", "triangle")
 ```
 
 class:primary
@@ -66,35 +69,10 @@ class:primary
 3. Identify shoes in the comparison population which could have produced the shoeprint
 4. Establish whether I have any matching shoes
 
-<!-- --- -->
-<!-- class:primary -->
-<!-- ## Comparison Population -->
+???
 
-<!-- .right-column[ -->
+Comparison population definition could include various size geographic regions, temporal components, interaction with local events - shoes worn by people attending a football game likely differ from shoes worn by people at a formal event. Local areas range from state-level to "People outside Starbucks in CampusTown at 8am on a Monday morning"
 
-<!-- <br/> -->
-<!-- Geographic Area:  -->
-
-<!-- - How local is local? -->
-
-<!-- Time:  -->
-<!-- - weekday, weekend -->
-<!-- - morning, evening, overnight -->
-<!-- - season -->
-
-<!-- ] -->
-
-<!-- .left-column[ -->
-
-<!-- <img src="Snedecor-3105.png" width="100%" style="vertical-align:middle"/> -->
-
-<!-- <img src="ISU-map.png" width="100%" style="vertical-align:middle"/> -->
-
-<!-- <img src="Iowa-map.png" width="100%" style="vertical-align:middle"/> -->
-
-<!-- <img src="US-map.png" width="100%" style="vertical-align:middle"/> -->
-
-<!-- ] -->
 ---
 class:primary
 ## Comparison Population
@@ -105,22 +83,27 @@ class:primary
 
 ---
 class:primary
-## Comparison Population Shoes
+## Comparison Population
+<br/>
 
-- No 100% complete database of all shoes (manufacturer, model, size, tread molds)
-    <!-- - Too many manufacturers, import/export, online sales, custom shoes, knockoffs -->
-    <!-- - New shoes released all the time -->
+- No 100% complete database of all shoes 
+    - manufacturer, model, size, tread style, manufacturing molds .small[`r Citep(bb, "hamm_individuality_1989")`]
+    
 - Shoe purchase data vs. frequency of wear
-    <!-- - shoes purchased outside the defined geographic area or from non-participating retailers -->
-    <!-- - frequency of wear -->
-- Local populations may differ wildly
-    <!-- - Styles and trends -->
-    <!-- - Occupational differences -->
-    <!-- - Retailer options -->
+
+- Local populations may differ wildly .small[`r Citep(bb, "benedict_geographical_2014")`]
 
 <br/><br/>
 .center[<img src = "snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/>]
 <!-- https://pixnio.com/free-images/2017/05/03/2017-05-03-07-35-18-900x456.jpg -->
+
+???
+
+There are too many manufacturers to keep track of, new models are released all the time, custom shoe markets, and knockoff shoes... hard to get a database with everything.
+
+In addition, many of us have shoes that we've purchased but almost never wear... so going off of purchase data (even if that had the geographic resolution needed) is not all that representative
+
+Finally, geographic resolution is nearly impossible. If this pair of shoes was used to commit a crime in Florida, it would be fairly damning to have the same type of shoes in your closet - they aren't "Florida" shoes. If you have this pair of shoes in your closet in Iowa right now, the weight of that evidence is a lot lower, because they're probably fairly common shoes to have. 
 
 ---
 class:primary
@@ -128,9 +111,11 @@ class:primary
 
 How to collect data from the local population? 
 
-- Low profile scanner that can be placed in a high traffic area
-- Scan shoes of those walking past
-- Create a local-area database of relevant shoes
+1. Build a low profile scanner that can be placed in a high traffic area
+
+2. Scan shoes of those walking past
+
+3. Create a local-area database of relevant scans
 
 --
 
@@ -144,11 +129,11 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 --
 
-1. Identify relevant features within the images
+1. Identify relevant features within the scans
 
 --
 
-2. Assess the frequency of similar shoes in local population data
+2. Assess the frequency of similar shoes in the local-area database
 
 --
 
@@ -156,17 +141,19 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 ---
 class:primary
-## Identify Relevant Features
+## Relevant Features
 
 <br/>
 Class Characteristics
 - Make, Model, Tread pattern, Size, Type of shoe
+
 - Cannot be used to identify an individual match
+
 - Used for exclusion
 
 ---
 class:primary
-## Identify Relevant Features
+## Relevant Features
 
 <br/>
 Use features other than make/model to characterize shoes
@@ -181,12 +168,12 @@ Use features other than make/model to characterize shoes
 
 ---
 class:primary
-## Identify Relevant Features
+## Relevant Features
 
 <br/>
 Geometric Elements in Shoe Tread
 - One type of class characteristic
-- Can be used to narrow shoe prints down to make/model `r Citep(bb, 'gross_variability_2013')`
+- Can be used to narrow shoe prints down to make/model where that information exists `r Citep(bb, 'gross_variability_2013')`
 
 | Bowtie | Chevron | Circle |
 | ------ | ------- | ------ |
@@ -201,42 +188,69 @@ Geometric Elements in Shoe Tread
 | ![Star examples](class_examples/star_examples.png) | ![text examples](class_examples/text_examples.png) | ![Triangle examples](class_examples/triangle_examples.png) |
 
 ---
-class:primary
-## Feature Detection
+class: inverse
+# <br/>Image Analysis and Feature Detection
+
+---
+class: primary
+## Image Analysis
 
 <br/>
-Classic computer vision feature detection methods: 
-- Edge, Corner, Blob, Ridge detection
-- Template matching: Hough transforms for line, circle, ellipse detection
-    - provide location and orientation
+### Goal: Identify geometric tread features in images of shoe outsoles
+
+- Robust to different lighting conditions, rotation, image quality
+
+- Quick to process new images
+
+- Identified features should be explainable to practitioners
 
 --
 
-.pull-left[
-
-Pros
-- Algorithmic; no training data necessary
-
-]
-
---
-
-.pull-right[
-
-Cons
-- Parameters don't generalize well to different images
-- Computationally intensive to process every image
-- Features lack face validity
-
-]
+.center[<img src="https://imgs.xkcd.com/comics/fourier.jpg" width = "40%"/>]
 
 ---
 class:primary
 ## Feature Detection
 
 <br/>
-Convolutional neural networks: 
-- Structure built to mimic perceptual pathways in the human visual system
+#### Classic computer vision feature detection methods: 
+
+- Edge, Corner, Blob, Ridge detection
+
+- Template matching: Hough transforms 
+    - line, circle, ellipse detection
+    - provide location and orientation
+
+--
+
+.pull-left[
+Pros
+- No training data necessary
+- Relatively simple algorithm
+]
+
+--
+
+.pull-right[
+Cons
+- Not robust (fragile tuning parameters)
+- Computationally intensive
+- Features lack face validity
+]
+
+???
+
+There are some computer vision methods that detect some of the geometric features we've identified. Edge and corner detection are used in image matching, blob detection is used everywhere from biology (identifying cells, nuclei, tumors) to astrophysics (galaxies and stars), and ridge detection is used to identify topographic features in images. More complicated features, such as lines, circles, and ellipses can be detected with Hough transforms, which are a template matching algorithm that's very computationally intensive. 
+
+I spent some time trying to assemble some of these detectors to work with shoe outsole images and found that they were not robust - parameter settings that worked well for one image failed miserably when used on the same model of shoe with a slightly different color sole, the algorithms were slow, and the features they picked out were often not what I would call an edge or a corner - the algorithm was working at a much finer level than I was. As all of our work has to be explained to practitioners eventually, that made these methods sub-optimal. Google, Facebook, and many others have used convolutional neural networks to solve the image recognition problem in the past 10 years, so I moved on to the big guns. 
+
+---
+class:primary
+## Feature Detection
+
+<br/>
+#### Convolutional neural networks: 
+- Structure designed to mimic perceptual pathways in the human visual system
 - Ubiquitous in modern image recognition tasks
 
 --
@@ -265,66 +279,6 @@ Cons
 ---
 class:inverse
 # <br/><br/>Convolutional Neural Networks
-
-
----
-class:primary
-## Train the CNN
-
-<br/>
-- VGG16 pre-trained network    
-![VGG16 architecture](vgg16.png)
-
-
-<!-- Add in information about what the layers are doing: https://www.overleaf.com/project/5bef1722f138c36ed9d572d4 -->
----
-class:primary
-## Train the CNN
-
-<br/>
-- VGG16 pre-trained network    
-![VGG16 architecture](vgg16-tune.png)
-- Tune parameters after the last convolutional layer; optimize for problem-specific input
-
-
-```{r}
-new_img_dir <- dirname(newest_data_file)
-
-ann_df <- select(annotated_imgs, base_image, name, num_labels, annot_num, labels, label_type) %>%
-  group_by(base_image, name) %>%
-  arrange(annot_num) %>%
-  mutate(ln = 1:n())
-
-img_df <- data_frame(img = list.files(file.path(new_img_dir, c("test", "train", "validation")), full.names = T)) %>%
-  mutate(type = str_extract(img, "(test|train|validation)"),
-         image = basename(img),
-         aug = grepl("^aug", image),
-         name = str_extract(image, "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-"),
-         ln = str_extract(name, "-\\d{1,}-$") %>% gsub(pattern = "-", replacement = "") %>% as.numeric(),
-         name = gsub(pattern = "-\\d{1,}-$", "", name),
-         name = gsub(pattern = "aug_", "", name),
-         name = gsub(pattern = "logo|ribbon|logo\\(R\\)|ribbon\\(R\\)", replacement = "other", name),
-         base_image = gsub(image, pattern = "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-", replacement = "") %>%
-           gsub(., pattern = "_\\d_\\d{1,}.jpg", replacement = ".jpg")) %>%
-  select(type, base_image, name, ln, aug, img_path = image) %>%
-  mutate(num_labels = str_count(name, "_") + 1, 
-         annot_num = 1:n()) %>%
-  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
-           str_replace_all(label_fixes) %>% 
-           str_split("_")) %>%
-  unnest(labels) %>%
-  mutate(labels = str_replace_all(labels, label_fixes)) %>%
-  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
-  filter(labels != "" & labels != "hatching" & labels != "exclude" & !is.na(labels))
-```
-
----
-class:primary
-## Acquire Data
-
-![Zappos Screenshot showing sole images](zappos.png)
-
-.center[`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since June 2018]
 
 ```{r labeled-data}
 model_path <- "~/models/shoe_nn/TrainedModels/"
@@ -375,23 +329,233 @@ annotated_imgs <- select(dfunion, image, name) %>%
   filter(labels %in% c(default_classes, "other"))
 ```
 
+```{r}
+new_img_dir <- dirname(newest_data_file)
+
+ann_df <- select(annotated_imgs, base_image, name, num_labels, annot_num, labels, label_type) %>%
+  group_by(base_image, name) %>%
+  arrange(annot_num) %>%
+  mutate(ln = 1:n())
+
+img_df <- data_frame(img = list.files(file.path(new_img_dir, c("test", "train", "validation")), full.names = T)) %>%
+  mutate(type = str_extract(img, "(test|train|validation)"),
+         image = basename(img),
+         aug = grepl("^aug", image),
+         name = str_extract(image, "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-"),
+         ln = str_extract(name, "-\\d{1,}-$") %>% gsub(pattern = "-", replacement = "") %>% as.numeric(),
+         name = gsub(pattern = "-\\d{1,}-$", "", name),
+         name = gsub(pattern = "aug_", "", name),
+         name = gsub(pattern = "logo|ribbon|logo\\(R\\)|ribbon\\(R\\)", replacement = "other", name),
+         base_image = gsub(image, pattern = "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-", replacement = "") %>%
+           gsub(., pattern = "_\\d_\\d{1,}.jpg", replacement = ".jpg")) %>%
+  select(type, base_image, name, ln, aug, img_path = image) %>%
+  mutate(num_labels = str_count(name, "_") + 1, 
+         annot_num = 1:n()) %>%
+  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
+           str_replace_all(label_fixes) %>% 
+           str_split("_")) %>%
+  unnest(labels) %>%
+  mutate(labels = str_replace_all(labels, label_fixes)) %>%
+  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
+  filter(labels != "" & labels != "hatching" & labels != "exclude" & !is.na(labels))
+```
+
+```{r}
+library(keras)
+model_dir <- newest_model$path
+load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
+load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
+```
+
+<!-- Add in information about what the layers are doing: https://www.overleaf.com/project/5bef1722f138c36ed9d572d4 -->
+---
+class:primary
+## CNN Architecture - VGG16
+
+<br/>
+<img src="vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
+
+---
+class: primary
+## Convolutional Layers
+
+<br/>
+
+.moveleft[![Input image and filter](filter.png)]
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+---
+class: primary
+## Convolutional Layers
+
+<br/>
+
+.moveleft[![Input image and filter](filter1.png)]
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+---
+class: primary
+## Convolutional Layers
+
+<br/>
+
+.moveleft[![Input image and filter](filter2.png)]
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+
+---
+class: primary
+## Convolutional Layers
+
+<br/>
+For layer $\ell$ and cell $ij$, with weights $\mathbf{w}$ 
+
+$$x^\ell_{ij} = \sum_{a=0}^{m-1}\sum_{a=0}^{m-1} w_{ab} y_{(i+a)(j+b)}^{\ell-1}$$
+
+The  nonlinear activation function $\sigma(\cdot)$ is then applied: $y_{ij}^\ell = \sigma(x_{ij}^\ell)$ 
+
+--
+
+This is "Forward Propagation"
+
+---
+class: primary
+## Max Pooling Layers
+
+<br/>
+
+.moveleft[![Pooling Layers](maxpooling.png)]
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+---
+class: primary
+## Densely Connected Layers
+
+<br/>
+
+.moveleft[![Dense layers](densely_connected.png)]
+
+---
+class: primary
+## Dropout Layers
+
+<br/>
+
+.moveleft[![Dropout layers](dropout.png)]
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+
+---
+class: primary
+## Fitting Mechanism
+
+<br/>
+
+- Forward Propagation: Input -> Filters -> Pooling -> Result
+
+- Backward Propagation: Errors -> Pooling -> Filters to modify weights
+    - Loss function $L$ describing the prediction errors
+    - Compute $\displaystyle\left(\frac{\partial L}{\partial y_{ij}^\ell}\right)$ for each cell in the previous layer
+    
+
+$$\left(\frac{\partial L}{\partial w_{ab}}\right) = \sum_{i = 0}^{N-m} \sum_{j=0}^{N-m} \frac{\partial L}{\partial x^{\ell}_{ij}} \frac{\partial x^\ell_{ij}}{\partial w_{ab}} = \sum_{i = 0}^{N-m} \sum_{j=0}^{N-m} \frac{\partial L}{\partial x^{\ell}_{ij}} y^{\ell-1}_{(i+a)(j+b)}$$
+
+.footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
+---
+class: primary
+## Backward Propagation
+
+<br/>
+
+$\displaystyle \frac{\partial L}{\partial x^{\ell}_{ij}}$ is the gradient component:
+
+$$\frac{\partial L}{\partial x^{\ell}_{ij}} = \frac{\partial L}{\partial y_{ij}^\ell}\frac{\partial y_{ij}^\ell}{\partial x_{ij}^\ell} = \frac{\partial L}{\partial y_{ij}^\ell} \frac{\partial }{\partial x_{ij}^\ell}\left(\sigma(x_{ij}^\ell)\right) = 
+ \frac{\partial L}{\partial y_{ij}^\ell} \sigma'(x_{ij}^\ell)$$
+
+$\displaystyle\frac{\partial L}{\partial y_{ij}^\ell}$ is error at the current layer, so the gradiant can be computed with the derivative of the activation function $\sigma(x)$
+
+.footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
+---
+class: primary
+## Backward Propagation
+
+<br/>
+To propagate errors to the previous layer, 
+
+$$\frac{\partial L}{\partial y_{ij}^{\ell -1}} = \sum_{a=0}^{m-1} \sum_{b=0}^{m-1} \frac{\partial L}{\partial x_{(i-a)(j-b)}^\ell}\frac{\partial x_{(i-a)(j-b)}^\ell}{\partial y_{ij}^{\ell-1}}
+= \sum_{a=0}^{m-1} \sum_{b=0}^{m-1} \frac{\partial L}{\partial x_{(i-a)(j-b)}^\ell} \omega_{ab}$$
+
+<br/>
+.center[<img src="vgg16-shoe.png" width = "50%"/>]
+
+.center[<b>13 convolutional layers = a lot of backpropagation</b>]
+
+.footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
+
+---
+class: primary
+## VGG16
+
+<br/>
+- Convolutional base of VGG16 for 256x256x3 input images has 14,714,688 parameters
+- Head has 155,090,944 parameters and outputs 1000 different class label predictions, fit using 150,000 images
+
+--
+
+- We have 9 class labels and <25,000 labeled images
+- Use the pre-trained VGG16 base (all of the convolutional layers) and train a new head
+    - 8,391,177 parameters
+
+???
+
+Equivalent of putting a new "brain" on a set of "eyes" that's pre-trained
+
+---
+class: inverse
+# Fitting CoNNOR: Convolutional Neural Network for Outsole Recognition
+
+---
+class:primary
+## Acquire Data
+<br/>
+.moveleft[![Zappos Screenshot showing sole images](zappos.png)]
+
+.move-margin[<br/><br/>`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since June 2018]
+
 ---
 class:primary
 ## Label Data
 
-![LabelMe](LabelMe1.png)
+<br/>
+.moveleft[.moveleft[![LabelMe](LabelMe1.png)]
 
-.center[`r length(annotated_imgs$image)` shoe images labeled]
-.center[`r length(unique(annotated_imgs$annot_num))` regions labeled with one or more geometric objects]
-.center[Labeling courtesy of Jenny Kim, Ben Wonderlin, Holden Jud, and Mya Fisher]
+- `r prettyNum(length(annotated_imgs$image), big.mark =  ",")` shoe images labeled
+
+- `r prettyNum(length(unique(annotated_imgs$annot_num)), big.mark =  ",")` regions labeled with one or more geometric objects
+]
+--
+.small[.move-margin[
+<br/><br/>Labeling courtesy of 
+- Jenny Kim
+- Ben Wonderlin
+- Holden Jud
+- Mya Fisher
+- Miranda Tilton
+- Charlotte Roiger
+- and others
+]]
 
 ---
 class:primary
 ## Label Data
 <br/>
-```{r, fig.width = 5, fig.height = 3, out.width = "90%", dpi = 300}
+```{r, fig.width = 6, fig.height = 4, out.width = "99%", dpi = 300, fig.cap = "Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon."}
 ggplot(data = annotated_imgs) + 
-  geom_bar(aes(x = labels, fill = label_type), color = "black") + 
+  geom_bar(aes(x = str_to_title(labels), fill = label_type), color = "black") + 
   scale_fill_manual("Class\nLabels", values = c("single" = "#6ba2b9", "multi" = "#2e5597")) + 
   coord_flip() + 
   ylab("# Labeled Regions") + 
@@ -403,27 +567,30 @@ ggplot(data = annotated_imgs) +
 
 ---
 class:primary
-## Train the CNN
+## Model Training
 
 <br/>
 <div style="margin-left:-20px">
 - 256 x 256 pixel images
-- "One-hot" encoding - multiple classes are allowed for each image
+
+- Multiple classes, multiple labels: "One-hot" encoding    
+.small["Dummy variables" in statistics-speak]
+
 - Training data (60%):
-    - Augmented images (rotation, skew, zoom, crop) to prevent overfitting
+    - 1x Augmented images (rotation, skew, zoom, crop) to prevent overfitting
     - Class weights used to counteract uneven class sizes
+    
 - Validation and test data (20% each)
+
+- Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library .small[`r Citep(bb, 'chollet_deep_2018')`]
 </p>
 
 ---
 class:primary
-## Train the CNN
+## Model Training
 
 <br/>
-```{r training-accuracy, fig.width = 7, fig.height = 5, out.width = "90%"}
-library(keras)
-model_dir <- newest_model$path
-load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
+```{r training-accuracy, fig.width = 7.5, fig.height = 5, out.width = "99%", fig.cap = "Training and Validation accuracy and loss for each epoch of the fitting process. Training and validation accuracy reach 90% around epoch 14. After that point, validation loss remains about the same and training loss decreases slightly, while validation accuracy increases more slowly than training accuracy."}
 data.frame(history$metrics) %>%
   mutate(epoch = 1:n()) %>%
   gather(key = "measure", value = "value", -epoch) %>%
@@ -434,7 +601,10 @@ data.frame(history$metrics) %>%
   geom_point() + 
   geom_smooth(se = F) + 
   facet_grid(measure~., scales = "free_y", switch = "both") + 
-  theme(axis.title.y = element_blank())
+  theme(axis.title.y = element_blank(), legend.position = c(1, .5), legend.justification = c(1, 0),
+        legend.background = element_rect(fill = "grey90")) + 
+  scale_x_continuous("Epoch") + 
+  ggtitle("CoNNOR Training Performance")
 ```
 
 ???
@@ -444,28 +614,46 @@ Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Tr
 ---
 class:primary
 ## Evaluating the Model
+<!-- Add in model overall AUC -->
+<!-- Describe the multi-class version as splitting out model performance by class --> 
 
-```{r ConfMatrix, out.extra=".right-column", message = F, warning = F, fig.width = 8, fig.height = 8}
-classes <- c(
-  "bowtie", "chevron", "circle", "line", "polygon",
-  "quad", "star", "text", "triangle"
-)
-load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
-get_confusion_matrix(preds, test_labs, str_to_title(classes), threshold = 0.2) %>%
-  set_names(classes) %>%
+<br/>
+```{r, fig.width = 7.5, fig.height = 5, out.width = "99%", fig.cap = "Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class."}
+aucs <- plot_onehot_roc(preds, test_labs, str_to_title(classes))
+aucs$plot + ggtitle("CoNNOR Test Set Performance") + 
+  facet_wrap(~class, nrow = 2) + 
+  coord_fixed() + 
+  theme(legend.position = c(1, 0), legend.justification = c(1, 0))
+```
+
+???
+
+The ROC curves shown here are calculated for each class without considering the other classes. Multi-class ROC curves exist, but do not allow for multi-label classification, so instead separate calculations were performed for each class independently. 
+
+---
+class:primary
+## Evaluating the Model
+<br/>
+```{r ConfMatrix, message = F, warning = F, fig.width = 7.5, fig.height = 6.5, out.width = "85%", fig.cap = "Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes."}
+thresholds <- purrr::map_dbl(aucs$data$eer, ~.$thresholds)
+
+get_confusion_matrix(preds, test_labs, str_to_title(classes), threshold = thresholds) %>%
+  set_names(str_to_title(classes)) %>%
   ggcorrplot(., hc.order = F, outline.col = "white", lab = T) +
   scale_fill_gradient("Classification\nRate", low = "white", high = "cornflowerblue", limits = c(0, 1)) +
   scale_x_discrete("Reality") + scale_y_discrete("Prediction") +
-  theme(axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14, angle = 90, vjust = 1), plot.title = element_text(size = 18, face = 'bold')) +
-  ggtitle("CNN Multi-Class Confusion Matrix")
+  theme(axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14, angle = 90, vjust = 1)) +
+  ggtitle("CoNNOR Multi-Class Confusion Matrix: Test Set Performance") + 
+  theme(plot.margin = grid::unit(c(0,0,0,0), "mm"), plot.background = element_rect(fill = "transparent", color = NA),
+        plot.subtitle = element_blank(), plot.caption = element_blank(), panel.spacing = unit(c(0, 0, 0, 0), "mm"))
 ```
 
-.marginfig[
+.move-margin[
 
 <br/>
 For multi-label images, only incorrect predictions contribute to off-diagonal probabilities
 
-Class Probability > 0.2 used as a cutoff
+Class Probability > Class EER used as the cutoff
 <br/>
 
 ]
@@ -481,11 +669,11 @@ class:primary
 ## Definitions matter...
 
 <br/>
-![Classes get confusing](dc_circle_quad_confusion.png)
+.moveleft[![Classes get confusing](dc_circle_quad_confusion.png)]
 
 --
 
-![Not everything is labeled correctly](circle_pred_correct.png)
+.moveleft[![Not everything is labeled correctly](circle_pred_correct.png)]
 
 ???
 
@@ -495,16 +683,13 @@ So in the first image, the design is labeled as a quadrilateral (rounded quadril
 
 In the second image, both text and quad are labels, but the model also identifies a circle in the text with probability 0.31; that is, the text contains an O. 
 
-We use the shiny application to screen for these problems so that we can correct the labeled training data. We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things.
+We use the shiny application to screen for these problems so that we can correct the labeled training data. We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things. Because we determined the guidelines for labeling the data, labeled the data (or oversaw the labeling), and trained the model ourselves, we have the advantage of knowing the flaws at every point in the process; that means we have the responsibility to fix those flaws where possible. We're not doing inference on the model results at this point (nor planning to use the data we're training the model with during the operational stage) so the data -> model -> fix data loop is less of a validity concern. 
+
+When the model is sufficiently well-calibrated, we can then work with engineers to build the device, collect some initial data, and tweak the model weights with new data that better represents what we'll actually see from the collection equipment. By that point, hopefully we'll also have narrowed down the geometric classification scheme so that categories that are now somewhat fuzzy are more clearly operationalized.
 
 ---
-class:primary
-## Evaluating the Model
-
-```{r}
-tmp <- plot_onehot_roc(preds, test_labs, str_to_title(classes))
-tmp$plot + ggtitle("CoNNOR Class Performance")
-```
+class:inverse
+# What's Next?
 
 ---
 class:primary
@@ -514,8 +699,9 @@ class:primary
 - Active area of research: How to debug, interpret, and understand what a CNN is actually doing    
 .small[https://distill.pub/2018/building-blocks/]
 
-- Class Activation Maps
-    - Which regions in the image are relevant to the class?
+- Which regions in the image are relevant to the class?
+
+- Which filters are most important for detection of each class?
 
 ```{r, include = F}
 model_wts_file <- file.path(newest_model$path, newest_model$base_file)
@@ -530,8 +716,11 @@ calc_heatmap(test_images[grepl("dc-pure-se-navy_product_7270757_color_9", test_i
 file.rename(from = "heatmaps/heatmap-quad(R)-4-dc-pure-se-navy_product_7270757_color_9.png", 
             to = "heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png")
 calc_heatmap(test_images[grepl("ugg-kids-bailey-bow-ii-toddler-little-kid-chestnut-pink-azalea_product_8920367_color_705035", test_images) & grepl("circle", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
+calc_heatmap(test_images[grepl("jambu-emma-black_product_9089180_color_3", test_images) & grepl("circle", test_images) & grepl("star", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
+calc_heatmap(test_images[grepl("adidas-kids-adilette-clf-adj-toddler-little-kid-big-kid-black-white_product_8987203_color_151.jpg", test_images) & grepl("text", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
 calc_heatmap(test_images[grepl("seychelles-slow-down-blush-metallic_product_9017725_color_34700.jpg", test_images) & grepl("text", test_images)][2], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
 ```
+
 ---
 class:primary
 ## Debugging the model
@@ -549,7 +738,7 @@ class:primary
 <br/>
 .left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
-![unscaled heatmapp - uggs](heatmaps/heatmap-triangle_circle_star-1-ugg-kids-bailey-bow-ii-toddler-little-kid-chestnut-pink-azalea_product_8920367_color_705035.png)
+![unscaled heatmapp - adidas](heatmaps/heatmap-text-1-adidas-kids-adilette-clf-adj-toddler-little-kid-big-kid-black-white_product_8987203_color_151.png)
 ]
 
 ---
@@ -562,3 +751,24 @@ class:primary
 ![unscaled heatmapp - seychelles](heatmaps/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
 ]
 
+---
+class:primary
+## Debugging the model
+
+- Port the keras-vis Python library to R
+    - Activation Maximization maps: generate a new image to maximize filter output activations
+        - Show what specific filters are doing and "seeing"
+    - What parts of an image are most important in activating a specific class?
+        - Saliency Maps: plot gradients w.r.t. output
+        - Class Activation Maps: plot gradients w.r.t. last convolutional layer (maintains spatial information)
+        
+<!-- Insert Jason's stuff here -->        
+---
+class: primary
+## Whole-Shoe class predictions
+
+- Feed in a whole shoe, get back approximate coordinates of probable features
+
+- Can use spatial information to further discriminate between shoe models
+
+- 
