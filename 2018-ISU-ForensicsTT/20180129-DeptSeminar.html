@@ -395,13 +395,15 @@ class: primary
 
 &lt;br/&gt;
 - Convolutional base of VGG16 for 256x256x3 input images has 14,714,688 parameters
+
 - Head has 155,090,944 parameters and outputs 1000 different class label predictions, fit using 150,000 images
 
 --
 
 - We have 9 class labels and &lt;25,000 labeled images
-- Use the pre-trained VGG16 base (all of the convolutional layers) and train a new head
-    - 8,391,177 parameters
+
+- Solution: Use the pre-trained VGG16 base (all of the convolutional layers) and train a new head
+    - Reduces the parameter space to 8,391,177 parameters
 
 ???
 
@@ -417,7 +419,7 @@ class:primary
 &lt;br/&gt;
 .moveleft[![Zappos Screenshot showing sole images](zappos.png)]
 
-.move-margin[&lt;br/&gt;&lt;br/&gt;49423 shoe outsole images scraped since June 2018]
+.move-margin[&lt;br/&gt;&lt;br/&gt;49745 shoe outsole images scraped since June 2018]
 
 ---
 class:primary
@@ -451,6 +453,29 @@ class:primary
 &lt;p class="caption"&gt;Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon.&lt;/p&gt;
 &lt;/div&gt;
 
+---
+class:primary
+## Model Specification
+
+&lt;br/&gt;
+Multiple classes, multiple labels: "One-hot" encoding
+
+Statistically: 
+
+- Model output: `\((P_1, ..., P_9) \sim Bernoulli(\mathbf{\pi})\)`
+    - Each geometric feature assigned a probability
+    - An image can be labeled with multiple features
+
+- Output probabilities are not independent
+    - Dependencies due to CNN structure
+    - Dependencies due to input data
+    - Dependencies due to geometry - Polygons vs. Quadrilaterals vs. Lines
+    
+- Covariance structure is ?
+
+--
+
+.center[There are downsides to black-box models...]
 
 ---
 class:primary
@@ -459,9 +484,6 @@ class:primary
 &lt;br/&gt;
 &lt;div style="margin-left:-20px"&gt;
 - 256 x 256 pixel images
-
-- Multiple classes, multiple labels: "One-hot" encoding    
-.small["Dummy variables" in statistics-speak]
 
 - Training data (60%):
     - 1x Augmented images (rotation, skew, zoom, crop) to prevent overfitting
@@ -500,7 +522,9 @@ class:primary
 
 ???
 
-The ROC curves shown here are calculated for each class without considering the other classes. Multi-class ROC curves exist, but do not allow for multi-label classification, so instead separate calculations were performed for each class independently. 
+As we discussed previously, this is a multivariate classification problem, in that there are 9 separate output probabilities. I've adapted standard ways of evaluating machine learning model performance to this problem, but it should be noted at this point that the graphs I'm showing here are improvised - ROC curves typically aren't used in classification problems with multiple classes, but once multiple labels are allowed, the problem (somewhat) reduces back to a set of 9 binary classification problems. Here, each ROC curve was generated without considering other features. 
+
+The ROC curves shown here are calculated for each geometric feature without considering the other features. Multi-class ROC curves exist, but do not allow for multi-label classification, so instead separate calculations were performed for each class independently. 
 
 ---
 class:primary
@@ -516,20 +540,20 @@ class:primary
 &lt;br/&gt;
 For multi-label images, only incorrect predictions contribute to off-diagonal probabilities
 
-Class Probability &gt; Class EER used as the cutoff
+Probability &gt; Label-wise EER used as the cutoff
 &lt;br/&gt;
 
 ]
 
 ???
 
-Slightly more likely to predict quadrilateral for all classes. It's important to note that we don't expect perfect predictions here - there are some shapes that are actually super ambiguous (and were labeled differently -- we're working on correcting that issue)
+Slightly more likely to predict quadrilateral for all labels. Two things are important to note here - first, "reality" and the image labels are different (due to imperfect labeling), and second, what label should be assigned to a specific image is ambiguous. We're working on correcting the mislabeling - some of it is due to the fact that the guidelines for labeling have changed since we started this mid-June. There's a certain amount of ambiguity in the geometric shapes in any case - strictly speaking, any amount of roundness should mean something isn't a quadrilateral, but what is it? Rubber typically doesn't create perfectly sharp corners. 
 
-This is not a true confusion matrix, as the classes are not mutually exclusive and there are more than two. We've generalized the idea of a confusion matrix, where off-diagonal cells show errors, above-diagonal cells show incorrect classifications, and below-diagonal cells show missed classifications. For multi-label images, additional labels have been excluded from incorrect prediction calculations. Thus, if an image with a circle and a star was labeled with a circle but not a star, it would count as a correct classification for circle and as a missed classification for star, but not as a "circle labeled as a star". 
+As with the ROC curves in the previous slide, this image is an adaptation of a confusion matrix, which is usually used to show the performance of a classification algorithm where each item is in only one class. Off-diagonal cells above the diagonal show incorrect classifications, while off-diagonal cells below the diagonal show missed classifications. To modify the confusion matrix for our problem, where an image can be labeled as any number of classes, we have excluded additional class labels when calculating the probability that something is misclassified. So if an image contains both a line and a circle, and the model labels it as containing a circle but not a line, when calculating the probability that a line image is misclassified as a circle, the image will be excluded (since it really should have been classified as a circle). 
 
 ---
 class:primary
-## Definitions matter...
+## Definitions matter
 
 &lt;br/&gt;
 .moveleft[![Classes get confusing](dc_circle_quad_confusion.png)]
@@ -551,10 +575,6 @@ We use the shiny application to screen for these problems so that we can correct
 When the model is sufficiently well-calibrated, we can then work with engineers to build the device, collect some initial data, and tweak the model weights with new data that better represents what we'll actually see from the collection equipment. By that point, hopefully we'll also have narrowed down the geometric classification scheme so that categories that are now somewhat fuzzy are more clearly operationalized.
 
 ---
-class:inverse
-# What's Next?
-
----
 class:primary
 ## Debugging the model
 
@@ -572,48 +592,130 @@ class:primary
 
 ---
 class:primary
-## Debugging the model
+## Class Activation Maps
 
 &lt;br/&gt;
-.left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
+.left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
 ![unscaled heatmapp - DC](heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png)
 ]
 
 ---
 class:primary
-## Debugging the model
+## Class Activation Maps
 
 &lt;br/&gt;
-.left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
+.left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
 ![unscaled heatmapp - adidas](heatmaps/heatmap-text-1-adidas-kids-adilette-clf-adj-toddler-little-kid-big-kid-black-white_product_8987203_color_151.png)
 ]
 
 ---
 class:primary
-## Debugging the model
+## Class Activation Maps
 
 &lt;br/&gt;
-.left-column[For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
+.left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
 ![unscaled heatmapp - seychelles](heatmaps/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
 ]
 
+
+---
+class:inverse
+# &lt;br/&gt;&lt;br/&gt;&lt;br/&gt;What's Next?
+
 ---
 class:primary
 ## Debugging the model
-
+&lt;br/&gt;
 - Port the keras-vis Python library to R
+
     - Activation Maximization maps: generate a new image to maximize filter output activations
         - Show what specific filters are doing and "seeing"
+        
     - What parts of an image are most important in activating a specific class?
         - Saliency Maps: plot gradients w.r.t. output
         - Class Activation Maps: plot gradients w.r.t. last convolutional layer (maintains spatial information)
         
+&lt;!-- Insert Jason's stuff here --&gt;        
 ---
 class: primary
-##
+## Whole-Shoe Predictions
+&lt;br/&gt;
+- Currently, predictions are for 256 x 256 chunks
+
+- Integrate multiple chunks to provide geometric features with probabilities and relative coordinates
+
+- Add spatial information to further discriminate between shoe models
+
+&lt;!-- --- --&gt;
+&lt;!-- class: primary --&gt;
+&lt;!-- ## Uncertainty estimation --&gt;
+&lt;!-- &lt;br/&gt; --&gt;
+&lt;!-- - Confidence/Prediction/Credible intervals for Neural Network predictions and parameters are not common --&gt;
+&lt;!--     - Conformal prediction --&gt;
+&lt;!--     - [Bayes by Backprop](https://medium.com/neuralspace/bayesian-convolutional-neural-networks-with-bayes-by-backprop-c84dcaaf086e) - Bayesian frameworks for CNNs [Shr+18] --&gt;
+
+
+---
+class: primary
+## Collect local population data
+
+&lt;br/&gt;
+- Build the machine (or rather, have engineers build it...)
+- Collect data from (very) local areas
+    - date/time stamp
+    - side-view pictures of the shoes (where possible)
+    - scans of the bottom of the shoe
+- Label geometric features on the collected scans
+- Run a 2nd stage of model weight optimization with scanned data
+- Use this optimized model to analyze newly collected data
+
+---
+class: primary
+## Local population data
+
+- Use spatial locations + label probabilities as a feature vector
+
+- Database of shoes in local population can be used to assess likelihood of a specific feature set occurring at random
+    - Helpful to have error estimates for CNN output probabilities 
+        - Bayesian CNNs [Shr+18]
+    - Useful to know wear pattern frequency
+        - As shoes wear, geometric features become less pronounced
+        - Wear patterns can also be used as a class characteristic
+        
+
+
+---
+class: inverse
+# Questions?
+
+---
+class: primary
+## References
+&lt;br/&gt;
+Deep Learning with R (2018). _Deep Learning with R_. 00007.
+Manning Publications Company.
+
+Benedict, I, E. Corke, R. Morgan-Smith, et al. (2014).
+"Geographical variation of shoeprint comparison class
+correspondences". In: _Science and Justice_ 54.5. 00001, pp.
+335-337.
+
+Gross, S, D. Jeppesen and C. Neumann (2013). "The variability and
+significance of class characteristics in footwear impressions".
+In: _Journal of Forensic Identification_ 63.3. 00001, p. 332.
+
+Hamm, E. D. (1989). "The individuality of class characteristics in
+Converse All-Star footwear". In: _Journal of Forensic
+Identification_ 39.5. 00008, pp. 277-292.
+
+Shridhar, K, F. Laumann, A. L. Maurin, et al. (2018). "Bayesian
+Convolutional Neural Networks with Variational Inference". In:
+_arXiv:1806.05978 [cs, stat]_. 00000 arXiv: 1806.05978. URL:
+[http://arxiv.org/abs/1806.05978](http://arxiv.org/abs/1806.05978)
+(visited on Jan. 17, 2019).
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
