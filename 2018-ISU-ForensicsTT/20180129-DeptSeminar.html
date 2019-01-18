@@ -3,6 +3,7 @@
   <head>
     <title>CoNNOR: Convolutional Neural Network for Outsole Recognition</title>
     <meta charset="utf-8">
+    <meta name="author" content="Susan VanderPlas" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/csafe.css" type="text/css" />
     <link rel="stylesheet" href="css/csafe-fonts.css" type="text/css" />
@@ -12,6 +13,8 @@
 class: center, middle, inverse, title-slide
 
 # CoNNOR: Convolutional Neural Network for Outsole Recognition
+### Susan VanderPlas
+### Jan 29, 2019
 
 ---
 
@@ -24,10 +27,16 @@ class: primary
 class:primary
 ## Outline
 
-&lt;br/&gt;
 - Defining the Problem
-- Identifying features in shoes
+
+- Class Characteristics in Footwear
+
+- Image Analysis Methods
+
 - Convolutional Neural Networks
+
+- CoNNOR
+
 - Future Work
 
 ---
@@ -36,32 +45,33 @@ class:inverse
 
 ---
 class:primary
-## What is the probability I made this shoeprint?
+### &lt;br/&gt;What is P(someone else made this print)?
 
 1. Define the comparison population
-2. Obtain data on the distribution of shoes in the comparison population
-3. Identify shoes in the comparison population which could have produced the shoeprint
-4. Establish whether I have any matching shoes
+
+2. Sample from the comparison population
+
+3. Identify similar shoes from the comparison population
+
+4. Calculate probability: `$$\frac{\# \text{ similar shoes}}{\text{Size of comparison population}}$$`
 
 ???
 
 Comparison population definition could include various size geographic regions, temporal components, interaction with local events - shoes worn by people attending a football game likely differ from shoes worn by people at a formal event. Local areas range from state-level to "People outside Starbucks in CampusTown at 8am on a Monday morning"
 
 ---
-class:primary
+class:primary,center,middle
 ## Comparison Population
 
-&lt;br/&gt;
 &gt; .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]&lt;br/&gt; - Leslie Hammer, March 2018
 
 
 ---
 class:primary
 ## Comparison Population
-&lt;br/&gt;
 
 - No 100% complete database of all shoes 
-    - manufacturer, model, size, tread style, manufacturing molds .small[[Ham89]]
+    - manufacturer, model, size, tread style, manufacturing molds [Ham89]
     
 - Shoe purchase data vs. frequency of wear
 
@@ -81,7 +91,7 @@ Finally, geographic resolution is nearly impossible. If this pair of shoes was u
 
 ---
 class:primary
-## Comparison Population Shoes
+## Comparison Population&lt;br&gt;Shoes
 
 How to collect data from the local population? 
 
@@ -97,7 +107,7 @@ How to collect data from the local population?
 
 ---
 class:primary
-## Comparison Population Shoes
+## Comparison Population&lt;br&gt;Shoes
 
 Assume a machine exists that can scan shoe outsoles of pedestrians
 
@@ -117,7 +127,6 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 class:primary
 ## Relevant Features
 
-&lt;br/&gt;
 Class Characteristics
 - Make, Model, Tread pattern, Size, Type of shoe
 
@@ -129,31 +138,25 @@ Class Characteristics
 class:primary
 ## Relevant Features
 
-&lt;br/&gt;
 Use features other than make/model to characterize shoes
 
 - Knockoffs often have very similar tread patterns
 - Similar styles have similar tread patterns across brands
 - Unknown shoes can still be classified and assessed
 
-&lt;img src = "star_bar_drmartin.png" width = "16%" style = "vertical-align:middle;padding:30px"/&gt;
-&lt;img src = "star_bar_vibram.png" width = "15%" style = "vertical-align:middle;padding:30px"/&gt;
-&lt;img src = "star_bar_timberland.png" width = "16%" style = "vertical-align:middle;padding:30px"/&gt;
+&lt;img src = "star_bar_drmartin.png" width = "16%" style = "vertical-align:middle;padding-left:60px;padding-right:30px"/&gt;
+&lt;img src = "star_bar_vibram.png" width = "15%" style = "vertical-align:middle;padding-left:30px;padding-right:30px"/&gt;
+&lt;img src = "star_bar_timberland.png" width = "16%" style = "vertical-align:middle;padding-left:30px"/&gt;
 
 ---
 class:primary
 ## Relevant Features
 
-&lt;br/&gt;
-Geometric Elements in Shoe Tread
-- One type of class characteristic
-- Can be used to narrow shoe prints down to make/model where that information exists [GJN13]
-
 | Bowtie | Chevron | Circle |
 | ------ | ------- | ------ |
 | ![Bowtie examples](class_examples/bowtie_examples.png) | ![Chevron examples](class_examples/chevron_examples.png) | ![Circle examples](class_examples/circle_examples.png) |
 
-| Line | Polygon | Quad |
+| Line | Polygon | Quadrilateral |
 | ---- | ------- | ---- |
 | ![Line examples](class_examples/line_examples.png) | ![Polygon examples](class_examples/polygon_examples.png) | ![Quad examples](class_examples/quad_examples.png) |
 
@@ -161,6 +164,7 @@ Geometric Elements in Shoe Tread
 | ---- | ---- | -------- |
 | ![Star examples](class_examples/star_examples.png) | ![text examples](class_examples/text_examples.png) | ![Triangle examples](class_examples/triangle_examples.png) |
 
+Used to separate shoes by make/model in (small) local samples [GJN13]
 ---
 class: inverse
 # &lt;br/&gt;Image Analysis and Feature Detection
@@ -169,24 +173,17 @@ class: inverse
 class: primary
 ## Image Analysis
 
-&lt;br/&gt;
 ### Goal: Identify geometric tread features in images of shoe outsoles
 
 - Robust to different lighting conditions, rotation, image quality
 
-- Quick to process new images
+- Fast processing of new images
 
-- Identified features should be explainable to practitioners
-
---
-
-.center[&lt;img src="https://imgs.xkcd.com/comics/fourier.jpg" width = "40%"/&gt;]
-
+- Identify features that are explainable to practitioners
 ---
 class:primary
 ## Feature Detection
 
-&lt;br/&gt;
 #### Classic computer vision feature detection methods: 
 
 - Edge, Corner, Blob, Ridge detection
@@ -222,7 +219,6 @@ I spent some time trying to assemble some of these detectors to work with shoe o
 class:primary
 ## Feature Detection
 
-&lt;br/&gt;
 #### Convolutional neural networks: 
 - Structure designed to mimic perceptual pathways in the human visual system
 - Ubiquitous in modern image recognition tasks
@@ -252,7 +248,7 @@ Cons
 
 ---
 class:inverse
-# &lt;br/&gt;&lt;br/&gt;Convolutional Neural Networks
+# &lt;br/&gt;Convolutional Neural Networks
 
 
 
@@ -265,44 +261,14 @@ class:inverse
 class:primary
 ## CNN Architecture - VGG16
 
-&lt;br/&gt;
 &lt;img src="vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/&gt;
 
----
-class: primary
-## Convolutional Layers
-
-&lt;br/&gt;
-
-.moveleft[![Input image and filter](filter.png)]
-
-.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
----
-class: primary
-## Convolutional Layers
-
-&lt;br/&gt;
-
-.moveleft[![Input image and filter](filter1.png)]
-
-.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+.small[VGG16 was trained on an ImageNet [KSH12] dataset of 150,000 images with 1000 output classes [SZ14]]
 
 ---
 class: primary
 ## Convolutional Layers
 
-&lt;br/&gt;
-
-.moveleft[![Input image and filter](filter2.png)]
-
-.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
-
-
----
-class: primary
-## Convolutional Layers
-
-&lt;br/&gt;
 For layer `\(\ell\)` and cell `\(ij\)`, with weights `\(\mathbf{w}\)` 
 
 `$$x^\ell_{ij} = \sum_{a=0}^{m-1}\sum_{a=0}^{m-1} w_{ab} y_{(i+a)(j+b)}^{\ell-1}$$`
@@ -315,29 +281,64 @@ This is "Forward Propagation"
 
 ---
 class: primary
-## Max Pooling Layers
+## Convolutional Layers
 
-&lt;br/&gt;
+![Input image and filter](filter.png)
 
-.moveleft[![Pooling Layers](maxpooling.png)]
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+---
+class: primary
+## Convolutional Layers
+
+![Input image and filter](filter1.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
 ---
 class: primary
+## Convolutional Layers
+
+![Input image and filter](filter2.png)
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+--
+
+.move-margin[&lt;br/&gt;&lt;br/&gt;
+The activation function is applied to the feature map values
+]
+
+---
+class:primary
+## CNN Architecture - VGG16
+
+&lt;img src="vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/&gt;
+
+---
+class: primary
+## Max Pooling Layers
+
+![Pooling Layers](maxpooling.png)
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+---
+class:primary
+## CNN Architecture - VGG16
+
+&lt;img src="vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/&gt;
+
+---
+class: primary
 ## Densely Connected Layers
 
-&lt;br/&gt;
-
-.moveleft[![Dense layers](densely_connected.png)]
+.img75[![Dense layers](densely_connected.png)]
 
 ---
 class: primary
 ## Dropout Layers
 
-&lt;br/&gt;
-
-.moveleft[![Dropout layers](dropout.png)]
+![Dropout layers](dropout.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
@@ -345,8 +346,6 @@ class: primary
 ---
 class: primary
 ## Fitting Mechanism
-
-&lt;br/&gt;
 
 - Forward Propagation: Input -&gt; Filters -&gt; Pooling -&gt; Result
 
@@ -362,14 +361,14 @@ class: primary
 class: primary
 ## Backward Propagation
 
-&lt;br/&gt;
-
 `\(\displaystyle \frac{\partial L}{\partial x^{\ell}_{ij}}\)` is the gradient component:
 
 `$$\frac{\partial L}{\partial x^{\ell}_{ij}} = \frac{\partial L}{\partial y_{ij}^\ell}\frac{\partial y_{ij}^\ell}{\partial x_{ij}^\ell} = \frac{\partial L}{\partial y_{ij}^\ell} \frac{\partial }{\partial x_{ij}^\ell}\left(\sigma(x_{ij}^\ell)\right) = 
  \frac{\partial L}{\partial y_{ij}^\ell} \sigma'(x_{ij}^\ell)$$`
 
-`\(\displaystyle\frac{\partial L}{\partial y_{ij}^\ell}\)` is error at the current layer, so the gradiant can be computed with the derivative of the activation function `\(\sigma(x)\)`
+`\(\displaystyle\frac{\partial L}{\partial y_{ij}^\ell}\)` is error at the current layer
+
+The gradiant can be computed with the derivative of the activation function `\(\sigma(x)\)`
 
 .footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
 ---
@@ -394,9 +393,9 @@ class: primary
 ## VGG16
 
 &lt;br/&gt;
-- Convolutional base of VGG16 for 256x256x3 input images has 14,714,688 parameters
+- Convolutional base of VGG16 for 256 x 256 x 3 images has __14,714,688__ parameters
 
-- Head has 155,090,944 parameters and outputs 1000 different class label predictions, fit using 150,000 images
+- Head has __155,090,944__ parameters and outputs __1000__ different class label predictions, fit using __150,000__ images over 3 week
 
 --
 
@@ -417,21 +416,19 @@ class: inverse
 class:primary
 ## Acquire Data
 &lt;br/&gt;
-.moveleft[![Zappos Screenshot showing sole images](zappos.png)]
+.move-left[![Zappos Screenshot showing sole images](zappos.png)]
 
 .move-margin[&lt;br/&gt;&lt;br/&gt;49745 shoe outsole images scraped since June 2018]
 
 ---
 class:primary
 ## Label Data
-
-&lt;br/&gt;
-.moveleft[.moveleft[![LabelMe](LabelMe1.png)]
+![LabelMe](LabelMe1.png)
 
 - 31,496 shoe images labeled
 
 - 23,898 regions labeled with one or more geometric objects
-]
+
 --
 .small[.move-margin[
 &lt;br/&gt;&lt;br/&gt;Labeling courtesy of 
@@ -447,17 +444,14 @@ class:primary
 ---
 class:primary
 ## Label Data
-&lt;br/&gt;
 &lt;div class="figure"&gt;
-&lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-5-1.png" alt="Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon." width="99%" /&gt;
+&lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-5-1.png" alt="Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon." width="75%" /&gt;
 &lt;p class="caption"&gt;Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon.&lt;/p&gt;
 &lt;/div&gt;
 
 ---
 class:primary
 ## Model Specification
-
-&lt;br/&gt;
 Multiple classes, multiple labels: "One-hot" encoding
 
 Statistically: 
@@ -481,7 +475,6 @@ Statistically:
 class:primary
 ## Model Training
 
-&lt;br/&gt;
 &lt;div style="margin-left:-20px"&gt;
 - 256 x 256 pixel images
 
@@ -498,7 +491,6 @@ class:primary
 class:primary
 ## Model Training
 
-&lt;br/&gt;
 &lt;div class="figure"&gt;
 &lt;img src="20180129-DeptSeminar_files/figure-html/training-accuracy-1.png" alt="Training and Validation accuracy and loss for each epoch of the fitting process. Training and validation accuracy reach 90% around epoch 14. After that point, validation loss remains about the same and training loss decreases slightly, while validation accuracy increases more slowly than training accuracy." width="99%" /&gt;
 &lt;p class="caption"&gt;Training and Validation accuracy and loss for each epoch of the fitting process. Training and validation accuracy reach 90% around epoch 14. After that point, validation loss remains about the same and training loss decreases slightly, while validation accuracy increases more slowly than training accuracy.&lt;/p&gt;
@@ -514,7 +506,6 @@ class:primary
 &lt;!-- Add in model overall AUC --&gt;
 &lt;!-- Describe the multi-class version as splitting out model performance by class --&gt; 
 
-&lt;br/&gt;
 &lt;div class="figure"&gt;
 &lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-6-1.png" alt="Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class." width="99%" /&gt;
 &lt;p class="caption"&gt;Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class.&lt;/p&gt;
@@ -529,7 +520,6 @@ The ROC curves shown here are calculated for each geometric feature without cons
 ---
 class:primary
 ## Evaluating the Model
-&lt;br/&gt;
 &lt;div class="figure"&gt;
 &lt;img src="20180129-DeptSeminar_files/figure-html/ConfMatrix-1.png" alt="Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes." width="85%" /&gt;
 &lt;p class="caption"&gt;Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes.&lt;/p&gt;
@@ -554,13 +544,11 @@ As with the ROC curves in the previous slide, this image is an adaptation of a c
 ---
 class:primary
 ## Definitions matter
-
-&lt;br/&gt;
-.moveleft[![Classes get confusing](dc_circle_quad_confusion.png)]
+![Classes get confusing](dc_circle_quad_confusion.png)
 
 --
 
-.moveleft[![Not everything is labeled correctly](circle_pred_correct.png)]
+![Not everything is labeled correctly](circle_pred_correct.png)
 
 ???
 
@@ -578,7 +566,6 @@ When the model is sufficiently well-calibrated, we can then work with engineers 
 class:primary
 ## Debugging the model
 
-&lt;br/&gt;
 - Active area of research: How to debug, interpret, and understand what a CNN is actually doing    
 .small[https://distill.pub/2018/building-blocks/]
 
@@ -594,7 +581,6 @@ class:primary
 class:primary
 ## Class Activation Maps
 
-&lt;br/&gt;
 .left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
 ![unscaled heatmapp - DC](heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png)
@@ -604,7 +590,6 @@ class:primary
 class:primary
 ## Class Activation Maps
 
-&lt;br/&gt;
 .left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
 ![unscaled heatmapp - adidas](heatmaps/heatmap-text-1-adidas-kids-adilette-clf-adj-toddler-little-kid-big-kid-black-white_product_8987203_color_151.png)
@@ -614,7 +599,6 @@ class:primary
 class:primary
 ## Class Activation Maps
 
-&lt;br/&gt;
 .left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
 ![unscaled heatmapp - seychelles](heatmaps/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
@@ -628,7 +612,6 @@ class:inverse
 ---
 class:primary
 ## Debugging the model
-&lt;br/&gt;
 - Port the keras-vis Python library to R
 
     - Activation Maximization maps: generate a new image to maximize filter output activations
@@ -642,7 +625,6 @@ class:primary
 ---
 class: primary
 ## Whole-Shoe Predictions
-&lt;br/&gt;
 - Currently, predictions are for 256 x 256 chunks
 
 - Integrate multiple chunks to provide geometric features with probabilities and relative coordinates
