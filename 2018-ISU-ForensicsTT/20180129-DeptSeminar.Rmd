@@ -19,13 +19,14 @@ knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T, dpi = 3
 
 source("/models/shoe_nn/Generate_Model_Images.R")
 ```
-```{r, load_refs, echo=FALSE, cache=FALSE}
+```{r load_refs, echo=FALSE, cache=FALSE}
 library(RefManageR)
 BibOptions(check.entries = FALSE, 
-           bib.style = "authoryear", 
+           bib.style = "numeric", 
            cite.style = 'alphabetic', 
-           style = "markdown",
+           style = "html",
            hyperlink = FALSE, 
+           no.print.fields = c("url", "isbn", "note"),
            dashed = FALSE)
 bb <- ReadBib("./refs.bib", check = FALSE)
 ```
@@ -65,8 +66,8 @@ class:primary
 - Future Work
 
 ---
-class:inverse
-<h1><br/>What is the probability I made this shoeprint?</h1>
+class:inv-center
+# What is the probability I made this shoeprint?
 
 ---
 class:primary
@@ -103,7 +104,7 @@ class:primary
 - Local populations may differ wildly .small[`r Citep(bb, "benedict_geographical_2014")`]
 
 <br/><br/>
-.center[<img src = "snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/>]
+.center[<img src = "problem-definition/snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/>]
 <!-- https://pixnio.com/free-images/2017/05/03/2017-05-03-07-35-18-900x456.jpg -->
 
 ???
@@ -169,9 +170,9 @@ Use features other than make/model to characterize shoes
 - Similar styles have similar tread patterns across brands
 - Unknown shoes can still be classified and assessed
 
-<img src = "star_bar_drmartin.png" width = "16%" style = "vertical-align:middle;padding-left:60px;padding-right:30px"/>
-<img src = "star_bar_vibram.png" width = "15%" style = "vertical-align:middle;padding-left:30px;padding-right:30px"/>
-<img src = "star_bar_timberland.png" width = "16%" style = "vertical-align:middle;padding-left:30px"/>
+<img src = "problem-definition/star_bar_drmartin.png" width = "16%" style = "vertical-align:middle;padding-left:60px;padding-right:30px"/>
+<img src = "problem-definition/star_bar_vibram.png" width = "15%" style = "vertical-align:middle;padding-left:30px;padding-right:30px"/>
+<img src = "problem-definition/star_bar_timberland.png" width = "16%" style = "vertical-align:middle;padding-left:30px"/>
 
 ---
 class:primary
@@ -205,6 +206,7 @@ class: primary
 - Fast processing of new images
 
 - Identify features that are explainable to practitioners
+
 ---
 class:primary
 ## Feature Detection
@@ -273,7 +275,7 @@ Cons
 
 ---
 class:inverse
-# <br/>Convolutional Neural Networks
+# Convolutional Neural Networks
 
 ```{r labeled-data}
 model_path <- "~/models/shoe_nn/TrainedModels/"
@@ -367,7 +369,7 @@ load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
 class:primary
 ## CNN Architecture - VGG16
 
-<img src="vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
+<img src="vgg16-structure/vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
 
 .small[VGG16 was trained on an ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012')` dataset of 150,000 images with 1000 output classes `r Citep(bb, 'simonyan_very_2014')`]
 
@@ -389,14 +391,14 @@ This is "Forward Propagation"
 class: primary
 ## Convolutional Layers
 
-![Input image and filter](filter.png)
+![Input image and filter](vgg16-structure/filter.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 ---
 class: primary
 ## Convolutional Layers
 
-![Input image and filter](filter1.png)
+![Input image and filter](vgg16-structure/filter1.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
@@ -404,7 +406,7 @@ class: primary
 class: primary
 ## Convolutional Layers
 
-![Input image and filter](filter2.png)
+![Input image and filter](vgg16-structure/filter2.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
@@ -418,13 +420,13 @@ The activation function is applied to the feature map values
 class:primary
 ## CNN Architecture - VGG16
 
-<img src="vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
+<img src="vgg16-structure/vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
 
 ---
 class: primary
 ## Max Pooling Layers
 
-![Pooling Layers](maxpooling.png)
+![Pooling Layers](vgg16-structure/maxpooling.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
@@ -432,19 +434,19 @@ class: primary
 class:primary
 ## CNN Architecture - VGG16
 
-<img src="vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
+<img src="vgg16-structure/vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
 
 ---
 class: primary
 ## Densely Connected Layers
 
-.img75[![Dense layers](densely_connected.png)]
+.img75[![Dense layers](vgg16-structure/densely_connected.png)]
 
 ---
 class: primary
 ## Dropout Layers
 
-![Dropout layers](dropout.png)
+![Dropout layers](vgg16-structure/dropout.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
@@ -488,7 +490,7 @@ $$\frac{\partial L}{\partial y_{ij}^{\ell -1}} = \sum_{a=0}^{m-1} \sum_{b=0}^{m-
 = \sum_{a=0}^{m-1} \sum_{b=0}^{m-1} \frac{\partial L}{\partial x_{(i-a)(j-b)}^\ell} \omega_{ab}$$
 
 <br/>
-.center[<img src="vgg16-shoe.png" width = "50%"/>]
+.center[<img src="vgg16-structure/vgg16-shoe.png" width = "50%"/>]
 
 .center[<b>13 convolutional layers = a lot of backpropagation</b>]
 
@@ -501,14 +503,14 @@ class: primary
 <br/>
 - Convolutional base of VGG16 for 256 x 256 x 3 images has __14,714,688__ parameters
 
-- Head has __155,090,944__ parameters and outputs __1000__ different class label predictions, fit using __150,000__ images over 3 week
+- Head has __155,090,944__ parameters and outputs __1000__ different class label predictions, fit using __150,000__ images on 
 
 --
 
-- We have 9 class labels and <25,000 labeled images
+- We have __9__ class labels and __<25,000__ labeled images
 
 - Solution: Use the pre-trained VGG16 base (all of the convolutional layers) and train a new head
-    - Reduces the parameter space to 8,391,177 parameters
+    - Reduces the parameter space to __8,391,177__ parameters
 
 ???
 
@@ -521,15 +523,14 @@ class: inverse
 ---
 class:primary
 ## Acquire Data
-<br/>
-.move-left[![Zappos Screenshot showing sole images](zappos.png)]
+<img alt="Zappos Screenshot showing sole images" src="labelme-imgs/zappos.png" width="90%" style="margin: 0 5%"/>
 
 .move-margin[<br/><br/>`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since June 2018]
 
 ---
 class:primary
 ## Label Data
-![LabelMe](LabelMe1.png)
+![LabelMe](labelme-imgs/LabelMe1.png)
 
 - `r prettyNum(length(annotated_imgs$image), big.mark =  ",")` shoe images labeled
 
@@ -550,7 +551,7 @@ class:primary
 ---
 class:primary
 ## Label Data
-```{r, fig.width = 6, fig.height = 4, out.width = "75%", dpi = 300, fig.cap = "Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon."}
+```{r, fig.width = 6, fig.height = 4, out.width = "90%", dpi = 300, fig.cap = "Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon."}
 annotated_imgs %>%
   mutate(label_type = str_replace(label_type, "multi", "multiple")) %>%
   ggplot() + 
@@ -577,13 +578,14 @@ Statistically:
 - Output probabilities are not independent
     - Dependencies due to CNN structure
     - Dependencies due to input data
-    - Dependencies due to geometry - Polygons vs. Quadrilaterals vs. Lines
+    - Dependencies due to geometry -     
+    Polygons vs. Quadrilaterals vs. Lines
     
 - Covariance structure is ?
 
 --
 
-.center[There are downsides to black-box models...]
+.move-margin[<br/><br/>There are downsides to black-box models...]
 
 ---
 class:primary
@@ -649,7 +651,7 @@ The ROC curves shown here are calculated for each geometric feature without cons
 ---
 class:primary
 ## Evaluating the Model
-```{r ConfMatrix, message = F, warning = F, fig.width = 7.5, fig.height = 6.5, out.width = "85%", fig.cap = "Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes."}
+```{r ConfMatrix, message = F, warning = F, fig.width = 7.5, fig.height = 6.5, out.width = "80%", fig.cap = "Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes."}
 thresholds <- purrr::map_dbl(aucs$data$eer, ~.$thresholds)
 
 get_confusion_matrix(preds, test_labs, str_to_title(classes), threshold = thresholds) %>%
@@ -668,7 +670,7 @@ get_confusion_matrix(preds, test_labs, str_to_title(classes), threshold = thresh
 <br/>
 For multi-label images, only incorrect predictions contribute to off-diagonal probabilities
 
-Probability > Label-wise EER used as the cutoff
+$P > EER_i$ used as the cutoff
 <br/>
 
 ]
@@ -682,11 +684,11 @@ As with the ROC curves in the previous slide, this image is an adaptation of a c
 ---
 class:primary
 ## Definitions matter
-![Classes get confusing](dc_circle_quad_confusion.png)
+![Classes get confusing](labelme-imgs/dc_circle_quad_confusion.png)
 
 --
 
-![Not everything is labeled correctly](circle_pred_correct.png)
+![Not everything is labeled correctly](labelme-imgs/circle_pred_correct.png)
 
 ???
 
@@ -738,6 +740,8 @@ class:primary
 ![unscaled heatmapp - DC](heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png)
 ]
 
+.move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
+
 ---
 class:primary
 ## Class Activation Maps
@@ -746,6 +750,8 @@ class:primary
 .right-column[
 ![unscaled heatmapp - adidas](heatmaps/heatmap-text-1-adidas-kids-adilette-clf-adj-toddler-little-kid-big-kid-black-white_product_8987203_color_151.png)
 ]
+
+.move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
 
 ---
 class:primary
@@ -756,24 +762,27 @@ class:primary
 ![unscaled heatmapp - seychelles](heatmaps/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
 ]
 
+.move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
+
 
 ---
 class:inverse
-# <br/><br/><br/>What's Next?
+# <br/><br/>What's Next?
 
 ---
 class:primary
 ## Debugging the model
-- Port the keras-vis Python library to R
+- Port the `keras-vis` Python library to R
 
     - Activation Maximization maps: generate a new image to maximize filter output activations
         - Show what specific filters are doing and "seeing"
         
     - What parts of an image are most important in activating a specific class?
         - Saliency Maps: plot gradients w.r.t. output
-        - Class Activation Maps: plot gradients w.r.t. last convolutional layer (maintains spatial information)
+        - Class Activation Maps: plot gradients w.r.t. last conv. layer (maintains spatial information)
         
 <!-- Insert Jason's stuff here -->        
+
 ---
 class: primary
 ## Whole-Shoe Predictions
@@ -822,13 +831,15 @@ class: primary
 
 
 ---
-class: inverse
+class: inv-center
 # Questions?
 
 ---
 class: primary
 ## References
-<br/>
-```{r, 'refs', results='asis', echo=FALSE}
+<div class="small">
+
+```{r, 'refs', results='asis', echo=FALSE, cache = F}
 PrintBibliography(bb)
 ```
+</div>
