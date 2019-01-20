@@ -755,7 +755,7 @@ class:primary
 class:primary
 ## Debugging the model
 
-- Port the keras-vis Python library to R
+- Port the keras-vis Python library to R (in progress!)
     - Activation Maximization maps: generate a new image to maximize filter output activations
         - Show what specific filters are doing and "seeing"
     - What parts of an image are most important in activating a specific class?
@@ -769,6 +769,8 @@ class: primary
 
 - Feed in a whole shoe, get back approximate coordinates of probable features
 
-- Can use spatial information to further discriminate between shoe models
+- Use spatial information to further discriminate between shoe models
 
-- 
+---
+class: primary
+## 
