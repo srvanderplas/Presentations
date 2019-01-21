@@ -543,8 +543,9 @@ class:primary
 ---
 class: primary
 ## Fully Connected Layers
-
-.img75[![Dense layers](vgg16-structure/densely_connected.png)]
+```{r, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
+plot_deepviz2(c(12, 4), r = .005)
+```
 
 ???
 
@@ -554,9 +555,14 @@ Fully connected layers are also known as dense layers; they take the spatial inf
 class: primary
 ## Dropout Layers
 
-![Dropout layers](vgg16-structure/dropout.png)
+<!-- ![Dropout layers](vgg16-structure/dropout.png) -->
 
-.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+<!-- .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2] -->
+
+```{r, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
+plot_deepviz_sample(c(12, 4), r = .005, dropout_rate = 0.5) + 
+  theme(legend.position = c(1, 0), legend.justification = c(1, 0))
+```
 
 ???
 
