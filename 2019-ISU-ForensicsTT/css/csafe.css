@@ -2,7 +2,7 @@
 .remark-slide-content {
   padding-top: 175px;
   padding-left: 30px;
-  padding-right: 160px;
+  padding-right: 190px;
   padding-bottom: 20px;
 }
 
@@ -119,10 +119,11 @@
   display: none;
 }
 
-/* Image formatting */
-.primary > p  img, .primary > .figure > img {
-  max-width:96%;
-}
+/* Image and table formatting */
+/*
+.primary > p  img, .primary > .figure > img , .primary table {
+  max-width:97%;
+}*/
 
 .img75 img {
   width: 75%;
@@ -155,8 +156,8 @@
 .move-margin {
   position: absolute;
   margin: auto;
-  top: 227px; bottom: 50px; right: 15px;
-  max-width: 145px;
+  top: 227px; bottom: 50px; right: 10px;
+  max-width: 160px;
   max-height:400px;
 }
 
@@ -168,7 +169,7 @@
   margin-left:-25px !important;
 }
 
-/* Two-column layout */
+/* Two-column layout *//*
 .left-column {
   color: #777;
   width: 20%;
@@ -187,8 +188,4 @@
   text-align: center;
   align: center;
   max-width: 95%;
-}
-
-.primary table {
-  width: 97% !important;
-}
+}*/
