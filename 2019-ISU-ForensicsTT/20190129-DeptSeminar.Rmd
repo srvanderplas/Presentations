@@ -681,14 +681,19 @@ class:primary
 
 - `r prettyNum(length(annotated_imgs$image), big.mark =  ",")` labels
 
+- [LabelMe Annotation Tool](https://github.com/CSAILVision/LabelMeAnnotationTool) used as a web interface - creates XML files with labels and coordinates. `r Citep(bb, 'russell_labelme_2008')`
+
 
 --
 .small[.move-margin[
 <br/><br/>Labeling courtesy of 
 - Jenny Kim
 - Ben Wonderlin
-- Holden Jud
 - Mya Fisher
+- Holden Jud
+- Miranda Tilton
+- Charlotte Roiger
+- Joe Zemmels
 - and others
 ]]
 
