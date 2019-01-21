@@ -215,7 +215,7 @@ class:primary
 ## Comparison Population
 
 - No 100% complete database of all shoes 
-    - manufacturer, model, size, tread style, manufacturing molds `r Citep(bb, "hamm_individuality_1989")`
+    - manufacturer, model, size, tread style, manufacturing molds
     
 - Shoe purchase data vs. frequency of wear
 
