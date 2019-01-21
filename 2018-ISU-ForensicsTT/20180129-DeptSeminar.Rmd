@@ -884,10 +884,9 @@ $P > EER_i$ used as the cutoff
 
 ???
 
+This confusion matrix shows, for each label, the probability that the image is classified as that label as well as other possible labels. One modification we made to the standard confusion matrix was to exclude any additional "correct" labels from these calculations: If an image was labeled with a circle and a line, but the model assigned circle and triangle as labels, then in the circle column that image would register as a true positive for circle and a false positive for triangle; line would be excluded from calculations in that column. Similarly, in the line column, triangle would be marked as a false positive, circle would be excluded, and line would be marked as a false negative. 
 
-Slightly more likely to predict quadrilateral for all labels. Two things are important to note here - first, "reality" and the image labels are different (due to imperfect labeling), and second, what label should be assigned to a specific image is ambiguous. We're working on correcting the mislabeling - some of it is due to the fact that the guidelines for labeling have changed since we started this mid-June. There's a certain amount of ambiguity in the geometric shapes in any case - strictly speaking, any amount of roundness should mean something isn't a quadrilateral, but what is it? Rubber typically doesn't create perfectly sharp corners. 
-
-As with the ROC curves in the previous slide, this image is an adaptation of a confusion matrix, which is usually used to show the performance of a classification algorithm where each item is in only one class. Off-diagonal cells above the diagonal show incorrect classifications, while off-diagonal cells below the diagonal show missed classifications. To modify the confusion matrix for our problem, where an image can be labeled as any number of classes, we have excluded additional class labels when calculating the probability that something is misclassified. So if an image contains both a line and a circle, and the model labels it as containing a circle but not a line, when calculating the probability that a line image is misclassified as a circle, the image will be excluded (since it really should have been classified as a circle). 
+An important point to make at this juncture is that while we're operating as if our labeled data were "ground truth", that isn't an accurate assumption. People make mistakes, labeling is monotonous, and the criteria for certain classes have changed over time. In some cases, the model is correct, and the labels are wrong. We're working on correcting the labeling, but even in a situation where the labeling is done in accordance with the guidelines, some of the criteria can get fuzzy in practice. 
 
 ---
 class:primary
@@ -902,13 +901,18 @@ class:primary
 
 We created a shiny application to see the images and the model's predictions. Blue means that the image had that label, grey means it does not. 
 
-So in the first image, the design is labeled as a quadrilateral (rounded quadrilateral) rather than a circle. We're still debating how to handle these... 
+So in the first image, the design is labeled as a quadrilateral (rounded quadrilateral) rather than a circle. We're still debating how to handle these... they're very ambiguous figures with features of both circles and quadrilaterals. The model is not wrong, but neither is the labeling... or maybe both of them are wrong?
 
 In the second image, both text and quad are labels, but the model also identifies a circle in the text with probability 0.31; that is, the text contains an O. 
 
-We use the shiny application to screen for these problems so that we can correct the labeled training data. We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things. Because we determined the guidelines for labeling the data, labeled the data (or oversaw the labeling), and trained the model ourselves, we have the advantage of knowing the flaws at every point in the process; that means we have the responsibility to fix those flaws where possible. We're not doing inference on the model results at this point (nor planning to use the data we're training the model with during the operational stage) so the data -> model -> fix data loop is less of a validity concern. 
+We use the shiny application to screen for these problems so that we can correct the labeled training data where it does not meet the current guidelines for labeling. When we find an issue that's widespread (e.g. the Adidas logo is often not labeled as containing quads) we examine the shoes matching that description (so some screening occurs outside of what is predicted by the model). 
+
+We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things. Because we determined the guidelines for labeling the data, labeled the data (or oversaw the labeling), and trained the model ourselves, we have the advantage of knowing the flaws at every point in the process; that means we have the responsibility to fix those flaws where possible. 
+
+We're not doing inference on the model results at this point (nor planning to use the data we're training the model with during the operational stage) so the data -> model -> fix data loop is less of a validity concern. 
 
 When the model is sufficiently well-calibrated, we can then work with engineers to build the device, collect some initial data, and tweak the model weights with new data that better represents what we'll actually see from the collection equipment. By that point, hopefully we'll also have narrowed down the geometric classification scheme so that categories that are now somewhat fuzzy are more clearly operationalized.
+
 
 ---
 class:primary
@@ -920,6 +924,12 @@ class:primary
 - Which regions in the image are relevant to the class?
 
 - Which filters are most important for detection of each class?
+
+???
+
+During this process, it's also helpful to see what the model is using to determine which features are present or absent. Black box models are notoriously difficult to debug, but this is a very active area of current research. 
+
+In particular, we'd like to know which regions in the image are relevant to the class, and which filters in the model are important for detecting each class. We've made some progress on the first question, and are actively looking into the second. 
 
 ```{r, include = F}
 model_wts_file <- file.path(newest_model$path, newest_model$base_file)
@@ -950,6 +960,10 @@ class:primary
 
 .move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
 
+???
+
+Class activation maps use the gradient with respect to each class label, back propagated to the last convolutional layer to maintain spatial information. Here, we can see that the D shape discussed previously is activating both circle and quad; the round part is activating the circle class and the straight part is activating the quad class; there's also some slight activation of the polygon class, which isn't surprising given that polygons and quads share some features. 
+
 ---
 class:primary
 ## Class Activation Maps
@@ -960,6 +974,11 @@ class:primary
 ]
 
 .move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
+
+???
+
+This is a piece of the Adidas text that is part of the design of many of their shoe treads. The model is obviously cuing into the text, but interestingly, it also detects circles - the text is so round that the inside of any A or D character is a perfect circle. While we wouldn't necessarily go out of our way to label that, because text dominates the human brain, we've created a model that doesn't have that dominance; the circles are just as real as the text to this model, and should be labeled as such.
+
 
 ---
 class:primary
@@ -972,6 +991,9 @@ class:primary
 
 .move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
 
+???
+
+In a similar instance, the model cues in on circles in script S characters as well. These are objectively not circles, though, as they aren't closed, so we do not update the labeling for these images. It's a delicate balance between "the model isn't wrong" and tweaking the labels to match the model output exactly - we're working to find that balance. 
 
 ---
 class:inverse
@@ -990,6 +1012,7 @@ class:primary
         
 <!-- Insert Jason's stuff here -->        
 
+
 ---
 class: primary
 ## Whole-Shoe Predictions
@@ -999,6 +1022,7 @@ class: primary
 
 - Add spatial information to further discriminate between shoe models
 
+- Integrate the current model with a database of make/model/tread information to use for automatic identification of shoe soles.
 <!-- --- -->
 <!-- class: primary -->
 <!-- ## Uncertainty estimation -->
