@@ -769,7 +769,7 @@ class:primary
     
 - Validation and test data (20% each)
 
-- Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper'))`
+- Miranda Tilton fit the model using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper'))`
 
 ???
 
