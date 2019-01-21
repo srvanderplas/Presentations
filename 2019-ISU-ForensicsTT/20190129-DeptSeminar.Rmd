@@ -50,6 +50,111 @@ classes <- c("bowtie", "chevron", "circle", "line", "polygon", "quad", "star",
              "text", "triangle")
 ```
 
+```{r labeled-data}
+model_path <- "~/models/shoe_nn/TrainedModels/"
+
+newest_model <- get_newest(dir = model_path, pattern = "weights.h5")
+newest_data_file <- file.path("~/models/shoe_nn/RProcessedImages/", newest_model$process_dir, "cropped_photos.Rdata")
+
+load(newest_data_file)
+
+label_fixes <- c("triangles" = "triangle",
+                 "trianglee" = "triangle",
+                 "circlemtraignle" = "circle_triangle",
+                 "circle triangle" = "circle_triangle",
+                 "circleline" = "circle_line",
+                 "circle text" = "circle_text",
+                 "circle_elongated" = "circle",
+                 "cricle|cirle" = "circle",
+                 "chrevron" = "chevron",
+                 "lie" = "line",
+                 "texxt" = "text",
+                 "star quad" = "star_quad",
+                 "exc_idd" = "exclude",
+                 "quad?" = "quad",
+                 "qaud|qud" = "quad", 
+                 "stars|start" = "star", 
+                 "exlude" = "exclude",
+                 "rounded" = "",
+                 "smooth_texture" = "other",
+                 "octagon" = "polygon",
+                 "crepe" = "other",
+                 "hex" = "polygon",
+                 "smooth|hatching" = "other"
+                 )
+# Merge doesn't work, wtf???
+annotated_imgs <- select(dfunion, image, name) %>%
+  mutate(base_image = basename(image)) %>%
+  mutate(num_labels = str_count(name, "_") + 1, 
+         annot_num = 1:n()) %>%
+  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
+           str_replace_all(label_fixes) %>% 
+           str_split("_")) %>%
+  unnest(labels) %>%
+  mutate(labels = str_replace_all(labels, label_fixes)) %>%
+  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
+  filter(labels != "") %>%
+  filter(labels != "exclude") %>%
+  filter(labels != "ribbon" & labels != "logo") %>%
+  filter(labels %in% c(default_classes, "other"))
+
+fix_annotation <- function(annot) {
+  useful_vars <- c("name", "deleted", "date", "id", "username")
+  new_vars <- set_names(useful_vars, c("name", "deleted", "date", "objID", "username"))
+  
+  get_vars <- new_vars[new_vars %in% names(annot)]
+  
+  if (!is.null(annot)) select(annot, !!get_vars) %>% as_tibble() else data_frame()
+}
+
+authors <- df %>%
+  filter(!is.null(fullannot)) %>%
+  mutate(base_image = basename(image)) %>%
+  select(id, base_image, image, fullannot) %>%
+  filter(!is.null(date)) %>%
+  mutate(miniannot = map(fullannot, fix_annotation)) %>%
+  select(-fullannot) %>%
+  unnest(miniannot)
+```
+
+```{r}
+new_img_dir <- dirname(newest_data_file)
+
+ann_df <- select(annotated_imgs, base_image, name, num_labels, annot_num, labels, label_type) %>%
+  group_by(base_image, name) %>%
+  arrange(annot_num) %>%
+  mutate(ln = 1:n())
+
+img_df <- data_frame(img = list.files(file.path(new_img_dir, c("test", "train", "validation")), full.names = T)) %>%
+  mutate(type = str_extract(img, "(test|train|validation)"),
+         image = basename(img),
+         aug = grepl("^aug", image),
+         name = str_extract(image, "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-"),
+         ln = str_extract(name, "-\\d{1,}-$") %>% gsub(pattern = "-", replacement = "") %>% as.numeric(),
+         name = gsub(pattern = "-\\d{1,}-$", "", name),
+         name = gsub(pattern = "aug_", "", name),
+         name = gsub(pattern = "logo|ribbon|logo\\(R\\)|ribbon\\(R\\)", replacement = "other", name),
+         base_image = gsub(image, pattern = "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-", replacement = "") %>%
+           gsub(., pattern = "_\\d_\\d{1,}.jpg", replacement = ".jpg")) %>%
+  select(type, base_image, name, ln, aug, img_path = image) %>%
+  mutate(num_labels = str_count(name, "_") + 1, 
+         annot_num = 1:n()) %>%
+  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
+           str_replace_all(label_fixes) %>% 
+           str_split("_")) %>%
+  unnest(labels) %>%
+  mutate(labels = str_replace_all(labels, label_fixes)) %>%
+  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
+  filter(labels != "" & labels != "hatching" & labels != "exclude" & !is.na(labels))
+```
+
+```{r}
+library(keras)
+model_dir <- newest_model$path
+load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
+load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
+```
+
 class:primary
 ## Outline
 
@@ -342,98 +447,6 @@ But, for the moment, "It works" is going to be the more important part than the 
 class:inverse
 # Convolutional Neural Networks
 
-??? 
-
-I'm going to really quickly walk through the specific neural network we used for this task and how it (and similar networks) are fit, and why using a pre-trained network is so awesome. Then we'll walk through the results, some model diagnostics, and I'll talk a bit about what we'll be working on for the rest of this semester.
-
-```{r labeled-data}
-model_path <- "~/models/shoe_nn/TrainedModels/"
-
-newest_model <- get_newest(dir = model_path, pattern = "weights.h5")
-newest_data_file <- file.path("~/models/shoe_nn/RProcessedImages/", newest_model$process_dir, "cropped_photos.Rdata")
-
-load(newest_data_file)
-
-label_fixes <- c("triangles" = "triangle",
-                 "trianglee" = "triangle",
-                 "circlemtraignle" = "circle_triangle",
-                 "circle triangle" = "circle_triangle",
-                 "circleline" = "circle_line",
-                 "circle text" = "circle_text",
-                 "circle_elongated" = "circle",
-                 "cricle|cirle" = "circle",
-                 "chrevron" = "chevron",
-                 "lie" = "line",
-                 "texxt" = "text",
-                 "star quad" = "star_quad",
-                 "exc_idd" = "exclude",
-                 "quad?" = "quad",
-                 "qaud|qud" = "quad", 
-                 "stars|start" = "star", 
-                 "exlude" = "exclude",
-                 "rounded" = "",
-                 "smooth_texture" = "other",
-                 "octagon" = "polygon",
-                 "crepe" = "other",
-                 "hex" = "polygon",
-                 "smooth|hatching" = "other"
-                 )
-# Merge doesn't work, wtf???
-annotated_imgs <- select(dfunion, image, name) %>%
-  mutate(base_image = basename(image)) %>%
-  mutate(num_labels = str_count(name, "_") + 1, 
-         annot_num = 1:n()) %>%
-  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
-           str_replace_all(label_fixes) %>% 
-           str_split("_")) %>%
-  unnest(labels) %>%
-  mutate(labels = str_replace_all(labels, label_fixes)) %>%
-  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
-  filter(labels != "") %>%
-  filter(labels != "exclude") %>%
-  filter(labels != "ribbon" & labels != "logo") %>%
-  filter(labels %in% c(default_classes, "other"))
-```
-
-```{r}
-new_img_dir <- dirname(newest_data_file)
-
-ann_df <- select(annotated_imgs, base_image, name, num_labels, annot_num, labels, label_type) %>%
-  group_by(base_image, name) %>%
-  arrange(annot_num) %>%
-  mutate(ln = 1:n())
-
-img_df <- data_frame(img = list.files(file.path(new_img_dir, c("test", "train", "validation")), full.names = T)) %>%
-  mutate(type = str_extract(img, "(test|train|validation)"),
-         image = basename(img),
-         aug = grepl("^aug", image),
-         name = str_extract(image, "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-"),
-         ln = str_extract(name, "-\\d{1,}-$") %>% gsub(pattern = "-", replacement = "") %>% as.numeric(),
-         name = gsub(pattern = "-\\d{1,}-$", "", name),
-         name = gsub(pattern = "aug_", "", name),
-         name = gsub(pattern = "logo|ribbon|logo\\(R\\)|ribbon\\(R\\)", replacement = "other", name),
-         base_image = gsub(image, pattern = "^([a-z\\(\\)RE]*?_?){1,}-\\d{1,}-", replacement = "") %>%
-           gsub(., pattern = "_\\d_\\d{1,}.jpg", replacement = ".jpg")) %>%
-  select(type, base_image, name, ln, aug, img_path = image) %>%
-  mutate(num_labels = str_count(name, "_") + 1, 
-         annot_num = 1:n()) %>%
-  mutate(labels = str_remove_all(name, "\\(.{1,2}\\)") %>% 
-           str_replace_all(label_fixes) %>% 
-           str_split("_")) %>%
-  unnest(labels) %>%
-  mutate(labels = str_replace_all(labels, label_fixes)) %>%
-  mutate(label_type = ifelse(num_labels == 1, "single", "multi")) %>%
-  filter(labels != "" & labels != "hatching" & labels != "exclude" & !is.na(labels))
-```
-
-```{r}
-library(keras)
-model_dir <- newest_model$path
-load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
-load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
-```
-
-<!-- Add in information about what the layers are doing: https://www.overleaf.com/project/5bef1722f138c36ed9d572d4 -->
 ---
 class:primary
 ## CNN Architecture - VGG16
@@ -442,7 +455,10 @@ class:primary
 
 .small[VGG16 was trained on an ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012')` dataset of 150,000 images with 1000 output classes `r Citep(bb, 'simonyan_very_2014')`]
 
+
 ???
+
+I'm going to really quickly walk through the specific neural network we used for this task and how it (and similar networks) are fit, and why using a pre-trained network is so awesome. Then we'll walk through the results, some model diagnostics, and I'll talk a bit about some of the more interesting issues we've encountered
 
 VGG16 is a neural network that is widely used for image recognition tasks. It's a deep convolutional network, which is a reference to the number of layers; you can see that there are several convolutional layers (2-3) for each pooling layer; these stacks of convolutional and pooling layers are then capped off with several dense layers that integrate various features together into a unified whole. The fully connected (aka dense) layers and the softmax layer form the "model head", which transforms spatial information into (usually) probabilistic class predictions.
 
