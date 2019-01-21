@@ -311,7 +311,7 @@ Use features other than make/model to characterize shoes
 <img src = "problem-definition/star_bar_vibram.png" width = "15%" style = "vertical-align:middle;padding-left:30px;padding-right:30px"/>
 <img src = "problem-definition/star_bar_timberland.png" width = "16%" style = "vertical-align:middle;padding-left:30px"/>
 
-??? 
+???
 
 Given that there is no database of shoe models, we'll be better off defining our class-characteristic based features slightly differently. Tread patterns are a component of class characteristics, and we can describe tread patterns using a set of descriptors. The advantage to this approach is that we can consider a set of shoes with similar tread pattern as a "type" and treat them accordingly. This allows us to get a probability without basing it on a database of makes and models, and without requiring that we sample every shoe that might exist in the local population. It's an abstraction to a level that we can reasonably handle with sampling.
 
