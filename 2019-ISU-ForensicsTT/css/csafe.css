@@ -188,3 +188,7 @@
   align: center;
   max-width: 95%;
 }
+
+.primary table {
+  width: 97% !important;
+}
