@@ -340,7 +340,7 @@ Used to separate shoes by make/model in (small) local samples `r Citep(bb, 'gros
 These nine features are slightly different from those used in gross et al 2013, but many of them overlap. We define bowties, for example, as any roughly quadrilateral shaped entity that has two opposite concave faces; a butterfly also (roughy) meets this definition, so it is included. Lines are defined such that they must be repeated and parallel, and should not be too curved (though this is of course a bit fuzzy). Chevrons are zigzags, but they are allowed to be curved. Stars are features that alternate as concave and convex; so even three-pointed things are stars so long as they're concave in between the points. Polygon is a catch-all class that includes pentagons, hexagons, and octagons (as observed thus far - I haven't noticed any septagons), and was added because there were insufficient pentagons and hexagons individually relative to the other classes.
 
 ---
-class: inverse
+class: inv-center
 # <br/>Image Analysis and Feature Detection
 
 ???
@@ -444,8 +444,12 @@ There are disadvantages too - these models require formal training data, which m
 But, for the moment, "It works" is going to be the more important part than the nicities of simple models with built-in error estimation.
 
 ---
-class:inverse
-# Convolutional Neural Networks
+class:inv-center
+# <br>Convolutional Neural Networks
+
+???
+
+I'm going to really quickly walk through the specific neural network we used for this task and how it (and similar networks) are fit, and why using a pre-trained network is so awesome. Then we'll walk through the results, some model diagnostics, and I'll talk a bit about some of the more interesting issues we've encountered
 
 ---
 class:primary
@@ -455,10 +459,7 @@ class:primary
 
 .small[VGG16 was trained on an ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012')` dataset of 150,000 images with 1000 output classes `r Citep(bb, 'simonyan_very_2014')`]
 
-
 ???
-
-I'm going to really quickly walk through the specific neural network we used for this task and how it (and similar networks) are fit, and why using a pre-trained network is so awesome. Then we'll walk through the results, some model diagnostics, and I'll talk a bit about some of the more interesting issues we've encountered
 
 VGG16 is a neural network that is widely used for image recognition tasks. It's a deep convolutional network, which is a reference to the number of layers; you can see that there are several convolutional layers (2-3) for each pooling layer; these stacks of convolutional and pooling layers are then capped off with several dense layers that integrate various features together into a unified whole. The fully connected (aka dense) layers and the softmax layer form the "model head", which transforms spatial information into (usually) probabilistic class predictions.
 
@@ -674,7 +675,7 @@ We only have 9 classes, each corresponding to a geometric shape; we have less th
 In really simple terms, we're hacking off the higher brain functions and limiting this model to pre-k.
 
 ---
-class: inverse
+class: inv-center
 # Fitting CoNNOR: Convolutional Neural Network for Outsole Recognition
 
 ???
@@ -1023,7 +1024,7 @@ class:primary
 In a similar instance, the model cues in on circles in script S characters as well. These are objectively not circles, though, as they aren't closed, so we do not update the labeling for these images. It's a delicate balance between "the model isn't wrong" and tweaking the labels to match the model output exactly - we're working to find that balance. 
 
 ---
-class:inverse
+class:inv-center
 # <br/><br/>What's Next?
 
 ---
