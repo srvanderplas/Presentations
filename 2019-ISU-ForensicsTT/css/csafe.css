@@ -189,3 +189,10 @@
   align: center;
   max-width: 95%;
 }*/
+
+/* Allow printing w/ speaker notes...https://github.com/gnab/remark/issues/70 */
+@media print {
+ .remark-container.remark-presenter-mode .remark-slide-notes {
+  margin-top:700px;
+ }
+}
