@@ -1012,6 +1012,9 @@ class:primary
         
 <!-- Insert Jason's stuff here -->        
 
+???
+
+I'm currently supervising an undergrad CS/stats major who's working to create an R package that interfaces with the keras-vis python library. He's had some success in the past couple of weeks, but he's learning R at the same time he's doing this. When he's got things working, we should be able to get much better insight into what specific model filters are doing and seeing. We should also be able to identify which filters are most useful, which may allow us to build a scaled-down model base eventually. 
 
 ---
 class: primary
@@ -1023,20 +1026,15 @@ class: primary
 - Add spatial information to further discriminate between shoe models
 
 - Integrate the current model with a database of make/model/tread information to use for automatic identification of shoe soles.
-<!-- --- -->
-<!-- class: primary -->
-<!-- ## Uncertainty estimation -->
-<!-- <br/> -->
-<!-- - Confidence/Prediction/Credible intervals for Neural Network predictions and parameters are not common -->
-<!--     - Conformal prediction -->
-<!--     - [Bayes by Backprop](https://medium.com/neuralspace/bayesian-convolutional-neural-networks-with-bayes-by-backprop-c84dcaaf086e) - Bayesian frameworks for CNNs `r Citep(bb, 'shridhar_bayesian_2018')` -->
 
+???
+
+I'm also hoping to tackle the whole-shoe integration problem. If a shoe is divided up into 256x256 chunks, it's going to be interesting to try to integrate the chunks (and the predictions) back into a single unified whole. That would provide additional spatial information and would also potentially be useful to speed up image searches in a database of shoe make/model information. Sure, it'll never be 100% complete, but most shoes aren't custom. 
 
 ---
 class: primary
 ## Collect local population data
 
-<br/>
 - Build the machine (or rather, have engineers build it...)
 - Collect data from (very) local areas
     - date/time stamp
@@ -1045,6 +1043,10 @@ class: primary
 - Label geometric features on the collected scans
 - Run a 2nd stage of model weight optimization with scanned data
 - Use this optimized model to analyze newly collected data
+
+???
+
+I'm also hoping that with this year's NIJ grants we may get funding to actually build the machine. That will allow us to start testing local data collection, and hopefully to tweak the model weights for the specific images that the machine eventually produces. 
 
 ---
 class: primary
@@ -1059,7 +1061,11 @@ class: primary
         - As shoes wear, geometric features become less pronounced
         - Wear patterns can also be used as a class characteristic
         
+???
 
+Eventually, the goal is to take the whole shoe predictions and label probabilities, use that as a feature vector, and assess the likelihood that the print was made by the suspect compared to the likelihood the print was made by someone in the local population. 
+
+To do this, we may end up having to find some error estimates for CNN output probabilities, and it's possible we'll end up examining wear pattern frequency as well - as tread patterns degrade, wear patterns become more pronounced, which is a nice trade-off. 
 
 ---
 class: inv-center
