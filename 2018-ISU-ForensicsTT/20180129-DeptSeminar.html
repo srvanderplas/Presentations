@@ -589,7 +589,7 @@ class:primary
 
 The real heroes here are the high schoolers, undergraduates, and grad students who spent time labeling images to provide training data for the model. 
 
-
+One issue we ran into is that our criteria changed as we found new edge cases that forced us to make a decision on whether something was part of a specific category. In addition, initially we were using the Matlab toolkit that came with the LabelMe program to process and extract the images from the annotation files. Over the summer, I rewrote that code in R to customize it to our needs. This rewrite changed some of the previous guidelines - instead of labeling multiple features that overlap separately, we now label all of the features within a region with the same polygon. This reflects a change in how modeling occurs as well as a change in the processing code. Unfortunately, we're still cleaning up the annotations that were completed before that point. 
 
 ---
 class:primary
@@ -601,9 +601,7 @@ class:primary
 
 ???
 
-Here's the distribution of classes; there are a ton more quadrilaterals than any other class; lines and text are also fairly common. 
-
-There are relatively few stars, polygons, and bowties.
+This graph reflects the current state of class labels. There are far more quadrilaterals, lines, and text than any other category; quads in particular are more likely to appear alone than in multiple groups. Stars, polygons, and bowties are much less likely to occur; this large discrepancy in class frequency does make modeling more interesting. 
 
 ---
 class:primary
@@ -628,6 +626,17 @@ Statistically:
 
 .move-margin[&lt;br/&gt;&lt;br/&gt;There are downsides to black-box models...]
 
+???
+
+We've set the model up so that it predicts the presence or absence of each of 9 classes. In machine learning, this is "one-hot" encoding, but you may be more familiar with it as coding categories using indicator variables. 
+
+What's important to note is that because any given image can have between 0 and 9 class labels, each of the 9 probabilities produced by the model are between 0 and 1, but there are no other constraints - they do not have to sum to 1. 
+
+We can think of this as a multivariate bernoulli situation, where each label is assigned with probability `\(\pi_i\)`. The `\(pi\)`s are not independent - there is obviously a dependence both due to feature similarity (e.g. polygons and quads have similar features) and input data - easily identifiable classes are more likely to have been labeled. There's also a dependency due to the CNN structure, but I'd be hard pressed to describe it beyond saying that it exists.
+
+So any attempts to think too hard about the covariance structure are (at this point) doomed. There are downsides to using a black-box model; one of those is that statistical formalities are not necessarily observed. Of course, the upside is that the model actually works.
+
+
 ---
 class:primary
 ## Model Training
@@ -640,7 +649,17 @@ class:primary
     
 - Validation and test data (20% each)
 
-- Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library [CA18]
+- Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library [CA18; Aba+15]
+
+???
+
+We scaled all of the labeled images to 256 x 256; aspect ratio was not preserved, though some steps have been taken to ensure that the labeled regions are at least square-ish where possible to prevent extreme distortion. 
+
+60% of the labeled images were used as training data; these images were augmented once by zooming, skewing, cropping, and rotating the images. This step is recommended to prevent over-fitting, and is particularly important given that many features (e.g. bowties in Birkenstocks) are similar across shoes, so an image that is essentially the same may appear in the training, validation, and test sets.
+
+Validation data, which is used within each fitting iteration to calculate the loss function, accounted for 20% of the images, and test data, which is used to evaluate the model at the end of the fitting process, accounted for the remaining 20%. 
+
+We used the keras package in R to fit the model using the tensorflow toolkit. Tensorflow is an extremely efficient implementation that can use either the CPU or GPU to fit the neural network. It was originally developed by Google's Machine Intelligence team. Keras makes it easy to use VGG16, remove the model head, freeze the weights on the base, and add a new head, using only a few lines of code. 
 
 ---
 class:primary
@@ -653,7 +672,9 @@ class:primary
 
 ???
 
-Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Training loss is still decreasing as well. One concern with retraining the head of a CNN is that with relatively little data (e.g. 20 thousand data points instead of 20 million) it is easy to over-fit models; what we see is that this hasn't yet happened for this model. 
+This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). 
+
+Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Training loss is still decreasing as well. One concern with retraining the head of a CNN is that with relatively little data (e.g. 20 thousand data points instead of 150K) it is easy to over-fit models; what we see is that this hasn't yet happened for this model. Overfitting would be evident if the loss in the training set had beun to increase. 
 
 ---
 class:primary
@@ -668,9 +689,14 @@ class:primary
 
 ???
 
-As we discussed previously, this is a multivariate classification problem, in that there are 9 separate output probabilities. I've adapted standard ways of evaluating machine learning model performance to this problem, but it should be noted at this point that the graphs I'm showing here are improvised - ROC curves typically aren't used in classification problems with multiple classes, but once multiple labels are allowed, the problem (somewhat) reduces back to a set of 9 binary classification problems. Here, each ROC curve was generated without considering other features. 
+These plots show ROC curves for each class, computed separately. Because this problem is a multivariate binary classification problem (in statistical parlance), we can adapt most of the diagnostic plots we're used to with a few modifications. In this case, each ROC curve was generated without consideration of other plot features.
 
-The ROC curves shown here are calculated for each geometric feature without considering the other features. Multi-class ROC curves exist, but do not allow for multi-label classification, so instead separate calculations were performed for each class independently. 
+Equal error rates are marked with a dot, and show the point at which it is equally likely for the model to miss a classification or wrongly classify an image. These EERs are used as an optimized cutoff value for diagnostics which require a hard threshold, like a confusion matrix.
+
+---
+class:primary
+## Evaluating the Model
+&lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
 
 ---
 class:primary
@@ -840,47 +866,53 @@ class: primary
 &lt;div class="small"&gt;
 
 &lt;p&gt;[1]&lt;cite&gt;
+M. 
+Abadi, A. Agarwal, P. Barham, et al.
+&lt;em&gt;TensorFlow: Large-Scale Machine Learning on Heterogeneous Systems&lt;/em&gt;.
+Software available from tensorflow.org.
+2015.
+URL: &lt;a href="http://tensorflow.org/"&gt;http://tensorflow.org/&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]&lt;cite&gt;
 I. Benedict, E. Corke, R. Morgan-Smith, et al.
 &amp;ldquo;Geographical variation of shoeprint comparison class correspondences&amp;rdquo;.
 In: &lt;em&gt;Science and Justice&lt;/em&gt; 54.5 (2014), pp. 335&amp;ndash;337.&lt;/cite&gt;&lt;/p&gt;
 
-&lt;p&gt;[2]&lt;cite&gt;
+&lt;p&gt;[3]&lt;cite&gt;
 F. Chollet and J. J. Allaire.
 &lt;em&gt;Deep Learning with R&lt;/em&gt;.
 Manning Publications Company, 2018.&lt;/cite&gt;&lt;/p&gt;
 
-&lt;p&gt;[3]&lt;cite&gt;
+&lt;p&gt;[4]&lt;cite&gt;
 S. Gross, D. Jeppesen and C. Neumann.
 &amp;ldquo;The variability and significance of class characteristics in footwear impressions&amp;rdquo;.
 In: &lt;em&gt;Journal of Forensic Identification&lt;/em&gt; 63.3 (2013), p. 332.&lt;/cite&gt;&lt;/p&gt;
 
-&lt;p&gt;[4]&lt;cite&gt;
+&lt;p&gt;[5]&lt;cite&gt;
 E. D. Hamm.
 &amp;ldquo;The individuality of class characteristics in Converse All-Star footwear&amp;rdquo;.
 In: &lt;em&gt;Journal of Forensic Identification&lt;/em&gt; 39.5 (1989), pp. 277&amp;ndash;292.&lt;/cite&gt;&lt;/p&gt;
 
-&lt;p&gt;[5]&lt;cite&gt;
+&lt;p&gt;[6]&lt;cite&gt;
 A. Krizhevsky, I. Sutskever and G. E. Hinton.
 &amp;ldquo;ImageNet Classification with Deep Convolutional Neural Networks&amp;rdquo;.
 In: 
 &lt;em&gt;Advances in Neural Information Processing Systems 25&lt;/em&gt;.
 Ed. by F. Pereira, C. J. C. Burges, L. Bottou and K. Q. Weinberger.
-Curran Associates, Inc., 2012, pp. 1097&amp;ndash;1105.
-(Visited on 11/27/2018).&lt;/cite&gt;&lt;/p&gt;
+Curran Associates, Inc., 2012, pp. 1097&amp;ndash;1105.&lt;/cite&gt;&lt;/p&gt;
 
-&lt;p&gt;[6]&lt;cite&gt;
+&lt;p&gt;[7]&lt;cite&gt;
 K. Shridhar, F. Laumann, A. L. Maurin, et al.
 &amp;ldquo;Bayesian Convolutional Neural Networks with Variational Inference&amp;rdquo;.
 In: &lt;em&gt;arXiv:1806.05978 [cs, stat]&lt;/em&gt; (Jun. 2018).
-(Visited on 01/17/2019).&lt;/cite&gt;&lt;/p&gt;
+URL: &lt;a href="http://arxiv.org/abs/1806.05978"&gt;http://arxiv.org/abs/1806.05978&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
 
-&lt;p&gt;[7]&lt;cite&gt;
+&lt;p&gt;[8]&lt;cite&gt;
 K. Simonyan and A. Zisserman.
 &amp;ldquo;Very Deep Convolutional Networks for Large-Scale Image Recognition&amp;rdquo;.
 In: &lt;em&gt;arXiv:1409.1556 [cs]&lt;/em&gt; (Sep. 2014).
-(Visited on 01/18/2019).&lt;/cite&gt;&lt;/p&gt;
+URL: &lt;a href="http://arxiv.org/abs/1409.1556"&gt;http://arxiv.org/abs/1409.1556&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
 &lt;/div&gt;
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; 3c943582ac8516b9a9e4c882a05a7faed23bcc27
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
