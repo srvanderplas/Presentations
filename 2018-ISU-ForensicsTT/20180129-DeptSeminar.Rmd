@@ -26,7 +26,7 @@ BibOptions(check.entries = FALSE,
            cite.style = 'alphabetic', 
            style = "html",
            hyperlink = FALSE, 
-           no.print.fields = c("url", "isbn", "note"),
+           no.print.fields = c("isbn", "urldate"),
            dashed = FALSE)
 bb <- ReadBib("./refs.bib", check = FALSE)
 ```
@@ -755,7 +755,17 @@ class:primary
     
 - Validation and test data (20% each)
 
-- Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, 'chollet_deep_2018')`
+- Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper'))`
+
+???
+
+We scaled all of the labeled images to 256 x 256; aspect ratio was not preserved, though some steps have been taken to ensure that the labeled regions are at least square-ish where possible to prevent extreme distortion. 
+
+60% of the labeled images were used as training data; these images were augmented once by zooming, skewing, cropping, and rotating the images. This step is recommended to prevent over-fitting, and is particularly important given that many features (e.g. bowties in Birkenstocks) are similar across shoes, so an image that is essentially the same may appear in the training, validation, and test sets.
+
+Validation data, which is used within each fitting iteration to calculate the loss function, accounted for 20% of the images, and test data, which is used to evaluate the model at the end of the fitting process, accounted for the remaining 20%. 
+
+We used the keras package in R to fit the model using the tensorflow toolkit. Tensorflow is an extremely efficient implementation that can use either the CPU or GPU to fit the neural network. It was originally developed by Google's Machine Intelligence team. Keras makes it easy to use VGG16, remove the model head, freeze the weights on the base, and add a new head, using only a few lines of code. 
 
 ---
 class:primary
@@ -996,4 +1006,3 @@ class: primary
 PrintBibliography(bb)
 ```
 </div>
->>>>>>> 3c943582ac8516b9a9e4c882a05a7faed23bcc27
