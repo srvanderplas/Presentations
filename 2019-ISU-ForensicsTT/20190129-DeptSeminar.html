@@ -570,9 +570,9 @@ class:primary
 ## Label Data
 ![LabelMe](labelme-imgs/LabelMe1.png)
 
-- 23,898 regions labeled with one or more geometric objects
+- 24,122 regions labeled with one or more geometric objects
 
-- 31,496 labels
+- 31,806 labels
 
 
 --
@@ -595,7 +595,7 @@ One issue we ran into is that our criteria changed as we found new edge cases th
 class:primary
 ## Label Data
 &lt;div class="figure"&gt;
-&lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-5-1.png" alt="Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon." width="90%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-5-1.png" alt="Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon." width="90%" /&gt;
 &lt;p class="caption"&gt;Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon.&lt;/p&gt;
 &lt;/div&gt;
 
@@ -666,7 +666,7 @@ class:primary
 ## Model Training
 
 &lt;div class="figure"&gt;
-&lt;img src="20180129-DeptSeminar_files/figure-html/training-accuracy-1.png" alt="Training and Validation accuracy and loss for each epoch of the fitting process. Training and validation accuracy reach 90% around epoch 14. After that point, validation loss remains about the same and training loss decreases slightly, while validation accuracy increases more slowly than training accuracy." width="99%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/training-accuracy-1.png" alt="Training and Validation accuracy and loss for each epoch of the fitting process. Training and validation accuracy reach 90% around epoch 14. After that point, validation loss remains about the same and training loss decreases slightly, while validation accuracy increases more slowly than training accuracy." width="99%" /&gt;
 &lt;p class="caption"&gt;Training and Validation accuracy and loss for each epoch of the fitting process. Training and validation accuracy reach 90% around epoch 14. After that point, validation loss remains about the same and training loss decreases slightly, while validation accuracy increases more slowly than training accuracy.&lt;/p&gt;
 &lt;/div&gt;
 
@@ -679,11 +679,20 @@ Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Tr
 ---
 class:primary
 ## Evaluating the Model
+&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-6-1.png" width="100%" /&gt;
+
+???
+
+We can compute an aggregate ROC curve that treats all classes the same. Under this, we see that performance is generally fairly good, though there is obviously room for improvement. The more interesting evaluation is to look at prediction accuracy for each label...
+
+---
+class:primary
+## Evaluating the Model
 &lt;!-- Add in model overall AUC --&gt;
 &lt;!-- Describe the multi-class version as splitting out model performance by class --&gt; 
 
 &lt;div class="figure"&gt;
-&lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-6-1.png" alt="Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class." width="99%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-7-1.png" alt="Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class." width="99%" /&gt;
 &lt;p class="caption"&gt;Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class.&lt;/p&gt;
 &lt;/div&gt;
 
@@ -696,13 +705,8 @@ Equal error rates are marked with a dot, and show the point at which it is equal
 ---
 class:primary
 ## Evaluating the Model
-&lt;img src="20180129-DeptSeminar_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
-
----
-class:primary
-## Evaluating the Model
 &lt;div class="figure"&gt;
-&lt;img src="20180129-DeptSeminar_files/figure-html/ConfMatrix-1.png" alt="Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes." width="80%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/ConfMatrix-1.png" alt="Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes." width="80%" /&gt;
 &lt;p class="caption"&gt;Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes.&lt;/p&gt;
 &lt;/div&gt;
 
@@ -718,9 +722,9 @@ For multi-label images, only incorrect predictions contribute to off-diagonal pr
 
 ???
 
-Slightly more likely to predict quadrilateral for all labels. Two things are important to note here - first, "reality" and the image labels are different (due to imperfect labeling), and second, what label should be assigned to a specific image is ambiguous. We're working on correcting the mislabeling - some of it is due to the fact that the guidelines for labeling have changed since we started this mid-June. There's a certain amount of ambiguity in the geometric shapes in any case - strictly speaking, any amount of roundness should mean something isn't a quadrilateral, but what is it? Rubber typically doesn't create perfectly sharp corners. 
+This confusion matrix shows, for each label, the probability that the image is classified as that label as well as other possible labels. One modification we made to the standard confusion matrix was to exclude any additional "correct" labels from these calculations: If an image was labeled with a circle and a line, but the model assigned circle and triangle as labels, then in the circle column that image would register as a true positive for circle and a false positive for triangle; line would be excluded from calculations in that column. Similarly, in the line column, triangle would be marked as a false positive, circle would be excluded, and line would be marked as a false negative. 
 
-As with the ROC curves in the previous slide, this image is an adaptation of a confusion matrix, which is usually used to show the performance of a classification algorithm where each item is in only one class. Off-diagonal cells above the diagonal show incorrect classifications, while off-diagonal cells below the diagonal show missed classifications. To modify the confusion matrix for our problem, where an image can be labeled as any number of classes, we have excluded additional class labels when calculating the probability that something is misclassified. So if an image contains both a line and a circle, and the model labels it as containing a circle but not a line, when calculating the probability that a line image is misclassified as a circle, the image will be excluded (since it really should have been classified as a circle). 
+An important point to make at this juncture is that while we're operating as if our labeled data were "ground truth", that isn't an accurate assumption. People make mistakes, labeling is monotonous, and the criteria for certain classes have changed over time. In some cases, the model is correct, and the labels are wrong. We're working on correcting the labeling, but even in a situation where the labeling is done in accordance with the guidelines, some of the criteria can get fuzzy in practice. 
 
 ---
 class:primary
@@ -735,13 +739,18 @@ class:primary
 
 We created a shiny application to see the images and the model's predictions. Blue means that the image had that label, grey means it does not. 
 
-So in the first image, the design is labeled as a quadrilateral (rounded quadrilateral) rather than a circle. We're still debating how to handle these... 
+So in the first image, the design is labeled as a quadrilateral (rounded quadrilateral) rather than a circle. We're still debating how to handle these... they're very ambiguous figures with features of both circles and quadrilaterals. The model is not wrong, but neither is the labeling... or maybe both of them are wrong?
 
 In the second image, both text and quad are labels, but the model also identifies a circle in the text with probability 0.31; that is, the text contains an O. 
 
-We use the shiny application to screen for these problems so that we can correct the labeled training data. We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things. Because we determined the guidelines for labeling the data, labeled the data (or oversaw the labeling), and trained the model ourselves, we have the advantage of knowing the flaws at every point in the process; that means we have the responsibility to fix those flaws where possible. We're not doing inference on the model results at this point (nor planning to use the data we're training the model with during the operational stage) so the data -&gt; model -&gt; fix data loop is less of a validity concern. 
+We use the shiny application to screen for these problems so that we can correct the labeled training data where it does not meet the current guidelines for labeling. When we find an issue that's widespread (e.g. the Adidas logo is often not labeled as containing quads) we examine the shoes matching that description (so some screening occurs outside of what is predicted by the model). 
+
+We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things. Because we determined the guidelines for labeling the data, labeled the data (or oversaw the labeling), and trained the model ourselves, we have the advantage of knowing the flaws at every point in the process; that means we have the responsibility to fix those flaws where possible. 
+
+We're not doing inference on the model results at this point (nor planning to use the data we're training the model with during the operational stage) so the data -&gt; model -&gt; fix data loop is less of a validity concern. 
 
 When the model is sufficiently well-calibrated, we can then work with engineers to build the device, collect some initial data, and tweak the model weights with new data that better represents what we'll actually see from the collection equipment. By that point, hopefully we'll also have narrowed down the geometric classification scheme so that categories that are now somewhat fuzzy are more clearly operationalized.
+
 
 ---
 class:primary
@@ -753,6 +762,12 @@ class:primary
 - Which regions in the image are relevant to the class?
 
 - Which filters are most important for detection of each class?
+
+???
+
+During this process, it's also helpful to see what the model is using to determine which features are present or absent. Black box models are notoriously difficult to debug, but this is a very active area of current research. 
+
+In particular, we'd like to know which regions in the image are relevant to the class, and which filters in the model are important for detecting each class. We've made some progress on the first question, and are actively looking into the second. 
 
 
 
@@ -769,6 +784,10 @@ class:primary
 
 .move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
 
+???
+
+Class activation maps use the gradient with respect to each class label, back propagated to the last convolutional layer to maintain spatial information. Here, we can see that the D shape discussed previously is activating both circle and quad; the round part is activating the circle class and the straight part is activating the quad class; there's also some slight activation of the polygon class, which isn't surprising given that polygons and quads share some features. 
+
 ---
 class:primary
 ## Class Activation Maps
@@ -779,6 +798,11 @@ class:primary
 ]
 
 .move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
+
+???
+
+This is a piece of the Adidas text that is part of the design of many of their shoe treads. The model is obviously cuing into the text, but interestingly, it also detects circles - the text is so round that the inside of any A or D character is a perfect circle. While we wouldn't necessarily go out of our way to label that, because text dominates the human brain, we've created a model that doesn't have that dominance; the circles are just as real as the text to this model, and should be labeled as such.
+
 
 ---
 class:primary
@@ -791,6 +815,9 @@ class:primary
 
 .move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
 
+???
+
+In a similar instance, the model cues in on circles in script S characters as well. These are objectively not circles, though, as they aren't closed, so we do not update the labeling for these images. It's a delicate balance between "the model isn't wrong" and tweaking the labels to match the model output exactly - we're working to find that balance. 
 
 ---
 class:inverse
@@ -809,6 +836,10 @@ class:primary
         
 &lt;!-- Insert Jason's stuff here --&gt;        
 
+???
+
+I'm currently supervising an undergrad CS/stats major who's working to create an R package that interfaces with the keras-vis python library. He's had some success in the past couple of weeks, but he's learning R at the same time he's doing this. When he's got things working, we should be able to get much better insight into what specific model filters are doing and seeing. We should also be able to identify which filters are most useful, which may allow us to build a scaled-down model base eventually. 
+
 ---
 class: primary
 ## Whole-Shoe Predictions
@@ -818,20 +849,16 @@ class: primary
 
 - Add spatial information to further discriminate between shoe models
 
-&lt;!-- --- --&gt;
-&lt;!-- class: primary --&gt;
-&lt;!-- ## Uncertainty estimation --&gt;
-&lt;!-- &lt;br/&gt; --&gt;
-&lt;!-- - Confidence/Prediction/Credible intervals for Neural Network predictions and parameters are not common --&gt;
-&lt;!--     - Conformal prediction --&gt;
-&lt;!--     - [Bayes by Backprop](https://medium.com/neuralspace/bayesian-convolutional-neural-networks-with-bayes-by-backprop-c84dcaaf086e) - Bayesian frameworks for CNNs [Shr+18] --&gt;
+- Integrate the current model with a database of make/model/tread information to use for automatic identification of shoe soles.
 
+???
+
+I'm also hoping to tackle the whole-shoe integration problem. If a shoe is divided up into 256x256 chunks, it's going to be interesting to try to integrate the chunks (and the predictions) back into a single unified whole. That would provide additional spatial information and would also potentially be useful to speed up image searches in a database of shoe make/model information. Sure, it'll never be 100% complete, but most shoes aren't custom. 
 
 ---
 class: primary
 ## Collect local population data
 
-&lt;br/&gt;
 - Build the machine (or rather, have engineers build it...)
 - Collect data from (very) local areas
     - date/time stamp
@@ -840,6 +867,10 @@ class: primary
 - Label geometric features on the collected scans
 - Run a 2nd stage of model weight optimization with scanned data
 - Use this optimized model to analyze newly collected data
+
+???
+
+I'm also hoping that with this year's NIJ grants we may get funding to actually build the machine. That will allow us to start testing local data collection, and hopefully to tweak the model weights for the specific images that the machine eventually produces. 
 
 ---
 class: primary
@@ -854,7 +885,11 @@ class: primary
         - As shoes wear, geometric features become less pronounced
         - Wear patterns can also be used as a class characteristic
         
+???
 
+Eventually, the goal is to take the whole shoe predictions and label probabilities, use that as a feature vector, and assess the likelihood that the print was made by the suspect compared to the likelihood the print was made by someone in the local population. 
+
+To do this, we may end up having to find some error estimates for CNN output probabilities, and it's possible we'll end up examining wear pattern frequency as well - as tread patterns degrade, wear patterns become more pronounced, which is a nice trade-off. 
 
 ---
 class: inv-center
