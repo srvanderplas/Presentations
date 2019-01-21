@@ -790,7 +790,41 @@ data.frame(history$metrics) %>%
 
 ???
 
-Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Training loss is still decreasing as well. One concern with retraining the head of a CNN is that with relatively little data (e.g. 20 thousand data points instead of 20 million) it is easy to over-fit models; what we see is that this hasn't yet happened for this model. 
+This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). 
+
+Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Training loss is still decreasing as well. One concern with retraining the head of a CNN is that with relatively little data (e.g. 20 thousand data points instead of 150K) it is easy to over-fit models; what we see is that this hasn't yet happened for this model. Overfitting would be evident if the loss in the training set had beun to increase. 
+
+---
+class:primary
+## Evaluating the Model
+```{r, out.width = "100%", fig.width = 7, fig.height = 4.375}
+library(pROC)
+pred_df <- as_tibble(preds) %>% gather(key = feature, value = value)
+test_labs_df <- as_tibble(test_labs) %>% gather(key = feature, value = value)
+whole_model_roc <- roc(test_labs_df$value, pred_df$value)
+
+whole_model_roc_df <- data_frame(tpr = whole_model_roc$sensitivities, 
+                                 fpr = 1 - whole_model_roc$specificities,
+                                 thresholds = whole_model_roc$thresholds,
+                                 auc = whole_model_roc$auc[1]) %>%
+    nest(tpr, fpr, thresholds, .key =  "roc_plot") %>%
+    mutate(eer = purrr::map(roc_plot, eer))
+ggplot() + 
+  geom_line(aes(x = fpr, y = tpr), data = unnest(whole_model_roc_df, roc_plot)) + 
+  geom_text(aes(x = 1, y = 0, label = sprintf("AUC: %0.2f", auc)), hjust = 1, vjust = -0.2, data = whole_model_roc_df) +
+  geom_point(aes(x = fpr, y = tpr, color = "Equal Error\nRate"), data = unnest(whole_model_roc_df, eer)) +
+  scale_color_manual("", values = "black") +
+  scale_x_continuous("False Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) +
+  scale_y_continuous("True Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) + 
+  ggtitle("CoNNOR Test Set Performance (All Classes)") + 
+  theme(legend.position = c(0, 1), legend.justification = c(0, 1), legend.title = element_blank(), legend.background = element_rect(fill = "transparent")) + 
+  coord_fixed()
+
+```
+
+???
+
+We can compute an aggregate ROC curve that treats all classes the same. Under this, we see that performance is generally fairly good, though there is obviously room for improvement. The more interesting evaluation is to look at prediction accuracy for each label...
 
 ---
 class:primary
