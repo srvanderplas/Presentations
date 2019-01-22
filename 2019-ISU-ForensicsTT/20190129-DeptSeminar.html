@@ -613,15 +613,15 @@ Multiple classes, multiple labels: "One-hot" encoding
 
 Statistically: 
 
-- Model output: `\((P_1, ..., P_9) \sim Bernoulli(\mathbf{\pi})\)`
+- Model output: `\((P_1, ..., P_9) \in [0,1]\)`
     - Each geometric feature assigned a probability
     - An image can be labeled with multiple features
 
 - Output probabilities are not independent
     - Dependencies due to CNN structure
     - Dependencies due to input data
-    - Dependencies due to geometry -     
-    Polygons vs. Quadrilaterals vs. Lines
+    - Dependencies due to geometric similarity -     
+    Polygons vs. Quadrilaterals
     
 - Covariance structure is ?
 
