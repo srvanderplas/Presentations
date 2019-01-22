@@ -57,7 +57,7 @@ class:primary
 
 3. Identify similar shoes from the comparison population
 
-4. Calculate probability: `$$\frac{\# \text{ similar shoes}}{\text{Size of comparison population}}$$`
+4. Calculate probability: `$$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$`
 
 ???
 
@@ -834,8 +834,8 @@ class:primary
         - Show what specific filters are doing and "seeing"
         
     - What parts of an image are most important in activating a specific class?
-        - Saliency Maps: plot gradients w.r.t. output
-        - Class Activation Maps: plot gradients w.r.t. last conv. layer (maintains spatial information)
+        - Saliency Maps: How does the output category change when the input image changes?
+        - Class Activation Maps: What parts of the image highly activate each class?
         
 &lt;!-- Insert Jason's stuff here --&gt;        
 
@@ -860,7 +860,7 @@ I'm also hoping to tackle the whole-shoe integration problem. If a shoe is divid
 
 ---
 class: primary
-## Collect local population data
+## Local Population Data
 
 - Build the machine (or rather, have engineers build it...)
 - Collect data from (very) local areas
