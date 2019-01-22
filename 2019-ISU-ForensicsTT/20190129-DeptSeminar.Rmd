@@ -160,9 +160,7 @@ class:primary
 
 - Forensics Context
 
-- Class Characteristics in Footwear
-
-- Image Analysis Methods
+- Image Analysis
 
 - Convolutional Neural Networks
 
