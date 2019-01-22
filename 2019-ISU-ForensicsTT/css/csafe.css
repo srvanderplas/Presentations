@@ -110,7 +110,7 @@
   text-shadow: 0 0 0;
 }
 
-.inverse .remark-slide-number {
+.inverse .remark-slide-number, .inv-center .remark-slide-number {
   color: #003a70;
   font-size: 70%;
 }
