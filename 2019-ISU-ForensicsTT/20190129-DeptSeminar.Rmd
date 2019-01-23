@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T, dpi = 3
 
 source("~/models/shoe_nn/Generate_Model_Images.R")
 ```
-```{r load_refs, echo=FALSE, cache=FALSE}
+```{r load_refs, echo=FALSE, cache=FALSE, include = F}
 library(RefManageR)
 BibOptions(check.entries = FALSE, 
            bib.style = "numeric", 
