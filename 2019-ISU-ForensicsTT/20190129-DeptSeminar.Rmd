@@ -23,12 +23,14 @@ source("~/models/shoe_nn/Generate_Model_Images.R")
 library(RefManageR)
 BibOptions(check.entries = FALSE, 
            bib.style = "numeric", 
-           cite.style = 'alphabetic', 
+           cite.style = 'authoryear', 
            style = "html",
            hyperlink = FALSE, 
            no.print.fields = c("isbn", "urldate"),
            dashed = FALSE)
+
 bb <- ReadBib("./refs.bib", check = FALSE)
+Citep(bb, "benedict_geographical_2014", .opts = list(max.names = 1, longnamesfirst = F))
 ```
 
 ```{r}
@@ -44,7 +46,7 @@ unicode_symbols <- c(bowtie = "",
   quad = "\u25A0",
   line = "\u2225"
   )
-unicode_symbols <- data_frame(labels = names(unicode_symbols),
+unicode_symbols <- tibble(labels = names(unicode_symbols),
                               shape = as.character(unicode_symbols))
 classes <- c("bowtie", "chevron", "circle", "line", "polygon", "quad", "star", 
              "text", "triangle")
@@ -104,7 +106,7 @@ fix_annotation <- function(annot) {
   
   get_vars <- new_vars[new_vars %in% names(annot)]
   
-  if (!is.null(annot)) select(annot, !!get_vars) %>% as_tibble() else data_frame()
+  if (!is.null(annot)) select(annot, !!get_vars) %>% as_tibble() else tibble()
 }
 
 authors <- df %>%
@@ -125,7 +127,7 @@ ann_df <- select(annotated_imgs, base_image, name, num_labels, annot_num, labels
   arrange(annot_num) %>%
   mutate(ln = 1:n())
 
-img_df <- data_frame(img = list.files(file.path(new_img_dir, c("test", "train", "validation")), full.names = T)) %>%
+img_df <- tibble(img = list.files(file.path(new_img_dir, c("test", "train", "validation")), full.names = T)) %>%
   mutate(type = str_extract(img, "(test|train|validation)"),
          image = basename(img),
          aug = grepl("^aug", image),
@@ -155,6 +157,16 @@ load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
 load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
 ```
 
+class: primary
+## About Me
+
+- PhD from Iowa State in 2015
+
+- Research Area: Visualization and Statistical Computing
+
+- Research Faculty at CSAFE since March 2018
+
+---
 class:primary
 ## Outline
 
@@ -170,11 +182,11 @@ class:primary
 
 ---
 class:inv-center
-# What is the probability the suspect made this shoeprint from the crime scene?
+# What is the probability the suspect's shoe made this shoeprint from the crime scene?
 
 ---
 class:primary
-### <br/>What is P(someone else made this print)?
+## What is<br/>P(someone made this print)?
 
 1. Define the comparison population
 
@@ -182,7 +194,7 @@ class:primary
 
 3. Identify similar shoes from the comparison population
 
-4. Calculate probability: $$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$
+4. Estimate the probability: $$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$
 
 ???
 
@@ -200,7 +212,7 @@ Unfortunately...
 class:primary,center,middle
 ## Comparison Population
 
-> .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]<br/> - Leslie Hammer, March 2018
+> .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]<br/> - Leslie Hammer, [Hammer Forensics](https://hammerforensics.com/), March 2018
 
 ???
 
@@ -217,7 +229,7 @@ class:primary
     
 - Shoe purchase data vs. frequency of wear
 
-- Local populations may differ wildly .small[`r Citep(bb, "benedict_geographical_2014")`]
+- Local populations may differ wildly .small[`r Citep(bb, "benedict_geographical_2014", .opts = list(max.names = 1))`]
 
 <br/><br/>
 .center[<img src = "problem-definition/snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/>]
@@ -278,6 +290,7 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 Let's assume that this machine exists and that it's producing image-quality data. If that's the case, we then would need to identify relevant features within the scans and assess how frequently those features occur in the sampled data. If we can get enough features from the scans, we should be able to fairly accurately calculate the probability of such a shoe occurring in the local population. 
 
 The next question is then... What's considered a relevant feature?
+
 ---
 class:primary
 ## Relevant Features
@@ -331,7 +344,7 @@ class:primary
 | ---- | ---- | -------- |
 | ![Star examples](class_examples/star_examples.png) | ![text examples](class_examples/text_examples.png) | ![Triangle examples](class_examples/triangle_examples.png) |
 
-Used to separate shoes by make/model in (small) local samples `r Citep(bb, 'gross_variability_2013')`
+Used to separate shoes by make/model in (small) local samples `r Citep(bb, 'gross_variability_2013', .opts = list(max.names = 1, longnamesfirst = F))`
 
 ???
 
@@ -408,7 +421,7 @@ class:primary
 
 #### Convolutional neural networks: 
 - Structure designed to mimic perceptual pathways in the human visual system
-- Ubiquitous in modern image recognition tasks
+- Ubiquitous in modern image recognition tasks `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst = F))`
 
 --
 
@@ -451,11 +464,9 @@ I'm going to really quickly walk through the specific neural network we used for
 
 ---
 class:primary
-## CNN Architecture - VGG16
+## CNN Architecture
 
-<img src="vgg16-structure/vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
-
-.small[VGG16 was trained on an ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012')` dataset of 150,000 images with 1000 output classes `r Citep(bb, 'simonyan_very_2014')`]
+<img src="vgg16-structure/vgg16-shoe-nolabel.png" alt = "Neural Network model structure" width = "95%"/>
 
 ???
 
@@ -465,19 +476,21 @@ The convolutional layers are often treated as magic, so I'm going to do my best 
 
 ---
 class: primary
-## Convolutional Layers
+## Convolutional Layers - <br/>Forward Propagation
 
-For layer $\ell$ and cell $ij$, with weights $\mathbf{w}$ 
+$y^0$ is an image represented as a matrix.
 
-$$x^\ell_{ij} = \sum_{a=0}^{m-1}\sum_{a=0}^{m-1} w_{ab} y_{(i+a)(j+b)}^{\ell-1}$$
+Assume $y^{\ell-1}$ is a matrix representing layer $\ell - 1$ of the neural network.
 
-The  nonlinear activation function $\sigma(\cdot)$ is then applied: $y_{ij}^\ell = \sigma(x_{ij}^\ell)$ 
+$$y^\ell = \sigma(x^\ell)$$
+where $\sigma(\cdot)$ is a nonlinear activation function and $x^\ell$ is computed as: 
 
-Typically, the nonlinear activation function is the Rectified Linear Unit (ReLU), $y_{ijk} = \max\{0, x_{ijk}\}$
+$$x^\ell_{ij} = \sum_{a=0}^{m-1}\sum_{b=0}^{m-1} w_{ab} y_{(i+a)(j+b)}^{\ell-1}$$
 
---
+with $m \times m$ filter/weight matrix $\mathbf{w} \in R^{m \times m}$. 
 
-This is "Forward Propagation"
+Typically, ReLU (Rectified Linear Unit), $\sigma(x) = \max\{0, x\}$ is used as the nonlinear activation function
+
 
 ???
 
@@ -529,13 +542,13 @@ The nonlinear activation function is applied to the feature map values.
 
 ---
 class:primary
-## CNN Architecture - VGG16
+## CNN Architecture
 
-<img src="vgg16-structure/vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
+<img src="vgg16-structure/vgg16-shoe-nolabel.png" alt = "VGG16 model structure" width = "95%"/>
 
 ???
 
-It's possible to reduce the lost dimensionality by padding the image; which is what VGG16 does. This way, image size changes only with max-pooling layers, and the image is halved in width and length with each max pooling layers. What do max pooling layers do?
+It's possible to reduce the lost dimensionality by padding the image; which is what many CNNS do. This way, image size changes only with max-pooling layers, and the image is halved in width and length with each max pooling layers. What do max pooling layers do?
 
 ---
 class: primary
@@ -551,16 +564,19 @@ Simply, they look at a 2x2 area and take the maximum pixel value. Thus, the outp
 
 ---
 class:primary
-## CNN Architecture - VGG16
+## CNN Architecture
 
-<img src="vgg16-structure/vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
+<img src="vgg16-structure/vgg16-shoe-nolabel.png" alt = "VGG16 model structure" width = "95%"/>
 
 ---
 class: primary
 ## Fully Connected Layers
+.move-margin[<br><img src="vgg16-structure/model-head.png" width = "100%"/>]
 ```{r, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
 plot_deepviz2(c(12, 4), r = .005)
 ```
+- Connect every cell of previous layer to every cell of new layer
+- Used for spatial pattern integration
 
 ???
 
@@ -569,15 +585,13 @@ Fully connected layers are also known as dense layers; they take the spatial inf
 ---
 class: primary
 ## Dropout Layers
-
-<!-- ![Dropout layers](vgg16-structure/dropout.png) -->
-
-<!-- .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2] -->
-
+.move-margin[<br><img src="vgg16-structure/model-head.png" width = "100%"/>]
 ```{r, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
 plot_deepviz_sample(c(12, 4), r = .005, dropout_rate = 0.5) + 
   theme(legend.position = c(1, 0), legend.justification = c(1, 0))
 ```
+- Connect ~~every~~ cells of previous layer to ~~every~~ cell of new layer
+- Used for spatial pattern integration with regularization
 
 ???
 
@@ -615,7 +629,7 @@ $$\frac{\partial L}{\partial x^{\ell}_{ij}} = \frac{\partial L}{\partial y_{ij}^
 
 $\displaystyle\frac{\partial L}{\partial y_{ij}^\ell}$ is error at the current layer
 
-The gradiant can be computed with the derivative of the activation function $\sigma(x)$
+The gradient can be computed with the derivative of the activation function $\sigma(x)$
 
 .small[Note: ReLU is not differentiable at 0; common practice is to choose 0, 0.5, or 1 as the derivative's value at 0.]
 
@@ -650,19 +664,16 @@ This process is repeated a lot.
 
 ---
 class: primary
-## VGG16
-
-<br/>
-- Convolutional base of VGG16 for 256 x 256 x 3 images has __14,714,688__ parameters
-
-- Head has __155,090,944__ parameters and outputs __1000__ different class label predictions. 
-
-- Originally fit using __150,000__ images
-
---
+## Pre-trained Neural Networks
 
 - We have __9__ class labels and __<25,000__ labeled images
 
+- Most CNNs require > 100K images during training
+    - Convolutional base of VGG16 for 256 x 256 x 3 images has __14,714,688__ parameters `r Citep(bb, 'simonyan_very_2014', .opts = list(max.names = 1, longnamesfirst = F))`
+    - Head has __155,090,944__ parameters and outputs __1000__ different class label predictions
+    - Trained on an ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst = F))` dataset of 150,000 images
+
+--
 - Solution: Use the pre-trained VGG16 base (all of the convolutional layers) and train a new head
     - Reduces the parameter space to __8,391,177__ parameters
 
@@ -701,10 +712,8 @@ class:primary
 ![LabelMe](labelme-imgs/LabelMe1.png)
 
 - `r prettyNum(length(unique(annotated_imgs$annot_num)), big.mark =  ",")` regions labeled with one or more geometric objects
-
 - `r prettyNum(length(annotated_imgs$image), big.mark =  ",")` labels
-
-- [LabelMe Annotation Tool](https://github.com/CSAILVision/LabelMeAnnotationTool) used as a web interface - creates XML files with labels and coordinates. `r Citep(bb, 'russell_labelme_2008')`
+- [LabelMe Annotation Tool](https://github.com/CSAILVision/LabelMeAnnotationTool) used as a web interface - creates XML files with labels and coordinates. `r Citep(bb, 'russell_labelme_2008', .opts = list(max.names = 1, longnamesfirst = F))`
 
 
 --
@@ -732,13 +741,15 @@ class:primary
 ```{r, fig.width = 6, fig.height = 4, out.width = "90%", dpi = 300, fig.cap = "Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon."}
 annotated_imgs %>%
   mutate(label_type = str_replace(label_type, "multi", "multiple")) %>%
+  mutate(labels = str_to_title(labels)) %>%
+  mutate(labels = factor(labels, levels = c("Quad", "Line", "Text", "Circle", "Chevron", "Triangle", "Polygon", "Star", "Bowtie", "Other"))) %>%
   ggplot() + 
-  geom_bar(aes(x = str_to_title(labels), fill = label_type), color = "black") + 
+  geom_bar(aes(x = labels, fill = label_type), color = "black") + 
   scale_fill_manual("Labels", values = c("single" = "#6ba2b9", "multiple" = "#2e5597")) + 
   coord_flip() + 
   ylab("# Labeled Images") + 
   xlab("") + 
-  theme(legend.position = c(1, 0), legend.justification = c(1, 0), legend.background = element_rect(fill = "transparent")) + 
+  theme(legend.position = c(1, 1), legend.justification = c(1, 1), legend.background = element_rect(fill = "transparent")) + 
   ggtitle("Current Class Distribution (All Labeled Images)")
 ```
 
@@ -753,11 +764,11 @@ Multiple classes, multiple labels: "One-hot" encoding
 
 Statistically: 
 
-- Model output: $(P_1, ..., P_9) \in [0,1]$
+- Model output: $(P_1, ..., P_9) \in [0,1]^9$
     - Each geometric feature assigned a probability
     - An image can be labeled with multiple features
 
-- Output probabilities are not independent
+- Output probabilities $P_i$ are not independent
     - Dependencies due to CNN structure
     - Dependencies due to input data
     - Dependencies due to geometric similarity -     
@@ -792,7 +803,7 @@ class:primary
     
 - Validation and test data (20% each)
 
-- Miranda Tilton fit the model using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper'))`
+- Miranda Tilton fit the model using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper', .opts = list(max.names = 1, longnamesfirst = F)))`
 
 ???
 
@@ -825,6 +836,7 @@ data.frame(history$metrics) %>%
   ggtitle("CoNNOR Training Performance")
 ```
 
+.move-margin[<br/><br/><br/><br/><br/><br/><br/><br/>Binary Cross-entropy Loss: $$-y\log(p)\\\\ - (1 - y)\log(1 - p)$$]
 ???
 
 This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). 
@@ -840,21 +852,21 @@ pred_df <- as_tibble(preds) %>% gather(key = feature, value = value)
 test_labs_df <- as_tibble(test_labs) %>% gather(key = feature, value = value)
 whole_model_roc <- roc(test_labs_df$value, pred_df$value)
 
-whole_model_roc_df <- data_frame(tpr = whole_model_roc$sensitivities, 
-                                 fpr = 1 - whole_model_roc$specificities,
-                                 thresholds = whole_model_roc$thresholds,
-                                 auc = whole_model_roc$auc[1]) %>%
-    nest(tpr, fpr, thresholds, .key =  "roc_plot") %>%
-    mutate(eer = purrr::map(roc_plot, eer))
+whole_model_roc_df <- tibble(tpr = whole_model_roc$sensitivities, 
+                             fpr = 1 - whole_model_roc$specificities,
+                             thresholds = whole_model_roc$thresholds,
+                             auc = whole_model_roc$auc[1]) %>%
+  nest(tpr, fpr, thresholds, .key =  "roc_plot") %>%
+  mutate(eer = purrr::map(roc_plot, eer))
 ggplot() + 
   geom_line(aes(x = fpr, y = tpr), data = unnest(whole_model_roc_df, roc_plot)) + 
-  geom_text(aes(x = 1, y = 0, label = sprintf("AUC: %0.2f", auc)), hjust = 1, vjust = -0.2, data = whole_model_roc_df) +
-  geom_point(aes(x = fpr, y = tpr, color = "Equal Error\nRate"), data = unnest(whole_model_roc_df, eer)) +
+  geom_text(aes(x = 1, y = .15, label = sprintf("AUC: %0.2f", auc)), hjust = 1, vjust = -0.2, data = whole_model_roc_df) +
+  geom_point(aes(x = fpr, y = tpr, color = "Equal Error Rate"), data = unnest(whole_model_roc_df, eer)) +
   scale_color_manual("", values = "black") +
   scale_x_continuous("False Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) +
   scale_y_continuous("True Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) + 
   ggtitle("CoNNOR Test Set Performance (All Classes)") + 
-  theme(legend.position = c(0, 1), legend.justification = c(0, 1), legend.title = element_blank(), legend.background = element_rect(fill = "transparent")) + 
+  theme(legend.position = c(1, 0), legend.justification = c(1, 0), legend.title = element_blank(), legend.background = element_rect(fill = "transparent")) + 
   coord_fixed()
 
 ```
@@ -905,7 +917,7 @@ get_confusion_matrix(preds, test_labs, str_to_title(classes), threshold = thresh
 <br/>
 For multi-label images, only incorrect predictions contribute to off-diagonal probabilities
 
-$P > EER_i$ used as the cutoff
+$EER_i$ used as the cutoff
 <br/>
 
 ]
@@ -920,6 +932,8 @@ An important point to make at this juncture is that while we're operating as if 
 class:primary
 ## Definitions matter
 ![Classes get confusing](labelme-imgs/dc_circle_quad_confusion.png)
+
+.move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
 
 --
 
@@ -944,10 +958,9 @@ When the model is sufficiently well-calibrated, we can then work with engineers 
 
 ---
 class:primary
-## Debugging the model
+## Interpreting the model
 
-- Active area of research: How to debug, interpret, and understand what a CNN is actually doing    
-.small[https://distill.pub/2018/building-blocks/]
+- Active area of research: How to debug, interpret, and understand what a CNN is actually doing `r Citep(bb, 'olah_building_2018', .opts = list(max.names = 1, longnamesfirst = F))`
 
 - Which regions in the image are relevant to the class?
 
@@ -1028,8 +1041,38 @@ class:inv-center
 # <br/><br/>What's Next?
 
 ---
+class: primary
+## What's Next?
+
+- Make CoNNER more interpretable
+    - keras-vis Python library -> R package (Activation Maximization maps, Saliency maps, Class Activation maps)
+    - Investigate Bayesian CNNs - error estimates
+    
+- Whole-Shoe predictions - incorporate spatial information
+
+- NIJ Grant to build the machine and collect local population data
+    - tweak weights with collected data
+    - use spatial locations + probabilities as a feature vector
+    - quantify local population footwear
+
+
+---
+class: inv-center
+# Questions?
+
+---
+class: primary
+## References
+<div class="small">
+
+```{r, 'refs', results='asis', echo=FALSE, cache = F}
+PrintBibliography(bb)
+```
+</div>
+
+---
 class:primary
-## Debugging the model
+## Interpreting the model
 - Port the `keras-vis` Python library to R (In progress!)
     - Activation Maximization maps: generate a new image to maximize filter output activations
         - Show what specific filters are doing and "seeing"
@@ -1078,13 +1121,13 @@ I'm also hoping that with this year's NIJ grants we may get funding to actually 
 
 ---
 class: primary
-## Local population data
+## Local Population Data
 
 - Use spatial locations + label probabilities as a feature vector
 
 - Database of shoes in local population can be used to assess likelihood of a specific feature set occurring at random
     - Helpful to have error estimates for CNN output probabilities 
-        - Bayesian CNNs `r Citep(bb, 'shridhar_bayesian_2018')`
+        - Bayesian CNNs 
     - Useful to know wear pattern frequency
         - As shoes wear, geometric features become less pronounced
         - Wear patterns can also be used as a class characteristic
@@ -1094,17 +1137,3 @@ class: primary
 Eventually, the goal is to take the whole shoe predictions and label probabilities, use that as a feature vector, and assess the likelihood that the print was made by the suspect compared to the likelihood the print was made by someone in the local population. 
 
 To do this, we may end up having to find some error estimates for CNN output probabilities, and it's possible we'll end up examining wear pattern frequency as well - as tread patterns degrade, wear patterns become more pronounced, which is a nice trade-off. 
-
----
-class: inv-center
-# Questions?
-
----
-class: primary
-## References
-<div class="small">
-
-```{r, 'refs', results='asis', echo=FALSE, cache = F}
-PrintBibliography(bb)
-```
-</div>
