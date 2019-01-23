@@ -601,7 +601,7 @@ $$\left(\frac{\partial L}{\partial w_{ab}}\right) = \sum_{i = 0}^{N-m} \sum_{j=0
 
 ???
 
-We've talked about how weights are used to move from image to predictions; of course, just as with any model fitting process, there's a feedback mechanism where the weights are updated to minimize a loss function. In NNs, this is called backward propagation.
+We've talked about how weights are used to move from image to predictions; of course, just as with any model fitting process, there's a feedback mechanism where the weights are updated to minimize a loss function. In NNs, this is called backward propagation and is very similar to gauss-newton optimization. 
 
 ---
 class: primary
@@ -616,6 +616,8 @@ $$\frac{\partial L}{\partial x^{\ell}_{ij}} = \frac{\partial L}{\partial y_{ij}^
 $\displaystyle\frac{\partial L}{\partial y_{ij}^\ell}$ is error at the current layer
 
 The gradiant can be computed with the derivative of the activation function $\sigma(x)$
+
+.small[Note: ReLU is not differentiable at 0; common practice is to choose 0, 0.5, or 1 as the derivative's value at 0.]
 
 .footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
 
