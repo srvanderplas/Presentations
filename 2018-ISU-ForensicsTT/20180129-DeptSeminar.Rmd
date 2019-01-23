@@ -17,7 +17,7 @@ library(ggplot2)
 
 knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T, dpi = 300, dev = 'png')
 
-source("/models/shoe_nn/Generate_Model_Images.R")
+source("~/models/shoe_nn/Generate_Model_Images.R")
 ```
 ```{r load_refs, echo=FALSE, cache=FALSE}
 library(RefManageR)
@@ -53,7 +53,7 @@ classes <- c("bowtie", "chevron", "circle", "line", "polygon", "quad", "star",
 class:primary
 ## Outline
 
-- Defining the Problem
+- Forensics Context
 
 - Class Characteristics in Footwear
 
@@ -67,7 +67,7 @@ class:primary
 
 ---
 class:inv-center
-# What is the probability I made this shoeprint?
+# What is the probability the suspect made this shoeprint from the crime scene?
 
 ---
 class:primary
@@ -83,7 +83,15 @@ class:primary
 
 ???
 
-Comparison population definition could include various size geographic regions, temporal components, interaction with local events - shoes worn by people attending a football game likely differ from shoes worn by people at a formal event. Local areas range from state-level to "People outside Starbucks in CampusTown at 8am on a Monday morning"
+The easiest way to determine the probability that the suspect made the print is to define the full space of people who could have made the print. Unfortunately, the simple probability solution doesn't necessarily translate into a simple solution for the real world. 
+
+Comparison population, for instance, could be anything from "People in the seminar room right now" to "People who were in Ames, Iowa within the last week". It would also potentially involve defining other characteristics - people out at 8pm, people who attended the Iowa State football game on a certain date, etc. All of these characteristics potentially affect the types of shoes that people might be wearing.
+
+Once the comparison population is defined, then we have to determine what types of shoes they generally wear, and whether any of those shoes are consistent with the crime scene print. As the print at the crime scene might be degraded, this could be a specific make/model/size of shoe (if the print is really good) or it could be one of several models of shoes (if it can be narrowed down that far). 
+
+When we have data on the comparison population's footwear preferences, and have identified shoes that are both worn by the comparison population and consistent with the crime scene print, we can calculate the probability that a random person in the local population made the print.
+
+Unfortunately...
 
 ---
 class:primary,center,middle
@@ -91,6 +99,11 @@ class:primary,center,middle
 
 > .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]<br/> - Leslie Hammer, March 2018
 
+???
+
+It's generally not that easy. I talked with Leslie Hammer, who is a well-known footwear examiner in the forensics community, shortly after I first started working at CSAFE, and was somewhat shocked to hear her say that the community considers the problem of local population characterization impossible. It's obviously a coincidence, then, that I started laying the groundwork for this project fairly quickly afterwards. /s
+
+The community has legitimate reasons for thinking this is a difficult problem to solve, though.
 
 ---
 class:primary
@@ -109,11 +122,13 @@ class:primary
 
 ???
 
-There are too many manufacturers to keep track of, new models are released all the time, custom shoe markets, and knockoff shoes... hard to get a database with everything.
+There are too many manufacturers to keep track of, new models are released all the time, custom shoe markets, and knockoff shoes... hard to get a database with everything. There are databases of tire treads, for instance, but shoes are much more difficult to track -- they don't have to be certified before they're put on the market. 
 
-In addition, many of us have shoes that we've purchased but almost never wear... so going off of purchase data (even if that had the geographic resolution needed) is not all that representative
+In addition, many of us have shoes that we've purchased but almost never wear... so using purchase data (even if that had the geographic resolution needed) is not quite accurate either.
 
-Finally, geographic resolution is nearly impossible. If this pair of shoes was used to commit a crime in Florida, it would be fairly damning to have the same type of shoes in your closet - they aren't "Florida" shoes. If you have this pair of shoes in your closet in Iowa right now, the weight of that evidence is a lot lower, because they're probably fairly common shoes to have. 
+Finally, geographic resolution is nearly impossible. If this pair of boots was used to commit a crime in Florida during the summer, in addition to questioning the suspect's sanity, it would be relatively obvious that the shoes are not commonly worn in the local population at the time the crime was committed, and their presence in a suspect's closet would speak for itself to a degree. If the crime was committed in Iowa around this time of year, it would be much less damning to have a pair of similar boots in your closet - they're commonly worn and appropriate for the season.
+
+So with that said, how can we solve the problem of getting data from the local population?
 
 ---
 class:primary
@@ -131,6 +146,12 @@ How to collect data from the local population?
 
 ### .center[This is an engineering problem]
 
+???
+
+We could build a gadget that would fit into a pedestrian pathway and would scan the shoes of passers-by. After some data collection in one or more very local areas, we might be able to generalize our spatial sample to the population of interest.
+
+Unfortunately, I didn't take a whole lot of classes in gadget design while I was doing my PhD. This is a problem for engineers, and a couple of very good ones have assured me that this is doable if we can get the budget (hopefully resubmitting that proposal in April). Statisticians have the luxury of making assumptions about the real world, so ...
+
 ---
 class:primary
 ## Comparison Population<br>Shoes
@@ -143,12 +164,17 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 --
 
-2. Assess the frequency of similar shoes in the local-area database
+2. Assess the frequency of similar shoes in the sampled data
 
 --
 
 ### .center[These are statistics and machine learning problems]
 
+???
+
+Let's assume that this machine exists and that it's producing image-quality data. If that's the case, we then would need to identify relevant features within the scans and assess how frequently those features occur in the sampled data. If we can get enough features from the scans, we should be able to fairly accurately calculate the probability of such a shoe occurring in the local population. 
+
+The next question is then... What's considered a relevant feature?
 ---
 class:primary
 ## Relevant Features
@@ -159,6 +185,12 @@ Class Characteristics
 - Cannot be used to identify an individual match
 
 - Used for exclusion
+
+???
+
+Typically, class characteristics refer to broad descriptors - make, model, tread pattern (not all shoes of the same model have the same tread, and not all shoes wiht the same tread have the same model), size, and shoe type (dress, heel, athletic, etc.)
+
+More broadly, class characteristics are things shared by shoes which are not individualizing characteristics - e.g. characteristics that arise due to the design or manufacture of the shoe. Class characteristics contrast with randomly acquired characteristics, which occur due to random damage either during the manufacturing process or as the shoe is worn.
 
 ---
 class:primary
@@ -173,6 +205,12 @@ Use features other than make/model to characterize shoes
 <img src = "problem-definition/star_bar_drmartin.png" width = "16%" style = "vertical-align:middle;padding-left:60px;padding-right:30px"/>
 <img src = "problem-definition/star_bar_vibram.png" width = "15%" style = "vertical-align:middle;padding-left:30px;padding-right:30px"/>
 <img src = "problem-definition/star_bar_timberland.png" width = "16%" style = "vertical-align:middle;padding-left:30px"/>
+
+??? 
+
+Given that there is no database of shoe models, we'll be better off defining our class-characteristic based features slightly differently. Tread patterns are a component of class characteristics, and we can describe tread patterns using a set of descriptors. The advantage to this approach is that we can consider a set of shoes with similar tread pattern as a "type" and treat them accordingly. This allows us to get a probability without basing it on a database of makes and models, and without requiring that we sample every shoe that might exist in the local population. It's an abstraction to a level that we can reasonably handle with sampling.
+
+After some deliberation and attempts to manually identify features, we settled on 9 geometric features. 
 
 ---
 class:primary
@@ -191,9 +229,18 @@ class:primary
 | ![Star examples](class_examples/star_examples.png) | ![text examples](class_examples/text_examples.png) | ![Triangle examples](class_examples/triangle_examples.png) |
 
 Used to separate shoes by make/model in (small) local samples `r Citep(bb, 'gross_variability_2013')`
+
+???
+
+These nine features are slightly different from those used in gross et al 2013, but many of them overlap. We define bowties, for example, as any roughly quadrilateral shaped entity that has two opposite concave faces; a butterfly also (roughy) meets this definition, so it is included. Lines are defined such that they must be repeated and parallel, and should not be too curved (though this is of course a bit fuzzy). Chevrons are zigzags, but they are allowed to be curved. Stars are features that alternate as concave and convex; so even three-pointed things are stars so long as they're concave in between the points. Polygon is a catch-all class that includes pentagons, hexagons, and octagons (as observed thus far - I haven't noticed any septagons), and was added because there were insufficient pentagons and hexagons individually relative to the other classes.
+
 ---
 class: inverse
 # <br/>Image Analysis and Feature Detection
+
+???
+
+Now that we've decided which features to use, we have to figure out how to identify them using image analysis. Images are, after all, matrices of data; in color, they are N x M x 3 matrices, where N x M is the image dimension in pixels. 
 
 ---
 class: primary
@@ -206,6 +253,16 @@ class: primary
 - Fast processing of new images
 
 - Identify features that are explainable to practitioners
+
+???
+
+The detection method should be able to handle different lighting conditions, rotation and image quality - if we plan to use this on the data from the scanner that will eventually exist, we need to make sure the method will handle degraded image quality. Even working with images of shoe soles found online, there's a huge variation in image quality and lighting.
+
+In addition, we need for new images to be processed quickly. It's tolerable if the algorithm takes a while to train, but the production model needs to be able to process new data efficiently. 
+
+Finally, we need to be able to explain what this algorithm is doing to practitioners, which means that the features that are identified should be explainable and fairly consistent with how humans would label things.
+
+I started this project with the intention to use various computer vision algorithms to detect very basic image features, then potentially try to reconstruct those into higher-level geometric features.
 
 ---
 class:primary
@@ -238,9 +295,9 @@ Cons
 
 ???
 
-There are some computer vision methods that detect some of the geometric features we've identified. Edge and corner detection are used in image matching, blob detection is used everywhere from biology (identifying cells, nuclei, tumors) to astrophysics (galaxies and stars), and ridge detection is used to identify topographic features in images. More complicated features, such as lines, circles, and ellipses can be detected with Hough transforms, which are a template matching algorithm that's very computationally intensive. 
+There are various detectors used for edges, corners, blobs, and ridges; these are commonly applied to biological images, telescope images, and more. When applied to relatively noisy shoe data, though, they don't always work as expected. The advantage is that there isn't any "training" data necessary in order to use the algorithms at all; the algorithms themselves are also relatively simple. Unfortunately, the tuning parameters that do exist break when lighting changes occur. The algorithms also tend to take a while to execute, and the features they detect don't quite match up with human labeling - corner detectors, for instance, pick out 3x3 pixel level corners in some cases; scaling that up to a macro level is difficult, particularly when corners may be rounded slightly. There's also less guarantee that the same features will be identified when lighting changes slightly, even for the exact same shoe.
 
-I spent some time trying to assemble some of these detectors to work with shoe outsole images and found that they were not robust - parameter settings that worked well for one image failed miserably when used on the same model of shoe with a slightly different color sole, the algorithms were slow, and the features they picked out were often not what I would call an edge or a corner - the algorithm was working at a much finer level than I was. As all of our work has to be explained to practitioners eventually, that made these methods sub-optimal. Google, Facebook, and many others have used convolutional neural networks to solve the image recognition problem in the past 10 years, so I moved on to the big guns. 
+Adding the complications with any single low-level algorithm to the fun of reassembling those features into macro-level options, and I decided to consider other alternatives. Google, Facebook, and Microsoft have all been having a lot of fun with neural networks as feature detectors for images, so ... why not?
 
 ---
 class:primary
@@ -272,6 +329,14 @@ Cons
 - Opaque - parameters are not interpretable
 
 ]
+
+???
+
+There are definite advantages to neural networks - they actually work, have been proven to solve much harder problems than this, and provide human-interpretable features because they're built to mimic how the visual cortex works. There are pre-trained networks available, which dramatically reduces the amount of training necessary to get a functional production model. In addition, these were designed to work at google scale, so they can more than meet our computational needs. 
+
+There are disadvantages too - these models require formal training data, which means that someone has to sit stare at the bottom of thousands of shoes, labeling tread features. They're computationally intensive to train, though not all that bad - between 15 minutes and 3 hours during our initial tests on other datasets. Then there's the big problem  - they have so many parameters that it's hard to interpret them, and they're also not designed for actual inference - getting error estimates out of them is difficult.
+
+But, for the moment, "It works" is going to be the more important part than the nicities of simple models with built-in error estimation.
 
 ---
 class:inverse
@@ -364,6 +429,10 @@ load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
 load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
 ```
 
+??? 
+
+I'm going to really quickly walk through the specific neural network we used for this task and how it (and similar networks) are fit, and why using a pre-trained network is so awesome. Then we'll walk through the results, some model diagnostics, and I'll talk a bit about what we'll be working on for the rest of this semester.
+
 <!-- Add in information about what the layers are doing: https://www.overleaf.com/project/5bef1722f138c36ed9d572d4 -->
 ---
 class:primary
@@ -372,6 +441,12 @@ class:primary
 <img src="vgg16-structure/vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
 
 .small[VGG16 was trained on an ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012')` dataset of 150,000 images with 1000 output classes `r Citep(bb, 'simonyan_very_2014')`]
+
+???
+
+VGG16 is a neural network that is widely used for image recognition tasks. It's a deep convolutional network, which is a reference to the number of layers; you can see that there are several convolutional layers (2-3) for each pooling layer; these stacks of convolutional and pooling layers are then capped off with several dense layers that integrate various features together into a unified whole. The fully connected (aka dense) layers and the softmax layer form the "model head", which transforms spatial information into (usually) probabilistic class predictions.
+
+The convolutional layers are often treated as magic, so I'm going to do my best to ruin that illusion for you.
 
 ---
 class: primary
@@ -383,9 +458,15 @@ $$x^\ell_{ij} = \sum_{a=0}^{m-1}\sum_{a=0}^{m-1} w_{ab} y_{(i+a)(j+b)}^{\ell-1}$
 
 The  nonlinear activation function $\sigma(\cdot)$ is then applied: $y_{ij}^\ell = \sigma(x_{ij}^\ell)$ 
 
+Typically, the nonlinear activation function is the Rectified Linear Unit (ReLU), $y_{ijk} = \max\{0, x_{ijk}\}$
+
 --
 
 This is "Forward Propagation"
+
+???
+
+Simply, a convolutional layer is a combination of a spatial filter of a certain size applied to every possible spatial area on a grid; these filters are composed of weights, and the sum over these weights produces the cell-wise values. Then a nonlinear transformation is applied to the sum. In pictures...
 
 ---
 class: primary
@@ -394,6 +475,11 @@ class: primary
 ![Input image and filter](vgg16-structure/filter.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+???
+
+Suppose we have an input matrix and a spatial filter. We'd start by applying that filter to each possible 3x3 portion of the input, which produces a 3x3 output matrix. 
+
 ---
 class: primary
 ## Convolutional Layers
@@ -401,6 +487,10 @@ class: primary
 ![Input image and filter](vgg16-structure/filter1.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+???
+
+So first, we'd add up the input values, multiplied by the filter values - this corresponds to $x_{ij}$ in the numeric formulation shown previously.
 
 ---
 class: primary
@@ -416,11 +506,21 @@ class: primary
 The activation function is applied to the feature map values
 ]
 
+???
+
+Then, we'd move on to the next cell and fill in that value; repeating this process for the rest of the valid cells in the input matrix. VGG16 uses a 3x3 receptive field (filter size).
+
+The nonlinear activation function is applied to the feature map values. 
+
 ---
 class:primary
 ## CNN Architecture - VGG16
 
 <img src="vgg16-structure/vgg16-shoe.png" alt = "VGG16 model structure" width = "95%"/>
+
+???
+
+It's possible to reduce the lost dimensionality by padding the image; which is what VGG16 does. This way, image size changes only with max-pooling layers, and the image is halved in width and length with each max pooling layers. What do max pooling layers do?
 
 ---
 class: primary
@@ -430,6 +530,10 @@ class: primary
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
+???
+
+Simply, they look at a 2x2 area and take the maximum pixel value. Thus, the output region is exactly half of the input region. 
+
 ---
 class:primary
 ## CNN Architecture - VGG16
@@ -438,9 +542,13 @@ class:primary
 
 ---
 class: primary
-## Densely Connected Layers
+## Fully Connected Layers
 
 .img75[![Dense layers](vgg16-structure/densely_connected.png)]
+
+???
+
+Fully connected layers are also known as dense layers; they take the spatial information and look for patterns. Numerically, they are used to reduce the dimensionality, and often have "dropout", which reduces the number of parameters by pruning weak connections.
 
 ---
 class: primary
@@ -449,6 +557,10 @@ class: primary
 ![Dropout layers](vgg16-structure/dropout.png)
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+???
+
+Here's a representation of a layer that's fully connected, and the same layer that has a 50% dropout rate.
 
 
 ---
@@ -465,6 +577,11 @@ class: primary
 $$\left(\frac{\partial L}{\partial w_{ab}}\right) = \sum_{i = 0}^{N-m} \sum_{j=0}^{N-m} \frac{\partial L}{\partial x^{\ell}_{ij}} \frac{\partial x^\ell_{ij}}{\partial w_{ab}} = \sum_{i = 0}^{N-m} \sum_{j=0}^{N-m} \frac{\partial L}{\partial x^{\ell}_{ij}} y^{\ell-1}_{(i+a)(j+b)}$$
 
 .footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
+
+???
+
+We've talked about how weights are used to move from image to predictions; of course, just as with any model fitting process, there's a feedback mechanism where the weights are updated to minimize a loss function. In NNs, this is called backward propagation.
+
 ---
 class: primary
 ## Backward Propagation
@@ -474,11 +591,17 @@ $\displaystyle \frac{\partial L}{\partial x^{\ell}_{ij}}$ is the gradient compon
 $$\frac{\partial L}{\partial x^{\ell}_{ij}} = \frac{\partial L}{\partial y_{ij}^\ell}\frac{\partial y_{ij}^\ell}{\partial x_{ij}^\ell} = \frac{\partial L}{\partial y_{ij}^\ell} \frac{\partial }{\partial x_{ij}^\ell}\left(\sigma(x_{ij}^\ell)\right) = 
  \frac{\partial L}{\partial y_{ij}^\ell} \sigma'(x_{ij}^\ell)$$
 
+
 $\displaystyle\frac{\partial L}{\partial y_{ij}^\ell}$ is error at the current layer
 
 The gradiant can be computed with the derivative of the activation function $\sigma(x)$
 
 .footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
+
+???
+
+Very simply, using chain rule, the gradient used to update the weights can be computed using the derivative of the activation function. 
+
 ---
 class: primary
 ## Backward Propagation
@@ -496,6 +619,12 @@ $$\frac{\partial L}{\partial y_{ij}^{\ell -1}} = \sum_{a=0}^{m-1} \sum_{b=0}^{m-
 
 .footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
 
+???
+
+Then, with a bit more algebra, we can move the errors from the current layer to a previous layer, and use that to update weights there.
+
+This process is repeated a lot.
+
 ---
 class: primary
 ## VGG16
@@ -503,7 +632,9 @@ class: primary
 <br/>
 - Convolutional base of VGG16 for 256 x 256 x 3 images has __14,714,688__ parameters
 
-- Head has __155,090,944__ parameters and outputs __1000__ different class label predictions, fit using __150,000__ images on 
+- Head has __155,090,944__ parameters and outputs __1000__ different class label predictions. 
+
+- Originally fit using __150,000__ images
 
 --
 
@@ -514,18 +645,30 @@ class: primary
 
 ???
 
-Equivalent of putting a new "brain" on a set of "eyes" that's pre-trained
+With all of the backpropagation, you can about imagine how many parameters VGG16 has. If you can't, for an input image size of 256x256 with full color (3 channels), there are more than 14.5 million parameters just in the convolutional base. In the head, with multiple fully connected layers, there are just over 155 million parameters; the default is to predict on 1000 different class labels. To find initial values for these parameters, they used 150,000 different images.
+
+We only have 9 classes, each corresponding to a geometric shape; we have less than 25K images. We can't train the full thing; instead, we'll use the base of VGG16 and just optimize a new head consisting of a fully connected layer and a softmax activation layer. A very basic model head. 
+
+In really simple terms, we're hacking off the higher brain functions and limiting this model to pre-k.
 
 ---
 class: inverse
 # Fitting CoNNOR: Convolutional Neural Network for Outsole Recognition
+
+???
+
+Now that you have an idea of what's happening inside the computer, we're going to focus on the more human side of the equation.
 
 ---
 class:primary
 ## Acquire Data
 <img alt="Zappos Screenshot showing sole images" src="labelme-imgs/zappos.png" width="90%" style="margin: 0 5%"/>
 
-.move-margin[<br/><br/>`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since June 2018]
+.move-margin[<br/><br/>`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since April 2018]
+
+???
+
+To start with, where'd the data come from? I built a scraper to pull images from Zappos; the images are relatively high resolution (usually 1920x1400). It's been running since late April, and we have about 50K images at this point.
 
 ---
 class:primary
@@ -547,6 +690,10 @@ class:primary
 - Charlotte Roiger
 - and others
 ]]
+
+???
+
+
 
 ---
 class:primary
