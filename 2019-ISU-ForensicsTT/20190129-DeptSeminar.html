@@ -268,15 +268,11 @@ class:primary
     - line, circle, ellipse detection
     - provide location and orientation
 
---
-
 .pull-left[
 Pros
 - No training data necessary
 - Relatively simple algorithm
 ]
-
---
 
 .pull-right[
 Cons
@@ -299,8 +295,6 @@ class:primary
 - Structure designed to mimic perceptual pathways in the human visual system
 - Ubiquitous in modern image recognition tasks (Krizhevsky, et al., 2012)
 
---
-
 .pull-left[
 
 Pros
@@ -310,8 +304,6 @@ Pros
 - Very fast (after training)
 
 ]
-
---
 
 .pull-right[
 
@@ -461,7 +453,7 @@ class: primary
 ## Dropout Layers
 .move-margin[&lt;br&gt;&lt;img src="vgg16-structure/model-head.png" width = "100%"/&gt;]
 &lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-6-1.png" width="75%" style="display: block; margin: auto;" /&gt;
-- Connect ~~every~~ cells of previous layer to ~~every~~ cell of new layer
+- Connect ~~every~~ cells of previous layer to ~~every~~ cells of new layer
 - Used for spatial pattern integration with regularization
 
 ???
@@ -546,7 +538,7 @@ class: primary
 
 --
 - Solution: Use the pre-trained VGG16 base (all of the convolutional layers) and train a new head
-    - Reduces the parameter space to __8,391,177__ parameters
+    - __8,391,177__ parameters
 
 ???
 
@@ -774,7 +766,7 @@ When the model is sufficiently well-calibrated, we can then work with engineers 
 class:primary
 ## Interpreting the model
 
-- Active area of research: How to debug, interpret, and understand what a CNN is actually doing 
+- Active area of research: How to debug, interpret, and understand what a CNN is actually doing (Olah, et al., 2018)
 
 - Which regions in the image are relevant to the class?
 
@@ -884,6 +876,15 @@ Ed. by F. Pereira, C. J. C. Burges, L. Bottou and K. Q. Weinberger.
 Curran Associates, Inc., 2012, pp. 1097&amp;ndash;1105.&lt;/cite&gt;&lt;/p&gt;
 
 &lt;p&gt;[4]&lt;cite&gt;
+C. Olah, A. Satyanarayan, I. Johnson, et al.
+&amp;ldquo;The Building Blocks of Interpretability&amp;rdquo;.
+En.
+In: &lt;em&gt;Distill&lt;/em&gt; 3.3 (Mar. 2018). 00079, p. e10.
+ISSN: 2476-0757.
+DOI: &lt;a href="https://doi.org/10.23915/distill.00010"&gt;10.23915/distill.00010&lt;/a&gt;.
+URL: &lt;a href="https://distill.pub/2018/building-blocks"&gt;https://distill.pub/2018/building-blocks&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[5]&lt;cite&gt;
 B. C. Russell, A. Torralba, K. P. Murphy, et al.
 &amp;ldquo;LabelMe: A Database and Web-Based Tool for Image Annotation&amp;rdquo;.
 En.
@@ -892,7 +893,7 @@ ISSN: 0920-5691, 1573-1405.
 DOI: &lt;a href="https://doi.org/10.1007/s11263-007-0090-8"&gt;10.1007/s11263-007-0090-8&lt;/a&gt;.
 URL: &lt;a href="http://link.springer.com/10.1007/s11263-007-0090-8"&gt;http://link.springer.com/10.1007/s11263-007-0090-8&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
 
-&lt;p&gt;[5]&lt;cite&gt;
+&lt;p&gt;[6]&lt;cite&gt;
 K. Simonyan and A. Zisserman.
 &amp;ldquo;Very Deep Convolutional Networks for Large-Scale Image Recognition&amp;rdquo;.
 En.

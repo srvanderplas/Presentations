@@ -392,15 +392,11 @@ class:primary
     - line, circle, ellipse detection
     - provide location and orientation
 
---
-
 .pull-left[
 Pros
 - No training data necessary
 - Relatively simple algorithm
 ]
-
---
 
 .pull-right[
 Cons
@@ -423,8 +419,6 @@ class:primary
 - Structure designed to mimic perceptual pathways in the human visual system
 - Ubiquitous in modern image recognition tasks `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst = F))`
 
---
-
 .pull-left[
 
 Pros
@@ -434,8 +428,6 @@ Pros
 - Very fast (after training)
 
 ]
-
---
 
 .pull-right[
 
@@ -590,7 +582,7 @@ class: primary
 plot_deepviz_sample(c(12, 4), r = .005, dropout_rate = 0.5) + 
   theme(legend.position = c(1, 0), legend.justification = c(1, 0))
 ```
-- Connect ~~every~~ cells of previous layer to ~~every~~ cell of new layer
+- Connect ~~every~~ cells of previous layer to ~~every~~ cells of new layer
 - Used for spatial pattern integration with regularization
 
 ???
@@ -675,7 +667,7 @@ class: primary
 
 --
 - Solution: Use the pre-trained VGG16 base (all of the convolutional layers) and train a new head
-    - Reduces the parameter space to __8,391,177__ parameters
+    - __8,391,177__ parameters
 
 ???
 
