@@ -190,6 +190,8 @@ S. VanderPlas and M. Tilton.
 ---
 class:primary
 ## Forensics
+.slightly-small[
+### Papers
 
 <p style = "font-weight:700">[In Progress]<cite>
 M. Tilton and S. VanderPlas
@@ -203,6 +205,12 @@ S. VanderPlas.
 S. VanderPlas, T. Klep, K. Kirksey, J. Hamby, and H. Hofmann.
 &ldquo;Case study validations of automatic bullet matching.&rdquo;</cite></p>
 
+### Grants
+
+<p> <cite>NIJ R&D in Forensic Science. &ldquo;Statistical Infrastructure for the Use of Error Rate Studies in the Interpretation of Forensic Evidence.&rdquo; Collaborator. Funded for FY 2019</cite></p>
+
+<p> [In Progress] <cite>NIJ R&D in Forensic Science. &ldquo;Passive Acquisition of Footwear Class Characteristics in Local Populations&rdquo; PI. Submission in 2019 for FY 2020</cite></p>
+]
 
 ---
 class:primary
