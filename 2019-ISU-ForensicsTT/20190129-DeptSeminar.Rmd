@@ -190,16 +190,16 @@ S. VanderPlas and M. Tilton.
 class:primary
 ## Forensics
 
-<p>[In Progress]<cite>
-S. VanderPlas and M. Tilton.
-&ldquo;CoNNOR: Convolutional Neural Network for Outsole Recognition.&rdquo;</cite></p>
+<p style = "font-weight:700">[In Progress]<cite>
+M. Tilton and S. VanderPlas
+&ldquo;CoNNOR: A Convolutional Neural Network for Outsole Recognition.&rdquo;</cite></p>
 
 <p>[In Progress]<cite>
 S. VanderPlas.
 &ldquo;BulletsamplR: Resampling Bullet Cross Sections&rdquo;</cite></p>
 
 <p>[In Progress]<cite>
-S. VanderPlas and T. Klep and K. Kirksey and J. Hamby and H. Hofmann.
+S. VanderPlas, T. Klep, K. Kirksey, J. Hamby, and H. Hofmann.
 &ldquo;Case study validations of automatic bullet matching.&rdquo;</cite></p>
 
 
@@ -218,8 +218,12 @@ class:primary
 - Future Work
 
 ---
-class:inv-center
-# What is the probability of a coincidental match?
+class:primary
+## What is the probability of<br>a coincidental match?
+
+.pull-left[![partial print](problem-definition/partial_19.jpg)]
+.pull-right[<img src="problem-definition/database_60.png" alt="full print" width= "50%"/>]
+
 
 ---
 class:primary
