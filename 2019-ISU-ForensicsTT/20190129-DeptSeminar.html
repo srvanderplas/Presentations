@@ -442,6 +442,14 @@ class: primary
 
 ![Input image and filter](vgg16-structure/filter.png)
 
+.pull-left[.center[Input image 
+`\(\displaystyle y^0\)`
+]]
+.pull-right[.center[
+Weight matrix
+`\(\displaystyle \mathbf{w}\)`
+]]
+
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
 ???
@@ -454,6 +462,14 @@ class: primary
 
 ![Input image and filter](vgg16-structure/filter1.png)
 
+.pull-left[.center[Convolution: 
+`\(\displaystyle y^0 \times \mathbf{w}\)`
+]]
+.pull-right[.center[
+Feature Map
+`\(x^1\)`
+]]
+
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
 ???
@@ -465,6 +481,14 @@ class: primary
 ## Convolutional Layers
 
 ![Input image and filter](vgg16-structure/filter2.png)
+
+.pull-left[.center[Convolution: 
+`\(\displaystyle y^0 \times \mathbf{w}\)`
+]]
+.pull-right[.center[
+Feature Map
+`\(x^1\)`
+]]
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
@@ -1079,7 +1103,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 (function () {
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
   if (location.protocol !== 'file:' && /^https?:/.test(script.src))
     script.src  = script.src.replace(/^https?:/, '');
   document.getElementsByTagName('head')[0].appendChild(script);
