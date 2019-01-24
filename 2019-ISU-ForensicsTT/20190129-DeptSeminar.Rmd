@@ -537,9 +537,9 @@ The convolutional layers are often treated as magic, so I'm going to do my best 
 class: primary
 ## Convolutional
 
-Let $f$ be an image represented as a numerical matrix, indexed by $i, j$. 
+Let $y$ be an image represented as a numerical matrix, indexed by $i, j$, and $\beta$ be a filter of dimension $2a + 1 \times 2b + 1$
 
-The convolution of image $f$ and filter $\omega$ is $$(\omega \ast f)(i, j) = \sum_{s = -a}^a\sum_{t = -b}^b w(s, t) f(i-s, j-t)$$
+The convolution of image $y$ and filter $\beta$ is $$(\beta \ast y)(i, j) = \sum_{s = -a}^a\sum_{t = -b}^b \beta(s, t) f(i-s, j-t)$$
 
 ---
 class: primary
