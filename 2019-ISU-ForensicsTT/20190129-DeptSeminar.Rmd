@@ -364,9 +364,10 @@ Use features other than make/model to characterize shoes
 - Similar styles have similar tread patterns across brands
 - Unknown shoes can still be classified and assessed
 
-<img src = "problem-definition/star_bar_drmartin.png" width = "16%" style = "vertical-align:middle;padding-left:60px;padding-right:30px"/>
-<img src = "problem-definition/star_bar_vibram.png" width = "15%" style = "vertical-align:middle;padding-left:30px;padding-right:30px"/>
-<img src = "problem-definition/star_bar_timberland.png" width = "16%" style = "vertical-align:middle;padding-left:30px"/>
+| Dr. Martens | Frye | Timberland |
+| --- | --- | --- |
+| <img src = "problem-definition/dr-martens-work-2295-rigger-tan-greenland_product_114677_color_201711.jpg" width = "40%" style = "padding-left:25%;padding-right:25%"/> | <img src = "problem-definition/frye-union-workboot-slate-waxed-suede_product_9098199_color_640530.jpg" width = "40%" style = "padding-left:25%;padding-right:25%"/> | <img src = "problem-definition/timberland-6-premium-boot-coal-waterbuck_product_8906913_color_761877.jpg" width = "40%" style = "padding-left:25%;padding-right:25%"/> |
+| Work 2295 Rigger | Union Workboot | 6" Premium Boot |
 
 ???
 
