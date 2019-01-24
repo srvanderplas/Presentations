@@ -2,7 +2,7 @@
 .remark-slide-content {
   padding-top: 175px;
   padding-left: 30px;
-  padding-right: 160px;
+  padding-right: 190px;
   padding-bottom: 20px;
 }
 
@@ -110,7 +110,7 @@
   text-shadow: 0 0 0;
 }
 
-.inverse .remark-slide-number {
+.inverse .remark-slide-number, .inv-center .remark-slide-number {
   color: #003a70;
   font-size: 70%;
 }
@@ -119,10 +119,7 @@
   display: none;
 }
 
-/* Image formatting */
-.primary > p  img, .primary > .figure > img {
-  max-width:96%;
-}
+/* Image and table formatting */
 
 .img75 img {
   width: 75%;
@@ -155,8 +152,8 @@
 .move-margin {
   position: absolute;
   margin: auto;
-  top: 227px; bottom: 50px; right: 15px;
-  max-width: 145px;
+  top: 227px; bottom: 50px; right: 10px;
+  max-width: 160px;
   max-height:400px;
 }
 
@@ -168,23 +165,9 @@
   margin-left:-25px !important;
 }
 
-/* Two-column layout */
-.left-column {
-  color: #777;
-  width: 20%;
-  height: 92%;
-  float: left;
-}
-.left-column h2:last-of-type, .left-column h3:last-child {
-  color: #000;
-}
-.right-column {
-  width: 75%;
-  float: right;
-  padding-top: 1em;
-}
-.right-column img {
-  text-align: center;
-  align: center;
-  max-width: 95%;
+/* Allow printing w/ speaker notes...https://github.com/gnab/remark/issues/70 */
+@media print {
+ .remark-container.remark-presenter-mode .remark-slide-notes {
+  margin-top:700px;
+ }
 }
