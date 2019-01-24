@@ -21,9 +21,6 @@ class: center, middle, inverse, title-slide
 class: primary
 
 
-```
-## [1] "(Benedict, et al., 2014)"
-```
 
 
 
@@ -38,9 +35,76 @@ class: primary
 
 - PhD from Iowa State in 2015
 
-- Research Area: Visualization and Statistical Computing
+- Statistician at Nebraska Public Power District (2015 - 2018)
 
 - Research Faculty at CSAFE since March 2018
+
+- Research Areas: Visualization and Statistical Computing, Forensics
+
+---
+class:primary
+
+## Graphics Publications
+
+.slightly-small[
+&lt;p&gt;[1]&lt;cite&gt;
+S. VanderPlas and H. Hofmann.
+&amp;ldquo;Signs of the Sine Illusion - Why We Need to Care&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; 24.4 (Oct. 2015), pp. 1170&amp;ndash;1190.
+ISSN: 1061-8600.
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2014.951547"&gt;10.1080/10618600.2014.951547&lt;/a&gt;.
+(Visited on 12/12/2018).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]&lt;cite&gt;
+S. VanderPlas and H. Hofmann.
+&amp;ldquo;Spatial Reasoning and Data Displays&amp;rdquo;.
+In: &lt;em&gt;IEEE Transactions on Visualization &amp;amp; Computer Graphics&lt;/em&gt; 22.1 (Jan. 2016), pp. 459-468.
+ISSN: 1077-2626.
+DOI: &lt;a href="https://doi.org/10.1109/TVCG.2015.2469125"&gt;10.1109/TVCG.2015.2469125&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[3]&lt;cite&gt;
+H. Hofmann and S. VanderPlas.
+&amp;ldquo;All of This Has Happened Before. All of This Will Happen Again: Data Science&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; 26.4 (2017), pp. 775&amp;ndash;778.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[4]&lt;cite&gt;
+S. VanderPlas and H. Hofmann.
+&amp;ldquo;Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; 26.2 (Apr. 2017), pp. 231&amp;ndash;242.
+ISSN: 1061-8600.
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2016.1209116"&gt;10.1080/10618600.2016.1209116&lt;/a&gt;.
+(Visited on 12/12/2018).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[5]&lt;cite&gt;
+S. VanderPlas, R. Goluch and H. Hofmann.
+&amp;ldquo;Framed! Reproducing and Revisiting 150 year old charts&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; (2019).
+ISSN: 1537-2715.
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2018.1562937"&gt;10.1080/10618600.2018.1562937&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[In Progress]&lt;cite&gt;
+S. VanderPlas and M. Tilton.
+&amp;ldquo;Truthiness, Maps, and Graphs&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
+
+]
+
+
+---
+class:primary
+## Forensics
+
+&lt;p style = "font-weight:700"&gt;[In Progress]&lt;cite&gt;
+M. Tilton and S. VanderPlas
+&amp;ldquo;CoNNOR: A Convolutional Neural Network for Outsole Recognition.&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[In Progress]&lt;cite&gt;
+S. VanderPlas.
+&amp;ldquo;BulletsamplR: Resampling Bullet Cross Sections&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[In Progress]&lt;cite&gt;
+S. VanderPlas, T. Klep, K. Kirksey, J. Hamby, and H. Hofmann.
+&amp;ldquo;Case study validations of automatic bullet matching.&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
+
 
 ---
 class:primary
@@ -57,12 +121,16 @@ class:primary
 - Future Work
 
 ---
-class:inv-center
-# What is the probability the suspect's shoe made this shoeprint from the crime scene?
+class:primary
+## What is the probability of&lt;br&gt;a coincidental match?
+
+.pull-left[![partial print](problem-definition/partial_19.jpg)]
+.pull-right[&lt;img src="problem-definition/database_60.png" alt="full print" width= "50%"/&gt;]
+
 
 ---
 class:primary
-## What is&lt;br/&gt;P(someone made this print)?
+## Coincidental Match
 
 1. Define the comparison population
 
@@ -105,7 +173,7 @@ class:primary
     
 - Shoe purchase data vs. frequency of wear
 
-- Local populations may differ wildly .small[(Benedict, et al., 2014)]
+- Local populations may differ wildly .small[(Benedict, Corke, Morgan-Smith, Maynard, Curran, Buckleton, and Roux, 2014)]
 
 &lt;br/&gt;&lt;br/&gt;
 .center[&lt;img src = "problem-definition/snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/&gt;]
@@ -155,7 +223,11 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 --
 
-2. Assess the frequency of similar shoes in the sampled data
+2. Define similarity for shoe images
+
+--
+
+3. Assess the frequency of similar shoes in the sampled data
 
 --
 
@@ -440,7 +512,7 @@ class:primary
 class: primary
 ## Fully Connected Layers
 .move-margin[&lt;br&gt;&lt;img src="vgg16-structure/model-head.png" width = "100%"/&gt;]
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-5-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-6-1.png" width="75%" style="display: block; margin: auto;" /&gt;
 - Connect every cell of previous layer to every cell of new layer
 - Used for spatial pattern integration
 
@@ -452,7 +524,7 @@ Fully connected layers are also known as dense layers; they take the spatial inf
 class: primary
 ## Dropout Layers
 .move-margin[&lt;br&gt;&lt;img src="vgg16-structure/model-head.png" width = "100%"/&gt;]
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-6-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-7-1.png" width="75%" style="display: block; margin: auto;" /&gt;
 - Connect ~~every~~ cells of previous layer to ~~every~~ cells of new layer
 - Used for spatial pattern integration with regularization
 
@@ -532,11 +604,12 @@ class: primary
 - We have __9__ class labels and __&lt;25,000__ labeled images
 
 - Most CNNs require &gt; 100K images during training
-    - Convolutional base of VGG16 for 256 x 256 x 3 images has __14,714,688__ parameters (Simonyan, et al., 2014)
-    - Head has __155,090,944__ parameters and outputs __1000__ different class label predictions
+    - Convolutional base for 256 x 256 x 3 images has __14,714,688__ parameters (Simonyan, et al., 2014)
+    - Head has ~155 million parameters and outputs 1000 different class label predictions
     - Trained on an ImageNet (Krizhevsky, et al., 2012) dataset of 150,000 images
 
 --
+
 - Solution: Use the pre-trained VGG16 base (all of the convolutional layers) and train a new head
     - __8,391,177__ parameters
 
@@ -602,7 +675,7 @@ One issue we ran into is that our criteria changed as we found new edge cases th
 class:primary
 ## Label Data
 &lt;div class="figure"&gt;
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-7-1.png" alt="Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon." width="90%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-8-1.png" alt="Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon." width="90%" /&gt;
 &lt;p class="caption"&gt;Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon.&lt;/p&gt;
 &lt;/div&gt;
 
@@ -687,7 +760,7 @@ Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Tr
 ---
 class:primary
 ## Evaluating the Model
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-8-1.png" width="100%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-9-1.png" width="100%" /&gt;
 
 ???
 
@@ -700,7 +773,7 @@ class:primary
 &lt;!-- Describe the multi-class version as splitting out model performance by class --&gt; 
 
 &lt;div class="figure"&gt;
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-9-1.png" alt="Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class." width="99%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-10-1.png" alt="Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class." width="99%" /&gt;
 &lt;p class="caption"&gt;Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class.&lt;/p&gt;
 &lt;/div&gt;
 

@@ -132,7 +132,9 @@
 .large { 
   font-size: 130% 
 }
-
+.slightly-small { 
+  font-size: 80% 
+}
 .small { 
   font-size: 70% 
 }

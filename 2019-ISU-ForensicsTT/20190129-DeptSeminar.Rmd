@@ -30,7 +30,7 @@ BibOptions(check.entries = FALSE,
            dashed = FALSE)
 
 bb <- ReadBib("./refs.bib", check = FALSE)
-Citep(bb, "benedict_geographical_2014", .opts = list(max.names = 1, longnamesfirst = F))
+mypubs <- ReadBib("./mypubs.bib", check = FALSE)
 ```
 
 ```{r}
@@ -162,9 +162,46 @@ class: primary
 
 - PhD from Iowa State in 2015
 
-- Research Area: Visualization and Statistical Computing
+- Statistician at Nebraska Public Power District (2015 - 2018)
 
 - Research Faculty at CSAFE since March 2018
+
+- Research Areas: Visualization and Statistical Computing, Forensics
+
+---
+class:primary
+
+## Graphics Publications
+
+.slightly-small[
+```{r, results='asis', echo=FALSE, cache = F}
+NoCite(mypubs)
+PrintBibliography(mypubs, .opts = list(sorting = "ynt", no.print.fields = c("note", "file", "url")))
+```
+
+<p>[In Progress]<cite>
+S. VanderPlas and M. Tilton.
+&ldquo;Truthiness, Maps, and Graphs&rdquo;</cite></p>
+
+]
+
+
+---
+class:primary
+## Forensics
+
+<p style = "font-weight:700">[In Progress]<cite>
+M. Tilton and S. VanderPlas
+&ldquo;CoNNOR: A Convolutional Neural Network for Outsole Recognition.&rdquo;</cite></p>
+
+<p>[In Progress]<cite>
+S. VanderPlas.
+&ldquo;BulletsamplR: Resampling Bullet Cross Sections&rdquo;</cite></p>
+
+<p>[In Progress]<cite>
+S. VanderPlas, T. Klep, K. Kirksey, J. Hamby, and H. Hofmann.
+&ldquo;Case study validations of automatic bullet matching.&rdquo;</cite></p>
+
 
 ---
 class:primary
@@ -181,12 +218,16 @@ class:primary
 - Future Work
 
 ---
-class:inv-center
-# What is the probability the suspect's shoe made this shoeprint from the crime scene?
+class:primary
+## What is the probability of<br>a coincidental match?
+
+.pull-left[![partial print](problem-definition/partial_19.jpg)]
+.pull-right[<img src="problem-definition/database_60.png" alt="full print" width= "50%"/>]
+
 
 ---
 class:primary
-## What is<br/>P(someone made this print)?
+## Coincidental Match
 
 1. Define the comparison population
 
@@ -279,7 +320,11 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 --
 
-2. Assess the frequency of similar shoes in the sampled data
+2. Define similarity for shoe images
+
+--
+
+3. Assess the frequency of similar shoes in the sampled data
 
 --
 
@@ -661,11 +706,12 @@ class: primary
 - We have __9__ class labels and __<25,000__ labeled images
 
 - Most CNNs require > 100K images during training
-    - Convolutional base of VGG16 for 256 x 256 x 3 images has __14,714,688__ parameters `r Citep(bb, 'simonyan_very_2014', .opts = list(max.names = 1, longnamesfirst = F))`
-    - Head has __155,090,944__ parameters and outputs __1000__ different class label predictions
+    - Convolutional base for 256 x 256 x 3 images has __14,714,688__ parameters `r Citep(bb, 'simonyan_very_2014', .opts = list(max.names = 1, longnamesfirst = F))`
+    - Head has ~155 million parameters and outputs 1000 different class label predictions
     - Trained on an ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst = F))` dataset of 150,000 images
 
 --
+
 - Solution: Use the pre-trained VGG16 base (all of the convolutional layers) and train a new head
     - __8,391,177__ parameters
 
