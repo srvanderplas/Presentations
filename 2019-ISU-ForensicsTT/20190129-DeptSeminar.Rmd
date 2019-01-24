@@ -539,6 +539,9 @@ class: primary
 
 ![Input image and filter](vgg16-structure/filter.png)
 
+.pull-left[Input image $y^0$]
+.pull-right[Weight matrix $\mathbf{w}$]
+
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
 ???
