@@ -1129,7 +1129,7 @@ class: primary
 ## References
 <div class="small">
 
-```{r print-bib, 'refs', results='asis', echo=FALSE, cache = F}
+```{r print-bib, results='asis', echo=FALSE, cache = F}
 PrintBibliography(bb)
 ```
 </div>

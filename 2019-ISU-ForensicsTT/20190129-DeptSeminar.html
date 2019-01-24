@@ -537,7 +537,7 @@ class:primary
 class: primary
 ## Fully Connected Layers
 .move-margin[&lt;br&gt;&lt;img src="vgg16-structure/model-head.png" width = "100%"/&gt;]
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-6-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/fully-connected-1.png" width="75%" style="display: block; margin: auto;" /&gt;
 - Connect every cell of previous layer to every cell of new layer
 - Used for spatial pattern integration
 
@@ -549,7 +549,7 @@ Fully connected layers are also known as dense layers; they take the spatial inf
 class: primary
 ## Dropout Layers
 .move-margin[&lt;br&gt;&lt;img src="vgg16-structure/model-head.png" width = "100%"/&gt;]
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-7-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/dropout-layers-1.png" width="75%" style="display: block; margin: auto;" /&gt;
 - Used for spatial pattern integration
 - Reduces number of parameters
 
@@ -610,7 +610,7 @@ To propagate errors to the previous layer,
 = \sum_{a=0}^{m-1} \sum_{b=0}^{m-1} \frac{\partial L}{\partial x_{(i-a)(j-b)}^\ell} \omega_{ab}$$`
 
 &lt;br/&gt;
-.center[&lt;img src="vgg16-structure/vgg16-shoe.png" width = "50%"/&gt;]
+.center[&lt;img src="vgg16-structure/vgg16-shoe-nolabel.png" width = "50%"/&gt;]
 
 .center[&lt;b&gt;13 convolutional layers = a lot of backpropagation&lt;/b&gt;]
 
@@ -700,7 +700,7 @@ One issue we ran into is that our criteria changed as we found new edge cases th
 class:primary
 ## Label Data
 &lt;div class="figure"&gt;
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-8-1.png" alt="Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon." width="90%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/label-data-barchart-1.png" alt="Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon." width="90%" /&gt;
 &lt;p class="caption"&gt;Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon.&lt;/p&gt;
 &lt;/div&gt;
 
@@ -785,7 +785,7 @@ Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Tr
 ---
 class:primary
 ## Evaluating the Model
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-9-1.png" width="100%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/overall-roc-1.png" width="100%" /&gt;
 
 ???
 
@@ -798,7 +798,7 @@ class:primary
 &lt;!-- Describe the multi-class version as splitting out model performance by class --&gt; 
 
 &lt;div class="figure"&gt;
-&lt;img src="20190129-DeptSeminar_files/figure-html/unnamed-chunk-10-1.png" alt="Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class." width="99%" /&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/class-roc-1.png" alt="Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class." width="99%" /&gt;
 &lt;p class="caption"&gt;Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class.&lt;/p&gt;
 &lt;/div&gt;
 
