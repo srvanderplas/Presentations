@@ -553,7 +553,7 @@ Define $\gamma_{ij}$ to be the bias for cell $i,j$
 
 The $\ell$th layer, $y^{(\ell)}$, is then defined as
 
-$$y^{(\ell)} (i, j) = \sigma\left(({\beta_{ij}}\ast y^{(\ell - 1)})(i, j) + {\gamma_{ij}}\right) + \epsilon$$
+$$y^{(\ell)} (i, j) = \sigma\left(({\beta_{ij}}\ast y^{(\ell - 1)})(i, j) + {\gamma_{ij}}\right)$$
 
 where $\sigma(\cdot)$ is a nonlinear activation function. 
 
@@ -754,28 +754,28 @@ Then, with a bit more manipulation, we can move the errors from the current laye
 
 With 13 convolutional layers, and a 256x256 image, this process is repeated a lot. It's only relatively recently that the computational power required for this process became widely available. 
 
----
-class: primary
-## Pre-trained Neural Networks
 
-- We have __9__ class labels and __<25,000__ labeled images
+<!-- --- -->
+<!-- class: primary -->
+<!-- ##  -->
 
-- Most CNNs require > 100K images during training
-    - Convolutional base for 256 x 256 x 3 images has ~14.7 million parameters `r Citep(bb, 'simonyan_very_2014', .opts = list(max.names = 1, longnamesfirst = F))`
-    - Head has ~155 million parameters and outputs 1000 different class label predictions
-    - Trained on an ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst = F))` dataset of 150,000 images
+<!-- - We have __9__ class labels and __<25,000__ labeled images -->
 
---
+<!-- - Most CNNs require > 100K images during training -->
+<!--     - Convolutional base for 256 x 256 x 3 images has ~14.7 million parameters `r Citep(bb, 'simonyan_very_2014', .opts = list(max.names = 1, longnamesfirst = F))` -->
+<!--     - Head has ~155 million parameters and outputs 1000 different class label predictions -->
 
-- Solution: Use the pre-trained model base (all of the convolutional layers) and train a new head
-    - "Transfer learning" 
-    - __8,391,177__ parameters
+<!-- -- -->
 
-???
+<!-- - Solution: Use the pre-trained model base (all of the convolutional layers) and train a new head -->
+<!--     - "Transfer learning"  -->
+<!--     - Reduced to __8,391,177__ parameters -->
 
-Using the network architecture I've been showing as we talked through this process, the total number of parameters in the model base is about 14.5 million; there are just over 155 million parameters in the model head. To find initial values for these parameters, they used 150,000 different images.
+<!-- ??? -->
 
-We only have 9 classes, each corresponding to a geometric shape; we have less than 25K images. We can't train the full thing (and don't want to wait for a month between model iterations); instead, we'll use the base of and optimize a new head consisting of a fully connected layer and a softmax activation layer. Our model doesn't need to be able to tell a corgi from a golden retriever; we only need it to be able to distinguish quadrilaterals, circles, lines, and text. 
+<!-- Using the network architecture I've been showing as we talked through this process, the total number of parameters in the model base is about 14.5 million; there are just over 155 million parameters in the model head. To find initial values for these parameters, they used 150,000 different images. -->
+
+<!-- We only have 9 classes, each corresponding to a geometric shape; we have less than 25K images. We can't train the full thing (and don't want to wait for a month between model iterations); instead, we'll use the base of and optimize a new head consisting of a fully connected layer and a softmax activation layer. Our model doesn't need to be able to tell a corgi from a golden retriever; we only need it to be able to distinguish quadrilaterals, circles, lines, and text.  -->
 
 ---
 class: inv-center
@@ -1031,7 +1031,7 @@ class:primary
 
 --
 
-![Not everything is labeled correctly](labelme-imgs/circle_pred_correct.png)
+![Not everything is labeled correctly](labelme-imgs/adidas_circle_pred_correct.png)
 
 ???
 
@@ -1082,6 +1082,36 @@ calc_heatmap(test_images[grepl("ugg-kids-bailey-bow-ii-toddler-little-kid-chestn
 calc_heatmap(test_images[grepl("jambu-emma-black_product_9089180_color_3", test_images) & grepl("circle", test_images) & grepl("star", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
 calc_heatmap(test_images[grepl("adidas-kids-adilette-clf-adj-toddler-little-kid-big-kid-black-white_product_8987203_color_151.jpg", test_images) & grepl("text", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
 calc_heatmap(test_images[grepl("seychelles-slow-down-blush-metallic_product_9017725_color_34700.jpg", test_images) & grepl("text", test_images)][2], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
+calc_heatmap(test_images[grepl("adidas-kids-rapidarun-knit-toddler-grey-white_product_8987200_color_1522.jpg", test_images) & grepl("text", test_images)][1], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
+tmp <- calc_heatmap("heatmaps/test_image.jpg", loaded_model, scale_by_prob = F)
+tmp2 <- tmp
+idx <- which(tmp$classes %in% c("line", "circle", "text"))
+tmp2$heatmap <- tmp2$heatmap[idx, , ]
+tmp2$predictions <- tmp2$predictions[idx]
+tmp2$truth <- tmp2$truth[idx]
+tmp2$classes <- tmp2$classes[idx]
+tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
+
+tmp <- calc_heatmap(test_images[grepl("dc-pure-se-navy_product_7270757_color_9", test_images) & grepl("quad", test_images)][4], loaded_model)
+tmp2 <- tmp
+idx <- which(tmp$classes %in% c("quad", "circle", "text"))
+tmp2$heatmap <- tmp2$heatmap[idx, , ]
+tmp2$predictions <- tmp2$predictions[idx]
+tmp2$truth <- tmp2$truth[idx]
+tmp2$classes <- tmp2$classes[idx]
+tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
+file.rename(from = "heatmaps/heatmap-quad(R)-4-dc-pure-se-navy_product_7270757_color_9.png", 
+            to = "heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png")
+
+
+tmp <- calc_heatmap(test_images[grepl("seychelles-slow-down-blush-metallic_product_9017725_color_34700.jpg", test_images) & grepl("text", test_images)][2], loaded_model)
+tmp2 <- tmp
+idx <- which(tmp$classes %in% c("quad", "circle", "text"))
+tmp2$heatmap <- tmp2$heatmap[idx, , ]
+tmp2$predictions <- tmp2$predictions[idx]
+tmp2$truth <- tmp2$truth[idx]
+tmp2$classes <- tmp2$classes[idx]
+tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
 ```
 
 ---
@@ -1105,7 +1135,7 @@ class:primary
 
 .left-column[<br/><br/>For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
-![unscaled heatmapp - adidas](heatmaps/heatmap-text-1-adidas-kids-adilette-clf-adj-toddler-little-kid-big-kid-black-white_product_8987203_color_151.png)
+![unscaled heatmapp - adidas](heatmaps/heatmap-test_image.png)
 ]
 
 .move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
@@ -1131,6 +1161,12 @@ class:primary
 In a similar instance, the model cues in on circles in script S characters as well. These are objectively not circles, though, as they aren't closed, so we do not update the labeling for these images. It's a delicate balance between "the model isn't wrong" and tweaking the labels to match the model output exactly - we're working to find that balance. 
 
 ---
+class:primary
+## Summary
+
+Something useful goes here...
+
+---
 class:inv-center
 # <br/><br/>What's Next?
 
@@ -1138,16 +1174,12 @@ class:inv-center
 class: primary
 ## What's Next?
 
-- Make CoNNER more interpretable
-    - keras-vis Python library -> R package (Activation Maximization maps, Saliency maps, Class Activation maps)
-    - Investigate Bayesian CNNs - error estimates
+- Make CoNNOR more interpretable
+    - keras-vis Python library -> R package 
     
 - Whole-Shoe predictions - incorporate spatial information
 
 - NIJ Grant to build the machine and collect local population data
-    - tweak weights with collected data
-    - use spatial locations + probabilities as a feature vector
-    - quantify local population footwear
 
 
 ---
@@ -1163,71 +1195,3 @@ class: primary
 PrintBibliography(bb)
 ```
 </div>
-
----
-class:primary
-## Interpreting the model
-- Port the `keras-vis` Python library to R (In progress!)
-    - Activation Maximization maps: generate a new image to maximize filter output activations
-        - Show what specific filters are doing and "seeing"
-        
-    - What parts of an image are most important in activating a specific class?
-        - Saliency Maps: How does the output category change when the input image changes?
-        - Class Activation Maps: What parts of the image highly activate each class?
-        
-<!-- Insert Jason's stuff here -->        
-
-???
-
-I'm currently supervising an undergrad CS/stats major who's working to create an R package that interfaces with the keras-vis python library. He's had some success in the past couple of weeks, but he's learning R at the same time he's doing this. When he's got things working, we should be able to get much better insight into what specific model filters are doing and seeing. We should also be able to identify which filters are most useful, which may allow us to build a scaled-down model base eventually. 
-
----
-class: primary
-## Whole-Shoe Predictions
-- Currently, predictions are for 256 x 256 chunks
-
-- Integrate multiple chunks to provide geometric features with probabilities and relative coordinates
-
-- Add spatial information to further discriminate between shoe models
-
-- Integrate the current model with a database of make/model/tread information to use for automatic identification of shoe soles.
-
-???
-
-I'm also hoping to tackle the whole-shoe integration problem. If a shoe is divided up into 256x256 chunks, it's going to be interesting to try to integrate the chunks (and the predictions) back into a single unified whole. That would provide additional spatial information and would also potentially be useful to speed up image searches in a database of shoe make/model information. Sure, it'll never be 100% complete, but most shoes aren't custom. 
-
----
-class: primary
-## Local Population Data
-
-- Build the machine (or rather, have engineers build it...)
-- Collect data from (very) local areas
-    - date/time stamp
-    - side-view pictures of the shoes (where possible)
-    - scans of the bottom of the shoe
-- Label geometric features on the collected scans
-- Run a 2nd stage of model weight optimization with scanned data
-- Use this optimized model to analyze newly collected data
-
-???
-
-I'm also hoping that with this year's NIJ grants we may get funding to actually build the machine. That will allow us to start testing local data collection, and hopefully to tweak the model weights for the specific images that the machine eventually produces. 
-
----
-class: primary
-## Local Population Data
-
-- Use spatial locations + label probabilities as a feature vector
-
-- Database of shoes in local population can be used to assess likelihood of a specific feature set occurring at random
-    - Helpful to have error estimates for CNN output probabilities 
-        - Bayesian CNNs 
-    - Useful to know wear pattern frequency
-        - As shoes wear, geometric features become less pronounced
-        - Wear patterns can also be used as a class characteristic
-        
-???
-
-Eventually, the goal is to take the whole shoe predictions and label probabilities, use that as a feature vector, and assess the likelihood that the print was made by the suspect compared to the likelihood the print was made by someone in the local population. 
-
-To do this, we may end up having to find some error estimates for CNN output probabilities, and it's possible we'll end up examining wear pattern frequency as well - as tread patterns degrade, wear patterns become more pronounced, which is a nice trade-off. 
