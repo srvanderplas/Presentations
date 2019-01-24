@@ -11,11 +11,11 @@ output:
       countIncrementalSlides: false
 ---
 class: primary
-```{r, echo = F, cache = F, include = F}
+```{r setup, echo = F, cache = F, include = F}
 library(magrittr)
 library(tidyverse)
 library(ggplot2)
-
+theme_set(theme_bw())
 knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T, dpi = 300, dev = 'png')
 
 source("~/models/shoe_nn/Generate_Model_Images.R")
@@ -34,7 +34,7 @@ bb <- ReadBib("./refs.bib", check = FALSE)
 mypubs <- ReadBib("./mypubs.bib", check = FALSE)
 ```
 
-```{r}
+```{r unicode}
 # Unicode symbols for classes
 unicode_symbols <- c(bowtie = "",
   star = "\u2605",
@@ -120,7 +120,7 @@ authors <- df %>%
   unnest(miniannot)
 ```
 
-```{r}
+```{r img-setup}
 new_img_dir <- dirname(newest_data_file)
 
 ann_df <- select(annotated_imgs, base_image, name, num_labels, annot_num, labels, label_type) %>%
@@ -151,7 +151,7 @@ img_df <- tibble(img = list.files(file.path(new_img_dir, c("test", "train", "val
   filter(labels != "" & labels != "hatching" & labels != "exclude" & !is.na(labels))
 ```
 
-```{r}
+```{r load-keras-model}
 library(keras)
 model_dir <- newest_model$path
 load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
@@ -175,7 +175,7 @@ class:primary
 ## Graphics Publications
 
 .slightly-small[
-```{r, results='asis', echo=FALSE, cache = F}
+```{r graphics-pubs, results='asis', echo=FALSE, cache = F}
 NoCite(mypubs)
 PrintBibliography(mypubs, .opts = list(sorting = "ynt", no.print.fields = c("note", "file", "url")))
 ```
@@ -635,7 +635,7 @@ class:primary
 class: primary
 ## Fully Connected Layers
 .move-margin[<br><img src="vgg16-structure/model-head.png" width = "100%"/>]
-```{r, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r fully-connected, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
 plot_deepviz2(c(12, 4), r = .005)
 ```
 - Connect every cell of previous layer to every cell of new layer
@@ -649,12 +649,12 @@ Fully connected layers are also known as dense layers; they take the spatial inf
 class: primary
 ## Dropout Layers
 .move-margin[<br><img src="vgg16-structure/model-head.png" width = "100%"/>]
-```{r, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r dropout-layers, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
 plot_deepviz_sample(c(12, 4), r = .005, dropout_rate = 0.5) + 
   theme(legend.position = c(1, 0), legend.justification = c(1, 0))
 ```
-- Connect ~~every~~ cells of previous layer to ~~every~~ cells of new layer
-- Used for spatial pattern integration with regularization
+- Used for spatial pattern integration
+- Reduces number of parameters
 
 ???
 
@@ -713,7 +713,7 @@ $$\frac{\partial L}{\partial y_{ij}^{\ell -1}} = \sum_{a=0}^{m-1} \sum_{b=0}^{m-
 = \sum_{a=0}^{m-1} \sum_{b=0}^{m-1} \frac{\partial L}{\partial x_{(i-a)(j-b)}^\ell} \omega_{ab}$$
 
 <br/>
-.center[<img src="vgg16-structure/vgg16-shoe.png" width = "50%"/>]
+.center[<img src="vgg16-structure/vgg16-shoe-nolabel.png" width = "50%"/>]
 
 .center[<b>13 convolutional layers = a lot of backpropagation</b>]
 
@@ -802,7 +802,7 @@ One issue we ran into is that our criteria changed as we found new edge cases th
 ---
 class:primary
 ## Label Data
-```{r, fig.width = 6, fig.height = 4, out.width = "90%", dpi = 300, fig.cap = "Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon."}
+```{r label-data-barchart, fig.width = 6, fig.height = 4, out.width = "90%", dpi = 300, fig.cap = "Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon."}
 annotated_imgs %>%
   mutate(label_type = str_replace(label_type, "multi", "multiple")) %>%
   mutate(labels = str_to_title(labels)) %>%
@@ -910,7 +910,7 @@ Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Tr
 ---
 class:primary
 ## Evaluating the Model
-```{r, out.width = "100%", fig.width = 7, fig.height = 4.375}
+```{r overall-roc, out.width = "100%", fig.width = 7, fig.height = 4.375}
 library(pROC)
 pred_df <- as_tibble(preds) %>% gather(key = feature, value = value)
 test_labs_df <- as_tibble(test_labs) %>% gather(key = feature, value = value)
@@ -945,7 +945,7 @@ class:primary
 <!-- Add in model overall AUC -->
 <!-- Describe the multi-class version as splitting out model performance by class --> 
 
-```{r, fig.width = 7.5, fig.height = 5, out.width = "99%", fig.cap = "Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class."}
+```{r class-roc, fig.width = 7.5, fig.height = 5, out.width = "99%", fig.cap = "Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class."}
 aucs <- plot_onehot_roc(preds, test_labs, str_to_title(classes))
 aucs$plot + ggtitle("CoNNOR Test Set Performance") + 
   facet_wrap(~class, nrow = 2) + 
@@ -1036,14 +1036,14 @@ During this process, it's also helpful to see what the model is using to determi
 
 In particular, we'd like to know which regions in the image are relevant to the class, and which filters in the model are important for detecting each class. We've made some progress on the first question, and are actively looking into the second. 
 
-```{r, include = F}
+```{r load-model-weights, include = F}
 model_wts_file <- file.path(newest_model$path, newest_model$base_file)
 loaded_model <- set_weights(model_wts_file)
 image_dir <- file.path("/models/shoe_nn/RProcessedImages", newest_model$process_dir)
 test_images <- list.files(file.path(image_dir, "images"), "*.jpg", full.names = T)
 ```
 
-```{r, eval = F, include = F}
+```{r heatmap-generation, eval = F, include = F}
 if (!dir.exists("heatmaps")) { dir.create("heatmaps")}
 calc_heatmap(test_images[grepl("dc-pure-se-navy_product_7270757_color_9", test_images) & grepl("quad", test_images)][4], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
 file.rename(from = "heatmaps/heatmap-quad(R)-4-dc-pure-se-navy_product_7270757_color_9.png", 
@@ -1129,7 +1129,7 @@ class: primary
 ## References
 <div class="small">
 
-```{r, 'refs', results='asis', echo=FALSE, cache = F}
+```{r print-bib, 'refs', results='asis', echo=FALSE, cache = F}
 PrintBibliography(bb)
 ```
 </div>
