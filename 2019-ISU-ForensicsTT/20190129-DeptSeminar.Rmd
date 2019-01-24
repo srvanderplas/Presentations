@@ -894,13 +894,15 @@ data.frame(history$metrics) %>%
   geom_point() + 
   geom_smooth(se = F) + 
   facet_grid(measure~., scales = "free_y", switch = "both") + 
-  theme(axis.title.y = element_blank(), legend.position = c(1, .5), legend.justification = c(1, 0),
-        legend.background = element_rect(fill = "grey90")) + 
+  theme_bw() + 
+  theme(axis.title.y = element_blank(), legend.position = c(1, .5), legend.justification = c(1, 0), legend.background = element_rect(fill = "transparent")) + 
   scale_x_continuous("Epoch") + 
   ggtitle("CoNNOR Training Performance")
 ```
 
-.move-margin[<br/><br/><br/><br/><br/><br/><br/><br/>Binary Cross-entropy Loss: $$-y\log(p)\\\\ - (1 - y)\log(1 - p)$$]
+.move-margin[<br/><br/><br/><br/><br/><br/><br/><br/>.small[Binary Cross-entropy Loss: 
+$$-y\log(p)\\\\-\\!(1\\!-\\!y)\log(1\\!-\\!p)$$
+]]
 ???
 
 This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). 
@@ -924,7 +926,7 @@ whole_model_roc_df <- tibble(tpr = whole_model_roc$sensitivities,
   mutate(eer = purrr::map(roc_plot, eer))
 ggplot() + 
   geom_line(aes(x = fpr, y = tpr), data = unnest(whole_model_roc_df, roc_plot)) + 
-  geom_text(aes(x = 1, y = .15, label = sprintf("AUC: %0.2f", auc)), hjust = 1, vjust = -0.2, data = whole_model_roc_df) +
+  geom_text(aes(x = 1, y = .07, label = sprintf("AUC: %0.2f", auc)), hjust = 1, vjust = -0.2, data = whole_model_roc_df) +
   geom_point(aes(x = fpr, y = tpr, color = "Equal Error Rate"), data = unnest(whole_model_roc_df, eer)) +
   scale_color_manual("", values = "black") +
   scale_x_continuous("False Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) +
@@ -1056,7 +1058,7 @@ calc_heatmap(test_images[grepl("seychelles-slow-down-blush-metallic_product_9017
 
 ---
 class:primary
-## Class Activation Maps
+## Interpreting the Model<br>Class Activation Maps
 
 .left-column[<br/><br/>For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
@@ -1071,7 +1073,7 @@ Class activation maps use the gradient with respect to each class label, back pr
 
 ---
 class:primary
-## Class Activation Maps
+## Interpreting the Model<br>Class Activation Maps
 
 .left-column[<br/><br/>For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
@@ -1087,7 +1089,7 @@ This is a piece of the Adidas text that is part of the design of many of their s
 
 ---
 class:primary
-## Class Activation Maps
+## Interpreting the Model<br>Class Activation Maps
 
 .left-column[<br/><br/>For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[

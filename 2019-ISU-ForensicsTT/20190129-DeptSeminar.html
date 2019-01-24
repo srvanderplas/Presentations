@@ -775,7 +775,9 @@ class:primary
 &lt;p class="caption"&gt;Training and Validation accuracy and loss for each epoch of the fitting process. Training and validation accuracy reach 90% around epoch 14. After that point, validation loss remains about the same and training loss decreases slightly, while validation accuracy increases more slowly than training accuracy.&lt;/p&gt;
 &lt;/div&gt;
 
-.move-margin[&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;Binary Cross-entropy Loss: `$$-y\log(p)\\\\ - (1 - y)\log(1 - p)$$`]
+.move-margin[&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;.small[Binary Cross-entropy Loss: 
+`$$-y\log(p)\\\\-\\!(1\\!-\\!y)\log(1\\!-\\!p)$$`
+]]
 ???
 
 This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). 
@@ -882,7 +884,7 @@ In particular, we'd like to know which regions in the image are relevant to the 
 
 ---
 class:primary
-## Class Activation Maps
+## Interpreting the Model&lt;br&gt;Class Activation Maps
 
 .left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
@@ -897,7 +899,7 @@ Class activation maps use the gradient with respect to each class label, back pr
 
 ---
 class:primary
-## Class Activation Maps
+## Interpreting the Model&lt;br&gt;Class Activation Maps
 
 .left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
@@ -913,7 +915,7 @@ This is a piece of the Adidas text that is part of the design of many of their s
 
 ---
 class:primary
-## Class Activation Maps
+## Interpreting the Model&lt;br&gt;Class Activation Maps
 
 .left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
 .right-column[
