@@ -559,7 +559,7 @@ I'm going to talk about each of these layer types in turn - it's fairly easy for
 class: primary
 ## Image Convolution
 
-Let $x$ be an image represented as a numerical matrix, indexed by $i, j$, and $\beta$ be a filter of dimension $2a + 1 \times 2b + 1$
+Let $x$ be an image represented as a numerical matrix, indexed by $i, j$, and $\beta$ be a filter of dimension $(2a + 1) \times (2b + 1)$
 
 The convolution of image $x$ and filter $\beta$ is $$(\beta \ast x)(i, j) = \sum_{s = -a}^a\sum_{t = -b}^b \beta(s, t) x(i-s, j-t)$$
 
@@ -634,7 +634,7 @@ Some CNNs pad the input image so that the resulting feature map is the same dime
 class: primary
 ## Convolutional Layers - <br/>Forward Propagation
 
-- $x^{0}(i, j)$ is an input image of size $M\times N$
+- $x^{0}$ is an input image
 
 - $x^\ell$, $\ell = 1, ..., n$ are convolutional layers in the network.
 
@@ -644,7 +644,7 @@ class: primary
 
 The $\ell$th layer, $x^{(\ell)}$, is indexed by $i$, $j$, and $k$:
 
-$$x^{(\ell)}_k (i, j) = \sigma\left(({\beta^\ell_k}\ast x^{(\ell - 1)})(i, j) + \gamma^\ell\right)$$
+$$x^{(\ell)}_k = \sigma\left({\beta^\ell_k}\ast x^{(\ell - 1)} + \gamma^\ell\right)$$
 
 where $\sigma(\cdot)$ is a nonlinear activation function. 
 
@@ -745,7 +745,7 @@ Common loss functions are squared error loss and cross-entropy, depending on the
 class: primary
 ## Backward Propagation
 
-$$\begin{align}\left(\frac{\partial L}{\partial \beta^\ell_k}\right) &= \underbrace{\frac{\partial L}{\partial \left(\beta^\ell_k \ast x^{\ell - 1}\right)(i,j)}}_\text{gradient} x^{\ell-1}_{ij}\\\\\frac{\partial L}{\partial \left(\beta^\ell_k \ast x^{\ell - 1}\right)(i,j)}&=\frac{\partial L}{\partial x_{ij}^\ell} \left[\sigma'\left(\beta^\ell_k \ast x^{\ell - 1}\right)(i,j)\right] \end{align}$$
+$$\begin{align}\left(\frac{\partial L}{\partial \beta^\ell_k}\right) &= \underbrace{\frac{\partial L}{\partial \left(\beta^\ell_k \ast x^{\ell - 1}\right)}}_\text{gradient} x^{\ell-1}\\\\\frac{\partial L}{\partial \left(\beta^\ell_k \ast x^{\ell - 1}\right)}&=\frac{\partial L}{\partial x^\ell} \left[\sigma'\left(\beta^\ell_k \ast x^{\ell - 1}\right)\right] \end{align}$$
 
 The gradient can be computed with the derivative of the activation function $\sigma(\cdot)$
 
@@ -764,7 +764,7 @@ class: primary
 
 To propagate errors to the previous layer, 
 
-$$\begin{align}\frac{\partial L}{\partial x_{ij}^{\ell -1}} &= \frac{\partial L}{\partial \left(\beta_k^\ell \ast x^{\ell - 1}\right)(i,j)} \beta_k^\ell\end{align}$$
+$$\begin{align}\frac{\partial L}{\partial x^{\ell -1}} &= \frac{\partial L}{\partial \left(\beta_k^\ell \ast x^{\ell - 1}\right)} \beta_k^\ell\end{align}$$
 
 <br/>
 .center[<img src="vgg16-structure/vgg16-shoe-nolabel.png" width = "50%"/>]
@@ -896,7 +896,7 @@ annotated_imgs %>%
   xlab("")  + 
   ggtitle("Current Class Distribution (All Labeled Images)") + 
   mytheme + 
-  theme(legend.position = c(1, 1), legend.justification = c(1, 1), legend.background = element_rect(fill = "transparent"))
+  theme(legend.position = c(1, 1), legend.justification = c(.95, .95), legend.background = element_rect(fill = "white"))
 ```
 
 ???
@@ -1268,7 +1268,13 @@ class:primary
     
     - 88% accuracy; many errors attributable to data labeling
 
-- Coincidental match probability problem is now tractable (given a functional scanner)
+
+---
+class:primary
+## Applying the model
+$$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$
+
+Coincidental match probability problem is now tractable (given a functional scanner)
 
 
 ---
@@ -1279,11 +1285,11 @@ class:inv-center
 class: primary
 ## What's Next?
 
-- Paper <!--where?-->
+- Submit manuscript with M. Tilton
 
-- NIJ Grant to build the machine and collect local population data
+- NIJ Grant - Collaboration with R. Stone (IMSE) to build a prototype and collect local population data
 
-- Whole-Shoe predictions - incorporate spatial information
+- Extend feature set with spatial information: whole-shoe predictions
 
 - Make CoNNOR more interpretable
     - keras-vis Python library -> R package 
