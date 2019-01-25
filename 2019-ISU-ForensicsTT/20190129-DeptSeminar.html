@@ -106,7 +106,7 @@ S. VanderPlas.
 &amp;ldquo;BulletsamplR: Resampling Bullet Cross Sections&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
 
 &lt;p&gt;[In Progress]&lt;cite&gt;
-S. VanderPlas, T. Klep, K. Kirksey, J. Hamby, and H. Hofmann.
+S. VanderPlas, T. Klep, M. Nally, C. Cadeval, and H. Hofmann.
 &amp;ldquo;Case study validations of automatic bullet matching.&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
 
 &lt;p style = "font-weight:700"&gt;[In Progress]&lt;cite&gt;
@@ -425,6 +425,16 @@ I'm going to really quickly walk through the specific neural network we used for
 
 ---
 class:primary
+## Modeling Approach
+
+Let `\(CNN(x)\)` describe a convolutional neural network acting upon an input image `\(x\)` with labels `\(Y_1... Y_z \in [0,1]^z\)`
+
+$ CNN(x) \rightarrow [{P_1}, ..., {P_z}]$ where `\(z\)` is the number of output classes and `\(P_1\)`...$P_z$ are output class probabilities.
+
+The model has errors `\([\epsilon_1, ..., \epsilon_z] := [Y_1 - P_1, ..., Y_z - P_z]\)`
+
+---
+class:primary
 ## CNN Architecture
 
 &lt;img src="vgg16-structure/vgg16-shoe-nolabel.png" alt = "Neural Network model structure" width = "95%"/&gt;
@@ -437,34 +447,11 @@ The convolutional layers are often treated as magic, so I'm going to do my best 
 
 ---
 class: primary
-## Convolutional
+## Image Convolution
 
-Let `\(y\)` be an image represented as a numerical matrix, indexed by `\(i, j\)`, and `\(\beta\)` be a filter of dimension `\(2a + 1 \times 2b + 1\)`
+Let `\(x\)` be an image represented as a numerical matrix, indexed by `\(i, j\)`, and `\(\beta\)` be a filter of dimension `\(2a + 1 \times 2b + 1\)`
 
-The convolution of image `\(y\)` and filter `\(\beta\)` is `$$(\beta \ast y)(i, j) = \sum_{s = -a}^a\sum_{t = -b}^b \beta(s, t) f(i-s, j-t)$$`
-
----
-class: primary
-## Convolutional Layers - &lt;br/&gt;Forward Propagation
-
-Let `\(y^{0}(i, j)\)` be the input image, and `\(y^\ell\)`, `\(\ell = 1, ..., k\)` be convolutional layers
-
-Let `\(\beta_{ij}\)` be a `\(m \times m\)` filter matrix at index `\(i,j\)`. 
-
-Define `\(\gamma_{ij}\)` to be the bias for cell `\(i,j\)`
-
-The `\(\ell\)`th layer, `\(y^{(\ell)}\)`, is then defined as
-
-`$$y^{(\ell)} (i, j) = \sigma\left(({\beta_{ij}}\ast y^{(\ell - 1)})(i, j) + {\gamma_{ij}}\right)$$`
-
-where `\(\sigma(\cdot)\)` is a nonlinear activation function. 
-
-ReLU (Rectified Linear Unit), `\(\sigma(x) = \max\{0, x\}\)` is a common nonlinear activation function
-
-
-???
-
-Simply, a convolutional layer is a combination of a spatial filter of a certain size applied to every possible spatial area on a grid; these filters are composed of weights, and the sum over these weights produces the cell-wise values. Then a nonlinear transformation is applied to the sum. In pictures...
+The convolution of image `\(x\)` and filter `\(\beta\)` is `$$(\beta \ast x)(i, j) = \sum_{s = -a}^a\sum_{t = -b}^b \beta(s, t) x(i-s, j-t)$$`
 
 ---
 class: primary
@@ -473,7 +460,7 @@ class: primary
 ![Input image and filter](vgg16-structure/filter.png)
 
 .pull-left[.center[Input image 
-`\(\displaystyle y^{(0)}\)`
+`\(\displaystyle x^{(0)}\)`
 ]]
 .pull-right[.center[
 Weight matrix
@@ -493,18 +480,18 @@ class: primary
 ![Input image and filter](vgg16-structure/filter1.png)
 
 .pull-left[.center[Convolution: 
-`\(\displaystyle y^0 \times \beta_{0,0}\)`
+`\(\displaystyle x^0 \times \beta\)`
 ]]
 .pull-right[.center[
 Feature Map
-`\(x^1\)`
+`\((\beta \ast x)(i, j)\)`
 ]]
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
 ???
 
-So first, we'd add up the input values, multiplied by the filter values - this corresponds to `\(x_{ij}\)` in the numeric formulation shown previously.
+
 
 ---
 class: primary
@@ -513,26 +500,43 @@ class: primary
 ![Input image and filter](vgg16-structure/filter2.png)
 
 .pull-left[.center[Convolution: 
-`\(\displaystyle y^0 \times \mathbf{w}\)`
+`\(\displaystyle y^0 \times \beta\)`
 ]]
 .pull-right[.center[
 Feature Map
-`\(x^1\)`
+`\((\beta \ast x)(i, j)\)`
 ]]
 
 .footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
 
---
-
-.move-margin[&lt;br/&gt;&lt;br/&gt;
-The activation function is applied to the feature map values
-]
 
 ???
 
-Then, we'd move on to the next cell and fill in that value; repeating this process for the rest of the valid cells in the input matrix. VGG16 uses a 3x3 receptive field (filter size).
 
-The nonlinear activation function is applied to the feature map values. 
+
+---
+class: primary
+## Convolutional Layers - &lt;br/&gt;Forward Propagation
+
+Let `\(x^{0}(i, j)\)` be an input image of size `\(M\times N\)`, and `\(x^\ell\)`, `\(\ell = 1, ..., k\)` be convolutional layers
+
+Let `\(\beta_{ij}\)` be a `\(m \times m\)` filter matrix at index `\(i,j\)`. 
+
+&lt;!-- Define `\(\gamma_{ij}\)` to be the bias for cell `\(i,j\)` --&gt;
+
+The `\(\ell\)`th layer, `\(x^{(\ell)}\)`, is 
+
+`$$x^{(\ell)} (i, j) = \sigma\left(({\beta_{ij}}\ast x^{(\ell - 1)})(i, j)\right)$$`
+
+where `\(\sigma(\cdot)\)` is a nonlinear activation function. 
+
+ReLU (Rectified Linear Unit), `\(\sigma(\cdot) = \max\{0, \cdot\}\)` is a common nonlinear activation function
+
+
+???
+
+Simply, a convolutional layer is a combination of a spatial filter of a certain size applied to every possible spatial area on a grid; these filters are composed of weights, and the sum over these weights produces the cell-wise values. Then a nonlinear transformation is applied to the sum. In pictures...
+
 
 ---
 class:primary
@@ -593,12 +597,13 @@ class: primary
 
 - Forward Propagation: Input -&gt; Filters -&gt; Pooling -&gt; Result
 
-- Backward Propagation: Errors -&gt; Pooling -&gt; Filters to modify weights
+- Backward Propagation: Errors -&gt; Pooling -&gt; Filters to update weights
     - Loss function `\(L\)` describing the prediction errors
-    - Gradient descent using `\(\frac{\partial L}{\partial \beta}\)`
+    - Gradient descent using `\(\frac{\partial L}{\partial \beta}\)`: at iteration `\(t\)`, with learning rate `\(\lambda\)`    
+    `$${\beta_{ij}}(t) = \beta(t-1) - \lambda \frac{\partial L}{\partial {\beta_{ij}}}$$`
+    
     
 
-`$$\left(\frac{\partial L}{\partial \beta_{ij}}\right) = \frac{\partial L}{\partial \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)} \frac{\partial \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)}{\partial \beta_{ij}} = \frac{\partial L}{\partial \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)} y^{\ell-1}_{ij}$$`
 
 .footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
 
@@ -610,15 +615,9 @@ During forward propagation, we begin with an input image and, for each layer, us
 class: primary
 ## Backward Propagation
 
-`\(\displaystyle \frac{\partial L}{\partial \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)}\)` is the gradient component:
+`$$\begin{align}\left(\frac{\partial L}{\partial \beta_{ij}}\right) &amp;= \underbrace{\frac{\partial L}{\partial \left(\beta_{ij} \ast x^{\ell - 1}\right)(i,j)}}_\text{gradient} x^{\ell-1}_{ij}\\\\\frac{\partial L}{\partial \left(\beta_{ij} \ast x^{\ell - 1}\right)(i,j)}&amp;=\frac{\partial L}{\partial x_{ij}^\ell} \left[\sigma'\left(\beta_{ij} \ast x^{\ell - 1}\right)(i,j)\right] \end{align}$$`
 
-`$$\begin{align}\frac{\partial L}{\partial \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)} &amp;= \frac{\partial L}{\partial y_{ij}^\ell}\frac{\partial y_{ij}^\ell}{\partial \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)} \\\\&amp;= \frac{\partial L}{\partial y_{ij}^\ell} \frac{\partial }{\partial \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)}\left(\sigma \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)\right) \\\\&amp;= 
- \frac{\partial L}{\partial y_{ij}^\ell} \sigma'\left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)\end{align}$$`
-
-
-`\(\displaystyle\frac{\partial L}{\partial y_{ij}^\ell}\)` is error at the current layer
-
-Thus, the gradient can be computed with the derivative of the activation function `\(\sigma(x)\)`
+The gradient can be computed with the derivative of the activation function `\(\sigma(\cdot)\)`
 
 .small[Note: ReLU is not differentiable at 0; common practice is to choose 0, 0.5, or 1 as the derivative's value at 0.]
 
@@ -632,11 +631,9 @@ Very simply, the gradient used to update the weights can be computed using the d
 class: primary
 ## Backward Propagation
 
-&lt;br/&gt;
 To propagate errors to the previous layer, 
 
-`$$\begin{align}\frac{\partial L}{\partial y_{ij}^{\ell -1}} &amp;= \frac{\partial L}{\partial \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)}\frac{\partial\left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)}{\partial y_{ij}^{\ell-1}}
-\\\\&amp;= \frac{\partial L}{\partial \left(\beta_{ij} \ast y^{\ell - 1}\right)(i,j)} \beta_{ij}\end{align}$$`
+`$$\begin{align}\frac{\partial L}{\partial x_{ij}^{\ell -1}} &amp;= \frac{\partial L}{\partial \left(\beta_{ij} \ast x^{\ell - 1}\right)(i,j)} \beta_{ij}\end{align}$$`
 
 &lt;br/&gt;
 .center[&lt;img src="vgg16-structure/vgg16-shoe-nolabel.png" width = "50%"/&gt;]
