@@ -1268,7 +1268,7 @@ class:primary
     
     - 88% accuracy; many errors attributable to data labeling
 
-
+- Coincidental match probability problem is now tractable (given a functional scanner)
 
 
 ---
@@ -1283,11 +1283,11 @@ class: primary
 
 - NIJ Grant to build the machine and collect local population data
 
+- Whole-Shoe predictions - incorporate spatial information
+
 - Make CoNNOR more interpretable
     - keras-vis Python library -> R package 
     
-- Whole-Shoe predictions - incorporate spatial information
-
 
 ---
 class: inv-center
