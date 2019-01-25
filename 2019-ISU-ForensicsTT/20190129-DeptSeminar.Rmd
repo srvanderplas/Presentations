@@ -525,11 +525,19 @@ I'm going to really quickly walk through the specific neural network we used for
 class:primary
 ## Modeling Approach
 
-Let $CNN(x)$ describe a convolutional neural network acting upon an input image $x$ with labels $Y_1... Y_z \in [0,1]^z$
+Let $CNN(x)$ describe a convolutional neural network acting upon an input image $x$ with labels ${Y_1}, ..., {Y_z} \in \{0,1\}^z$ 
 
-$ CNN(x) \rightarrow [{P_1}, ..., {P_z}]$ where $z$ is the number of output classes and $P_1$...$P_z$ are output class probabilities.
 
-The model has errors $[\epsilon_1, ..., \epsilon_z] := [Y_1 - P_1, ..., Y_z - P_z]$
+
+$CNN(x) \rightarrow [{P_1}, ..., {P_z}] \in [0,1]^9$ 
+- $z$ is the number of output classes 
+- ${P_1}, ..., {P_z}$ are output class probabilities
+
+
+
+The model has errors $[{\epsilon_1}, ..., {\epsilon_z}] = [{Y_1} - {P_1}, ..., {Y_z} - {P_z}]$
+
+
 
 ---
 class:primary
@@ -539,9 +547,9 @@ class:primary
 
 ???
 
-VGG16 is a neural network that is widely used for image recognition tasks. It's a deep convolutional network, which is a reference to the number of layers; you can see that there are several convolutional layers (2-3) for each pooling layer; these stacks of convolutional and pooling layers are then capped off with several dense layers that integrate various features together into a unified whole. The fully connected (aka dense) layers and the softmax layer form the "model head", which transforms spatial information into (usually) probabilistic class predictions.
+This is one example of a "very deep" convolutional neural network. Very deep describes the number of convolutional layers (13), which is large compared to other common CNN architectures. The input image, in this case, 256x256, goes through two convolutional layers with 64 filters; it then passes through a max pooling layer where the dimension of the matrix is reduced. In the 128x128 layer, the number of filters used expands, and the filters become somewhat more complex. In each subsequent convolutional block, there are multiple convolutional layers capped off by a dimension-reducing max pooling layer. At the conclusion of the convolutional layers, there is a model head, where the local spatial information identified in the convolutional layers is integrated into unified whole. At the end of the fully connected layers, there is a softmax activation layer that transforms the information into class probabilities. 
 
-The convolutional layers are often treated as magic, so I'm going to do my best to ruin that illusion for you.
+I'm going to talk about each of these layer types in turn - it's fairly easy for these models to turn into magic boxes, and we want to avoid that with any model.
 
 ---
 class: primary
@@ -551,6 +559,12 @@ Let $x$ be an image represented as a numerical matrix, indexed by $i, j$, and $\
 
 The convolution of image $x$ and filter $\beta$ is $$(\beta \ast x)(i, j) = \sum_{s = -a}^a\sum_{t = -b}^b \beta(s, t) x(i-s, j-t)$$
 
+???
+
+Let's start with the convolution part of CNNs. Image convolution is the application of a filter that is smaller than the image to every possible "tile" of the image, where each filter application results in a single value. 
+
+The math is relatively simple, but it's much easier to see what's going on using pictures. Throughout this exercise, we'll refer to the image $x$ and filter $\beta$; note that the dimension of $\beta$ is odd.
+
 ---
 class: primary
 ## Convolutional Layers
@@ -558,7 +572,7 @@ class: primary
 ![Input image and filter](vgg16-structure/filter.png)
 
 .pull-left[.center[Input image 
-$\displaystyle x^{(0)}$
+$\displaystyle x$
 ]]
 .pull-right[.center[
 Weight matrix
@@ -578,7 +592,7 @@ class: primary
 ![Input image and filter](vgg16-structure/filter1.png)
 
 .pull-left[.center[Convolution: 
-$\displaystyle x^0 \times \beta$
+$\displaystyle \beta\ast x$
 ]]
 .pull-right[.center[
 Feature Map
@@ -589,7 +603,7 @@ $(\beta \ast x)(i, j)$
 
 ???
 
-
+We start in the upper left corner of $x$, applying $\beta$ cell-wise to each overlapping cell of $x$. We then move over by one and do the same thing.
 
 ---
 class: primary
@@ -598,7 +612,7 @@ class: primary
 ![Input image and filter](vgg16-structure/filter2.png)
 
 .pull-left[.center[Convolution: 
-$\displaystyle y^0 \times \beta$
+$\displaystyle \beta\ast x$
 ]]
 .pull-right[.center[
 Feature Map
@@ -610,30 +624,35 @@ $(\beta \ast x)(i, j)$
 
 ???
 
-
+Some CNNs pad the input image so that the resulting feature map is the same dimension as the input image.
 
 ---
 class: primary
 ## Convolutional Layers - <br/>Forward Propagation
 
-Let $x^{0}(i, j)$ be an input image of size $M\times N$, and $x^\ell$, $\ell = 1, ..., k$ be convolutional layers
+- $x^{0}(i, j)$ is an input image of size $M\times N$
 
-Let $\beta_{ij}$ be a $m \times m$ filter matrix at index $i,j$. 
+- $x^\ell$, $\ell = 1, ..., n$ are convolutional layers in the network.
 
-<!-- Define $\gamma_{ij}$ to be the bias for cell $i,j$ -->
+- $\beta^\ell_{k}$ is an $m \times m$ filter matrix in layer $\ell$, $k = 1, ..., p^\ell$
 
-The $\ell$th layer, $x^{(\ell)}$, is 
+- $\gamma^\ell$ is the bias matrix for layer $\ell$, with the same dimension as $\beta^\ell\ast x^{(\ell-1)}$
 
-$$x^{(\ell)} (i, j) = \sigma\left(({\beta_{ij}}\ast x^{(\ell - 1)})(i, j)\right)$$
+The $\ell$th layer, $x^{(\ell)}$, is indexed by $i$, $j$, and $k$:
+
+$$x^{(\ell)}_k (i, j) = \sigma\left(({\beta^\ell_k}\ast x^{(\ell - 1)})(i, j) + \gamma^\ell\right)$$
 
 where $\sigma(\cdot)$ is a nonlinear activation function. 
+
 
 ReLU (Rectified Linear Unit), $\sigma(\cdot) = \max\{0, \cdot\}$ is a common nonlinear activation function
 
 
 ???
 
-Simply, a convolutional layer is a combination of a spatial filter of a certain size applied to every possible spatial area on a grid; these filters are composed of weights, and the sum over these weights produces the cell-wise values. Then a nonlinear transformation is applied to the sum. In pictures...
+Now that the convolutional part is explained, we need to understand how values pass from layer to layer through the network. Forward propagation is the numerical calculation that transitions from image to layer output (and then to the next layer, and so on until the model class probabilities are the output)
+
+We're going to refer to $x^0$ more formally at this point as the input image, and $x^\ell$ as successive layers in the network. We have filters $\beta^\ell_k$, sometimes called model weights, and biases for each layer, $\gamma^\ell$. Then our output layer is a three-dimensional matrix, where i and j index the spatial information and k indexes the filters. A nonlinear function is applied to the convolution of the layer and the filter added to the bias matrix. 
 
 
 ---
@@ -644,7 +663,7 @@ class:primary
 
 ???
 
-It's possible to reduce the lost dimensionality by padding the image; which is what many CNNS do. This way, image size changes only with max-pooling layers, and the image is halved in width and length with each max pooling layers. What do max pooling layers do?
+We've discussed the convolutional layer operations; we'll now talk briefly about the max pooling layers. 
 
 ---
 class: primary
@@ -656,13 +675,17 @@ class: primary
 
 ???
 
-Simply, they look at a 2x2 area and take the maximum pixel value. Thus, the output region is exactly half of the input region. 
+Max pooling layers take a $p\timesp$ region and take the maximum over all cells. Stride is the offset between pooling regions. With a 2x2 window and stride of 2, the output layer is 1/4 the size of the input layer. 
 
 ---
 class:primary
 ## CNN Architecture
 
 <img src="vgg16-structure/vgg16-shoe-nolabel.png" alt = "VGG16 model structure" width = "95%"/>
+
+???
+
+We've made it through what's called the model base - the convolutional and pooling layers that aggregate spatial information locally. The model head takes that information and provides a more global integration, culminating in the output of class probabilities after the softmax layer. Different models have different numbers of fully connected layers in the head; the number of layers here has a large influence on the number of parameters that have to be optimized during the fitting process. 
 
 ---
 class: primary
@@ -676,7 +699,7 @@ plot_deepviz2(c(12, 4), r = .005)
 
 ???
 
-Fully connected layers are also known as dense layers; they take the spatial information and look for patterns. Numerically, they are used to reduce the dimensionality, and often have "dropout", which reduces the number of parameters by pruning weak connections.
+Fully connected layers are also known as dense layers; they take the spatial information and look for patterns. These fully connected layers often have "dropout", which reduces the number of parameters by pruning weak connections.
 
 ---
 class: primary
@@ -686,8 +709,8 @@ class: primary
 plot_deepviz_sample(c(12, 4), r = .005, dropout_rate = 0.5) + 
   theme(legend.position = c(1, 0), legend.justification = c(1, 0))
 ```
-- Used for spatial pattern integration
 - Reduces number of parameters
+- Used for spatial pattern integration
 
 ???
 
@@ -702,29 +725,28 @@ class: primary
 
 - Backward Propagation: Errors -> Pooling -> Filters to update weights
     - Loss function $L$ describing the prediction errors
-    - Gradient descent using $\frac{\partial L}{\partial \beta}$: at iteration $t$, with learning rate $\lambda$    
-    $${\beta_{ij}}(t) = \beta(t-1) - \lambda \frac{\partial L}{\partial {\beta_{ij}}}$$
+    - Gradient descent using $$\frac{\partial L}{\partial \beta}$$
+    at iteration $t$, with learning rate $\lambda$, 
+    $${\beta_k}(t) = \beta_k(t-1) - \lambda \frac{\partial L}{\partial {\beta_k}}$$
     
-    
-
-
-.footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
-
 ???
 
-During forward propagation, we begin with an input image and, for each layer, use the filters and pooling operators to compute a series of features that contribute to the resulting output probability. To fit the model to the training data, we must be able to move backwards, adjusting the filter weights and biases in order to produce better estimates. Backward propagation, or backpropagation, is how this adjustment occurs. In essence, CNN backpropagation employs gradient descent, applied to each cell of each layer. 
+During forward propagation, we begin with an input image and, for each layer, use the filters and pooling operators to compute a series of features that contribute to the resulting output probability. 
+
+To fit the model to the training data, we must be able to move backwards, adjusting the filter weights and biases in order to produce better estimates. Backward propagation, or backpropagation, is how this adjustment occurs. In essence, CNN backpropagation employs gradient descent, applied to each cell of each layer. 
+
+Common loss functions are squared error loss and cross-entropy, depending on the classification type and specific output layer.  
 
 ---
 class: primary
 ## Backward Propagation
 
-$$\begin{align}\left(\frac{\partial L}{\partial \beta_{ij}}\right) &= \underbrace{\frac{\partial L}{\partial \left(\beta_{ij} \ast x^{\ell - 1}\right)(i,j)}}_\text{gradient} x^{\ell-1}_{ij}\\\\\frac{\partial L}{\partial \left(\beta_{ij} \ast x^{\ell - 1}\right)(i,j)}&=\frac{\partial L}{\partial x_{ij}^\ell} \left[\sigma'\left(\beta_{ij} \ast x^{\ell - 1}\right)(i,j)\right] \end{align}$$
+$$\begin{align}\left(\frac{\partial L}{\partial \beta^\ell_k}\right) &= \underbrace{\frac{\partial L}{\partial \left(\beta^\ell_k \ast x^{\ell - 1}\right)(i,j)}}_\text{gradient} x^{\ell-1}_{ij}\\\\\frac{\partial L}{\partial \left(\beta^\ell_k \ast x^{\ell - 1}\right)(i,j)}&=\frac{\partial L}{\partial x_{ij}^\ell} \left[\sigma'\left(\beta^\ell_k \ast x^{\ell - 1}\right)(i,j)\right] \end{align}$$
 
 The gradient can be computed with the derivative of the activation function $\sigma(\cdot)$
 
-.small[Note: ReLU is not differentiable at 0; common practice is to choose 0, 0.5, or 1 as the derivative's value at 0.]
-
-.footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
+<br/>
+.small[Note: ReLU is not differentiable at 0; common practice is to set 0, 0.5, or 1 as the derivative's value at 0.]
 
 ???
 
@@ -736,21 +758,69 @@ class: primary
 
 To propagate errors to the previous layer, 
 
-$$\begin{align}\frac{\partial L}{\partial x_{ij}^{\ell -1}} &= \frac{\partial L}{\partial \left(\beta_{ij} \ast x^{\ell - 1}\right)(i,j)} \beta_{ij}\end{align}$$
+$$\begin{align}\frac{\partial L}{\partial x_{ij}^{\ell -1}} &= \frac{\partial L}{\partial \left(\beta_k^\ell \ast x^{\ell - 1}\right)(i,j)} \beta_k^\ell\end{align}$$
 
 <br/>
 .center[<img src="vgg16-structure/vgg16-shoe-nolabel.png" width = "50%"/>]
 
 .center[<b>13 convolutional layers = a lot of backpropagation</b>]
 
-.footer[Source: http://andrew.gibiansky.com/blog/machine-learning/convolutional-neural-networks/]
-
 ???
 
 Then, with a bit more manipulation, we can move the errors from the current layer to a previous layer, and use that to update weights there.
 
-With 13 convolutional layers, and a 256x256 image, this process is repeated a lot. It's only relatively recently that the computational power required for this process became widely available. 
+With 13 convolutional layers, and a 256x256 image, this process is repeated a lot. It's only relatively recently that the computational power required to fit neural networks with this complexity became available, though the process has been around since the 1980s.
 
+---
+class: primary
+## Parameter Space
+
+.move-margin[<br/>![VGG16 model structure](vgg16-structure/vgg-sideways-nohead.png)]
+- Convolutional base: ~14.5 million parameters
+
+- Simple model head (9 output classes): ~8.3 million parameters
+
+- Total parameter space: ~22.8 million
+
+- Estimated model optimization time: 2-3 weeks with 4 GPUs
+
+- Data requirements: > 1 million labeled images
+
+--
+
+<br/><br/>
+
+.center[We have 25k labeled images]
+
+???
+
+These networks are so powerful in part because they have so many parameters; a total of 22.8 million for a model with the convolutional structure we've been working with and a very simple model head. That many parameters requires an amount of labeled training data we simply don't have; the time to fit those models is also unappealing: around a month using multiple GPUs. 
+
+---
+class: primary
+## Transfer learning
+
+.move-margin[<br/>![VGG16 model structure](vgg16-structure/vgg-sideways-connorhead.png)]
+
+- Use weights from a model trained on different input data
+
+- Freeze the weights in the convolutional base
+
+- Train a new model head
+
+- Total parameter space: 8.3 million
+
+--
+
+#### VGG16
+- pre-trained CNN `r Citep(bb, 'simonyan_very_2014', .opts = list(max.names = 1, longnamesfirst = F))`
+    - Trained on 1.3 million images from ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst=F))`
+    
+    - Simple structure
+
+???
+
+We can use transfer learning to take advantage of the fact that there are pre-trained models available: we use the convolutional base (and the weights) from the pre-trained model and fit a new model head using the data we do have. This saves a huge amount of computational time and takes advantage of the fact that visual features generalize fairly well; the same set of filters that can recognize cats and dogs can also recognize circles and squares if the dense layers are properly calibrated. Using this approach, the model takes less than 3 hours to fit (we run model updates every night). 
 
 <!-- --- -->
 <!-- class: primary -->
@@ -787,7 +857,7 @@ class:primary
 ## Acquire Data
 <img alt="Zappos Screenshot showing sole images" src="labelme-imgs/zappos.png" width="90%" style="margin: 0 5%"/>
 
-.move-margin[<br/><br/>`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "shoe outsole images")` scraped since April 2018]
+.move-margin[<br/><br/>`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "images")` scraped since April 2018]
 
 ???
 
@@ -800,12 +870,11 @@ class:primary
 ## Label Data
 ![LabelMe](labelme-imgs/LabelMe1.png)
 
-- `r prettyNum(length(unique(annotated_imgs$annot_num)), big.mark =  ",")` regions labeled with one or more geometric objects
-- `r prettyNum(length(annotated_imgs$image), big.mark =  ",")` labels
 - [LabelMe Annotation Tool](https://github.com/CSAILVision/LabelMeAnnotationTool) used as a web interface - creates XML files with labels and coordinates. `r Citep(bb, 'russell_labelme_2008', .opts = list(max.names = 1, longnamesfirst = F))`
 
+- `r prettyNum(length(unique(annotated_imgs$annot_num)), big.mark =  ",")` regions labeled with one or more geometric objects
+- `r prettyNum(length(annotated_imgs$image), big.mark =  ",")` labels
 
---
 .small[.move-margin[
 <br/><br/>Labeling courtesy of 
 - Jenny Kim
