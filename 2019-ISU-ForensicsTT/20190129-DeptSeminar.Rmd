@@ -750,6 +750,8 @@ The gradient can be computed with the derivative of the activation function $\si
 
 ???
 
+I'm going to talk about the backpropagation of the weights and ignore the biases for the time being; the process is even simpler for the biases because they are not convolved with the previous layer. 
+
 Very simply, the gradient used to update the weights can be computed using the derivative of the activation function. 
 
 ---
