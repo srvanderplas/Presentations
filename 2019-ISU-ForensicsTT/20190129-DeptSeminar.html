@@ -647,6 +647,8 @@ The gradient can be computed with the derivative of the activation function `\(\
 
 ???
 
+I'm going to talk about the backpropagation of the weights and ignore the biases for the time being; the process is even simpler for the biases because they are not convolved with the previous layer. 
+
 Very simply, the gradient used to update the weights can be computed using the derivative of the activation function. 
 
 ---
@@ -675,9 +677,9 @@ class: primary
 .move-margin[&lt;br/&gt;![VGG16 model structure](vgg16-structure/vgg-sideways-nohead.png)]
 - Convolutional base: ~14.5 million parameters
 
-- Simple model head (9 output classes): ~8.3 million parameters
+- Simple model head (9 output classes): ~8.4 million parameters
 
-- Total parameter space: ~22.8 million
+- Total parameter space: ~22.9 million
 
 - Estimated model optimization time: 2-3 weeks with 4 GPUs
 
@@ -705,41 +707,22 @@ class: primary
 
 - Train a new model head
 
-- Total parameter space: 8.3 million
+- Total parameter space: 8.4 million
+
+- Model optimization time: &lt;3 hours
 
 --
 
 #### VGG16
-- pre-trained CNN (Simonyan, et al., 2014)
-    - Trained on 1.3 million images from ImageNet (Krizhevsky, et al., 2012)
+- Pre-trained CNN (Simonyan, et al., 2014)
+    - Trained on 1.3 million images from ImageNet    
+    (Krizhevsky, et al., 2012)
     
     - Simple structure
 
 ???
 
 We can use transfer learning to take advantage of the fact that there are pre-trained models available: we use the convolutional base (and the weights) from the pre-trained model and fit a new model head using the data we do have. This saves a huge amount of computational time and takes advantage of the fact that visual features generalize fairly well; the same set of filters that can recognize cats and dogs can also recognize circles and squares if the dense layers are properly calibrated. Using this approach, the model takes less than 3 hours to fit (we run model updates every night). 
-
-&lt;!-- --- --&gt;
-&lt;!-- class: primary --&gt;
-&lt;!-- ##  --&gt;
-
-&lt;!-- - We have __9__ class labels and __&lt;25,000__ labeled images --&gt;
-
-&lt;!-- - Most CNNs require &gt; 100K images during training --&gt;
-&lt;!--     - Convolutional base for 256 x 256 x 3 images has ~14.7 million parameters (Simonyan, et al., 2014) --&gt;
-&lt;!--     - Head has ~155 million parameters and outputs 1000 different class label predictions --&gt;
-
-&lt;!-- -- --&gt;
-
-&lt;!-- - Solution: Use the pre-trained model base (all of the convolutional layers) and train a new head --&gt;
-&lt;!--     - "Transfer learning"  --&gt;
-&lt;!--     - Reduced to __8,391,177__ parameters --&gt;
-
-&lt;!-- ??? --&gt;
-
-&lt;!-- Using the network architecture I've been showing as we talked through this process, the total number of parameters in the model base is about 14.5 million; there are just over 155 million parameters in the model head. To find initial values for these parameters, they used 150,000 different images. --&gt;
-
-&lt;!-- We only have 9 classes, each corresponding to a geometric shape; we have less than 25K images. We can't train the full thing (and don't want to wait for a month between model iterations); instead, we'll use the base of and optimize a new head consisting of a fully connected layer and a softmax activation layer. Our model doesn't need to be able to tell a corgi from a golden retriever; we only need it to be able to distinguish quadrilaterals, circles, lines, and text.  --&gt;
 
 ---
 class: inv-center
@@ -754,7 +737,7 @@ class:primary
 ## Acquire Data
 &lt;img alt="Zappos Screenshot showing sole images" src="labelme-imgs/zappos.png" width="90%" style="margin: 0 5%"/&gt;
 
-.move-margin[&lt;br/&gt;&lt;br/&gt;49745 images scraped since April 2018]
+.move-margin[&lt;br/&gt;&lt;br/&gt;50237 images scraped since April 2018]
 
 ???
 
@@ -960,15 +943,37 @@ When the model is sufficiently well-calibrated, we can then work with engineers 
 class:primary
 ## Interpreting the model
 
-- Active area of research: How to debug, interpret, and understand what a CNN is actually doing (Olah, et al., 2018)
+What is a CNN actually doing? (Olah, et al., 2018)
 
-- Which regions in the image are relevant to the class?
+1. Which regions in the image are relevant to each class?
 
-- Which filters are most important for detection of each class?
+2. Which regions in the image activate which filters?
 
+3. Which filters are most important for detection of each class?
+    
+4. What do the filters detect?
+    - Semantic segmentation (Long, et al., 2015)
+    - Filter visualization
+
+&lt;div class="small move-margin"&gt;
+&lt;!-- 2. &lt;b&gt;Regions and Filters:&lt;/b&gt; --&gt;
+&lt;img src="interpretation/cat_dog.png"/&gt;
+&lt;img src="interpretation/cat_dog_filters.png"/&gt;
+&lt;span style="font-size:42%"&gt;Source: https://distill.pub/2018/building-blocks/&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;div class="pull-left"&gt;
+&lt;img src="interpretation/conv1_filters.png" alt="VGG16 Filters, convolutional layer 1"/&gt;
+&lt;span style="font-size:30%"&gt;Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;div class="pull-right"&gt;
+&lt;img src="interpretation/neuron_attribution.png" width = "74%" style = "margin-left:13%;margin-right:13%;" alt="Which regions and filters?"/&gt;
+&lt;span style = "margin-left:13%;margin-right:13%;font-size:30%"&gt;Source: https://distill.pub/2018/building-blocks/&lt;/span&gt;
+&lt;/div&gt;
 ???
 
-During this process, it's also helpful to see what the model is using to determine which features are present or absent. Black box models are notoriously difficult to debug, but this is a very active area of current research. 
+During this process, it's also helpful to see what the model is using to determine which features are present or absent. Black box models are notoriously difficult to see inside, but this is a very active area of current research. 
 
 In particular, we'd like to know which regions in the image are relevant to the class, and which filters in the model are important for detecting each class. We've made some progress on the first question, and are actively looking into the second. 
 
@@ -978,12 +983,14 @@ In particular, we'd like to know which regions in the image are relevant to the 
 
 ---
 class:primary
-## Interpreting the Model&lt;br&gt;Class Activation Maps
+## Interpreting the model&lt;br&gt;Class Activation Maps
 
-.left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
-.right-column[
+&lt;br/&gt;
+&lt;br/&gt;
 ![unscaled heatmapp - DC](heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png)
-]
+&lt;br/&gt;
+&lt;br/&gt;
+Heatmaps are scaled by class. Yellow = high activation
 
 .move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
 
@@ -993,12 +1000,14 @@ Class activation maps use the gradient with respect to each class label, back pr
 
 ---
 class:primary
-## Interpreting the Model&lt;br&gt;Class Activation Maps
+## Interpreting the model&lt;br&gt;Class Activation Maps
 
-.left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
-.right-column[
+&lt;br/&gt;
+&lt;br/&gt;
 ![unscaled heatmapp - adidas](heatmaps/heatmap-test_image.png)
-]
+&lt;br/&gt;
+&lt;br/&gt;
+Heatmaps are scaled by class. Yellow = high activation
 
 .move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
 
@@ -1009,12 +1018,14 @@ This is a piece of the Adidas text that is part of the design of many of their s
 
 ---
 class:primary
-## Interpreting the Model&lt;br&gt;Class Activation Maps
+## Interpreting the model&lt;br&gt;Class Activation Maps
 
-.left-column[&lt;br/&gt;&lt;br/&gt;For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
-.right-column[
+&lt;br/&gt;
+&lt;br/&gt;
 ![unscaled heatmapp - seychelles](heatmaps/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
-]
+&lt;br/&gt;
+&lt;br/&gt;
+Heatmaps are scaled by class. Yellow = high activation
 
 .move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
 
@@ -1026,7 +1037,17 @@ In a similar instance, the model cues in on circles in script S characters as we
 class:primary
 ## Summary
 
-Something useful goes here...
+- Geometric shapes provide a convenient feature space for assessing shoe similarity
+
+- Transfer learning allows application of CNNs to much smaller datasets
+
+- CoNNOR performs well
+    - Reduction in feature space: 256 x 256 x 3 -&gt; 9
+    
+    - 88% accuracy; many errors attributable to data labeling
+
+
+
 
 ---
 class:inv-center
@@ -1036,12 +1057,14 @@ class:inv-center
 class: primary
 ## What's Next?
 
+- Paper &lt;!--where?--&gt;
+
+- NIJ Grant to build the machine and collect local population data
+
 - Make CoNNOR more interpretable
     - keras-vis Python library -&gt; R package 
     
 - Whole-Shoe predictions - incorporate spatial information
-
-- NIJ Grant to build the machine and collect local population data
 
 
 ---
@@ -1072,6 +1095,13 @@ Ed. by F. Pereira, C. J. C. Burges, L. Bottou and K. Q. Weinberger.
 Curran Associates, Inc., 2012, pp. 1097&amp;ndash;1105.&lt;/cite&gt;&lt;/p&gt;
 
 &lt;p&gt;[4]&lt;cite&gt;
+J. Long, E. Shelhamer and T. Darrell.
+&amp;ldquo;Fully Convolutional Networks for Semantic Segmentation&amp;rdquo;.
+In: 
+2015, pp. 3431&amp;ndash;3440.
+URL: &lt;a href="https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Long_Fully_Convolutional_Networks_2015_CVPR_paper.html"&gt;https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Long_Fully_Convolutional_Networks_2015_CVPR_paper.html&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[5]&lt;cite&gt;
 C. Olah, A. Satyanarayan, I. Johnson, et al.
 &amp;ldquo;The Building Blocks of Interpretability&amp;rdquo;.
 En.
@@ -1080,7 +1110,7 @@ ISSN: 2476-0757.
 DOI: &lt;a href="https://doi.org/10.23915/distill.00010"&gt;10.23915/distill.00010&lt;/a&gt;.
 URL: &lt;a href="https://distill.pub/2018/building-blocks"&gt;https://distill.pub/2018/building-blocks&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
 
-&lt;p&gt;[5]&lt;cite&gt;
+&lt;p&gt;[6]&lt;cite&gt;
 B. C. Russell, A. Torralba, K. P. Murphy, et al.
 &amp;ldquo;LabelMe: A Database and Web-Based Tool for Image Annotation&amp;rdquo;.
 En.
@@ -1089,7 +1119,7 @@ ISSN: 0920-5691, 1573-1405.
 DOI: &lt;a href="https://doi.org/10.1007/s11263-007-0090-8"&gt;10.1007/s11263-007-0090-8&lt;/a&gt;.
 URL: &lt;a href="http://link.springer.com/10.1007/s11263-007-0090-8"&gt;http://link.springer.com/10.1007/s11263-007-0090-8&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
 
-&lt;p&gt;[6]&lt;cite&gt;
+&lt;p&gt;[7]&lt;cite&gt;
 K. Simonyan and A. Zisserman.
 &amp;ldquo;Very Deep Convolutional Networks for Large-Scale Image Recognition&amp;rdquo;.
 En.

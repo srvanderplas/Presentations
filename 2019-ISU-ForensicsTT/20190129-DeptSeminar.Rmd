@@ -15,7 +15,11 @@ class: primary
 library(magrittr)
 library(tidyverse)
 library(ggplot2)
-theme_set(theme_bw())
+mytheme <- theme_bw() + 
+  theme(panel.grid.major = element_line(color = "grey50"),
+        panel.grid.minor = element_line(color = "grey60"))
+
+theme_set(mytheme)
 knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T, dpi = 300, dev = 'png')
 
 source("~/models/shoe_nn/Generate_Model_Images.R")
@@ -780,9 +784,9 @@ class: primary
 .move-margin[<br/>![VGG16 model structure](vgg16-structure/vgg-sideways-nohead.png)]
 - Convolutional base: ~14.5 million parameters
 
-- Simple model head (9 output classes): ~8.3 million parameters
+- Simple model head (9 output classes): ~8.4 million parameters
 
-- Total parameter space: ~22.8 million
+- Total parameter space: ~22.9 million
 
 - Estimated model optimization time: 2-3 weeks with 4 GPUs
 
@@ -810,41 +814,22 @@ class: primary
 
 - Train a new model head
 
-- Total parameter space: 8.3 million
+- Total parameter space: 8.4 million
+
+- Model optimization time: <3 hours
 
 --
 
 #### VGG16
-- pre-trained CNN `r Citep(bb, 'simonyan_very_2014', .opts = list(max.names = 1, longnamesfirst = F))`
-    - Trained on 1.3 million images from ImageNet `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst=F))`
+- Pre-trained CNN `r Citep(bb, 'simonyan_very_2014', .opts = list(max.names = 1, longnamesfirst = F))`
+    - Trained on 1.3 million images from ImageNet    
+    `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst=F))`
     
     - Simple structure
 
 ???
 
 We can use transfer learning to take advantage of the fact that there are pre-trained models available: we use the convolutional base (and the weights) from the pre-trained model and fit a new model head using the data we do have. This saves a huge amount of computational time and takes advantage of the fact that visual features generalize fairly well; the same set of filters that can recognize cats and dogs can also recognize circles and squares if the dense layers are properly calibrated. Using this approach, the model takes less than 3 hours to fit (we run model updates every night). 
-
-<!-- --- -->
-<!-- class: primary -->
-<!-- ##  -->
-
-<!-- - We have __9__ class labels and __<25,000__ labeled images -->
-
-<!-- - Most CNNs require > 100K images during training -->
-<!--     - Convolutional base for 256 x 256 x 3 images has ~14.7 million parameters `r Citep(bb, 'simonyan_very_2014', .opts = list(max.names = 1, longnamesfirst = F))` -->
-<!--     - Head has ~155 million parameters and outputs 1000 different class label predictions -->
-
-<!-- -- -->
-
-<!-- - Solution: Use the pre-trained model base (all of the convolutional layers) and train a new head -->
-<!--     - "Transfer learning"  -->
-<!--     - Reduced to __8,391,177__ parameters -->
-
-<!-- ??? -->
-
-<!-- Using the network architecture I've been showing as we talked through this process, the total number of parameters in the model base is about 14.5 million; there are just over 155 million parameters in the model head. To find initial values for these parameters, they used 150,000 different images. -->
-
-<!-- We only have 9 classes, each corresponding to a geometric shape; we have less than 25K images. We can't train the full thing (and don't want to wait for a month between model iterations); instead, we'll use the base of and optimize a new head consisting of a fully connected layer and a softmax activation layer. Our model doesn't need to be able to tell a corgi from a golden retriever; we only need it to be able to distinguish quadrilaterals, circles, lines, and text.  -->
 
 ---
 class: inv-center
@@ -908,9 +893,10 @@ annotated_imgs %>%
   scale_fill_manual("Labels", values = c("single" = "#6ba2b9", "multiple" = "#2e5597")) + 
   coord_flip() + 
   ylab("# Labeled Images") + 
-  xlab("") + 
-  theme(legend.position = c(1, 1), legend.justification = c(1, 1), legend.background = element_rect(fill = "transparent")) + 
-  ggtitle("Current Class Distribution (All Labeled Images)")
+  xlab("")  + 
+  ggtitle("Current Class Distribution (All Labeled Images)") + 
+  mytheme + 
+  theme(legend.position = c(1, 1), legend.justification = c(1, 1), legend.background = element_rect(fill = "transparent"))
 ```
 
 ???
@@ -991,9 +977,10 @@ data.frame(history$metrics) %>%
   geom_smooth(se = F) + 
   facet_grid(measure~., scales = "free_y", switch = "both") + 
   theme_bw() + 
-  theme(axis.title.y = element_blank(), legend.position = c(1, .5), legend.justification = c(1, 0), legend.background = element_rect(fill = "transparent")) + 
+  scale_y_continuous("") + 
   scale_x_continuous("Epoch") + 
-  ggtitle("CoNNOR Training Performance")
+  ggtitle("CoNNOR Training Performance") + mytheme + 
+  theme(axis.title.y = element_blank(), legend.position = c(1, .5), legend.justification = c(1, 0), legend.background = element_rect(fill = "transparent"))
 ```
 
 .move-margin[<br/><br/><br/><br/><br/><br/><br/><br/>.small[Binary Cross-entropy Loss: 
@@ -1021,15 +1008,15 @@ whole_model_roc_df <- tibble(tpr = whole_model_roc$sensitivities,
   nest(tpr, fpr, thresholds, .key =  "roc_plot") %>%
   mutate(eer = purrr::map(roc_plot, eer))
 ggplot() + 
-  geom_line(aes(x = fpr, y = tpr), data = unnest(whole_model_roc_df, roc_plot)) + 
-  geom_text(aes(x = 1, y = .07, label = sprintf("AUC: %0.2f", auc)), hjust = 1, vjust = -0.2, data = whole_model_roc_df) +
-  geom_point(aes(x = fpr, y = tpr, color = "Equal Error Rate"), data = unnest(whole_model_roc_df, eer)) +
+  geom_line(aes(x = fpr, y = tpr), data = unnest(whole_model_roc_df, roc_plot), size = 1.25) + 
+  geom_label(aes(x = 1, y = .07, label = sprintf("AUC: %0.2f", auc)), hjust = 1, vjust = -0.2, data = whole_model_roc_df) +
+  geom_point(aes(x = fpr, y = tpr, color = "Equal Error Rate"), data = unnest(whole_model_roc_df, eer), size = 2) +
   scale_color_manual("", values = "black") +
   scale_x_continuous("False Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) +
   scale_y_continuous("True Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) + 
   ggtitle("CoNNOR Test Set Performance (All Classes)") + 
-  theme(legend.position = c(1, 0), legend.justification = c(1, 0), legend.title = element_blank(), legend.background = element_rect(fill = "transparent")) + 
-  coord_fixed()
+  coord_fixed() + mytheme + 
+  theme(legend.position = c(1, 0), legend.justification = c(1.01, -0.01), legend.title = element_blank(), legend.background = element_rect(fill = "white")) 
 
 ```
 
@@ -1045,7 +1032,18 @@ class:primary
 
 ```{r class-roc, fig.width = 7.5, fig.height = 5, out.width = "99%", fig.cap = "Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class."}
 aucs <- plot_onehot_roc(preds, test_labs, str_to_title(classes))
-aucs$plot + ggtitle("CoNNOR Test Set Performance") + 
+thresholds <- purrr::map_dbl(aucs$data$eer, ~.$thresholds)
+aucs$data$thresholds <- thresholds
+
+ggplot() +
+  geom_line(aes(x = fpr, y = tpr), data = unnest(aucs$data, roc_plot), size = 1.25) +
+  geom_label(aes(x = 1, y = 0, label = sprintf("AUC: %0.2f\nEER: %0.2f", auc, thresholds)), hjust = 1, vjust = -0.02, data = aucs$data) +
+  geom_point(aes(x = fpr, y = tpr, color = "Equal Error\nRate"), data = unnest(aucs$data, eer), size = 2) +
+  scale_color_manual("", values = "black") +
+  facet_wrap(~class) +
+  scale_x_continuous("False Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) +
+  scale_y_continuous("True Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) +
+  ggtitle("CoNNOR Test Set Performance") + 
   facet_wrap(~class, nrow = 2) + 
   coord_fixed() + 
   theme(legend.position = c(1, 0), legend.justification = c(1, 0))
@@ -1061,7 +1059,7 @@ Equal error rates are marked with a dot, and show the point at which it is equal
 class:primary
 ## Evaluating the Model
 ```{r ConfMatrix, message = F, warning = F, fig.width = 7.5, fig.height = 6.5, out.width = "80%", fig.cap = "Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes."}
-thresholds <- purrr::map_dbl(aucs$data$eer, ~.$thresholds)
+
 
 get_confusion_matrix(preds, test_labs, str_to_title(classes), threshold = thresholds) %>%
   set_names(str_to_title(classes)) %>%
@@ -1070,6 +1068,7 @@ get_confusion_matrix(preds, test_labs, str_to_title(classes), threshold = thresh
   scale_x_discrete("Image Label") + scale_y_discrete("Prediction") +
   theme(axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14, angle = 90, vjust = 1)) +
   ggtitle("CoNNOR Multi-Class Confusion Matrix: Test Set Performance") + 
+  mytheme +
   theme(plot.margin = grid::unit(c(0,0,0,0), "mm"), plot.background = element_rect(fill = "transparent", color = NA),
         plot.subtitle = element_blank(), plot.caption = element_blank(), panel.spacing = unit(c(0, 0, 0, 0), "mm"))
 ```
@@ -1122,15 +1121,37 @@ When the model is sufficiently well-calibrated, we can then work with engineers 
 class:primary
 ## Interpreting the model
 
-- Active area of research: How to debug, interpret, and understand what a CNN is actually doing `r Citep(bb, 'olah_building_2018', .opts = list(max.names = 1, longnamesfirst = F))`
+What is a CNN actually doing? `r Citep(bb, 'olah_building_2018', .opts = list(max.names = 1, longnamesfirst = F))`
 
-- Which regions in the image are relevant to the class?
+1. Which regions in the image are relevant to each class?
 
-- Which filters are most important for detection of each class?
+2. Which regions in the image activate which filters?
 
+3. Which filters are most important for detection of each class?
+    
+4. What do the filters detect?
+    - Semantic segmentation `r Citep(bb, 'long_fully_2015', .opts = list(max.names = 1, longnamesfirst = F))`
+    - Filter visualization
+
+<div class="small move-margin">
+<!-- 2. <b>Regions and Filters:</b> -->
+<img src="interpretation/cat_dog.png"/>
+<img src="interpretation/cat_dog_filters.png"/>
+<span style="font-size:42%">Source: https://distill.pub/2018/building-blocks/</span>
+</div>
+
+<div class="pull-left">
+<img src="interpretation/conv1_filters.png" alt="VGG16 Filters, convolutional layer 1"/>
+<span style="font-size:30%">Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html</span>
+</div>
+
+<div class="pull-right">
+<img src="interpretation/neuron_attribution.png" width = "74%" style = "margin-left:13%;margin-right:13%;" alt="Which regions and filters?"/>
+<span style = "margin-left:13%;margin-right:13%;font-size:30%">Source: https://distill.pub/2018/building-blocks/</span>
+</div>
 ???
 
-During this process, it's also helpful to see what the model is using to determine which features are present or absent. Black box models are notoriously difficult to debug, but this is a very active area of current research. 
+During this process, it's also helpful to see what the model is using to determine which features are present or absent. Black box models are notoriously difficult to see inside, but this is a very active area of current research. 
 
 In particular, we'd like to know which regions in the image are relevant to the class, and which filters in the model are important for detecting each class. We've made some progress on the first question, and are actively looking into the second. 
 
@@ -1184,12 +1205,14 @@ tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
 
 ---
 class:primary
-## Interpreting the Model<br>Class Activation Maps
+## Interpreting the model<br>Class Activation Maps
 
-.left-column[<br/><br/>For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
-.right-column[
+<br/>
+<br/>
 ![unscaled heatmapp - DC](heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png)
-]
+<br/>
+<br/>
+Heatmaps are scaled by class. Yellow = high activation
 
 .move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
 
@@ -1199,12 +1222,14 @@ Class activation maps use the gradient with respect to each class label, back pr
 
 ---
 class:primary
-## Interpreting the Model<br>Class Activation Maps
+## Interpreting the model<br>Class Activation Maps
 
-.left-column[<br/><br/>For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
-.right-column[
+<br/>
+<br/>
 ![unscaled heatmapp - adidas](heatmaps/heatmap-test_image.png)
-]
+<br/>
+<br/>
+Heatmaps are scaled by class. Yellow = high activation
 
 .move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
 
@@ -1215,12 +1240,14 @@ This is a piece of the Adidas text that is part of the design of many of their s
 
 ---
 class:primary
-## Interpreting the Model<br>Class Activation Maps
+## Interpreting the model<br>Class Activation Maps
 
-.left-column[<br/><br/>For each class, the heatmap is scaled so that the highest value is highlighted in yellow ]
-.right-column[
+<br/>
+<br/>
 ![unscaled heatmapp - seychelles](heatmaps/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
-]
+<br/>
+<br/>
+Heatmaps are scaled by class. Yellow = high activation
 
 .move-margin[<br/><br/>Blue: Prediction matches image label <br/><br/>Grey: Prediction does not match image label]
 
@@ -1232,7 +1259,17 @@ In a similar instance, the model cues in on circles in script S characters as we
 class:primary
 ## Summary
 
-Something useful goes here...
+- Geometric shapes provide a convenient feature space for assessing shoe similarity
+
+- Transfer learning allows application of CNNs to much smaller datasets
+
+- CoNNOR performs well
+    - Reduction in feature space: 256 x 256 x 3 -> 9
+    
+    - 88% accuracy; many errors attributable to data labeling
+
+
+
 
 ---
 class:inv-center
@@ -1242,12 +1279,14 @@ class:inv-center
 class: primary
 ## What's Next?
 
+- Paper <!--where?-->
+
+- NIJ Grant to build the machine and collect local population data
+
 - Make CoNNOR more interpretable
     - keras-vis Python library -> R package 
     
 - Whole-Shoe predictions - incorporate spatial information
-
-- NIJ Grant to build the machine and collect local population data
 
 
 ---
