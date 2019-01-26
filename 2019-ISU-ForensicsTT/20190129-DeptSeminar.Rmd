@@ -971,20 +971,9 @@ Statistically:
     
 - Covariance structure is ?
 
---
-
-.move-margin[<br/><br/>There are downsides to black-box models...]
-
 ???
 
-We've set the model up so that it predicts the presence or absence of each of 9 classes. In machine learning, this is "one-hot" encoding, but you may be more familiar with it as coding categories using indicator variables. 
-
-What's important to note is that because any given image can have between 0 and 9 class labels, each of the 9 probabilities produced by the model are between 0 and 1, but there are no other constraints - they do not have to sum to 1. 
-
-We can think of this as a multivariate bernoulli situation, where each label is assigned with probability $\pi_i$. The $pi$s are not independent - there is obviously a dependence both due to feature similarity (e.g. polygons and quads have similar features) and input data - easily identifiable classes are more likely to have been labeled. There's also a dependency due to the CNN structure, but I'd be hard pressed to describe it beyond saying that it exists.
-
-So any attempts to think too hard about the covariance structure are (at this point) doomed. There are downsides to using a black-box model; one of those is that statistical formalities are not necessarily observed. Of course, the upside is that the model actually works.
-
+We talked previously about the model structure in a generic sense; now let's talk about the specifics. We're going to be using what's called "one hot" encoding, that is, indicator variables, and we're going to allow our model to output a separate probability for each of the 9 labeled classes; these probabilities won't sum to one, but they're not independent either. The dependency structure is complicated - output probabilities depend on the model structure, but there are also dependencies based on the geometric similarity - a quadrilateral is likely more similar to a polygon than to a line.  We don't have any real way to describe the complicated dependency structure - this is one of the downsides to using a model that's this complicated. The upside is that the model is actually capable of doing what we're asking of it; less complicated models didn't really succeed at that. 
 
 ---
 class:primary
