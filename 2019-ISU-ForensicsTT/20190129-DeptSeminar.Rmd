@@ -758,7 +758,7 @@ plot_deepviz_sample(c(12, 4), r = .005, dropout_rate = 0.5) +
 
 ???
 
-Here's a representation of a layer with 50% dropout. All of the layers in the model head have this type of structure; different models use different dropout rates. In the final layer, a nonlinear function is applied to the weights; usually the logistic function, so that the model outputs probabilities between 0 and 1. In models where each image has only one output class, the softmax function is used. 
+Here's a representation of a layer with 50% dropout. All of the layers in the model head have this type of structure; different models use different dropout rates. In the final layer, a nonlinear function is applied to the weights; usually the sigmoid or logistic function, so that the model outputs probabilities between 0 and 1. In models where each image has only one output class, the softmax function is used. 
 
 ---
 class: primary
@@ -766,7 +766,8 @@ class: primary
 
 - Forward Propagation: Input -> Filters -> Pooling -> Result
 
-- Backward Propagation: Errors -> Pooling -> Filters to update weights
+- Backward Propagation: Errors -> Pooling -> Filters
+    - Goal is to update the filter weights
     - Loss function $L$ describing the prediction errors
     - Gradient descent using $$\frac{\partial L}{\partial \beta}$$
     at iteration $t$, with learning rate $\lambda$, 
@@ -776,9 +777,11 @@ class: primary
 
 During forward propagation, we begin with an input image and, for each layer, use the filters and pooling operators to compute a series of features that contribute to the resulting output probability. 
 
-To fit the model to the training data, we must be able to move backwards, adjusting the filter weights and biases in order to produce better estimates. Backward propagation, or backpropagation, is how this adjustment occurs. In essence, CNN backpropagation employs gradient descent, applied to each cell of each layer. 
+To fit the model to the training data, we must be able to move backwards, adjusting the filter weights and biases in order to produce better estimates. Backward propagation, or backpropagation, is how this adjustment occurs. In essence, CNN backpropagation employs gradient descent, applied to each cell of each layer. The learning rate parameter, lambda, is used to control how quickly the model converges. 
 
-Common loss functions are squared error loss and cross-entropy, depending on the classification type and specific output layer.  
+Common loss functions are squared error loss and cross-entropy, depending on the constraints placed on the output probabilities.
+
+So how is the gradient computed? 
 
 ---
 class: primary
@@ -789,13 +792,13 @@ $$\begin{align}\left(\frac{\partial L}{\partial \beta^\ell_k}\right) &= \underbr
 The gradient can be computed with the derivative of the activation function $\sigma(\cdot)$
 
 <br/>
-.small[Note: ReLU is not differentiable at 0; common practice is to set 0, 0.5, or 1 as the derivative's value at 0.]
+.slightly-small[Note: ReLU is not differentiable at 0; common practice is to set 0, 0.5, or 1 as the derivative's value at 0.]
 
 ???
 
 I'm going to talk about the backpropagation of the weights and ignore the biases for the time being; the process is even simpler for the biases because they are not convolved with the previous layer. 
 
-Very simply, the gradient used to update the weights can be computed using the derivative of the activation function. 
+Very simply, the gradient used to update the weights can be computed using the derivative of the activation function and the loss at the current layer. This works for a single layer, but we have to update weights at every layer in the model, so we need to be able to calculate the gradient for layer ell - 1 using values at layer ell. 
 
 ---
 class: primary
@@ -803,18 +806,18 @@ class: primary
 
 To propagate errors to the previous layer, 
 
-$$\begin{align}\frac{\partial L}{\partial x^{\ell -1}} &= \frac{\partial L}{\partial \left(\beta_k^\ell \ast x^{\ell - 1}\right)} \beta_k^\ell\end{align}$$
 
-<br/>
+$$\begin{align}\frac{\partial L}{\partial \left(\beta^{\ell - 1}_k \ast x^{\ell - 2}\right)} = &\frac{\partial L}{\partial x^{\ell - 1}} \left[\sigma'\left(\beta^{\ell - 1}_k \ast x^{\ell - 2}\right)\right]\\\\ \text{where }&\frac{\partial L}{\partial x^{\ell -1}} = \frac{\partial L}{\partial \left(\beta_k^\ell \ast x^{\ell - 1}\right)} \beta_k^\ell \end{align}$$
+
 .center[<img src="vgg16-structure/vgg16-shoe-nolabel.png" width = "50%"/>]
 
 .center[<b>13 convolutional layers = a lot of backpropagation</b>]
 
 ???
 
-Then, with a bit more manipulation, we can move the errors from the current layer to a previous layer, and use that to update weights there.
+The gradient at the previous layer can be computed using the recurrence relationship shown.
 
-With 13 convolutional layers, and a 256x256 image, this process is repeated a lot. It's only relatively recently that the computational power required to fit neural networks with this complexity became available, though the process has been around since the 1980s.
+With 13 convolutional layers, and a 256x256 image, this process is repeated a lot. It's only relatively recently that the computational power required to fit neural networks with this complexity became available, even though the process was described and used for smaller networks in the 1980s.
 
 ---
 class: primary
