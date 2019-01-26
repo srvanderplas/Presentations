@@ -24,6 +24,7 @@ knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T, dpi = 3
 
 source("~/models/shoe_nn/Generate_Model_Images.R")
 ```
+
 ```{r load_refs, echo=FALSE, cache=FALSE, include = F}
 library(RefManageR)
 BibOptions(check.entries = FALSE, 
@@ -34,8 +35,7 @@ BibOptions(check.entries = FALSE,
            no.print.fields = c("isbn", "urldate"),
            dashed = FALSE)
 
-bb <- ReadBib("./refs.bib", check = FALSE)
-mypubs <- ReadBib("./mypubs.bib", check = FALSE)
+bb <- ReadBib("./refs.bib", check = T)
 ```
 
 ```{r unicode}
@@ -174,7 +174,7 @@ load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
 
 ???
 
-Thank you for inviting me to interview for this position. I may look familiar to some of you - I graduated from this department in 2015. While I was here as a student I did research into graphics, visualization, and computing; I also collaborated with people in engineering and bioinformatics research. I left Iowa State to work at Nebraska Public Power District, where I helped to build a data science group and teach data analysis and computing skills internally. For the past 11 months, I've been working at CSAFE as research faculty. During that time, I've worked on projects involving human factors, shoes, and bullets. 
+Thank you for inviting me to interview for this position. I may look familiar to some of you - I graduated from this department in 2015. While I was here as a student I did research into graphics, visualization, and computing; I also collaborated with researchers in engineering, bioinformatics, and agronomy. I left Iowa State to work at Nebraska Public Power District, where I helped to build a data science group and teach data analysis and computing skills internally. For the past 11 months, I've been working at CSAFE as research faculty. During that time, I've worked on projects involving human factors, shoes, and bullets. 
 
 ---
 class:primary
@@ -183,8 +183,9 @@ class:primary
 
 .slightly-small[
 ```{r graphics-pubs, results='asis', echo=FALSE, cache = F}
+mypubs <- ReadBib("./mypubs.bib", check = T)
 NoCite(mypubs)
-PrintBibliography(mypubs, .opts = list(sorting = "ynt", no.print.fields = c("note", "file", "url")))
+PrintBibliography(mypubs, .opts = list(sorting = "ydnt", no.print.fields = c("note", "file", "url", "issn", "url-date"), bib.style ="numeric"))
 ```
 
 <p>[In Progress]<cite>
@@ -201,7 +202,7 @@ I've published several papers in JCGS and TVCG (Transactions on Visualization an
 class:primary
 ## Forensics
 .slightly-small[
-### Papers
+#### Papers
 
 <p>[In Progress]<cite>
 S. VanderPlas.
@@ -215,7 +216,7 @@ S. VanderPlas, T. Klep, M. Nally, C. Cadeval, and H. Hofmann.
 M. Tilton and S. VanderPlas
 &ldquo;CoNNOR: A Convolutional Neural Network for Outsole Recognition.&rdquo;</cite></p>
 
-### Grants
+#### Grants
 
 <p> <cite>NIJ R&D in Forensic Science. &ldquo;Statistical Infrastructure for the Use of Error Rate Studies in the Interpretation of Forensic Evidence.&rdquo; Collaborator. Funded for FY 2019</cite></p>
 
