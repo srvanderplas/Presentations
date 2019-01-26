@@ -227,7 +227,7 @@ M. Tilton and S. VanderPlas
 
 Since I started at CSAFE in March, I've worked on several projects that are nearing completion. I'm close to finishing a paper discussing methods for resampling bullet signatures while preserving continuity and other relevant characteristics; Another paper on validation of the automated bullet matching algorithm is ready for submission to the Journal of Forensic Science. I'm also collaborating with Danica Ommen on a grant to develop effective visualizations for Bayes Factors and ROC curves in forensics. 
 
-Today I'm going to talk about one of the larger projects I've worked on in the past year; 
+Today I'm going to talk about one of the larger projects I've worked on in the past year; it came out of a grant application last April that wasn't funded, but I will be resubmitting that grant in April. 
 
 ---
 class:primary
@@ -243,12 +243,22 @@ class:primary
 
 - Future Work
 
+???
+
+I'm going to start by situating the statistics of this problem in a forensics context. I'll talk briefly about image analysis methods, discuss convolutional neural networks in a general context, and then talk specifically about CoNNOR, the Convolutional Neural Network for Outsole Recognition. I'll then return to the forensics context briefly and discuss future work on this project. 
+
+
 ---
 class:primary
 ## What is the probability of<br>a coincidental match?
 
 <img src="problem-definition/coincidental-match.png" width = "80%" style="margin-left:10%;margin-right:10%" alt="Crime scene print compared with sample print"/>
 
+???
+
+After a crime is committed and investigators follow their leads and find a suspect, they must then reconcile the evidence found at the scene and piece together a consistent narrative for how that evidence was created. For instance, shoeprints at the scene might be linked to shoes in the suspect's possession - those shoes would be taken as evidence, and examined to determine if they could have left the print at the scene. During this process, the shoes are printed and the two prints are compared. In court, the prosecution must then describe the value of that evidence - how much information should it provide to the jury concerning the suspect's guilt or innocence?
+
+Part of the calculation of that information is to determine what the probability of a coincidental match is, that is, what's the probability that some random individual would also have a shoe with a tread pattern similar to the print at the crime scene? If that probability is high, then that piece of evidence is not that conclusive, but if it's low, then the jury should treat the evidence with much more weight.
 
 ---
 class:primary
@@ -264,15 +274,12 @@ class:primary
 
 ???
 
-The easiest way to determine the probability that the suspect made the print is to define the full space of people who could have made the print. Unfortunately, the simple probability solution doesn't necessarily translate into a simple solution for the real world. 
+Probability would tell us that this is a fairly simple calculation. 
+We first define the comparison population, that is, the population of people who could have made the print - say, individuals in Ames. 
+Then, we would sample from that comparison population to see what shoes the people in the comparison set have.
+We would then identify similar shoes - shoes which could have made the print at the crime scene, and estimate the probability of a coincidental match as the number of similar shoes divided by the size of the comparison population sample. 
 
-Comparison population, for instance, could be anything from "People in the seminar room right now" to "People who were in Ames, Iowa within the last week". It would also potentially involve defining other characteristics - people out at 8pm, people who attended the Iowa State football game on a certain date, etc. All of these characteristics potentially affect the types of shoes that people might be wearing.
-
-Once the comparison population is defined, then we have to determine what types of shoes they generally wear, and whether any of those shoes are consistent with the crime scene print. As the print at the crime scene might be degraded, this could be a specific make/model/size of shoe (if the print is really good) or it could be one of several models of shoes (if it can be narrowed down that far). 
-
-When we have data on the comparison population's footwear preferences, and have identified shoes that are both worn by the comparison population and consistent with the crime scene print, we can calculate the probability that a random person in the local population made the print.
-
-Unfortunately...
+Unfortunately, this gets a bit more complicated when it is actually implemented. 
 
 ---
 class:primary,center,middle
@@ -282,9 +289,11 @@ class:primary,center,middle
 
 ???
 
-It's generally not that easy. I talked with Leslie Hammer, who is a well-known footwear examiner in the forensics community, shortly after I first started working at CSAFE, and was somewhat shocked to hear her say that the community considers the problem of local population characterization impossible. It's obviously a coincidence, then, that I started laying the groundwork for this project fairly quickly afterwards. /s
+It's generally not that easy. Shortly after I started working at CSAFE in March, we brought in Leslie Hammer, who is a well-known forensic footwear examiner to give a seminar. During a discussion later that day, I was somewhat shocked to hear her say that the community considers the problem of local population characterization impossible. 
 
-The community has legitimate reasons for thinking this is a difficult problem to solve, though.
+Challenge accepted, Leslie Hammer. 
+
+There are completely legitimate reasons for thinking this is a difficult problem to solve, though.
 
 ---
 class:primary
@@ -293,7 +302,7 @@ class:primary
 - No 100% complete database of all shoes 
     - manufacturer, model, size, tread style, manufacturing molds
     
-- Shoe purchase data vs. frequency of wear
+- Shoe purchases vs. frequency of wear
 
 - Local populations may differ wildly .small[`r Citep(bb, "benedict_geographical_2014", .opts = list(max.names = 1, longnamesfirst = F))`]
 
@@ -303,17 +312,17 @@ class:primary
 
 ???
 
-There are too many manufacturers to keep track of, new models are released all the time, custom shoe markets, and knockoff shoes... hard to get a database with everything. There are databases of tire treads, for instance, but shoes are much more difficult to track -- they don't have to be certified before they're put on the market. 
+For starters, while there are databases for other pattern match evidence, like tire tread patterns, there is not a complete database of all shoes sold in the US. Tires have to be certified; shoes do not. There are also many more manufacturers for shoes, new models are released all the time. A single model may have multiple tread patterns, a single tread pattern may be used on multiple shoe models. The tread pattern may change depending on the style of shoe; there are also different molds for a single size/tread combination, and these molds may have different characteristics. 
 
-In addition, many of us have shoes that we've purchased but almost never wear... so using purchase data (even if that had the geographic resolution needed) is not quite accurate either.
+You may think about instead tracking sales data - surely, we could get a database of shoe preferences that way? How many of you have shoes in your closet that you've never worn? That you've worn once? Or less than once a year? Purchase data doesn't provide a realistic picture of the shoes people wear day to day - most of us have one or two "favorites". 
 
-Finally, geographic resolution is nearly impossible. If this pair of boots was used to commit a crime in Florida during the summer, in addition to questioning the suspect's sanity, it would be relatively obvious that the shoes are not commonly worn in the local population at the time the crime was committed, and their presence in a suspect's closet would speak for itself to a degree. If the crime was committed in Iowa around this time of year, it would be much less damning to have a pair of similar boots in your closet - they're commonly worn and appropriate for the season.
+In addition, we know that local populations differ wildly in footwear choices. The footwear chosen by people on Main Street in Ames is likely to differ significantly from the shoes worn in Campustown; the populations that frequent them are different. This is another problem with sales data - it doesn't generalize well to the hyper-local regions that we have to consider when characterizing coincidental match probability.
 
-So with that said, how can we solve the problem of getting data from the local population?
+So how do we solve this problem? How do we collect this data at a (potentially) neighborhood level?
 
 ---
 class:primary
-## Comparison Population<br>Shoes
+## Comparison Population
 
 How to collect data from the local population? 
 
@@ -329,13 +338,13 @@ How to collect data from the local population?
 
 ???
 
-We could build a gadget that would fit into a pedestrian pathway and would scan the shoes of passers-by. After some data collection in one or more very local areas, we might be able to generalize our spatial sample to the population of interest.
+We could build a scanner that would fit into a pedestrian pathway and would scan the shoes of passers-by. After some data collection in one or more very local areas over a period of time, we might be able to generalize our spatial sample to the population of interest.
 
 Unfortunately, I didn't take a whole lot of classes in gadget design while I was doing my PhD. This is a problem for engineers, and a couple of very good ones have assured me that this is doable if we can get the budget (hopefully resubmitting that proposal in April). Statisticians have the luxury of making assumptions about the real world, so ...
 
 ---
 class:primary
-## Comparison Population<br>Shoes
+## Comparison Population
 
 Assume a machine exists that can scan shoe outsoles of pedestrians
 
@@ -357,7 +366,15 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 ???
 
-Let's assume that this machine exists and that it's producing image-quality data. If that's the case, we then would need to identify relevant features within the scans and assess how frequently those features occur in the sampled data. If we can get enough features from the scans, we should be able to fairly accurately calculate the probability of such a shoe occurring in the local population. 
+Let's assume that this machine exists and that it's producing image-quality data. 
+
+From that point, we still need to identify relevant features within the scans - these features will be "data" used in comparisons
+
+Then, we have to define a similarity metric used for comparing two samples
+
+Finally, we would search our database (indexed by the relevant features previously identified) and determine how many shoes were similar enough, compared to the shoes in the database. That proportion would be our estimated coincidental match probability. 
+
+All of these issues are within the realm of statistics and machine learning. 
 
 The next question is then... What's considered a relevant feature?
 
@@ -374,15 +391,17 @@ Class Characteristics
 
 ???
 
-Typically, class characteristics refer to broad descriptors - make, model, tread pattern (not all shoes of the same model have the same tread, and not all shoes wiht the same tread have the same model), size, and shoe type (dress, heel, athletic, etc.)
+In forensics, class characteristics are broad descriptors shared by many different individual objects. In shoes, class characteristics refer to make, model, tread pattern, size, type of shoe, and even wear patterns. Examiners will say that a suspect's shoe "is consistent with" prints left at the scene, but if the match is made on class characteristics alone (95% of the time), they cannot explicitly connect the shoe and the print at the crime scene.
 
-More broadly, class characteristics are things shared by shoes which are not individualizing characteristics - e.g. characteristics that arise due to the design or manufacture of the shoe. Class characteristics contrast with randomly acquired characteristics, which occur due to random damage either during the manufacturing process or as the shoe is worn.
+Randomly acquired characteristics, which occur due to random damage as the shoe is worn or during the manufacturing process, can be used to make an individualized match.
+
+We've already discussed why make and model are difficult to work with - there's no index data set to use. Similarly, shoe size isn't as related to tread size as you'd expect, so that's off the list too. Working with tread pattern seems like a better option. 
 
 ---
 class:primary
 ## Relevant Features
 
-Use features other than make/model to characterize shoes
+Use features other than make/model and size to characterize shoes
 
 - Knockoffs often have very similar tread patterns
 - Similar styles have similar tread patterns across brands
@@ -395,7 +414,11 @@ Use features other than make/model to characterize shoes
 
 ???
 
-Given that there is no database of shoe models, we'll be better off defining our class-characteristic based features slightly differently. Tread patterns are a component of class characteristics, and we can describe tread patterns using a set of descriptors. The advantage to this approach is that we can consider a set of shoes with similar tread pattern as a "type" and treat them accordingly. This allows us to get a probability without basing it on a database of makes and models, and without requiring that we sample every shoe that might exist in the local population. It's an abstraction to a level that we can reasonably handle with sampling.
+If we work off of features within the shoe tread, we get some additional benefits. 
+
+First, similar tread patterns are found in shoes of similar style - knockoffs specifically try to emulate a tread pattern, but even across well known brands, shoes that serve a similar function often have similar tread patterns - here are 3 different models of work boots, from different manufacturers, each with the same tread pattern. The number of design elements may differ slightly, but that variation happens even within shoe make and model - different sizes have different tread elements in some cases. 
+
+An additional benefit is that unknown shoes can still be classified and addressed. If we define our feature set as "Shoes with quadrilaterals around the edge that have triangle cutouts, and diamond-shaped plus signs in the middle", we can start off by estimating the probability that a shoe like these 3 exists, and then can increase the specificty of the query from there as data quality and amount allows. It's definitely not a perfect solution, but crime scene prints are typically degraded, so this is a level of detail that matches the practical problem fairly well. It's an abstraction, but at a level that makes sense both statistically and pragmatically. 
 
 After some deliberation and attempts to manually identify features, we settled on 9 geometric features. 
 
@@ -419,7 +442,11 @@ Used to separate shoes by make/model in (small) local samples `r Citep(bb, 'gros
 
 ???
 
-These nine features are slightly different from those used in gross et al 2013, but many of them overlap. We define bowties, for example, as any roughly quadrilateral shaped entity that has two opposite concave faces; a butterfly also (roughy) meets this definition, so it is included. Lines are defined such that they must be repeated and parallel, and should not be too curved (though this is of course a bit fuzzy). Chevrons are zigzags, but they are allowed to be curved. Stars are features that alternate as concave and convex; so even three-pointed things are stars so long as they're concave in between the points. Polygon is a catch-all class that includes pentagons, hexagons, and octagons (as observed thus far - I haven't noticed any septagons), and was added because there were insufficient pentagons and hexagons individually relative to the other classes.
+There is some precedent for separating shoes in this way - Gross et al (2013) used a similar system with a different set of features, and managed to separate a local sample of shoes into make/model piles using this classification scheme. 
+
+Some of these categories include interesting variations: bowties, for example, are defined as roughly quadrilateral, but with two opposite concave features; thus, butterflies have been included in the bowtie category.  Polygons, Quadrilaterals, and Triangles are allowed to have rounded corners; not all rubber materials handle sharp corners well. Polygons include anything with more than 4 sides - as of now, pentagons, hexagons, and octagons. Circles include ovals and ellipses as well. 
+
+These 9 features will be used throughout the rest of the talk. 
 
 ---
 class: inv-center
@@ -427,7 +454,7 @@ class: inv-center
 
 ???
 
-Now that we've decided which features to use, we have to figure out how to identify them using image analysis. Images are, after all, matrices of data; in color, they are N x M x 3 matrices, where N x M is the image dimension in pixels. 
+Now that we've decided which features to use, we have to figure out how to identify them automatically from image data. Images are, after all, matrices of data; in color, they are N x M x 3 matrices, where N x M is the image dimension in pixels. 
 
 ---
 class: primary
@@ -443,13 +470,13 @@ class: primary
 
 ???
 
-The detection method should be able to handle different lighting conditions, rotation and image quality - if we plan to use this on the data from the scanner that will eventually exist, we need to make sure the method will handle degraded image quality. Even working with images of shoe soles found online, there's a huge variation in image quality and lighting.
+The detection method should be able to handle different lighting conditions, rotation and image quality - if we plan to use this method on real-world images, we have to be able to handle degraded image quality. Even working with images of shoe soles found online used for marketing purposes, there's a huge variation in image quality and lighting.
 
-In addition, we need for new images to be processed quickly. It's tolerable if the algorithm takes a while to train, but the production model needs to be able to process new data efficiently. 
+In addition, we need new images to be processed quickly. It's tolerable if the algorithm takes a while to train, but the production model needs to be able to process new data efficiently. 
 
 Finally, we need to be able to explain what this algorithm is doing to practitioners, which means that the features that are identified should be explainable and fairly consistent with how humans would label things.
 
-I started this project with the intention to use various computer vision algorithms to detect very basic image features, then potentially try to reconstruct those into higher-level geometric features.
+I started this project with the intention to use various computer vision algorithms to detect very basic image features, then potentially try to reconstruct those into higher-level geometric features using a random forest. 
 
 ---
 class:primary
@@ -479,9 +506,9 @@ Cons
 
 ???
 
-There are various detectors used for edges, corners, blobs, and ridges; these are commonly applied to biological images, telescope images, and more. When applied to relatively noisy shoe data, though, they don't always work as expected. The advantage is that there isn't any "training" data necessary in order to use the algorithms at all; the algorithms themselves are also relatively simple. Unfortunately, the tuning parameters that do exist break when lighting changes occur. The algorithms also tend to take a while to execute, and the features they detect don't quite match up with human labeling - corner detectors, for instance, pick out 3x3 pixel level corners in some cases; scaling that up to a macro level is difficult, particularly when corners may be rounded slightly. There's also less guarantee that the same features will be identified when lighting changes slightly, even for the exact same shoe.
+I started out using standard image processing methods for identifying features. There are edge, corner, blob, and ridge detectors that are used to automatically process microscope and telescope data in many different fields. There are also more complicated template-matching algorithms, including hough transforms, that can find more complicated features like lines, circles, and ellipses and provide location and orientation information. These methods are relatively simple and don't require training data, but they're also very fragile, computationally intensive, and the features they select make sense when you look at a small area of pixels, but aren't globally relevant - they don't match with what you or I would pick out as an edge or a corner. After playing with these methods for a while, I decided to take a different approach. 
 
-Adding the complications with any single low-level algorithm to the fun of reassembling those features into macro-level options, and I decided to consider other alternatives. Google, Facebook, and Microsoft have all been having a lot of fun with neural networks as feature detectors for images, so ... why not?
+Google, Facebook, and many other tech companies have been using neural networks to handle image detection, for better or for worse. So I decided to go for the big guns.
 
 ---
 class:primary
@@ -494,10 +521,10 @@ class:primary
 .pull-left[
 
 Pros
-- Pre-trained networks available for tuning    
-.small[AlexNet, VGG16, ResNet, Inception]
 - Features are interpretable
 - Very fast (after training)
+- Pre-trained networks available    
+.small[AlexNet, VGG16, ResNet, Inception]
 
 ]
 
@@ -512,11 +539,11 @@ Cons
 
 ???
 
-There are definite advantages to neural networks - they actually work, have been proven to solve much harder problems than this, and provide human-interpretable features because they're built to mimic how the visual cortex works. There are pre-trained networks available, which dramatically reduces the amount of training necessary to get a functional production model. In addition, these were designed to work at google scale, so they can more than meet our computational needs. 
+Convolutional neural networks are a type of neural network specifically designed to search an image for one or more specific patterns. They mimic what we know about the organization of the human visual cortex, and are very common in modern image recognition tasks because they work so well. 
 
-There are disadvantages too - these models require formal training data, which means that someone has to sit stare at the bottom of thousands of shoes, labeling tread features. They're computationally intensive to train, though not all that bad - between 15 minutes and 3 hours during our initial tests on other datasets. Then there's the big problem  - they have so many parameters that it's hard to interpret them, and they're also not designed for actual inference - getting error estimates out of them is difficult.
+Convnets produce interpretable features, because they mimic our perceptual processes and are trained using data labeled by humans. They take a while to train (a month or more for some models) but are very fast in processing new images - most image searches use CNNs in the background. They have millions of parameters, which makes inference very difficult - they're mostly "black box" models because of the complex model structure. An additional benefit to CNNs is that there are pre-trained neural networks available; these networks can be used as a basis for other models, so you don't have to start from scratch. They do require labeled training data, though, which means that someone has to sit and label thousands of features before you can start fitting one of these models. Some of the newer Captchas work this way - you end up labeling data for someone's neural network.
 
-But, for the moment, "It works" is going to be the more important part than the nicities of simple models with built-in error estimation.
+While it would be nice to use a model that's more interpretable, CNNs work for image recognition under noisy or degraded data, so that's what we decided to use. 
 
 ---
 class:inv-center
@@ -524,7 +551,7 @@ class:inv-center
 
 ???
 
-I'm going to really quickly walk through the specific neural network we used for this task and how it (and similar networks) are fit, and why using a pre-trained network is so awesome. Then we'll walk through the results, some model diagnostics, and I'll talk a bit about some of the more interesting issues we've encountered
+During this portion of the talk, I'm going to walk through a convolutional neural network, discuss the components, and describe the process of model fitting. These models can sometimes be treated as magic, so I hope that I can ruin that for you today.
 
 ---
 class:primary
@@ -539,9 +566,17 @@ $CNN(x) \rightarrow [{P_1}, ..., {P_z}] \in [0,1]^9$
 - ${P_1}, ..., {P_z}$ are output class probabilities
 
 
-
 The model has errors $[{\epsilon_1}, ..., {\epsilon_z}] = [{Y_1} - {P_1}, ..., {Y_z} - {P_z}]$
 
+???
+
+Starting from the beginning, we'll describe a CNN as a function that acts on an input image x that has z binary labels Y. 
+
+The CNN maps input x and produces z output probabilities between 0 and 1; one probability for each class. Depending on the CNN structure, additional constraints on these P can be added, but by default, we'll assume this is unconstrained and thus, that the Ps do not necessarily sum to 1. 
+
+Then we can define epsilon, the errors made by CNN(x) during classification. 
+
+Let's look at the structure of a convolutional neural network. 
 
 
 ---
@@ -552,9 +587,13 @@ class:primary
 
 ???
 
-This is one example of a "very deep" convolutional neural network. Very deep describes the number of convolutional layers (13), which is large compared to other common CNN architectures. The input image, in this case, 256x256, goes through two convolutional layers with 64 filters; it then passes through a max pooling layer where the dimension of the matrix is reduced. In the 128x128 layer, the number of filters used expands, and the filters become somewhat more complex. In each subsequent convolutional block, there are multiple convolutional layers capped off by a dimension-reducing max pooling layer. At the conclusion of the convolutional layers, there is a model head, where the local spatial information identified in the convolutional layers is integrated into unified whole. At the end of the fully connected layers, there is a softmax activation layer that transforms the information into class probabilities. 
+This is an example of a very deep convolutional neural network, where very deep is a reference to the number of convolutional layers. 
 
-I'm going to talk about each of these layer types in turn - it's fairly easy for these models to turn into magic boxes, and we want to avoid that with any model.
+The input image is 256 pixels square, with 3 color channels. The initial convolutional layers produce an output matrix that is 256 by 256 by 64, where 64 is the number of filters applied at that layer. A pooling layer reduces the input size to 128 by 128, and then subsequent convolutional layers apply another 128 filters to that reduced-dimension matrix. 
+
+At each stage of the model, the spatial dimensionality decreases and the number of filters increases, as more complicated patterns are incorporated into the model. At the end of all of these convolutional and pooling layers, there is a model head, which takes the spatial filters and combines them into a unified whole; the very last layer is a softmax activation layer that produces the output probabilities. 
+
+I will talk about each of these layer types in turn, starting with convolutional layers.
 
 ---
 class: primary
@@ -588,7 +627,7 @@ $\displaystyle \mathbf{\beta}$
 
 ???
 
-Suppose we have an input matrix and a spatial filter. We'd start by applying that filter to each possible 3x3 portion of the input, which produces a 3x3 output matrix. 
+Suppose we have a 5 by 5 input matrix and a 3 by 3 spatial filter. We'd start by applying that filter to each possible 3x3 portion of the input, which produces a 3x3 output matrix. 
 
 ---
 class: primary
@@ -629,7 +668,7 @@ $(\beta \ast x)(i, j)$
 
 ???
 
-Some CNNs pad the input image so that the resulting feature map is the same dimension as the input image.
+Some CNNs pad the input image so that the resulting feature map is the same dimension as the input image. That's why the dimensions were so neat in the diagram I showed a few slides ago - image padding was used to ensure similar size output. 
 
 ---
 class: primary
@@ -657,7 +696,7 @@ ReLU (Rectified Linear Unit), $\sigma(\cdot) = \max\{0, \cdot\}$ is a common non
 
 Now that the convolutional part is explained, we need to understand how values pass from layer to layer through the network. Forward propagation is the numerical calculation that transitions from image to layer output (and then to the next layer, and so on until the model class probabilities are the output)
 
-We're going to refer to $x^0$ more formally at this point as the input image, and $x^\ell$ as successive layers in the network. We have filters $\beta^\ell_k$, sometimes called model weights, and biases for each layer, $\gamma^\ell$. Then our output layer is a three-dimensional matrix, where i and j index the spatial information and k indexes the filters. A nonlinear function is applied to the convolution of the layer and the filter added to the bias matrix. 
+We're going to refer to $x^0$ more formally at this point as the input image, and $x^\ell$ as successive layers in the network. We have filters $\beta^\ell_k$, sometimes called model weights, and biases for each layer, $\gamma^\ell$. Our output layer is a three-dimensional matrix, where i and j index the spatial information and k indexes the filters. A nonlinear function is applied to the convolution of the layer and the filter added to the bias matrix. One common function is called ReLU, which truncates any negative output at 0. 
 
 
 ---
@@ -680,7 +719,7 @@ class: primary
 
 ???
 
-Max pooling layers take a $p\timesp$ region and take the maximum over all cells. Stride is the offset between pooling regions. With a 2x2 window and stride of 2, the output layer is 1/4 the size of the input layer. 
+Max pooling layers take a specified region and take the maximum over all cells. Stride is the offset between pooling regions. With a 2x2 window and stride of 2, the output layer is 1/4 the size of the input layer. 
 
 ---
 class:primary
@@ -704,7 +743,7 @@ plot_deepviz2(c(12, 4), r = .005)
 
 ???
 
-Fully connected layers are also known as dense layers; they take the spatial information and look for patterns. These fully connected layers often have "dropout", which reduces the number of parameters by pruning weak connections.
+A fully connected (or dense) layer connects every node in the input to every node in the output; each of these connections has a weight associated with it. Some models use "dropout", where a pre-specified proportion of the weights are set to 0 to reduce the number of parameters and keep only the most useful connections. 
 
 ---
 class: primary
@@ -719,8 +758,7 @@ plot_deepviz_sample(c(12, 4), r = .005, dropout_rate = 0.5) +
 
 ???
 
-Here's a representation of a layer that's fully connected, and the same layer that has a 50% dropout rate.
-
+Here's a representation of a layer with 50% dropout. All of the layers in the model head have this type of structure; different models use different dropout rates. In the final layer, a nonlinear function is applied to the weights; usually the logistic function, so that the model outputs probabilities between 0 and 1. In models where each image has only one output class, the softmax function is used. 
 
 ---
 class: primary
