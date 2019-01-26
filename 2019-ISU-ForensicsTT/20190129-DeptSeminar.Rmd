@@ -196,7 +196,7 @@ S. VanderPlas and M. Tilton.
 
 ???
 
-I've published several papers in JCGS and TVCG (Transactions on Visualization and Computer Graphics). I'm currently working on a project involving the effect of charts and graphs on the evaluation of factual statements; a pilot study was completed in early December and the full study will hopefully be completed this semester. 
+I've published several papers in JCGS and one paper in TVCG (Transactions on Visualization and Computer Graphics)
 
 ---
 class:primary
@@ -225,9 +225,7 @@ M. Tilton and S. VanderPlas
 
 ???
 
-Since I started at CSAFE in March, I've worked on several projects that are nearing completion. I'm close to finishing a paper discussing methods for resampling bullet signatures while preserving continuity and other relevant characteristics; Another paper on validation of the automated bullet matching algorithm is ready for submission to the Journal of Forensic Science. I'm also collaborating with Danica Ommen on a grant to develop effective visualizations for Bayes Factors and ROC curves in forensics. 
-
-Today I'm going to talk about one of the larger projects I've worked on in the past year; it came out of a grant application last April that wasn't funded, but I will be resubmitting that grant in April. 
+Since I started at CSAFE in March, I've worked on several projects that are nearing completion. Today, I'm going to talk about a Convolutional Neural Network for Outsole recognition, or CoNNOR for short. 
 
 ---
 class:primary
@@ -245,7 +243,7 @@ class:primary
 
 ???
 
-I'm going to start by situating the statistics of this problem in a forensics context. I'll talk briefly about image analysis methods, discuss convolutional neural networks in a general context, and then talk specifically about CoNNOR, the Convolutional Neural Network for Outsole Recognition. I'll then return to the forensics context briefly and discuss future work on this project. 
+I'm going to start with the forensics context of this problem. I'll talk briefly about image analysis methods, discuss convolutional neural networks, and then talk specifically about CoNNOR. I'll then return to the forensics context briefly and discuss future work on this project. 
 
 
 ---
@@ -256,9 +254,9 @@ class:primary
 
 ???
 
-After a crime is committed and investigators follow their leads and find a suspect, they must then reconcile the evidence found at the scene and piece together a consistent narrative for how that evidence was created. For instance, shoeprints at the scene might be linked to shoes in the suspect's possession - those shoes would be taken as evidence, and examined to determine if they could have left the print at the scene. During this process, the shoes are printed and the two prints are compared. In court, the prosecution must then describe the value of that evidence - how much information should it provide to the jury concerning the suspect's guilt or innocence?
+After a crime is committed, investigators must reconcile the evidence found at the scene with a narrative of the crime. For instance, shoeprints at the scene might be linked to shoes in the suspect's possession, which would suggest the suspect's shoes were at the scene. During this process, the shoes are examined and the two prints are compared. In court, the prosecution must then describe the value of that evidence - how much information should it provide to the jury concerning the suspect's guilt or innocence?
 
-Part of the calculation of that information is to determine what the probability of a coincidental match is, that is, what's the probability that some random individual would also have a shoe with a tread pattern similar to the print at the crime scene? If that probability is high, then that piece of evidence is not that conclusive, but if it's low, then the jury should treat the evidence with much more weight.
+Part of the calculation of that information is to determine what the probability of a coincidental match is, that is, what's the probability that some random individual would also have a shoe with a tread pattern similar to the print at the crime scene? If that probability is high, the evidence is less valuable, but if it's low, then the jury should treat the evidence with much more weight.
 
 ---
 class:primary
