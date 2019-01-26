@@ -1024,7 +1024,7 @@ data.frame(history$metrics) %>%
   scale_y_continuous("") + 
   scale_x_continuous("Epoch") + 
   ggtitle("CoNNOR Training Performance") + mytheme + 
-  theme(axis.title.y = element_blank(), legend.position = c(1, .5), legend.justification = c(1, 0), legend.background = element_rect(fill = "transparent"))
+  theme(axis.title.y = element_blank(), legend.position = c(1, .5), legend.justification = c(1.03, -0.05), legend.background = element_rect(fill = "white"))
 ```
 
 .move-margin[<br/><br/><br/><br/><br/><br/><br/><br/>.small[Binary Cross-entropy Loss: 
@@ -1032,7 +1032,7 @@ $$-y\log(p)\\\\-\\!(1\\!-\\!y)\log(1\\!-\\!p)$$
 ]]
 ???
 
-This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). 
+This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). The loss function used to fit the model is the cross-entropy function. 
 
 Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Training loss is still decreasing as well. One concern with retraining the head of a CNN is that with relatively little data (e.g. 20 thousand data points instead of 150K) it is easy to over-fit models; what we see is that this hasn't yet happened for this model. Overfitting would be evident if the loss in the training set had beun to increase. 
 
@@ -1082,7 +1082,7 @@ aucs$data$thresholds <- thresholds
 ggplot() +
   geom_line(aes(x = fpr, y = tpr), data = unnest(aucs$data, roc_plot), size = 1.25) +
   geom_label(aes(x = 1, y = 0, label = sprintf("AUC: %0.2f\nEER: %0.2f", auc, thresholds)), hjust = 1, vjust = -0.02, data = aucs$data) +
-  geom_point(aes(x = fpr, y = tpr, color = "Equal Error\nRate"), data = unnest(aucs$data, eer), size = 2) +
+  geom_point(aes(x = fpr, y = tpr, color = "Equal Error\nRate (EER)"), data = unnest(aucs$data, eer), size = 2.5) +
   scale_color_manual("", values = "black") +
   facet_wrap(~class) +
   scale_x_continuous("False Positive Rate", breaks = c(0, .25, .5, .75, 1), labels = c("0.0", "", "0.5", "", "1.0")) +
