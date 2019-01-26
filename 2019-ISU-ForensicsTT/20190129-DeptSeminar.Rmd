@@ -233,15 +233,15 @@ Today I'm going to talk about one of the larger projects I've worked on in the p
 class:primary
 ## Outline
 
-- Forensics Context
+- [Forensics Context](#6)
 
-- Image Analysis
+- [Image Analysis](#15)
 
-- Convolutional Neural Networks
+- [Convolutional Neural Networks](#19)
 
-- CoNNOR
+- [CoNNOR](#37)
 
-- Future Work
+- [Future Work](#54)
 
 ???
 
