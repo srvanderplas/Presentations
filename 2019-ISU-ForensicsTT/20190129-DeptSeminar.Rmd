@@ -5,7 +5,7 @@ date: "Jan 29, 2019"
 output:
   xaringan::moon_reader:
     mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
-    css: ["default", "css/csafe.css", "css/csafe-fonts.css"]
+    css: ["default", "css/csafe.css", "css/csafe-fonts.css", "css/this-presentation.css"]
     lib_dir: libs
     nature:
       countIncrementalSlides: false
@@ -233,15 +233,15 @@ Today I'm going to talk about one of the larger projects I've worked on in the p
 class:primary
 ## Outline
 
-- Forensics Context
+- [Forensics Context](#6)
 
-- Image Analysis
+- [Image Analysis](#15)
 
-- Convolutional Neural Networks
+- [Convolutional Neural Networks](#19)
 
-- CoNNOR
+- [CoNNOR](#37)
 
-- Future Work
+- [Future Work](#54)
 
 ???
 
@@ -758,7 +758,7 @@ plot_deepviz_sample(c(12, 4), r = .005, dropout_rate = 0.5) +
 
 ???
 
-Here's a representation of a layer with 50% dropout. All of the layers in the model head have this type of structure; different models use different dropout rates. In the final layer, a nonlinear function is applied to the weights; usually the logistic function, so that the model outputs probabilities between 0 and 1. In models where each image has only one output class, the softmax function is used. 
+Here's a representation of a layer with 50% dropout. All of the layers in the model head have this type of structure; different models use different dropout rates. In the final layer, a nonlinear function is applied to the weights; usually the sigmoid or logistic function, so that the model outputs probabilities between 0 and 1. In models where each image has only one output class, the softmax function is used. 
 
 ---
 class: primary
@@ -766,7 +766,8 @@ class: primary
 
 - Forward Propagation: Input -> Filters -> Pooling -> Result
 
-- Backward Propagation: Errors -> Pooling -> Filters to update weights
+- Backward Propagation: Errors -> Pooling -> Filters
+    - Goal is to update the filter weights
     - Loss function $L$ describing the prediction errors
     - Gradient descent using $$\frac{\partial L}{\partial \beta}$$
     at iteration $t$, with learning rate $\lambda$, 
@@ -776,9 +777,11 @@ class: primary
 
 During forward propagation, we begin with an input image and, for each layer, use the filters and pooling operators to compute a series of features that contribute to the resulting output probability. 
 
-To fit the model to the training data, we must be able to move backwards, adjusting the filter weights and biases in order to produce better estimates. Backward propagation, or backpropagation, is how this adjustment occurs. In essence, CNN backpropagation employs gradient descent, applied to each cell of each layer. 
+To fit the model to the training data, we must be able to move backwards, adjusting the filter weights and biases in order to produce better estimates. Backward propagation, or backpropagation, is how this adjustment occurs. In essence, CNN backpropagation employs gradient descent, applied to each cell of each layer. The learning rate parameter, lambda, is used to control how quickly the model converges. 
 
-Common loss functions are squared error loss and cross-entropy, depending on the classification type and specific output layer.  
+Common loss functions are squared error loss and cross-entropy, depending on the constraints placed on the output probabilities.
+
+So how is the gradient computed? 
 
 ---
 class: primary
@@ -789,13 +792,13 @@ $$\begin{align}\left(\frac{\partial L}{\partial \beta^\ell_k}\right) &= \underbr
 The gradient can be computed with the derivative of the activation function $\sigma(\cdot)$
 
 <br/>
-.small[Note: ReLU is not differentiable at 0; common practice is to set 0, 0.5, or 1 as the derivative's value at 0.]
+.slightly-small[Note: ReLU is not differentiable at 0; common practice is to set 0, 0.5, or 1 as the derivative's value at 0.]
 
 ???
 
 I'm going to talk about the backpropagation of the weights and ignore the biases for the time being; the process is even simpler for the biases because they are not convolved with the previous layer. 
 
-Very simply, the gradient used to update the weights can be computed using the derivative of the activation function. 
+Very simply, the gradient used to update the weights can be computed using the derivative of the activation function and the loss at the current layer. This works for a single layer, but we have to update weights at every layer in the model, so we need to be able to calculate the gradient for layer ell - 1 using values at layer ell. 
 
 ---
 class: primary
@@ -803,18 +806,18 @@ class: primary
 
 To propagate errors to the previous layer, 
 
-$$\begin{align}\frac{\partial L}{\partial x^{\ell -1}} &= \frac{\partial L}{\partial \left(\beta_k^\ell \ast x^{\ell - 1}\right)} \beta_k^\ell\end{align}$$
 
-<br/>
+$$\begin{align}\frac{\partial L}{\partial \left(\beta^{\ell - 1}_k \ast x^{\ell - 2}\right)} = &\frac{\partial L}{\partial x^{\ell - 1}} \left[\sigma'\left(\beta^{\ell - 1}_k \ast x^{\ell - 2}\right)\right]\\\\ \text{where }&\frac{\partial L}{\partial x^{\ell -1}} = \frac{\partial L}{\partial \left(\beta_k^\ell \ast x^{\ell - 1}\right)} \beta_k^\ell \end{align}$$
+
 .center[<img src="vgg16-structure/vgg16-shoe-nolabel.png" width = "50%"/>]
 
 .center[<b>13 convolutional layers = a lot of backpropagation</b>]
 
 ???
 
-Then, with a bit more manipulation, we can move the errors from the current layer to a previous layer, and use that to update weights there.
+The gradient at the previous layer can be computed using the recurrence relationship shown.
 
-With 13 convolutional layers, and a 256x256 image, this process is repeated a lot. It's only relatively recently that the computational power required to fit neural networks with this complexity became available, though the process has been around since the 1980s.
+With 13 convolutional layers, and a 256x256 image, this process is repeated a lot. It's only relatively recently that the computational power required to fit neural networks with this complexity became available, even though the process was described and used for smaller networks in the 1980s.
 
 ---
 class: primary
@@ -835,11 +838,13 @@ class: primary
 
 <br/><br/>
 
-.center[We have 25k labeled images]
+.large[.center[We have 25k labeled images]]
 
 ???
 
-These networks are so powerful in part because they have so many parameters; a total of 22.8 million for a model with the convolutional structure we've been working with and a very simple model head. That many parameters requires an amount of labeled training data we simply don't have; the time to fit those models is also unappealing: around a month using multiple GPUs. 
+These networks are so powerful in part because they have so many parameters; a total of 22.8 million for a model with the convolutional structure we've been working with and a very simple model head. Tuning all of those weights with a learning rate that's slow enough to allow for convergence would take 2-3 weeks and more GPU power than we have easy access to. It would also take more than a million labeled images to train that type of model successfully. 
+
+We have 25 thousand labeled images, so we can either spend a long time labeling images to fit a model, or we can find another option.
 
 ---
 class: primary
@@ -857,6 +862,10 @@ class: primary
 
 - Model optimization time: <3 hours
 
+???
+
+We can use transfer learning to take advantage of the fact that there are pre-trained models available: we use the convolutional base (and the weights) from the pre-trained model and fit a new model head using the data we do have. This saves a huge amount of computational time and takes advantage of the fact that visual features generalize fairly well; the same set of filters that can recognize cats and dogs can also recognize circles and squares if the dense layers are properly calibrated. Using this approach, the model takes less than 3 hours to fit (we run model updates every night). 
+
 --
 
 #### VGG16
@@ -868,7 +877,8 @@ class: primary
 
 ???
 
-We can use transfer learning to take advantage of the fact that there are pre-trained models available: we use the convolutional base (and the weights) from the pre-trained model and fit a new model head using the data we do have. This saves a huge amount of computational time and takes advantage of the fact that visual features generalize fairly well; the same set of filters that can recognize cats and dogs can also recognize circles and squares if the dense layers are properly calibrated. Using this approach, the model takes less than 3 hours to fit (we run model updates every night). 
+VGG16 is a pre-trained CNN that conveniently has the structure we've been using as an example during this talk. Its structure is relatively straightforward, compared to ResNet and AlexNet. There are more complicated pre-trained networks with higher accuracy rates, but the simplicity of VGG16's structure makes it a good compromise for our purposes. We want to be able to explain this process to practitioners if necessary, and we want to be able to go back and understand what's happening with each filter and layer. 
+
 
 ---
 class: inv-center
@@ -876,7 +886,7 @@ class: inv-center
 
 ???
 
-Now that you have an idea of what's happening inside the computer, we're going to focus on the more human side of the equation.
+Now that you have an idea of what's happening inside the computer, let's talk about data collection and the human side of the model fitting process. 
 
 ---
 class:primary
@@ -887,9 +897,9 @@ class:primary
 
 ???
 
-To start with, where'd the data come from? I built a scraper to pull images from Zappos; the images are relatively high resolution (usually 1920x1400). It's been running since late April, and we have about 50K images at this point.
+Shortly after Leslie Hammer's visit, I started writing a web scraper to pull shoe images from Zappos.com. In April, I started aggregating shoe data; the script runs several times a week and automatically downloads new shoes. As of earlier today, we have over 50 thousand distinct images scraped from Zappos, including men, women, and children's shoes. 
 
-The next step was to get humans to label things in the same way we want the model to label things.
+We have all of these images, but they're not useful unless we also have labels assigned to regions of each image. 
 
 ---
 class:primary
@@ -915,9 +925,9 @@ class:primary
 
 ???
 
-The real heroes here are the high schoolers, undergraduates, and grad students who spent time labeling images to provide training data for the model. 
+I set up LabelMe Annotation tool, provided by a lab at MIT, to serve up images of the shoes and track labels applied to regions of each shoe. LabelMe provides an xml file for each image that contians the labeled region coordinates; this information is then processed by a series of R scripts I wrote. 
 
-One issue we ran into is that our criteria changed as we found new edge cases that forced us to make a decision on whether something was part of a specific category. In addition, initially we were using the Matlab toolkit that came with the LabelMe program to process and extract the images from the annotation files. Over the summer, I rewrote that code in R to customize it to our needs. This rewrite changed some of the previous guidelines - instead of labeling multiple features that overlap separately, we now label all of the features within a region with the same polygon. This reflects a change in how modeling occurs as well as a change in the processing code. Unfortunately, we're still cleaning up the annotations that were completed before that point. 
+Last summer, we had two high school students, Ben, and Jenny, who spend the better part of 6 weeks labeling features in shoes. We've also had a couple of undergraduate students working over the past semester to label new images and clean up the labels. As we've refined our approach, some of the labeling guidelines have changed; this has meant we've had to go back and fix shoes that were labeled before the new guidelines. 
 
 ---
 class:primary
@@ -935,7 +945,7 @@ annotated_imgs %>%
   xlab("")  + 
   ggtitle("Current Class Distribution (All Labeled Images)") + 
   mytheme + 
-  theme(legend.position = c(1, 1), legend.justification = c(.95, .95), legend.background = element_rect(fill = "white"))
+  theme(legend.position = c(1, 1), legend.justification = c(1.03, 1.03), legend.background = element_rect(fill = "white"))
 ```
 
 ???
@@ -988,7 +998,7 @@ class:primary
     
 - Validation and test data (20% each)
 
-- Miranda Tilton fit the model using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper', .opts = list(max.names = 1, longnamesfirst = F)))`
+- Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper', .opts = list(max.names = 1, longnamesfirst = F)))`
 
 ???
 
@@ -1347,3 +1357,17 @@ class: primary
 PrintBibliography(bb)
 ```
 </div>
+
+---
+class: primary
+## Outline
+
+- [Forensics Context](#6)
+
+- [Image Analysis](#15)
+
+- [Convolutional Neural Networks](#19)
+
+- [CoNNOR](#37)
+
+- [Future Work](#54)
