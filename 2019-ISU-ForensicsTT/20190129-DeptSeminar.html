@@ -764,7 +764,7 @@ We can use transfer learning to take advantage of the fact that there are pre-tr
 --
 
 #### VGG16
-- Pre-trained CNN 
+- Pre-trained CNN (Simonyan, et al., 2014)
     - Trained on 1.3 million images from ImageNet    
     (Krizhevsky, et al., 2012)
     
@@ -788,7 +788,7 @@ class:primary
 ## Acquire Data
 &lt;img alt="Zappos Screenshot showing sole images" src="labelme-imgs/zappos.png" width="90%" style="margin: 0 5%"/&gt;
 
-.move-margin[&lt;br/&gt;&lt;br/&gt;51063 images scraped since April 2018]
+.move-margin[&lt;br/&gt;&lt;br/&gt;51210 images scraped since April 2018]
 
 ???
 
@@ -855,20 +855,9 @@ Statistically:
     
 - Covariance structure is ?
 
---
-
-.move-margin[&lt;br/&gt;&lt;br/&gt;There are downsides to black-box models...]
-
 ???
 
-We've set the model up so that it predicts the presence or absence of each of 9 classes. In machine learning, this is "one-hot" encoding, but you may be more familiar with it as coding categories using indicator variables. 
-
-What's important to note is that because any given image can have between 0 and 9 class labels, each of the 9 probabilities produced by the model are between 0 and 1, but there are no other constraints - they do not have to sum to 1. 
-
-We can think of this as a multivariate bernoulli situation, where each label is assigned with probability `\(\pi_i\)`. The `\(pi\)`s are not independent - there is obviously a dependence both due to feature similarity (e.g. polygons and quads have similar features) and input data - easily identifiable classes are more likely to have been labeled. There's also a dependency due to the CNN structure, but I'd be hard pressed to describe it beyond saying that it exists.
-
-So any attempts to think too hard about the covariance structure are (at this point) doomed. There are downsides to using a black-box model; one of those is that statistical formalities are not necessarily observed. Of course, the upside is that the model actually works.
-
+We talked previously about the model structure in a generic sense; now let's talk about the specifics. We're going to be using what's called "one hot" encoding, that is, indicator variables, and we're going to allow our model to output a separate probability for each of the 9 labeled classes; these probabilities won't sum to one, but they're not independent either. The dependency structure is complicated - output probabilities depend on the model structure, but there are also dependencies based on the geometric similarity - a quadrilateral is likely more similar to a polygon than to a line.  We don't have any real way to describe the complicated dependency structure - this is one of the downsides to using a model that's this complicated. The upside is that the model is actually capable of doing what we're asking of it; less complicated models didn't really succeed at that. 
 
 ---
 class:primary
@@ -884,11 +873,17 @@ class:primary
 
 - Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library 
 
+.move-margin[
+&lt;img src="model-imgs/text-1-bernie-mev-kids-catwalk-little-kid-big-kid-multi-camo_product_9084647_color_87089.jpg" width = "45%" style = "margin-right:2%"/&gt; &lt;img src="model-imgs/aug_text-1-bernie-mev-kids-catwalk-little-kid-big-kid-multi-camo_product_9084647_color_87089_0_1891.jpg" width = "45%"/&gt;
+
+&lt;img src="model-imgs/bowtie(R)-1-ugg-sienna-enamel-blue_product_8726365_color_120557.jpg" width = "45%" style = "margin-right:2%"/&gt; &lt;img src="model-imgs/aug_bowtie(R)-1-ugg-sienna-enamel-blue_product_8726365_color_120557_0_8344.jpg" width = "45%"/&gt;
+]
+
 ???
 
 We scaled all of the labeled images to 256 x 256; aspect ratio was not preserved, though some steps have been taken to ensure that the labeled regions are at least square-ish where possible to prevent extreme distortion. 
 
-60% of the labeled images were used as training data; these images were augmented once by zooming, skewing, cropping, and rotating the images. This step is recommended to prevent over-fitting, and is particularly important given that many features (e.g. bowties in Birkenstocks) are similar across shoes, so an image that is essentially the same may appear in the training, validation, and test sets.
+60% of the labeled images were used as training data; these images were augmented once by zooming, skewing, cropping, and rotating the images. This step is recommended to prevent over-fitting. Examples of original and augmented images are shown on the right side of the slide.
 
 Validation data, which is used within each fitting iteration to calculate the loss function, accounted for 20% of the images, and test data, which is used to evaluate the model at the end of the fitting process, accounted for the remaining 20%. 
 
@@ -908,7 +903,7 @@ class:primary
 ]]
 ???
 
-This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). 
+This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). The loss function used to fit the model is the cross-entropy function. 
 
 Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Training loss is still decreasing as well. One concern with retraining the head of a CNN is that with relatively little data (e.g. 20 thousand data points instead of 150K) it is easy to over-fit models; what we see is that this hasn't yet happened for this model. Overfitting would be evident if the loss in the training set had beun to increase. 
 
@@ -934,9 +929,7 @@ class:primary
 
 ???
 
-These plots show ROC curves for each class, computed separately. Because this problem is a multivariate binary classification problem (in statistical parlance), we can adapt most of the diagnostic plots we're used to with a few modifications. In this case, each ROC curve was generated without consideration of other plot features.
-
-Equal error rates are marked with a dot, and show the point at which it is equally likely for the model to miss a classification or wrongly classify an image. These EERs are used as an optimized cutoff value for diagnostics which require a hard threshold, like a confusion matrix.
+These plots show ROC curves for each class, computed separately. Equal error rates are marked with a dot, and show the point at which it is equally likely for the model to miss a classification or wrongly classify an image. These EERs are used as an optimized cutoff value for diagnostics which require a hard threshold, like a confusion matrix. Most cutoff rates are around .1, though for classes with less data, such as stars and polygons, the cutoff rate is typically smaller. 
 
 ---
 class:primary
@@ -958,7 +951,7 @@ For multi-label images, only incorrect predictions contribute to off-diagonal pr
 
 ???
 
-This confusion matrix shows, for each label, the probability that the image is classified as that label as well as other possible labels. One modification we made to the standard confusion matrix was to exclude any additional "correct" labels from these calculations: If an image was labeled with a circle and a line, but the model assigned circle and triangle as labels, then in the circle column that image would register as a true positive for circle and a false positive for triangle; line would be excluded from calculations in that column. Similarly, in the line column, triangle would be marked as a false positive, circle would be excluded, and line would be marked as a false negative. 
+This confusion matrix shows, for each label, the probability that the image is classified as that label as well as other possible labels. One modification we made to the standard confusion matrix was to exclude any additional "correct" labels from these calculations: If an image was labeled with a circle and a line, but the model assigned circle and triangle as labels, then in the circle column that image would register as a true positive for circle and a false positive for triangle; line would be excluded from calculations in that column.
 
 An important point to make at this juncture is that while we're operating as if our labeled data were "ground truth", that isn't an accurate assumption. People make mistakes, labeling is monotonous, and the criteria for certain classes have changed over time. In some cases, the model is correct, and the labels are wrong. We're working on correcting the labeling, but even in a situation where the labeling is done in accordance with the guidelines, some of the criteria can get fuzzy in practice. 
 
@@ -969,19 +962,15 @@ class:primary
 
 .move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
 
---
-
 ![Not everything is labeled correctly](labelme-imgs/adidas_circle_pred_correct.png)
 
 ???
 
-We created a shiny application to see the images and the model's predictions. Blue means that the image had that label, grey means it does not. 
+We created a shiny application to see the images and the model's predictions. Blue means that the image had that label, grey means it does not. I've selected two images that show both correct and incorrect model classifications. 
 
-So in the first image, the design is labeled as a quadrilateral (rounded quadrilateral) rather than a circle. We're still debating how to handle these... they're very ambiguous figures with features of both circles and quadrilaterals. The model is not wrong, but neither is the labeling... or maybe both of them are wrong?
+In the first image, the design is labeled as a quadrilateral and the model identifies that, but also identifies image as containing a circle very strongly. When we look at the image, the confusion is understandable. One half of the shape is angular, the other is rounded, so the shape has features of both a quadrilateral and a circle. We've decided to label these images as both (owing to the ambiguity), but that means we have to correct all of the previously labeled images. We're working on that. 
 
-In the second image, both text and quad are labels, but the model also identifies a circle in the text with probability 0.31; that is, the text contains an O. 
-
-We use the shiny application to screen for these problems so that we can correct the labeled training data where it does not meet the current guidelines for labeling. When we find an issue that's widespread (e.g. the Adidas logo is often not labeled as containing quads) we examine the shoes matching that description (so some screening occurs outside of what is predicted by the model). 
+In the second image, the model predicts circles, quadrilaterals, and text, but the image is labeled as having quadrilaterals and text. The circles happen to be part of the text (and the letters aren't even Os), and our brains pick up on the text but ignore the circles because we perceive things wholistically; the model does not. We're also in the process of updating these labels, because again, the data is not correct; the model absolutely is. 
 
 We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things. Because we determined the guidelines for labeling the data, labeled the data (or oversaw the labeling), and trained the model ourselves, we have the advantage of knowing the flaws at every point in the process; that means we have the responsibility to fix those flaws where possible. 
 
@@ -1003,7 +992,7 @@ What is a CNN actually doing? (Olah, et al., 2018)
 3. Which filters are most important for detection of each class?
     
 4. What do the filters detect?
-    - Semantic segmentation 
+    - Semantic segmentation (Shelhamer, et al., 2017)
     - Filter visualization
 
 &lt;div class="small move-margin"&gt;
@@ -1022,11 +1011,22 @@ What is a CNN actually doing? (Olah, et al., 2018)
 &lt;img src="interpretation/neuron_attribution.png" width = "74%" style = "margin-left:13%;margin-right:13%;" alt="Which regions and filters?"/&gt;
 &lt;span style = "margin-left:13%;margin-right:13%;font-size:30%"&gt;Source: https://distill.pub/2018/building-blocks/&lt;/span&gt;
 &lt;/div&gt;
+
 ???
 
-During this process, it's also helpful to see what the model is using to determine which features are present or absent. Black box models are notoriously difficult to see inside, but this is a very active area of current research. 
+During this process, it's also helpful to see what the model is using to determine which features are present or absent. 
 
-In particular, we'd like to know which regions in the image are relevant to the class, and which filters in the model are important for detecting each class. We've made some progress on the first question, and are actively looking into the second. 
+We'd love to know: 
+
+1. Which regions in an input image are relevant to each class (I will show examples of this on the next slide)
+
+2. Which regions activate which filters  - you can see one visualization of that on the bottom-left, where filters have been clustered and a different color is used to indicate regions activating clusters of filters. Another way to look at this is looking at the maximally activated filter for a particular sub-region of the image; the right side figure shows one way to visualize this. There are more dog-like filters on the top left, cat-like filters on the bottom-right. Both of these are much more interesting in the actual paper, which is interactive. 
+
+3. Which filters are most important for the detection of each class - I haven't seen a great visualization of this yet, but it would be an important diagnostic tool.
+
+4. We'd also like to see what the filters detect, either visually or using semantic categories. You can see at the bottom left a selection of filters from convolutional layer 1 of VGG16. 
+
+This is an extremely active area of research; there is a package for making some of these visualizations in Python, and we're in the process of making an R library with those functions; hopefully within the next month or so we'll be able to generate some of these visualizations for CoNNOR specifically. At the moment, we can look at heatmaps showing activation for each class, so I'll show you those. 
 
 
 
@@ -1047,7 +1047,7 @@ Heatmaps are scaled by class. Yellow = high activation
 
 ???
 
-Class activation maps use the gradient with respect to each class label, back propagated to the last convolutional layer to maintain spatial information. Here, we can see that the D shape discussed previously is activating both circle and quad; the round part is activating the circle class and the straight part is activating the quad class; there's also some slight activation of the polygon class, which isn't surprising given that polygons and quads share some features. 
+Class activation maps use the gradient with respect to each class label, back propagated to the last convolutional layer to maintain spatial information. Here, we can see that the D shape discussed previously is activating both circle and quad; the round part is activating the circle class and the straight part is activating the quad class. I've included only the relevant classes plus one comparison heatmap from a class that wasn't activated to cut down on the amount of clutter here, but heatmaps can be generated for each category.
 
 ---
 class:primary
@@ -1064,7 +1064,7 @@ Heatmaps are scaled by class. Yellow = high activation
 
 ???
 
-This is a piece of the Adidas text that is part of the design of many of their shoe treads. The model is obviously cuing into the text, but interestingly, it also detects circles - the text is so round that the inside of any A or D character is a perfect circle. While we wouldn't necessarily go out of our way to label that, because text dominates the human brain, we've created a model that doesn't have that dominance; the circles are just as real as the text to this model, and should be labeled as such.
+Here's an image similar to the one I showed you earlier, with adidas text; the heatmap is easier to see using a slightly different color. You can see that the top and bottom of the "d" are most important in determing text, but that the model is clearly cuing in to the circles inside of the a and d. It's doing exactly what we asked it to do - it just might not have been what we meant originally. 
 
 
 ---
@@ -1082,7 +1082,8 @@ Heatmaps are scaled by class. Yellow = high activation
 
 ???
 
-In a similar instance, the model cues in on circles in script S characters as well. These are objectively not circles, though, as they aren't closed, so we do not update the labeling for these images. It's a delicate balance between "the model isn't wrong" and tweaking the labels to match the model output exactly - we're working to find that balance. 
+Here's an example of an image where the model is strongly suggesting there are circles, but where we would not agree. It's not hard to see why the model thinks circles would be here, but if it isn't a closed loop, I can't in good conscience suggest it's a circle. Just because the model says something with confidence doesn't mean we change the labels on the original image. It's a screening tool, but we don't want to inflate the model's accuracy at the expense of the actual accuracy.
+
 
 ---
 class:primary
@@ -1097,18 +1098,26 @@ class:primary
     
     - 88% accuracy; many errors attributable to data labeling
 
+???
+
+In summary, the use of geometric shapes provides a convenient feature space to assess similarity of shoes. By using transfer learning, we can use powerful neural networks to identify features in images with the small amount of training data we have. CoNNOR performs well; it reduces a 256 x 256 x 3 image to a 9-dimensional vector of probabilities and has about 88% accuracy. We expect the accuracy will improve as we get better at consistently labeling the input images. 
 
 ---
 class:primary
 ## Applying the model
 `$$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$`
+???
 
-Coincidental match probability problem is now tractable (given a functional scanner)
+By applying CoNNOR to a collection of shoe images representing a comparison population, we can use a distance metric to identify a neighborhood of similar shoes and calculate an estimated coincidental match probability. It's hard to be more specific than that at this point, because for any specific application in forensics, "similar enough" depends on the specific context, and the population used in the comparison depends on the context. This is a promising way to approach this problem in the future, though, particularly if we can collect real-world data in an automatic fashion.  
 
 
 ---
 class:inv-center
 # &lt;br/&gt;&lt;br/&gt;What's Next?
+
+???
+
+This is all work that is currently evolving, so I'd like to give you a preview of the next few months
 
 ---
 class: primary
@@ -1122,11 +1131,24 @@ class: primary
 
 - Make CoNNOR more interpretable
     - keras-vis Python library -&gt; R package 
-    
+
+???
+
+Miranda Tilton is writing her creative component, and we will submit a paper by the end of the semester. 
+
+I plan to revise the NIJ grant I submitted last April and resubmit it, so that we can hopefully get funding to develop a prototype scanner and begin data collection around Ames. 
+
+I'd also like to add a spatial component to Connor by predicting features for small chunks of the shoe sole and integrating those predictions back into the entire shoe. 
+
+Finally, we plan to explore CoNNOR's inner workings with the keras-vis package that we're currently porting to R. Eventually, I'd like to explore new visual diagnostics for these types of models. 
 
 ---
 class: inv-center
 # Questions?
+
+??? 
+
+I'd be happy to answer your questions now. 
 
 ---
 class: primary
@@ -1168,6 +1190,19 @@ In: &lt;em&gt;International Journal of Computer Vision&lt;/em&gt; 77.1-3 (May. 2
 ISSN: 0920-5691, 1573-1405.
 DOI: &lt;a href="https://doi.org/10.1007/s11263-007-0090-8"&gt;10.1007/s11263-007-0090-8&lt;/a&gt;.
 URL: &lt;a href="http://link.springer.com/10.1007/s11263-007-0090-8"&gt;http://link.springer.com/10.1007/s11263-007-0090-8&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[6]&lt;cite&gt;
+E. Shelhamer, J. Long and T. Darrell.
+&amp;ldquo;Fully Convolutional Networks for Semantic Segmentation&amp;rdquo;.
+In: &lt;em&gt;IEEE Transactions on Pattern Analysis and Machine Intelligence&lt;/em&gt; 39.4 (Apr. 2017), pp. 640-651.
+DOI: &lt;a href="https://doi.org/10.1109/TPAMI.2016.2572683"&gt;10.1109/TPAMI.2016.2572683&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[7]&lt;cite&gt;
+K. Simonyan and A. Zisserman.
+&amp;ldquo;Very Deep Convolutional Networks for Large-Scale Image Recognition&amp;rdquo;.
+En.
+In: &lt;em&gt;arxiv.org&lt;/em&gt; (Sep. 2014).
+URL: &lt;a href="https://arxiv.org/abs/1409.1556"&gt;https://arxiv.org/abs/1409.1556&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
 &lt;/div&gt;
 
 ---
