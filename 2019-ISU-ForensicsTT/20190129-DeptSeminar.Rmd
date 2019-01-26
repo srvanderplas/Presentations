@@ -838,11 +838,13 @@ class: primary
 
 <br/><br/>
 
-.center[We have 25k labeled images]
+.large[.center[We have 25k labeled images]]
 
 ???
 
-These networks are so powerful in part because they have so many parameters; a total of 22.8 million for a model with the convolutional structure we've been working with and a very simple model head. That many parameters requires an amount of labeled training data we simply don't have; the time to fit those models is also unappealing: around a month using multiple GPUs. 
+These networks are so powerful in part because they have so many parameters; a total of 22.8 million for a model with the convolutional structure we've been working with and a very simple model head. Tuning all of those weights with a learning rate that's slow enough to allow for convergence would take 2-3 weeks and more GPU power than we have easy access to. It would also take more than a million labeled images to train that type of model successfully. 
+
+We have 25 thousand labeled images, so we can either spend a long time labeling images to fit a model, or we can find another option.
 
 ---
 class: primary
@@ -860,6 +862,10 @@ class: primary
 
 - Model optimization time: <3 hours
 
+???
+
+We can use transfer learning to take advantage of the fact that there are pre-trained models available: we use the convolutional base (and the weights) from the pre-trained model and fit a new model head using the data we do have. This saves a huge amount of computational time and takes advantage of the fact that visual features generalize fairly well; the same set of filters that can recognize cats and dogs can also recognize circles and squares if the dense layers are properly calibrated. Using this approach, the model takes less than 3 hours to fit (we run model updates every night). 
+
 --
 
 #### VGG16
@@ -871,7 +877,8 @@ class: primary
 
 ???
 
-We can use transfer learning to take advantage of the fact that there are pre-trained models available: we use the convolutional base (and the weights) from the pre-trained model and fit a new model head using the data we do have. This saves a huge amount of computational time and takes advantage of the fact that visual features generalize fairly well; the same set of filters that can recognize cats and dogs can also recognize circles and squares if the dense layers are properly calibrated. Using this approach, the model takes less than 3 hours to fit (we run model updates every night). 
+VGG16 is a pre-trained CNN that conveniently has the structure we've been using as an example during this talk. Its structure is relatively straightforward, compared to ResNet and AlexNet. There are more complicated pre-trained networks with higher accuracy rates, but the simplicity of VGG16's structure makes it a good compromise for our purposes. We want to be able to explain this process to practitioners if necessary, and we want to be able to go back and understand what's happening with each filter and layer. 
+
 
 ---
 class: inv-center
@@ -879,7 +886,7 @@ class: inv-center
 
 ???
 
-Now that you have an idea of what's happening inside the computer, we're going to focus on the more human side of the equation.
+Now that you have an idea of what's happening inside the computer, let's talk about data collection and the human side of the model fitting process. 
 
 ---
 class:primary
@@ -890,9 +897,9 @@ class:primary
 
 ???
 
-To start with, where'd the data come from? I built a scraper to pull images from Zappos; the images are relatively high resolution (usually 1920x1400). It's been running since late April, and we have about 50K images at this point.
+Shortly after Leslie Hammer's visit, I started writing a web scraper to pull shoe images from Zappos.com. In April, I started aggregating shoe data; the script runs several times a week and automatically downloads new shoes. As of earlier today, we have over 50 thousand distinct images scraped from Zappos, including men, women, and children's shoes. 
 
-The next step was to get humans to label things in the same way we want the model to label things.
+We have all of these images, but they're not useful unless we also have labels assigned to regions of each image. 
 
 ---
 class:primary
@@ -918,9 +925,9 @@ class:primary
 
 ???
 
-The real heroes here are the high schoolers, undergraduates, and grad students who spent time labeling images to provide training data for the model. 
+I set up LabelMe Annotation tool, provided by a lab at MIT, to serve up images of the shoes and track labels applied to regions of each shoe. LabelMe provides an xml file for each image that contians the labeled region coordinates; this information is then processed by a series of R scripts I wrote. 
 
-One issue we ran into is that our criteria changed as we found new edge cases that forced us to make a decision on whether something was part of a specific category. In addition, initially we were using the Matlab toolkit that came with the LabelMe program to process and extract the images from the annotation files. Over the summer, I rewrote that code in R to customize it to our needs. This rewrite changed some of the previous guidelines - instead of labeling multiple features that overlap separately, we now label all of the features within a region with the same polygon. This reflects a change in how modeling occurs as well as a change in the processing code. Unfortunately, we're still cleaning up the annotations that were completed before that point. 
+Last summer, we had two high school students, Ben, and Jenny, who spend the better part of 6 weeks labeling features in shoes. We've also had a couple of undergraduate students working over the past semester to label new images and clean up the labels. As we've refined our approach, some of the labeling guidelines have changed; this has meant we've had to go back and fix shoes that were labeled before the new guidelines. 
 
 ---
 class:primary
@@ -991,7 +998,7 @@ class:primary
     
 - Validation and test data (20% each)
 
-- Miranda Tilton fit the model using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper', .opts = list(max.names = 1, longnamesfirst = F)))`
+- Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper', .opts = list(max.names = 1, longnamesfirst = F)))`
 
 ???
 
@@ -1363,3 +1370,4 @@ class: primary
 
 - [CoNNOR](#37)
 
+- [Future Work](#54)
