@@ -5,7 +5,7 @@ date: "Jan 29, 2019"
 output:
   xaringan::moon_reader:
     mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
-    css: ["default", "css/csafe.css", "css/csafe-fonts.css"]
+    css: ["default", "css/csafe.css", "css/csafe-fonts.css", "css/this-presentation.css"]
     lib_dir: libs
     nature:
       countIncrementalSlides: false
@@ -1350,3 +1350,16 @@ class: primary
 PrintBibliography(bb)
 ```
 </div>
+
+---
+class: primary
+## Outline
+
+- [Forensics Context](#6)
+
+- [Image Analysis](#15)
+
+- [Convolutional Neural Networks](#19)
+
+- [CoNNOR](#37)
+
