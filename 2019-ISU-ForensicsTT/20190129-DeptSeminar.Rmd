@@ -938,7 +938,7 @@ annotated_imgs %>%
   xlab("")  + 
   ggtitle("Current Class Distribution (All Labeled Images)") + 
   mytheme + 
-  theme(legend.position = c(1, 1), legend.justification = c(.95, .95), legend.background = element_rect(fill = "white"))
+  theme(legend.position = c(1, 1), legend.justification = c(1.03, 1.03), legend.background = element_rect(fill = "white"))
 ```
 
 ???
