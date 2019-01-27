@@ -233,13 +233,13 @@ class:primary
 
 - [Forensics Context](#6)
 
-- [Image Analysis](#15)
+- [Image Analysis](#20)
 
-- [Convolutional Neural Networks](#19)
+- [Convolutional Neural Networks](#24)
 
-- [CoNNOR](#37)
+- [CoNNOR](#44)
 
-- [Future Work](#54)
+- [Future Work](#61)
 
 ???
 
@@ -559,7 +559,7 @@ Let $CNN(x)$ describe a convolutional neural network acting upon an input image 
 
 
 
-$CNN(x) \rightarrow [{P_1}, ..., {P_z}] \in [0,1]^9$ 
+$CNN(x) \rightarrow [{P_1}, ..., {P_z}] \in [0,1]^z$ 
 - $z$ is the number of output classes 
 - ${P_1}, ..., {P_z}$ are output class probabilities
 
@@ -1364,7 +1364,7 @@ Finally, we plan to explore CoNNOR's inner workings with the keras-vis package t
 class: inv-center
 # Questions?
 
-??? 
+???
 
 I'd be happy to answer your questions now. 
 
@@ -1384,10 +1384,10 @@ class: primary
 
 - [Forensics Context](#6)
 
-- [Image Analysis](#15)
+- [Image Analysis](#20)
 
-- [Convolutional Neural Networks](#19)
+- [Convolutional Neural Networks](#24)
 
-- [CoNNOR](#37)
+- [CoNNOR](#44)
 
-- [Future Work](#54)
+- [Future Work](#61)
