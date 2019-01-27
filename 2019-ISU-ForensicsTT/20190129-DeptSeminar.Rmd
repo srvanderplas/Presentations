@@ -1323,6 +1323,7 @@ In summary, the use of geometric shapes provides a convenient feature space to a
 ---
 class:primary
 ## Applying the model
+
 $$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$
 ???
 
