@@ -1,16 +1,20 @@
 library(reticulate)
 library(keras)
+use_condaenv("keras", required = T)
+# reticulate::conda_install("keras", "keras-vis", pip = T)
+# reticulate::conda_install("keras", "tensorflow")
+
+#Changing reticulate to use python 3 
+reticulate::use_python(python = '~/anaconda3/envs/keras/bin/python3', required = T)
+
 kerasvis <- import("vis.visualization")
 im <- import("vis.input_modifiers")
 visutils <- import("vis.utils")
-plt <-import("matplotlib.pyplot")
+plt <- import("matplotlib.pyplot")
 collections <- import("collections")
 
-#Changing reticulate to use python 3 
-reticulate::use_python(python = '/anaconda3/bin/python3', required = T)
 
 
-model <- application_vgg16(weights = 'imagenet', include_top = TRUE)
 visualize_filter <- function(model, selected_filters, layer_names){
   jitter <- list(im$Jitter(.05))
   
@@ -25,7 +29,11 @@ visualize_filter <- function(model, selected_filters, layer_names){
     old_images$append(img)
     layer_idx <- visutils$utils$find_layer_idx(model, layer_names[[r_index]])
     for(filter_num in selected_filters[[r_index]]){
-      old_filter <- kerasvis$visualize_activation(model, layer_idx, filter_indices=filter_num, tv_weight=0L, input_modifiers=jitter, max_iter=1L)
+      old_filter <- kerasvis$visualize_activation(model, layer_idx, 
+                                                  filter_indices = filter_num, 
+                                                  tv_weight = 0L, 
+                                                  input_modifiers = jitter, 
+                                                  max_iter = 1L)
       filter_name <- paste(layer_names[r_index], "pre_Filter", filter_num, sep="_")
       plt$axis('off')
       plt$title(filter_name)
@@ -77,8 +85,23 @@ visualize_filter <- function(model, selected_filters, layer_names){
     
   }
 }
+
+
+source("~/models/shoe_nn/Generate_Model_Images.R")
+model_path <- "~/models/shoe_nn/TrainedModels/"
+newest_model <- get_newest(dir = model_path, pattern = "weights.h5")
+newest_data_file <- file.path("~/models/shoe_nn/RProcessedImages/", newest_model$process_dir, "cropped_photos.Rdata")
+model_wts_file <- file.path(newest_model$path, newest_model$base_file)
+loaded_model <- set_weights(model_wts_file)
+
+
+
 model <- application_vgg16(weights = 'imagenet', include_top = TRUE)
+model <- application_vgg16(weights = 'imagenet', include_top = TRUE)
+
 images = collections$deque()
 selected_filters <- list(list(41L))#, 42L), list(5L,200L))
 layer_names <- list("block5_conv3")#, "predictions")
-visualize_filter(model, selected_filters, layer_names)
+visualize_filter(loaded_model, list(list(1L)), layer_names)
+
+visutils$utils$find_layer_idx(loaded_model, "block5_conv3")
