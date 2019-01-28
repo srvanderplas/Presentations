@@ -556,13 +556,16 @@ class:primary
 ## Modeling Approach
 
 Let $CNN(x)$ describe a convolutional neural network acting upon an input image $x$ with labels ${Y_1}, ..., {Y_z} \in \{0,1\}^z$ 
+<br/><br/>
 
 
+$\displaystyle CNN(x) \rightarrow [{P_1}, ..., {P_z}] \in [0,1]^z$ 
 
-$CNN(x) \rightarrow [{P_1}, ..., {P_z}] \in [0,1]^z$ 
 - $z$ is the number of output classes 
+
 - ${P_1}, ..., {P_z}$ are output class probabilities
 
+<br/>
 
 The model has errors $[{\epsilon_1}, ..., {\epsilon_z}] = [{Y_1} - {P_1}, ..., {Y_z} - {P_z}]$
 
@@ -1324,7 +1327,10 @@ In summary, the use of geometric shapes provides a convenient feature space to a
 class:primary
 ## Applying the model
 
+<br/><br/>
 $$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$
+
+<br/><br/>
 ???
 
 By applying CoNNOR to a collection of shoe images representing a comparison population, we can use a distance metric to identify a neighborhood of similar shoes and calculate an estimated coincidental match probability. It's hard to be more specific than that at this point, because for any specific application in forensics, "similar enough" depends on the specific context, and the population used in the comparison depends on the context. This is a promising way to approach this problem in the future, though, particularly if we can collect real-world data in an automatic fashion.  

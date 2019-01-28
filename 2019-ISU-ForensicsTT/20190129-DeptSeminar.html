@@ -456,13 +456,16 @@ class:primary
 ## Modeling Approach
 
 Let `\(CNN(x)\)` describe a convolutional neural network acting upon an input image `\(x\)` with labels `\({Y_1}, ..., {Y_z} \in \{0,1\}^z\)` 
+&lt;br/&gt;&lt;br/&gt;
 
 
+`\(\displaystyle CNN(x) \rightarrow [{P_1}, ..., {P_z}] \in [0,1]^z\)` 
 
-`\(CNN(x) \rightarrow [{P_1}, ..., {P_z}] \in [0,1]^z\)` 
 - `\(z\)` is the number of output classes 
+
 - `\({P_1}, ..., {P_z}\)` are output class probabilities
 
+&lt;br/&gt;
 
 The model has errors `\([{\epsilon_1}, ..., {\epsilon_z}] = [{Y_1} - {P_1}, ..., {Y_z} - {P_z}]\)`
 
@@ -786,7 +789,7 @@ class:primary
 ## Acquire Data
 &lt;img alt="Zappos Screenshot showing sole images" src="labelme-imgs/zappos.png" width="90%" style="margin: 0 5%"/&gt;
 
-.move-margin[&lt;br/&gt;&lt;br/&gt;51389 images scraped since April 2018]
+.move-margin[&lt;br/&gt;&lt;br/&gt;51398 images scraped since April 2018]
 
 ???
 
@@ -801,8 +804,8 @@ class:primary
 
 - [LabelMe Annotation Tool](https://github.com/CSAILVision/LabelMeAnnotationTool) used as a web interface - creates XML files with labels and coordinates. (Russell, et al., 2008)
 
-- 25,624 regions labeled with one or more geometric objects
-- 34,628 labels
+- 25,975 regions labeled with one or more geometric objects
+- 35,234 labels
 
 .small[.move-margin[
 &lt;br/&gt;&lt;br/&gt;Labeling courtesy of 
@@ -1104,7 +1107,10 @@ In summary, the use of geometric shapes provides a convenient feature space to a
 class:primary
 ## Applying the model
 
+&lt;br/&gt;&lt;br/&gt;
 `$$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$`
+
+&lt;br/&gt;&lt;br/&gt;
 ???
 
 By applying CoNNOR to a collection of shoe images representing a comparison population, we can use a distance metric to identify a neighborhood of similar shoes and calculate an estimated coincidental match probability. It's hard to be more specific than that at this point, because for any specific application in forensics, "similar enough" depends on the specific context, and the population used in the comparison depends on the context. This is a promising way to approach this problem in the future, though, particularly if we can collect real-world data in an automatic fashion.  
