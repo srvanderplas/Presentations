@@ -181,7 +181,7 @@ class:primary
 
 ## Graphics Publications
 
-.slightly-small[
+.smaller[
 ```{r graphics-pubs, results='asis', echo=FALSE, cache = F}
 mypubs <- ReadBib("./mypubs.bib", check = T)
 NoCite(mypubs)

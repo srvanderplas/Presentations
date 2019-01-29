@@ -131,6 +131,10 @@
 .slightly-small { 
   font-size: 80% 
 }
+
+.smaller { 
+  font-size: 75% 
+}
 .small { 
   font-size: 70% 
 }
