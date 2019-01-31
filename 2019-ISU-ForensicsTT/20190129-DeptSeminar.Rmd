@@ -1330,6 +1330,39 @@ In summary, the use of geometric shapes provides a convenient feature space to a
 
 ---
 class:primary
+## Contribution Summary
+
+- Designed the project 
+- Wrote the Zappos scraper and set up scraper automation (`ShoeScrapeR` package on github)
+- Identified the feature set and initial labeling criteria
+- Rewrote LabelMe processing code in R to accommodate multiple-label images
+- Wrote scripts to 
+    1. Automatically process all annotation files and output 256 x 256 images with the correct labels
+    2. Split all data into training, test, and validation sets
+    3. Augment the training data (w/ M. Tilton)
+    4. Fit the model (w/ M. Tilton)
+    5. Update the Shiny application to examine model results (w/ M. Tilton)
+- Automated update of model every evening starting at 5pm
+
+- about 2200 lines of R code
+
+---
+class: primary
+## Tools
+
+- Packages: 
+    - Modeling: `keras`
+    - Data Wrangling: `magrittr`, `dplyr`, `lubridate`, `stringr`, `tidyr`, `purrr`, `furrr`, 
+    - Image Processing: `jpeg`, `imager`, `magick`, 
+    - Annotation Manipulation: `sf`, `sp`
+    - Visualization: `ggplot2`, `viridis`, `ggcorrplot`, `deepviz`, `tidygraph`, `ggraph`, 
+    - XML/Web Scraping: `xml2`, `XML`, `rvest`, 
+    - Slides/Documentation: `rmarkdown`, `xaringan`, `knitr`
+
+- Other Software: Docker, LabelMe Annotation Tool (w/ Matlab toolbox), `gimp` image editor
+
+---
+class:primary
 ## Applying the model
 
 <br/><br/>
