@@ -894,7 +894,11 @@ class:primary
 ## Acquire Data
 <img alt="Zappos Screenshot showing sole images" src="labelme-imgs/zappos.png" width="90%" style="margin: 0 5%"/>
 
-.move-margin[<br/><br/>`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "images")` scraped since April 2018]
+.move-margin[
+<br/><br/>[`ShoeScrapeR` package](https://github.com/srvanderplas/ShoeScrapeR)<br/><br/>
+
+`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "images")` scraped since April 2018 
+]
 
 ???
 
