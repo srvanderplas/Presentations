@@ -1313,7 +1313,7 @@ Here's an example of an image where the model is strongly suggesting there are c
 
 ---
 class:primary
-## Summary
+## Project Summary
 
 - Geometric shapes provide a convenient feature space for assessing shoe similarity
 
