@@ -1020,7 +1020,8 @@ data.frame(history$metrics) %>%
   gather(key = "measure", value = "value", -epoch) %>%
   mutate(Type = ifelse(str_detect(measure, "val"), "Validation", "Training"),
          measure = ifelse(str_detect(measure, "acc"), "Accuracy", "Loss")) %>%
-  # filter(Type == "Training") %>%
+  # bind_rows(tibble(epoch = NA, value =  .6, measure = "Accuracy", Type = "Validation")) %>%
+  # bind_rows(tibble(epoch = NA, value =  .33, measure = "Loss", Type = "Validation")) %>%
   ggplot(aes(x = epoch, y = value, color = Type)) + 
   geom_point() + 
   geom_smooth(se = F) + 
