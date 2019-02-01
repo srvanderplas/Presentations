@@ -250,7 +250,9 @@ I'm going to start with the forensics context of this problem. I'll talk briefly
 class:primary
 ## What is the probability of<br>a coincidental match?
 
-<img src="problem-definition/coincidental-match.png" width = "80%" style="margin-left:10%;margin-right:10%" alt="Crime scene print compared with sample print"/>
+<!-- <img src="problem-definition/coincidental-match.png" width = "80%" style="margin-left:10%;margin-right:10%" alt="Crime scene print compared with sample print"/> -->
+<img src="problem-definition/crime_scene_90.jpg" height = "200px" style = "position: absolute; left:30px; top: 250px;"/><img src = "problem-definition/suspect_90.png" height = "200px" style="position: absolute; right:30px; top:250px;"/>
+
 
 ???
 
@@ -260,15 +262,17 @@ Part of the calculation of that information is to determine what the probability
 
 ---
 class:primary
-## Coincidental Match
+## What is the probability of<br>a coincidental match?
 
 1. Define the comparison population
 
-2. Sample from the comparison population
+2. Sample from the comparison population    
+$N$ total shoes
 
-3. Identify similar shoes from the comparison population
+3. Identify similar shoes from the comparison population    
+$S$ similar shoes in the $N$ shoe sample
 
-4. Estimate the probability: $$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$
+4. Estimate the probability of a coincidental match: $$\hat{p} = \frac{S}{N}$$
 
 ???
 
@@ -277,13 +281,11 @@ We first define the comparison population, that is, the population of people who
 Then, we would sample from that comparison population to see what shoes the people in the comparison set have.
 We would then identify similar shoes - shoes which could have made the print at the crime scene, and estimate the probability of a coincidental match as the number of similar shoes divided by the size of the comparison population sample. 
 
-Unfortunately, this gets a bit more complicated when it is actually implemented. 
-
----
-class:primary,center,middle
-## Comparison Population
+--
+<br/>
 
 > .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]<br/> - Leslie Hammer, [Hammer Forensics](https://hammerforensics.com/), March 2018
+
 
 ???
 
@@ -295,7 +297,7 @@ There are completely legitimate reasons for thinking this is a difficult problem
 
 ---
 class:primary
-## Comparison Population
+## Obstacles: Characterizing Comparison Populations
 
 - No 100% complete database of all shoes 
     - manufacturer, model, size, tread style, manufacturing molds
@@ -322,7 +324,10 @@ So how do we solve this problem? How do we collect this data at a (potentially) 
 class:primary
 ## Comparison Population
 
-How to collect data from the local population? 
+.move-margin[.Large[.center[Goal: 
+$$\hat{p} = \frac{S}{N}$$
+]]]
+How to collect data from the comparison population? 
 
 1. Build a low profile scanner that can be placed in a high traffic area
 
@@ -350,6 +355,8 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 1. Identify relevant features within the scans
 
+img 1 | img 2 | img 3
+
 --
 
 2. Define similarity for shoe images
@@ -358,9 +365,6 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 3. Assess the frequency of similar shoes in the sampled data
 
---
-
-### .center[These are statistics and machine learning problems]
 
 ???
 
@@ -380,7 +384,7 @@ The next question is then... What's considered a relevant feature?
 class:primary
 ## Relevant Features
 
-Class Characteristics
+Footwear Class Characteristics
 - Make, Model, Tread pattern, Size, Type of shoe
 
 - Cannot be used to identify an individual match
@@ -1343,43 +1347,27 @@ By applying CoNNOR to a collection of shoe images representing a comparison popu
 ---
 class:primary
 ## Contribution Summary
- 
-- Wrote the Zappos scraper and set up scraper automation (`ShoeScrapeR` package on github)
-- Identified the feature set and initial labeling criteria
-- Rewrote LabelMe processing code in R to accommodate multiple-label images
-- Wrote scripts to 
-    1. Automatically process all annotation files and output 256 x 256 images with the correct labels
-    2. Split all data into training, test, and validation sets
-    3. Augment the training data (w/ M. Tilton)
-    4. Fit the model (w/ M. Tilton)
-    5. Update the Shiny application to examine model results (w/ M. Tilton)
-    6. Visualize the results (w/ M. Tilton)
-- Automated update of model every evening starting at 5pm
 
-- about 2700 lines of R code
+#### Statistical Computing
+- Data scraping (`ShoeScrapeR`)
+- LabelMe Annotations - Output multi-label images from R
+
+#### Model Training
+- Identified the feature set and initial labeling criteria 
+- Determined augmentation process
+- Model Automation (daily at 5pm)
+
+#### Model Diagnostics
+- Accuracy measures for multi-class, multi-label models <br/>(with M. Tilton)
+- Heatmaps for Convnets in R (with M. Tilton)
+- `KerasVis` package in R (in progress; with J. Seo)
+
 
 ???
 
 This is a fairly complicated project, with a fair number of people and moving parts, so here's a different summary, showing the steps from my perspective as to how the project has evolved. 
 
----
-class: primary
-## Tools
 
-- R Packages and Toolkits: 
-    - Modeling: `keras`, `tensorflow`
-    - Data Wrangling: `magrittr`, `dplyr`, `lubridate`, `stringr`, `tidyr`, `purrr`, `furrr`
-    - Image Processing: `jpeg`, `imager`, `magick`
-    - Annotation Manipulation: `sf`, `sp`
-    - Visualization: `ggplot2`, `viridis`, `ggcorrplot`, `deepviz`, `tidygraph`, `ggraph`, `shiny`
-    - XML/Web Scraping: `xml2`, `XML`, `rvest`, `RSelenium`
-    - Slides/Documentation: `rmarkdown`, `xaringan`, `knitr`
-
-- Other Software: Docker, Selenium, LabelMe Annotation Tool (w/ Matlab toolbox), gimp image editor
-
-???
-
-This project wouldn't have been even remotely feasible without the amazing package infrastructure R provides. I went through and tried to tally up all of the packages used in various parts of the project; here's a list of most of them (I can't actually guarantee I caught them all). Outside of the R infrastructure, I'm also using docker to host the labelme and selenium containers, and I've used gimp extensively to edit and label the images of the VGG16 layers and model structure. 
 
 
 ---
@@ -1403,6 +1391,8 @@ class: primary
 - Make CoNNOR more interpretable
     - keras-vis Python library -> R package 
 
+- Explore training the last convolutional layer of the model
+
 ???
 
 Miranda Tilton is writing her creative component, and we will submit a paper by the end of the semester. 
@@ -1414,14 +1404,6 @@ I'd also like to add a spatial component to Connor by predicting features for sm
 Finally, we plan to explore CoNNOR's inner workings with the keras-vis package that we're currently porting to R. Eventually, I'd like to explore new visual diagnostics for these types of models. 
 
 ---
-class: inv-center
-# Questions?
-
-???
-
-I'd be happy to answer your questions now. 
-
----
 class: primary
 ## References
 <div class="small">
@@ -1429,7 +1411,33 @@ class: primary
 ```{r print-bib, results='asis', echo=FALSE, cache = F}
 PrintBibliography(bb)
 ```
-</div>
+
+---
+class: primary
+## Tools
+
+- R Packages and Toolkits: 
+    - Modeling: `keras`, `tensorflow`
+    - Data Wrangling: `magrittr`, `dplyr`, `lubridate`, `stringr`, `tidyr`, `purrr`, `furrr`
+    - Image Processing: `jpeg`, `imager`, `magick`
+    - Annotation Manipulation: `sf`, `sp`
+    - Visualization: `ggplot2`, `viridis`, `ggcorrplot`, `deepviz`, `tidygraph`, `ggraph`, `shiny`
+    - XML/Web Scraping: `xml2`, `XML`, `rvest`, `RSelenium`
+    - Slides/Documentation: `rmarkdown`, `xaringan`, `knitr`
+
+- Other Software: Docker, Selenium, LabelMe Annotation Tool (w/ Matlab toolbox), gimp image editor
+
+???
+
+This project wouldn't have been even remotely feasible without the amazing package infrastructure R provides. I went through and tried to tally up all of the packages used in various parts of the project; here's a list of most of them (I can't actually guarantee I caught them all). Outside of the R infrastructure, I'm also using docker to host the labelme and selenium containers, and I've used gimp extensively to edit and label the images of the VGG16 layers and model structure. 
+
+---
+class: inv-center
+# Questions?
+
+???
+
+I'd be happy to answer your questions now. 
 
 ---
 class: primary
@@ -1444,3 +1452,4 @@ class: primary
 - [CoNNOR](#44)
 
 - [Future Work](#63)
+

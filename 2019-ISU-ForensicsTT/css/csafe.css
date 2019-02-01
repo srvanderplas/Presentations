@@ -141,6 +141,9 @@
 .tiny { 
   font-size: 30% 
 }
+.grey {
+  color: #8a8a8d;
+}
 
 .footer {
   position: absolute;
