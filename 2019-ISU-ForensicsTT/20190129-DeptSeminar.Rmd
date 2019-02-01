@@ -354,14 +354,31 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 --
 
 1. Identify relevant features within the scans
+.center[<br/><img width="80%" src="similarity/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png" alt="shoe with interesting texture"/>]
+ 
+---
+class:primary
+## Comparison Population
 
-img 1 | img 2 | img 3
+Assume a machine exists that can scan shoe outsoles of pedestrians
 
---
+1. Identify relevant features within the scans
+.move-margin[<br/><br/><img src="similarity/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png" alt="shoe with interesting texture"/>]
 
 2. Define similarity for shoe images
 
---
+.center[<img width="60%" src="similarity/similar-shoes.png"/>]
+
+---
+class:primary
+## Comparison Population
+
+Assume a machine exists that can scan shoe outsoles of pedestrians
+
+1. Identify relevant features within the scans
+
+2. Define similarity for shoe images
+.move-margin[<br/><br/><img src="similarity/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png" alt="shoe with interesting texture"/><br/><br/><img src="similarity/similar-shoes.png"/>]
 
 3. Assess the frequency of similar shoes in the sampled data
 
@@ -390,6 +407,8 @@ Footwear Class Characteristics
 - Cannot be used to identify an individual match
 
 - Used for exclusion
+
+.center[<img src="similarity/converse-combined.png" width="50%" alt="Many sizes of Chuck Taylors"/>]
 
 ???
 
