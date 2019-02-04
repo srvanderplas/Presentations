@@ -181,7 +181,7 @@ class:primary
 
 ## Graphics Publications
 
-.slightly-small[
+.smaller[
 ```{r graphics-pubs, results='asis', echo=FALSE, cache = F}
 mypubs <- ReadBib("./mypubs.bib", check = T)
 NoCite(mypubs)
@@ -239,7 +239,7 @@ class:primary
 
 - [CoNNOR](#44)
 
-- [Future Work](#61)
+- [Future Work](#63)
 
 ???
 
@@ -250,7 +250,9 @@ I'm going to start with the forensics context of this problem. I'll talk briefly
 class:primary
 ## What is the probability of<br>a coincidental match?
 
-<img src="problem-definition/coincidental-match.png" width = "80%" style="margin-left:10%;margin-right:10%" alt="Crime scene print compared with sample print"/>
+<!-- <img src="problem-definition/coincidental-match.png" width = "80%" style="margin-left:10%;margin-right:10%" alt="Crime scene print compared with sample print"/> -->
+<img src="problem-definition/crime_scene_90.jpg" height = "200px" style = "position: absolute; left:30px; top: 250px;"/><img src = "problem-definition/suspect_90.png" height = "200px" style="position: absolute; right:30px; top:250px;"/>
+
 
 ???
 
@@ -260,15 +262,17 @@ Part of the calculation of that information is to determine what the probability
 
 ---
 class:primary
-## Coincidental Match
+## What is the probability of<br>a coincidental match?
 
 1. Define the comparison population
 
-2. Sample from the comparison population
+2. Sample from the comparison population    
+$N$ total shoes
 
-3. Identify similar shoes from the comparison population
+3. Identify similar shoes from the comparison population    
+$S$ similar shoes in the $N$ shoe sample
 
-4. Estimate the probability: $$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$
+4. Estimate the probability of a coincidental match: $$\hat{p} = \frac{S}{N}$$
 
 ???
 
@@ -277,13 +281,11 @@ We first define the comparison population, that is, the population of people who
 Then, we would sample from that comparison population to see what shoes the people in the comparison set have.
 We would then identify similar shoes - shoes which could have made the print at the crime scene, and estimate the probability of a coincidental match as the number of similar shoes divided by the size of the comparison population sample. 
 
-Unfortunately, this gets a bit more complicated when it is actually implemented. 
-
----
-class:primary,center,middle
-## Comparison Population
+--
+<br/>
 
 > .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]<br/> - Leslie Hammer, [Hammer Forensics](https://hammerforensics.com/), March 2018
+
 
 ???
 
@@ -295,7 +297,7 @@ There are completely legitimate reasons for thinking this is a difficult problem
 
 ---
 class:primary
-## Comparison Population
+## Obstacles: Characterizing Comparison Populations
 
 - No 100% complete database of all shoes 
     - manufacturer, model, size, tread style, manufacturing molds
@@ -322,7 +324,10 @@ So how do we solve this problem? How do we collect this data at a (potentially) 
 class:primary
 ## Comparison Population
 
-How to collect data from the local population? 
+.move-margin[.Large[.center[Goal: 
+$$\hat{p} = \frac{S}{N}$$
+]]]
+How to collect data from the comparison population? 
 
 1. Build a low profile scanner that can be placed in a high traffic area
 
@@ -349,18 +354,34 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 --
 
 1. Identify relevant features within the scans
+.center[<br/><img width="80%" src="similarity/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png" alt="shoe with interesting texture"/>]
+ 
+---
+class:primary
+## Comparison Population
 
---
+Assume a machine exists that can scan shoe outsoles of pedestrians
+
+1. Identify relevant features within the scans
+.move-margin[<br/><br/><img src="similarity/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png" alt="shoe with interesting texture"/>]
 
 2. Define similarity for shoe images
 
---
+.center[<img width="60%" src="similarity/similar-shoes.png"/>]
+
+---
+class:primary
+## Comparison Population
+
+Assume a machine exists that can scan shoe outsoles of pedestrians
+
+1. Identify relevant features within the scans
+
+2. Define similarity for shoe images
+.move-margin[<br/><br/><img src="similarity/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png" alt="shoe with interesting texture"/><br/><br/><img src="similarity/similar-shoes.png"/>]
 
 3. Assess the frequency of similar shoes in the sampled data
 
---
-
-### .center[These are statistics and machine learning problems]
 
 ???
 
@@ -380,12 +401,14 @@ The next question is then... What's considered a relevant feature?
 class:primary
 ## Relevant Features
 
-Class Characteristics
+Footwear Class Characteristics
 - Make, Model, Tread pattern, Size, Type of shoe
 
 - Cannot be used to identify an individual match
 
 - Used for exclusion
+
+.center[<img src="similarity/converse-combined.png" width="50%" alt="Many sizes of Chuck Taylors"/>]
 
 ???
 
@@ -459,7 +482,18 @@ class: primary
 ## Image Analysis
 
 ### Goal: Identify geometric tread features in images of shoe outsoles
-
+.move-margin[
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-bright-yellow-night-navy-night-navy_product_9146021_color_785154.jpg" alt="yellow-shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-tactile-rose-dark-blue-dark-blue_product_9146021_color_785156.jpg" alt="pink-shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-cream-white-core-black-core-black_product_9146021_color_698356.jpg" alt="white-shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-glory-collegiate-red-collegiate-red_product_9146021_color_785155.jpg" alt="purple-shoe"/>
+]
 - Robust to different lighting conditions, rotation, image quality
 
 - Fast processing of new images
@@ -894,7 +928,11 @@ class:primary
 ## Acquire Data
 <img alt="Zappos Screenshot showing sole images" src="labelme-imgs/zappos.png" width="90%" style="margin: 0 5%"/>
 
-.move-margin[<br/><br/>`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "images")` scraped since April 2018]
+.move-margin[
+<br/><br/>[`ShoeScrapeR` package](https://github.com/srvanderplas/ShoeScrapeR)<br/><br/>
+
+`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "images")` scraped since April 2018 
+]
 
 ???
 
@@ -1016,7 +1054,8 @@ data.frame(history$metrics) %>%
   gather(key = "measure", value = "value", -epoch) %>%
   mutate(Type = ifelse(str_detect(measure, "val"), "Validation", "Training"),
          measure = ifelse(str_detect(measure, "acc"), "Accuracy", "Loss")) %>%
-  # filter(Type == "Training") %>%
+  # bind_rows(tibble(epoch = NA, value =  .6, measure = "Accuracy", Type = "Validation")) %>%
+  # bind_rows(tibble(epoch = NA, value =  .33, measure = "Loss", Type = "Validation")) %>%
   ggplot(aes(x = epoch, y = value, color = Type)) + 
   geom_point() + 
   geom_smooth(se = F) + 
@@ -1308,7 +1347,7 @@ Here's an example of an image where the model is strongly suggesting there are c
 
 ---
 class:primary
-## Summary
+## Project Summary
 
 - Geometric shapes provide a convenient feature space for assessing shoe similarity
 
@@ -1335,6 +1374,31 @@ $$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$
 
 By applying CoNNOR to a collection of shoe images representing a comparison population, we can use a distance metric to identify a neighborhood of similar shoes and calculate an estimated coincidental match probability. It's hard to be more specific than that at this point, because for any specific application in forensics, "similar enough" depends on the specific context, and the population used in the comparison depends on the context. This is a promising way to approach this problem in the future, though, particularly if we can collect real-world data in an automatic fashion.  
 
+---
+class:primary
+## Contribution Summary
+
+#### Statistical Computing
+- Data scraping (`ShoeScrapeR`)
+- LabelMe Annotations - Output multi-label images from R
+
+#### Model Training
+- Identified the feature set and initial labeling criteria 
+- Determined augmentation process
+- Model Automation (daily at 5pm)
+
+#### Model Diagnostics
+- Accuracy measures for multi-class, multi-label models <br/>(with M. Tilton)
+- Heatmaps for Convnets in R (with M. Tilton)
+- `KerasVis` package in R (in progress; with J. Seo)
+
+
+???
+
+This is a fairly complicated project, with a fair number of people and moving parts, so here's a different summary, showing the steps from my perspective as to how the project has evolved. 
+
+
+
 
 ---
 class:inv-center
@@ -1357,6 +1421,8 @@ class: primary
 - Make CoNNOR more interpretable
     - keras-vis Python library -> R package 
 
+- Explore training the last convolutional layer of the model
+
 ???
 
 Miranda Tilton is writing her creative component, and we will submit a paper by the end of the semester. 
@@ -1368,14 +1434,6 @@ I'd also like to add a spatial component to Connor by predicting features for sm
 Finally, we plan to explore CoNNOR's inner workings with the keras-vis package that we're currently porting to R. Eventually, I'd like to explore new visual diagnostics for these types of models. 
 
 ---
-class: inv-center
-# Questions?
-
-???
-
-I'd be happy to answer your questions now. 
-
----
 class: primary
 ## References
 <div class="small">
@@ -1383,7 +1441,33 @@ class: primary
 ```{r print-bib, results='asis', echo=FALSE, cache = F}
 PrintBibliography(bb)
 ```
-</div>
+
+---
+class: primary
+## Tools
+
+- R Packages and Toolkits: 
+    - Modeling: `keras`, `tensorflow`
+    - Data Wrangling: `magrittr`, `dplyr`, `lubridate`, `stringr`, `tidyr`, `purrr`, `furrr`
+    - Image Processing: `jpeg`, `imager`, `magick`
+    - Annotation Manipulation: `sf`, `sp`
+    - Visualization: `ggplot2`, `viridis`, `ggcorrplot`, `deepviz`, `tidygraph`, `ggraph`, `shiny`
+    - XML/Web Scraping: `xml2`, `XML`, `rvest`, `RSelenium`
+    - Slides/Documentation: `rmarkdown`, `xaringan`, `knitr`
+
+- Other Software: Docker, Selenium, LabelMe Annotation Tool (w/ Matlab toolbox), gimp image editor
+
+???
+
+This project wouldn't have been even remotely feasible without the amazing package infrastructure R provides. I went through and tried to tally up all of the packages used in various parts of the project; here's a list of most of them (I can't actually guarantee I caught them all). Outside of the R infrastructure, I'm also using docker to host the labelme and selenium containers, and I've used gimp extensively to edit and label the images of the VGG16 layers and model structure. 
+
+---
+class: inv-center
+# Questions?
+
+???
+
+I'd be happy to answer your questions now. 
 
 ---
 class: primary
@@ -1397,4 +1481,5 @@ class: primary
 
 - [CoNNOR](#44)
 
-- [Future Work](#61)
+- [Future Work](#63)
+
