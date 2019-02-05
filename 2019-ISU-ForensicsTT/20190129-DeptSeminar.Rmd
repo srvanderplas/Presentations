@@ -236,13 +236,13 @@ class:primary
 
 - [Forensics Context](#6)
 
-- [Image Analysis](#20)
+- [Image Analysis](#19)
 
-- [Convolutional Neural Networks](#24)
+- [Convolutional Neural Networks](#23)
 
-- [CoNNOR](#44)
+- [CoNNOR](#43)
 
-- [Future Work](#63)
+- [Future Work](#61)
 
 ???
 
@@ -484,7 +484,6 @@ Now that we've decided which features to use, we have to figure out how to ident
 class: primary
 ## Image Analysis
 
-### Goal: Identify geometric tread features in images of shoe outsoles
 .move-margin[
 <img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-bright-yellow-night-navy-night-navy_product_9146021_color_785154.jpg" alt="yellow-shoe"/>
 <br/>
@@ -497,6 +496,9 @@ class: primary
 <br/>
 <img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-glory-collegiate-red-collegiate-red_product_9146021_color_785155.jpg" alt="purple-shoe"/>
 ]
+
+### Goal: Identify geometric tread features in images of shoe outsoles
+
 - Robust to different lighting conditions, rotation, image quality
 
 - Fast processing of new images
@@ -516,6 +518,19 @@ I started this project with the intention to use various computer vision algorit
 ---
 class:primary
 ## Feature Detection
+
+.move-margin[
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-bright-yellow-night-navy-night-navy_product_9146021_color_785154.jpg" alt="yellow-shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-tactile-rose-dark-blue-dark-blue_product_9146021_color_785156.jpg" alt="pink-shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-cream-white-core-black-core-black_product_9146021_color_698356.jpg" alt="white-shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-glory-collegiate-red-collegiate-red_product_9146021_color_785155.jpg" alt="purple-shoe"/>
+]
 
 #### Classic computer vision feature detection methods: 
 
@@ -548,6 +563,19 @@ Google, Facebook, and many other tech companies have been using neural networks 
 ---
 class:primary
 ## Feature Detection
+
+.move-margin[
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-bright-yellow-night-navy-night-navy_product_9146021_color_785154.jpg" alt="yellow-shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-tactile-rose-dark-blue-dark-blue_product_9146021_color_785156.jpg" alt="pink-shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-cream-white-core-black-core-black_product_9146021_color_698356.jpg" alt="white-shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-glory-collegiate-red-collegiate-red_product_9146021_color_785155.jpg" alt="purple-shoe"/>
+]
 
 #### Convolutional neural networks: 
 - Structure designed to mimic perceptual pathways in the human visual system
@@ -1603,11 +1631,11 @@ class: primary
 
 - [Forensics Context](#6)
 
-- [Image Analysis](#20)
+- [Image Analysis](#19)
 
-- [Convolutional Neural Networks](#24)
+- [Convolutional Neural Networks](#23)
 
-- [CoNNOR](#44)
+- [CoNNOR](#43)
 
-- [Future Work](#63)
+- [Future Work](#61)
 
