@@ -1219,8 +1219,8 @@ What is a CNN actually doing? `r Citep(bb, 'olah_building_2018', .opts = list(ma
 </div>
 
 <div class="pull-left">
-<img src="interpretation/block5_conv3_filters.png" alt="VGG16 Filters, convolutional layer 5, block 3"/>
-<span style="font-size:30%">Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html</span>
+<img src="interpretation/block5_conv3_filters.png" alt="VGG16 Filters, convolutional layer 5, block 3" width = "80%"/>
+<!-- <span style="font-size:30%">Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html</span> -->
 </div>
 
 <div class="pull-right">
@@ -1362,23 +1362,6 @@ class:primary
 
 In summary, the use of geometric shapes provides a convenient feature space to assess similarity of shoes. By using transfer learning, we can use powerful neural networks to identify features in images with the small amount of training data we have. CoNNOR performs well; it reduces a 256 x 256 x 3 image to a 9-dimensional vector of probabilities and has about 88% accuracy. We expect the accuracy will improve as we get better at consistently labeling the input images. 
 
----
-class:primary
-## Applying the model
-
-<br/><br/>
-.Large[.center[Goal: 
-$$\hat{p} = \frac{S}{N}$$
-]]
-<br/><br/>
-???
-
-By applying CoNNOR to a collection of shoe images representing a comparison population, we can use a distance metric to identify a neighborhood of similar shoes and calculate an estimated coincidental match probability. It's hard to be more specific than that at this point, because for any specific application in forensics, "similar enough" depends on the specific context, and the population used in the comparison depends on the context. This is a promising way to approach this problem in the future, though, particularly if we can collect real-world data in an automatic fashion.  
-
----
-class:primary
-## Applying the Model
-
 ```{r, eval = F}
 
 source_dir <- "~/Projects/CSAFE/ShoeScrapeR/extra/talk_demo_shoes"
@@ -1424,8 +1407,7 @@ crop_images(source_dir, output_dir)
 img_stats <- debug_image(dir = output_dir)
 
 # Get features
-features <- furrr::future_map_dfr(get_folder_files(output_dir),
-                                  extract_features, model = loaded_model)
+features <- map_df(get_folder_files(output_dir), extract_features, model = loaded_model)
 
 features <- features %>%
   mutate(partial_split = basename(img) %>% 
@@ -1438,6 +1420,23 @@ features <- features %>%
 
 save(img_stats, features, here::here("2019-ISU-ForensicsTT/demo_square/features.Rdata"))
 ```
+---
+class:primary
+## Applying the Model
+
+Distance matrix heatmap goes here
+
+.move-margin[
+<br/><br/>
+.Large[.center[Goal: 
+$$\hat{p} = \frac{S}{N}$$
+]]
+<br/><br/>
+]
+
+???
+
+Using Euclidean distance, we can take the feature vectors and come up with a numerical description of the distance between any two shoe outsole images. Here, I've chosen 7 different Nike shoe outsoles (because 54000 choose 2 is a bit hard to display) and computed the distance between each pair. You can see that the two images with chevrons are more similar to each other than to the other images. This is for demonstration purposes, as the intent of the model is that new images would be used in these calculations, rather than training images. From here, we would need to define a cutoff for "similar enough", then compare the number of similar shoes in our sample ot the total number of shoes, yielding an estimated coincidental match probability. There is obviously still work to be done at this point in the project, but this serves as an excellent demonstration that the model is producing sensible output that meets the requirements we set out initially. Once we can collect real-world data, we know that the computational methods are in place to actually solve the coincidental match probability problem for local populations. 
 
 ---
 class:primary
@@ -1446,6 +1445,7 @@ class:primary
 #### Statistical Computing
 - Data scraping (`ShoeScrapeR`)
 - LabelMe Annotations - Output multi-label images from R
+- Distance calculations for output features
 
 #### Model Training
 - Identified the feature set and initial labeling criteria 

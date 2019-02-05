@@ -773,7 +773,7 @@ class: primary
 
 &lt;br/&gt;&lt;br/&gt;
 
-.large[.center[We have 25k labeled images]]
+.large[.center[We have &lt;27k labeled images]]
 
 ???
 
@@ -1047,8 +1047,8 @@ What is a CNN actually doing? (Olah, et al., 2018)
 &lt;/div&gt;
 
 &lt;div class="pull-left"&gt;
-&lt;img src="interpretation/conv1_filters.png" alt="VGG16 Filters, convolutional layer 1"/&gt;
-&lt;span style="font-size:30%"&gt;Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html&lt;/span&gt;
+&lt;img src="interpretation/block5_conv3_filters.png" alt="VGG16 Filters, convolutional layer 5, block 3" width = "80%"/&gt;
+&lt;!-- &lt;span style="font-size:30%"&gt;Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html&lt;/span&gt; --&gt;
 &lt;/div&gt;
 
 &lt;div class="pull-right"&gt;
@@ -1146,17 +1146,24 @@ class:primary
 
 In summary, the use of geometric shapes provides a convenient feature space to assess similarity of shoes. By using transfer learning, we can use powerful neural networks to identify features in images with the small amount of training data we have. CoNNOR performs well; it reduces a 256 x 256 x 3 image to a 9-dimensional vector of probabilities and has about 88% accuracy. We expect the accuracy will improve as we get better at consistently labeling the input images. 
 
+
 ---
 class:primary
-## Applying the model
+## Applying the Model
 
-&lt;br/&gt;&lt;br/&gt;
-`$$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$`
+Distance matrix heatmap goes here
 
+.move-margin[
 &lt;br/&gt;&lt;br/&gt;
+.Large[.center[Goal: 
+`$$\hat{p} = \frac{S}{N}$$`
+]]
+&lt;br/&gt;&lt;br/&gt;
+]
+
 ???
 
-By applying CoNNOR to a collection of shoe images representing a comparison population, we can use a distance metric to identify a neighborhood of similar shoes and calculate an estimated coincidental match probability. It's hard to be more specific than that at this point, because for any specific application in forensics, "similar enough" depends on the specific context, and the population used in the comparison depends on the context. This is a promising way to approach this problem in the future, though, particularly if we can collect real-world data in an automatic fashion.  
+Using Euclidean distance, we can take the feature vectors and come up with a numerical description of the distance between any two shoe outsole images. Here, I've chosen 7 different Nike shoe outsoles (because 54000 choose 2 is a bit hard to display) and computed the distance between each pair. You can see that the two images with chevrons are more similar to each other than to the other images. This is for demonstration purposes, as the intent of the model is that new images would be used in these calculations, rather than training images. From here, we would need to define a cutoff for "similar enough", then compare the number of similar shoes in our sample ot the total number of shoes, yielding an estimated coincidental match probability. There is obviously still work to be done at this point in the project, but this serves as an excellent demonstration that the model is producing sensible output that meets the requirements we set out initially. Once we can collect real-world data, we know that the computational methods are in place to actually solve the coincidental match probability problem for local populations. 
 
 ---
 class:primary
@@ -1165,6 +1172,7 @@ class:primary
 #### Statistical Computing
 - Data scraping (`ShoeScrapeR`)
 - LabelMe Annotations - Output multi-label images from R
+- Distance calculations for output features
 
 #### Model Training
 - Identified the feature set and initial labeling criteria 
