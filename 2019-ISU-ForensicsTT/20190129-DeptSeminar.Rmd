@@ -408,7 +408,7 @@ Footwear Class Characteristics
 
 - Used for exclusion
 
-.center[<img src="similarity/converse-combined.png" width="50%" alt="Many sizes of Chuck Taylors"/>]
+<img src="similarity/converse-combined.png" width="40%" alt="Many sizes of Chuck Taylors" style="position:absolute;bottom:30px;right:30px"/>
 
 ???
 
@@ -873,7 +873,7 @@ class: primary
 
 <br/><br/>
 
-.large[.center[We have 25k labeled images]]
+.large[.center[We have <27k labeled images]]
 
 ???
 
@@ -1219,7 +1219,7 @@ What is a CNN actually doing? `r Citep(bb, 'olah_building_2018', .opts = list(ma
 </div>
 
 <div class="pull-left">
-<img src="interpretation/conv1_filters.png" alt="VGG16 Filters, convolutional layer 1"/>
+<img src="interpretation/block5_conv3_filters.png" alt="VGG16 Filters, convolutional layer 5, block 3"/>
 <span style="font-size:30%">Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html</span>
 </div>
 
@@ -1367,12 +1367,77 @@ class:primary
 ## Applying the model
 
 <br/><br/>
-$$\frac{\# \text{ similar shoes}}{\text{Size of comparison population sample}}$$
-
+.Large[.center[Goal: 
+$$\hat{p} = \frac{S}{N}$$
+]]
 <br/><br/>
 ???
 
 By applying CoNNOR to a collection of shoe images representing a comparison population, we can use a distance metric to identify a neighborhood of similar shoes and calculate an estimated coincidental match probability. It's hard to be more specific than that at this point, because for any specific application in forensics, "similar enough" depends on the specific context, and the population used in the comparison depends on the context. This is a promising way to approach this problem in the future, though, particularly if we can collect real-world data in an automatic fashion.  
+
+---
+class:primary
+## Applying the Model
+
+```{r, eval = F}
+
+source_dir <- "~/Projects/CSAFE/ShoeScrapeR/extra/talk_demo_shoes"
+output_dir <- "~/Projects/Web/Presentations/2019-ISU-ForensicsTT/demo_square"
+
+# --- Libraries ----------------------------------------------------------------
+library(tidyverse)
+library(keras)
+library(furrr)
+# ------------------------------------------------------------------------------
+
+# --- Set up parallel env ------------------------------------------------------
+plan(multicore)
+# ------------------------------------------------------------------------------
+
+# --- Sourced files ------------------------------------------------------------
+source("~/models/shoe_nn/Generate_Model_Images.R")
+source("~/models/shoe_nn/Image_Feature_Functions.R")
+# ------------------------------------------------------------------------------
+
+# --- Load model details -------------------------------------------------------
+model_path <- "~/models/shoe_nn/TrainedModels/"
+
+newest_model <- get_newest(dir = model_path, pattern = "weights.h5")
+model_dir <- newest_model$path
+load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
+load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
+
+model_wts_file <- file.path(newest_model$path, newest_model$base_file)
+loaded_model <- set_weights(model_wts_file)
+# ------------------------------------------------------------------------------
+
+# --- Work with images ---------------------------------------------------------
+# Ensure output directory exists
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir)
+}
+
+# Crop nicely
+crop_images(source_dir, output_dir)
+
+# Get image statistics
+img_stats <- debug_image(dir = output_dir)
+
+# Get features
+features <- furrr::future_map_dfr(get_folder_files(output_dir),
+                                  extract_features, model = loaded_model)
+
+features <- features %>%
+  mutate(partial_split = basename(img) %>% 
+           str_remove_all("_(product|color)_\\d{1,}") %>% 
+           str_remove_all("\\.jpg") %>%
+           fix_brands(),
+         brand = str_extract(partial_split, "[\\w]{1,}"),
+         model_approx = str_remove(partial_split, paste0(brand, "-")) %>% 
+           str_extract("[\\w]{1,}"))
+
+save(img_stats, features, here::here("2019-ISU-ForensicsTT/demo_square/features.Rdata"))
+```
 
 ---
 class:primary
