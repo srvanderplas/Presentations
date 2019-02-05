@@ -15,6 +15,9 @@ class: primary
 library(magrittr)
 library(tidyverse)
 library(ggplot2)
+library(keras)
+library(furrr)
+plan(multicore)
 mytheme <- theme_bw() + 
   theme(panel.grid.major = element_line(color = "grey50"),
         panel.grid.minor = element_line(color = "grey60"))
@@ -1362,37 +1365,37 @@ class:primary
 
 In summary, the use of geometric shapes provides a convenient feature space to assess similarity of shoes. By using transfer learning, we can use powerful neural networks to identify features in images with the small amount of training data we have. CoNNOR performs well; it reduces a 256 x 256 x 3 image to a 9-dimensional vector of probabilities and has about 88% accuracy. We expect the accuracy will improve as we get better at consistently labeling the input images. 
 
-```{r, eval = F}
+```{r setup-demo-distance, eval = F}
 
 source_dir <- "~/Projects/CSAFE/ShoeScrapeR/extra/talk_demo_shoes"
-output_dir <- "~/Projects/Web/Presentations/2019-ISU-ForensicsTT/demo_square"
+output_dir <- "demo_square"
 
-# --- Libraries ----------------------------------------------------------------
-library(tidyverse)
-library(keras)
-library(furrr)
-# ------------------------------------------------------------------------------
+# # --- Libraries ----------------------------------------------------------------
+# library(tidyverse)
+# library(keras)
+# library(furrr)
+# # ------------------------------------------------------------------------------
 
-# --- Set up parallel env ------------------------------------------------------
-plan(multicore)
-# ------------------------------------------------------------------------------
+# # --- Set up parallel env ------------------------------------------------------
+# plan(multicore)
+# # ------------------------------------------------------------------------------
 
 # --- Sourced files ------------------------------------------------------------
-source("~/models/shoe_nn/Generate_Model_Images.R")
+# source("~/models/shoe_nn/Generate_Model_Images.R")
 source("~/models/shoe_nn/Image_Feature_Functions.R")
 # ------------------------------------------------------------------------------
 
-# --- Load model details -------------------------------------------------------
-model_path <- "~/models/shoe_nn/TrainedModels/"
-
-newest_model <- get_newest(dir = model_path, pattern = "weights.h5")
-model_dir <- newest_model$path
-load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
-load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
-
-model_wts_file <- file.path(newest_model$path, newest_model$base_file)
-loaded_model <- set_weights(model_wts_file)
-# ------------------------------------------------------------------------------
+# # --- Load model details -------------------------------------------------------
+# model_path <- "~/models/shoe_nn/TrainedModels/"
+# 
+# newest_model <- get_newest(dir = model_path, pattern = "weights.h5")
+# model_dir <- newest_model$path
+# load(list.files(model_dir, "-history.Rdata", full.names = T)[1])
+# load(file.path(get_newest()$path, get_newest(pattern = "\\d.Rdata")$base_file))
+# 
+# model_wts_file <- file.path(newest_model$path, newest_model$base_file)
+# loaded_model <- set_weights(model_wts_file)
+# # ------------------------------------------------------------------------------
 
 # --- Work with images ---------------------------------------------------------
 # Ensure output directory exists
@@ -1403,11 +1406,13 @@ if (!dir.exists(output_dir)) {
 # Crop nicely
 crop_images(source_dir, output_dir)
 
+unlink(file.path(output_dir, "temp"), recursive = T)
+
 # Get image statistics
 img_stats <- debug_image(dir = output_dir)
 
 # Get features
-features <- map_df(get_folder_files(output_dir), extract_features, model = loaded_model)
+features <- map_df(get_folder_files(output_dir, pattern = "*.jpg"), extract_features, model = loaded_model)
 
 features <- features %>%
   mutate(partial_split = basename(img) %>% 
@@ -1418,25 +1423,83 @@ features <- features %>%
          model_approx = str_remove(partial_split, paste0(brand, "-")) %>% 
            str_extract("[\\w]{1,}"))
 
-save(img_stats, features, here::here("2019-ISU-ForensicsTT/demo_square/features.Rdata"))
+save(img_stats, features, file = file.path(output_dir, "features.Rdata"))
 ```
 ---
 class:primary
 ## Applying the Model
 
-Distance matrix heatmap goes here
+```{r demo-distance, fig.width = 10, fig.height = 7, dpi = 500, fig.cap = "Distance matrix for 7 Nike shoes, using CoNNOR's features and euclidean distance."}
+load(file.path("demo_square", "features.Rdata"))
+
+features <- features %>%
+  arrange(img) %>%
+  mutate(idx = 1:n())
+
+features_mat <- features[,default_classes] %>% as.matrix()
+
+features_dist <- dist(features_mat)
+features_clust <- hclust(features_dist)
+
+features_dist <- features_dist %>%
+  as.matrix() %>%
+  as.data.frame() %>%
+  mutate(i = rownames(.)) %>%
+  tidyr::gather(key = "j", value = "dist", -i) %>%
+  mutate(i = as.numeric(i), j = as.numeric(j)) %>%
+  left_join(nest(features, -idx, -img, .key = 'shoe1data') %>% 
+              set_names(c("shoe1", "i", "shoe1data"))) %>%
+  left_join(nest(features, -idx, -img, .key = 'shoe2data') %>% 
+              set_names(c("shoe2", "j", "shoe2data"))) %>%
+  bind_rows(tibble(i = 0, j = 1:nrow(features), dist = NA),
+            tibble(j = 0, i = 1:nrow(features), dist = NA))
+
+
+features <- features %>%
+  arrange(img) %>%
+  mutate(order = c(2, 5, 3, 4, 1, 6, 7)) %>% #features_clust$order) %>%
+  arrange(order)
+
+features_dist <- features_dist %>%
+  left_join(select(features, i = idx, io = order)) %>%
+  left_join(select(features, j = idx, jo = order)) %>%
+  mutate(pval = sprintf("%.02f", dist))
+
+features_xraster <- map2(file.path(features$file_path, features$img), features$order,
+                             ~annotation_custom(grid::rasterGrob(readJPEG(.x), interpolate = T), 
+                                                xmin = .y - .5, xmax = .y + .5, 
+                                                ymin = -0.5, ymax = 0.5))
+features_yraster <- map2(file.path(features$file_path, features$img), features$order,
+                             ~annotation_custom(grid::rasterGrob(readJPEG(.x), interpolate = T), 
+                                                ymin = .y - .5, ymax = .y + .5, 
+                                                xmin = -0.5, xmax = 0.5))
+ggplot() + 
+  geom_tile(aes(x = io, y = jo, fill = dist), data = features_dist, color = "grey50") + 
+  geom_text(aes(x = io, y = jo, label = pval), data = features_dist) + 
+  scale_fill_gradient("Euclidean\nDistance", low = "white", high = "cornflowerblue", na.value = "transparent") + 
+  coord_fixed() + 
+  scale_x_continuous(limits = c(-0.5, 7.75), expand = c(0,0)) + 
+  scale_y_continuous(limits = c(-1, 7.6), expand = c(0,0)) + 
+  features_xraster + features_yraster + 
+  ggtitle("Pairwise Distance") + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "transparent", color = NA), panel.grid = element_blank(),
+        axis.text = element_blank(), axis.ticks = element_blank(), axis.title = element_blank(), 
+        panel.background = element_blank(), plot.title = element_text(size = 18, margin = unit(c(0, 0, 0, 0), "mm")),
+        plot.subtitle = element_blank())
+```
 
 .move-margin[
-<br/><br/>
-.Large[.center[Goal: 
+<br/>
+.Large[Goal: 
 $$\hat{p} = \frac{S}{N}$$
-]]
+]
 <br/><br/>
 ]
 
 ???
 
-Using Euclidean distance, we can take the feature vectors and come up with a numerical description of the distance between any two shoe outsole images. Here, I've chosen 7 different Nike shoe outsoles (because 54000 choose 2 is a bit hard to display) and computed the distance between each pair. You can see that the two images with chevrons are more similar to each other than to the other images. This is for demonstration purposes, as the intent of the model is that new images would be used in these calculations, rather than training images. From here, we would need to define a cutoff for "similar enough", then compare the number of similar shoes in our sample ot the total number of shoes, yielding an estimated coincidental match probability. There is obviously still work to be done at this point in the project, but this serves as an excellent demonstration that the model is producing sensible output that meets the requirements we set out initially. Once we can collect real-world data, we know that the computational methods are in place to actually solve the coincidental match probability problem for local populations. 
+Using Euclidean distance, we can take the feature vectors and come up with a numerical description of the distance between any two shoe outsole images. Here, I've chosen 7 different Nike shoe outsoles (because 54000 choose 2 is a bit hard to display) and computed the distance between each pair. You can see that the two images with chevrons are more similar to each other than to the other images; this even extends to a sole with chevrons and polygons. From here, we need to define a cutoff for "similar enough", then compare the number of similar shoes in our sample to the total number of shoes, yielding an estimated coincidental match probability. There is obviously still work to be done at this point in the project, but this serves as an excellent demonstration that the model is producing sensible output that meets the requirements we set out initially. Once we can collect real-world data, we know that the computational methods are in place to make the coincidental match probability problem tractable for local populations. 
 
 ---
 class:primary

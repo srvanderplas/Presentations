@@ -831,7 +831,7 @@ class:primary
 .move-margin[
 &lt;br/&gt;&lt;br/&gt;[`ShoeScrapeR` package](https://github.com/srvanderplas/ShoeScrapeR)&lt;br/&gt;&lt;br/&gt;
 
- scraped since April 2018 
+54754 images scraped since April 2018 
 ]
 
 ???
@@ -847,8 +847,8 @@ class:primary
 
 - [LabelMe Annotation Tool](https://github.com/CSAILVision/LabelMeAnnotationTool) used as a web interface - creates XML files with labels and coordinates. (Russell, et al., 2008)
 
-- 26,236 regions labeled with one or more geometric objects
-- 35,569 labels
+- 26,041 regions labeled with one or more geometric objects
+- 35,320 labels
 
 .small[.move-margin[
 &lt;br/&gt;&lt;br/&gt;Labeling courtesy of 
@@ -1151,19 +1151,19 @@ In summary, the use of geometric shapes provides a convenient feature space to a
 class:primary
 ## Applying the Model
 
-Distance matrix heatmap goes here
+![Distance matrix for 7 Nike shoes, using CoNNOR's features and euclidean distance.](20190129-DeptSeminar_files/figure-html/demo-distance-1.png)
 
 .move-margin[
-&lt;br/&gt;&lt;br/&gt;
-.Large[.center[Goal: 
+&lt;br/&gt;
+.Large[Goal: 
 `$$\hat{p} = \frac{S}{N}$$`
-]]
+]
 &lt;br/&gt;&lt;br/&gt;
 ]
 
 ???
 
-Using Euclidean distance, we can take the feature vectors and come up with a numerical description of the distance between any two shoe outsole images. Here, I've chosen 7 different Nike shoe outsoles (because 54000 choose 2 is a bit hard to display) and computed the distance between each pair. You can see that the two images with chevrons are more similar to each other than to the other images. This is for demonstration purposes, as the intent of the model is that new images would be used in these calculations, rather than training images. From here, we would need to define a cutoff for "similar enough", then compare the number of similar shoes in our sample ot the total number of shoes, yielding an estimated coincidental match probability. There is obviously still work to be done at this point in the project, but this serves as an excellent demonstration that the model is producing sensible output that meets the requirements we set out initially. Once we can collect real-world data, we know that the computational methods are in place to actually solve the coincidental match probability problem for local populations. 
+Using Euclidean distance, we can take the feature vectors and come up with a numerical description of the distance between any two shoe outsole images. Here, I've chosen 7 different Nike shoe outsoles (because 54000 choose 2 is a bit hard to display) and computed the distance between each pair. You can see that the two images with chevrons are more similar to each other than to the other images; this even extends to a sole with chevrons and polygons. From here, we need to define a cutoff for "similar enough", then compare the number of similar shoes in our sample to the total number of shoes, yielding an estimated coincidental match probability. There is obviously still work to be done at this point in the project, but this serves as an excellent demonstration that the model is producing sensible output that meets the requirements we set out initially. Once we can collect real-world data, we know that the computational methods are in place to make the coincidental match probability problem tractable for local populations. 
 
 ---
 class:primary
