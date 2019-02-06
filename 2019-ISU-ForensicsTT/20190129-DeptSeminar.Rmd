@@ -485,16 +485,16 @@ class: primary
 ## Image Analysis
 
 .move-margin[
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-bright-yellow-night-navy-night-navy_product_9146021_color_785154.jpg" alt="yellow-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/>
 <br/>
 <br/>
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-tactile-rose-dark-blue-dark-blue_product_9146021_color_785156.jpg" alt="pink-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/>
 <br/>
 <br/>
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-cream-white-core-black-core-black_product_9146021_color_698356.jpg" alt="white-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/>
 <br/>
 <br/>
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-glory-collegiate-red-collegiate-red_product_9146021_color_785155.jpg" alt="purple-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/>
 ]
 
 ### Goal: Identify geometric tread features in images of shoe outsoles
@@ -520,16 +520,16 @@ class:primary
 ## Feature Detection
 
 .move-margin[
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-bright-yellow-night-navy-night-navy_product_9146021_color_785154.jpg" alt="yellow-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/>
 <br/>
 <br/>
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-tactile-rose-dark-blue-dark-blue_product_9146021_color_785156.jpg" alt="pink-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/>
 <br/>
 <br/>
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-cream-white-core-black-core-black_product_9146021_color_698356.jpg" alt="white-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/>
 <br/>
 <br/>
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-glory-collegiate-red-collegiate-red_product_9146021_color_785155.jpg" alt="purple-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/>
 ]
 
 #### Classic computer vision feature detection methods: 
@@ -565,16 +565,16 @@ class:primary
 ## Feature Detection
 
 .move-margin[
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-bright-yellow-night-navy-night-navy_product_9146021_color_785154.jpg" alt="yellow-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/>
 <br/>
 <br/>
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-tactile-rose-dark-blue-dark-blue_product_9146021_color_785156.jpg" alt="pink-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/>
 <br/>
 <br/>
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-cream-white-core-black-core-black_product_9146021_color_698356.jpg" alt="white-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/>
 <br/>
 <br/>
-<img src="imageanalysis/adidas-by-raf-simons-raf-simons-ozweego-glory-collegiate-red-collegiate-red_product_9146021_color_785155.jpg" alt="purple-shoe"/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/>
 ]
 
 #### Convolutional neural networks: 
@@ -1060,9 +1060,10 @@ class:primary
 - Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library `r Citep(bb, c('chollet_deep_2018', 'tensorflow2015-whitepaper', .opts = list(max.names = 1, longnamesfirst = F)))`
 
 .move-margin[
-<img src="model-imgs/text-1-bernie-mev-kids-catwalk-little-kid-big-kid-multi-camo_product_9084647_color_87089.jpg" width = "45%" style = "margin-right:2%"/> <img src="model-imgs/aug_text-1-bernie-mev-kids-catwalk-little-kid-big-kid-multi-camo_product_9084647_color_87089_0_1891.jpg" width = "45%"/>
-
-<img src="model-imgs/bowtie(R)-1-ugg-sienna-enamel-blue_product_8726365_color_120557.jpg" width = "45%" style = "margin-right:2%"/> <img src="model-imgs/aug_bowtie(R)-1-ugg-sienna-enamel-blue_product_8726365_color_120557_0_8344.jpg" width = "45%"/>
+<img src="model-imgs/text-1-bernie-mev-kids-catwalk-little-kid-big-kid-multi-camo_product_9084647_color_87089.jpg" width = "45%" style = "margin-right:2%; margin-bottom:2%; margin-top:5%;"/> <img src="model-imgs/aug_text-1-bernie-mev-kids-catwalk-little-kid-big-kid-multi-camo_product_9084647_color_87089_0_1891.jpg" width = "45%" style = "margin-bottom:2%; margin-top:5%;"/>
+<img src="model-imgs/quad-2-nike-kids-downshifter-7-infant-toddler-gunsmoke-sunset-pulse-atmosphere-grey_product_8800875_color_720973.jpg" width = "45%" style = "margin-right:2%; margin-bottom:2%;"/> <img src="model-imgs/aug_quad-2-nike-kids-downshifter-7-infant-toddler-gunsmoke-sunset-pulse-atmosphere-grey_product_8800875_color_720973_0_7533.jpg" width = "45%" style = "margin-bottom:2%;"/>
+<img src="model-imgs/bowtie(R)-1-ugg-sienna-enamel-blue_product_8726365_color_120557.jpg" width = "45%" style = "margin-right:2%; margin-bottom:2%;"/> <img src="model-imgs/aug_bowtie(R)-1-ugg-sienna-enamel-blue_product_8726365_color_120557_0_8344.jpg" width = "45%" style = "margin-bottom:2%;"/>
+<img src="model-imgs/quad-2-puma-suede-classic-x-mac-three-port-royale-port-royale_product_9123838_color_251426.jpg" width = "45%" style = "margin-right:2%; margin-bottom:2%;"/> <img src="model-imgs/aug_quad-2-puma-suede-classic-x-mac-three-port-royale-port-royale_product_9123838_color_251426_0_5689.jpg" width = "45%" style = "margin-bottom:2%;"/>
 ]
 
 ???
