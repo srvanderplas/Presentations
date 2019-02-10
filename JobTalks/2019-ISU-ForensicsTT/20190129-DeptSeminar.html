@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CoNNOR: Convolutional Neural Network for Outsole Recognition</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Susan VanderPlas" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/csafe.css" type="text/css" />
+    <link rel="stylesheet" href="css/csafe-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/this-presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# CoNNOR: Convolutional Neural Network for Outsole Recognition
+### Susan VanderPlas
+### Jan 29, 2019
+
+---
+
+class: primary
+
+
+
+
+
+
+
+
+
+
+
+
+## About Me
+
+- PhD from Iowa State in 2015
+
+- Statistician at Nebraska Public Power District (2015 - 2018)
+
+- Research Faculty at CSAFE since March 2018
+
+- Research Areas: Visualization and Statistical Computing, Forensics
+
+???
+
+Thank you for inviting me to interview for this position. I may look familiar to some of you - I graduated from this department in 2015. While I was here as a student I did research into graphics, visualization, and computing; I also collaborated with researchers in engineering, bioinformatics, and agronomy. I left Iowa State to work at Nebraska Public Power District, where I helped to build a data science group and teach data analysis and computing skills internally. For the past 11 months, I've been working at CSAFE as research faculty. During that time, I've worked on projects involving human factors, shoes, and bullets. 
+
+---
+class:primary
+
+## Graphics Publications
+
+.smaller[
+&lt;p&gt;[1]&lt;cite&gt;
+S. Vanderplas, R. Goluch and H. Hofmann.
+&amp;ldquo;Framed! Reproducing and Revisiting 150 year old charts&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; (Jan. 2019).
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2018.1562937"&gt;10.1080/10618600.2018.1562937&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]&lt;cite&gt;
+C. Sievert, S. VanderPlas, J. Cai, et al.
+&amp;ldquo;Extending ggplot2 for Linked and Animated Web Graphics&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; (Nov. 2018).
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2018.1513367"&gt;10.1080/10618600.2018.1513367&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[3]&lt;cite&gt;
+H. Hofmann and S. VanderPlas.
+&amp;ldquo;All of This Has Happened Before. All of This Will Happen Again: Data Science&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; 26.4 (Dec. 2017), pp. 775&amp;ndash;778.
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2017.1385474"&gt;10.1080/10618600.2017.1385474&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[4]&lt;cite&gt;
+L. Rutter, S. VanderPlas, D. Cook, et al.
+&amp;ldquo;ggeanealogy: An R Package for Visualizing Genealogical Data&amp;rdquo;.
+In: &lt;em&gt;Journal of Statistical Software&lt;/em&gt; (2017).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[5]&lt;cite&gt;
+S. VanderPlas and H. Hofmann.
+&amp;ldquo;Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; 26.2 (Apr. 2017), pp. 231&amp;ndash;242.
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2016.1209116"&gt;10.1080/10618600.2016.1209116&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[6]&lt;cite&gt;
+S. VanderPlas and H. Hofmann.
+&amp;ldquo;Spatial Reasoning and Data Displays&amp;rdquo;.
+In: &lt;em&gt;IEEE Transactions on Visualization &amp;amp; Computer Graphics&lt;/em&gt; 22.1 (Jan. 2016), pp. 459-468.
+DOI: &lt;a href="https://doi.org/10.1109/TVCG.2015.2469125"&gt;10.1109/TVCG.2015.2469125&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[7]&lt;cite&gt;
+S. VanderPlas and H. Hofmann.
+&amp;ldquo;Signs of the Sine Illusion - Why We Need to Care&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; 24.4 (Oct. 2015), pp. 1170&amp;ndash;1190.
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2014.951547"&gt;10.1080/10618600.2014.951547&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[In Progress]&lt;cite&gt;
+S. VanderPlas and M. Tilton.
+&amp;ldquo;Truthiness, Maps, and Graphs&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
+
+]
+
+???
+
+I've published several papers in JCGS and one paper in TVCG (Transactions on Visualization and Computer Graphics)
+
+---
+class:primary
+## Forensics
+.slightly-small[
+#### Papers
+
+&lt;p&gt;[In Progress]&lt;cite&gt;
+S. VanderPlas.
+&amp;ldquo;BulletsamplR: Resampling Bullet Cross Sections&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[In Progress]&lt;cite&gt;
+S. VanderPlas, T. Klep, M. Nally, C. Cadeval, and H. Hofmann.
+&amp;ldquo;Case study validations of automatic bullet matching.&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p style = "font-weight:700"&gt;[In Progress]&lt;cite&gt;
+M. Tilton and S. VanderPlas
+&amp;ldquo;CoNNOR: A Convolutional Neural Network for Outsole Recognition.&amp;rdquo;&lt;/cite&gt;&lt;/p&gt;
+
+#### Grants
+
+&lt;p&gt; &lt;cite&gt;NIJ R&amp;D in Forensic Science. &amp;ldquo;Statistical Infrastructure for the Use of Error Rate Studies in the Interpretation of Forensic Evidence.&amp;rdquo; Collaborator. Funded for FY 2019&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt; [In Progress] &lt;cite&gt;NIJ R&amp;D in Forensic Science. &amp;ldquo;Passive Acquisition of Footwear Class Characteristics in Local Populations&amp;rdquo; PI. Submission in 2019 for FY 2020&lt;/cite&gt;&lt;/p&gt;
+]
+
+???
+
+Since I started at CSAFE in March, I've worked on several projects that are nearing completion. Today, I'm going to talk about a Convolutional Neural Network for Outsole recognition, or CoNNOR for short. 
+
+---
+class:primary
+## Outline
+
+- [Forensics Context](#6)
+
+- [Image Analysis](#19)
+
+- [Convolutional Neural Networks](#23)
+
+- [CoNNOR](#43)
+
+- [Future Work](#61)
+
+???
+
+I'm going to start with the forensics context of this problem. I'll talk briefly about image analysis methods, discuss convolutional neural networks, and then talk specifically about CoNNOR. I'll then return to the forensics context briefly and discuss future work on this project. 
+
+
+---
+class:primary
+## What is the probability of&lt;br&gt;a coincidental match?
+
+&lt;!-- &lt;img src="problem-definition/coincidental-match.png" width = "80%" style="margin-left:10%;margin-right:10%" alt="Crime scene print compared with sample print"/&gt; --&gt;
+&lt;img src="problem-definition/crime_scene_90.jpg" height = "200px" style = "position: absolute; left:30px; top: 250px;"/&gt;&lt;img src = "problem-definition/suspect_90.png" height = "200px" style="position: absolute; right:30px; top:250px;"/&gt;
+
+
+???
+
+After a crime is committed, investigators must reconcile the evidence found at the scene with a narrative of the crime. For instance, shoeprints at the scene might be linked to shoes in the suspect's possession, which would suggest the suspect's shoes were at the scene. During this process, the shoes are examined and the two prints are compared. In court, the prosecution must then describe the value of that evidence - how much information should it provide to the jury concerning the suspect's guilt or innocence?
+
+Part of the calculation of that information is to determine what the probability of a coincidental match is, that is, what's the probability that some random individual would also have a shoe with a tread pattern similar to the print at the crime scene? If that probability is high, the evidence is less valuable, but if it's low, then the jury should treat the evidence with much more weight.
+
+---
+class:primary
+## What is the probability of&lt;br&gt;a coincidental match?
+
+1. Define the comparison population
+
+2. Sample from the comparison population    
+`\(N\)` total shoes
+
+3. Identify similar shoes from the comparison population    
+`\(S\)` similar shoes in the `\(N\)` shoe sample
+
+4. Estimate the probability of a coincidental match: `$$\hat{p} = \frac{S}{N}$$`
+
+???
+
+Probability would tell us that this is a fairly simple calculation. 
+We first define the comparison population, that is, the population of people who could have made the print - say, individuals in Ames. 
+Then, we would sample from that comparison population to see what shoes the people in the comparison set have.
+We would then identify similar shoes - shoes which could have made the print at the crime scene, and estimate the probability of a coincidental match as the number of similar shoes divided by the size of the comparison population sample. 
+
+--
+&lt;br/&gt;
+
+&gt; .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]&lt;br/&gt; - Leslie Hammer, [Hammer Forensics](https://hammerforensics.com/), March 2018
+
+
+???
+
+It's generally not that easy. Shortly after I started working at CSAFE in March, we brought in Leslie Hammer, who is a well-known forensic footwear examiner to give a seminar. During a discussion later that day, I was somewhat shocked to hear her say that the community considers the problem of local population characterization impossible. 
+
+Challenge accepted, Leslie Hammer. 
+
+There are completely legitimate reasons for thinking this is a difficult problem to solve, though.
+
+---
+class:primary
+## Obstacles: Characterizing Comparison Populations
+
+- No 100% complete database of all shoes 
+    - manufacturer, model, size, tread style, manufacturing molds
+    
+- Shoe purchases vs. frequency of wear
+
+- Local populations may differ wildly .small[(Benedict, et al., 2014)]
+
+&lt;br/&gt;&lt;br/&gt;
+.center[&lt;img src = "problem-definition/snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/&gt;]
+&lt;!-- https://pixnio.com/free-images/2017/05/03/2017-05-03-07-35-18-900x456.jpg --&gt;
+
+???
+
+For starters, while there are databases for other pattern match evidence, like tire tread patterns, there is not a complete database of all shoes sold in the US. Tires have to be certified; shoes do not. There are also many more manufacturers for shoes, new models are released all the time. A single model may have multiple tread patterns, a single tread pattern may be used on multiple shoe models. The tread pattern may change depending on the style of shoe; there are also different molds for a single size/tread combination, and these molds may have different characteristics. 
+
+You may think about instead tracking sales data - surely, we could get a database of shoe preferences that way? How many of you have shoes in your closet that you've never worn? That you've worn once? Or less than once a year? Purchase data doesn't provide a realistic picture of the shoes people wear day to day - most of us have one or two "favorites". 
+
+In addition, we know that local populations differ wildly in footwear choices. The footwear chosen by people on Main Street in Ames is likely to differ significantly from the shoes worn in Campustown; the populations that frequent them are different. This is another problem with sales data - it doesn't generalize well to the hyper-local regions that we have to consider when characterizing coincidental match probability.
+
+So how do we solve this problem? How do we collect this data at a (potentially) neighborhood level?
+
+---
+class:primary
+## Comparison Population
+
+.move-margin[.Large[.center[Goal: 
+`$$\hat{p} = \frac{S}{N}$$`
+]]]
+How to collect data from the comparison population? 
+
+1. Build a low profile scanner that can be placed in a high traffic area
+
+2. Scan shoes of those walking past
+
+3. Create a local-area database of relevant scans
+
+--
+
+### .center[This is an engineering problem]
+
+???
+
+We could build a scanner that would fit into a pedestrian pathway and would scan the shoes of passers-by. After some data collection in one or more very local areas over a period of time, we might be able to generalize our spatial sample to the population of interest.
+
+Unfortunately, I didn't take a whole lot of classes in gadget design while I was doing my PhD. This is a problem for engineers, and a couple of very good ones have assured me that this is doable if we can get the budget (hopefully resubmitting that proposal in April). Statisticians have the luxury of making assumptions about the real world, so ...
+
+---
+class:primary
+## Comparison Population
+
+Assume a machine exists that can scan shoe outsoles of pedestrians
+
+--
+
+1. Identify relevant features within the scans
+.center[&lt;br/&gt;&lt;img width="80%" src="similarity/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png" alt="shoe with interesting texture"/&gt;]
+ 
+---
+class:primary
+## Comparison Population
+
+Assume a machine exists that can scan shoe outsoles of pedestrians
+
+1. Identify relevant features within the scans
+.move-margin[&lt;br/&gt;&lt;br/&gt;&lt;img src="similarity/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png" alt="shoe with interesting texture"/&gt;]
+
+2. Define similarity for shoe images
+
+.center[&lt;img width="60%" src="similarity/similar-shoes.png"/&gt;]
+
+---
+class:primary
+## Comparison Population
+
+Assume a machine exists that can scan shoe outsoles of pedestrians
+
+1. Identify relevant features within the scans
+
+2. Define similarity for shoe images
+.move-margin[&lt;br/&gt;&lt;br/&gt;&lt;img src="similarity/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png" alt="shoe with interesting texture"/&gt;&lt;br/&gt;&lt;br/&gt;&lt;img src="similarity/similar-shoes.png"/&gt;]
+
+3. Assess the frequency of similar shoes in the sampled data
+
+
+???
+
+Let's assume that this machine exists and that it's producing image-quality data. 
+
+From that point, we still need to identify relevant features within the scans - these features will be "data" used in comparisons
+
+Then, we have to define a similarity metric used for comparing two samples
+
+Finally, we would search our database (indexed by the relevant features previously identified) and determine how many shoes were similar enough, compared to the shoes in the database. That proportion would be our estimated coincidental match probability. 
+
+All of these issues are within the realm of statistics and machine learning. 
+
+The next question is then... What's considered a relevant feature?
+
+---
+class:primary
+## Relevant Features
+
+Footwear Class Characteristics
+- Make, Model, Tread pattern, Size, Type of shoe
+
+- Cannot be used to identify an individual match
+
+- Used for exclusion
+
+&lt;img src="similarity/converse-combined.png" width="40%" alt="Many sizes of Chuck Taylors" style="position:absolute;bottom:30px;right:30px"/&gt;
+
+???
+
+In forensics, class characteristics are broad descriptors shared by many different individual objects. In shoes, class characteristics refer to make, model, tread pattern, size, type of shoe, and even wear patterns. Examiners will say that a suspect's shoe "is consistent with" prints left at the scene, but if the match is made on class characteristics alone (95% of the time), they cannot explicitly connect the shoe and the print at the crime scene.
+
+Randomly acquired characteristics, which occur due to random damage as the shoe is worn or during the manufacturing process, can be used to make an individualized match.
+
+We've already discussed why make and model are difficult to work with - there's no index data set to use. Similarly, shoe size isn't as related to tread size as you'd expect, so that's off the list too. Working with tread pattern seems like a better option. 
+
+---
+class:primary
+## Relevant Features
+
+Use features other than make/model and size to characterize shoes
+
+- Knockoffs often have very similar tread patterns
+- Similar styles have similar tread patterns across brands
+- Unknown shoes can still be classified and assessed
+
+| Dr. Martens | Eastland | Timberland |
+| --- | --- | --- |
+| &lt;img src = "problem-definition/dr-martens-work-2295-rigger-tan-greenland_product_114677_color_201711.jpg" max-width = "40%" height = "250px" style = "padding-left:25%;padding-right:25%"/&gt; | &lt;img src = "problem-definition/eastland-1955-edition-jett-brown_product_8946957_color_6.jpg" max-width = "40%" height = "250px" style = "padding-left:25%;padding-right:25%"/&gt; | &lt;img src = "problem-definition/timberland-6-premium-boot-coal-waterbuck_product_8906913_color_761877.jpg" max-width = "40%" height = "250px" style = "padding-left:25%;padding-right:25%"/&gt; |
+| Work 2295 Rigger | 1955 Edition Jett | 6" Premium Boot |
+
+???
+
+If we work off of features within the shoe tread, we get some additional benefits. 
+
+First, similar tread patterns are found in shoes of similar style - knockoffs specifically try to emulate a tread pattern, but even across well known brands, shoes that serve a similar function often have similar tread patterns - here are 3 different models of work boots, from different manufacturers, each with the same tread pattern. The number of design elements may differ slightly, but that variation happens even within shoe make and model - different sizes have different tread elements in some cases. 
+
+An additional benefit is that unknown shoes can still be classified and addressed. If we define our feature set as "Shoes with quadrilaterals around the edge that have triangle cutouts, and diamond-shaped plus signs in the middle", we can start off by estimating the probability that a shoe like these 3 exists, and then can increase the specificty of the query from there as data quality and amount allows. It's definitely not a perfect solution, but crime scene prints are typically degraded, so this is a level of detail that matches the practical problem fairly well. It's an abstraction, but at a level that makes sense both statistically and pragmatically. 
+
+After some deliberation and attempts to manually identify features, we settled on 9 geometric features. 
+
+---
+class:primary
+## Relevant Features
+
+| Bowtie | Chevron | Circle |
+| ------ | ------- | ------ |
+| ![Bowtie examples](class_examples/bowtie_examples.png) | ![Chevron examples](class_examples/chevron_examples.png) | ![Circle examples](class_examples/circle_examples.png) |
+
+| Line | Polygon | Quadrilateral |
+| ---- | ------- | ---- |
+| ![Line examples](class_examples/line_examples.png) | ![Polygon examples](class_examples/polygon_examples.png) | ![Quad examples](class_examples/quad_examples.png) |
+
+| Star | Text | Triangle |
+| ---- | ---- | -------- |
+| ![Star examples](class_examples/star_examples.png) | ![text examples](class_examples/text_examples.png) | ![Triangle examples](class_examples/triangle_examples.png) |
+
+Used to separate shoes by make/model in (small) local samples (Gross, et al., 2013)
+
+???
+
+There is some precedent for separating shoes in this way - Gross et al (2013) used a similar system with a different set of features, and managed to separate a local sample of shoes into make/model piles using this classification scheme. 
+
+Some of these categories include interesting variations: bowties, for example, are defined as roughly quadrilateral, but with two opposite concave features; thus, butterflies have been included in the bowtie category.  Polygons, Quadrilaterals, and Triangles are allowed to have rounded corners; not all rubber materials handle sharp corners well. Polygons include anything with more than 4 sides - as of now, pentagons, hexagons, and octagons. Circles include ovals and ellipses as well. 
+
+These 9 features will be used throughout the rest of the talk. 
+
+---
+class: inv-center
+# &lt;br/&gt;Image Analysis and Feature Detection
+
+???
+
+Now that we've decided which features to use, we have to figure out how to identify them automatically from image data. Images are, after all, matrices of data; in color, they are N x M x 3 matrices, where N x M is the image dimension in pixels. 
+
+---
+class: primary
+## Image Analysis
+
+.move-margin[
+&lt;img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/&gt;
+]
+
+### Goal: Identify geometric tread features in images of shoe outsoles
+
+- Robust to different lighting conditions, rotation, image quality
+
+- Fast processing of new images
+
+- Identify features that are explainable to practitioners
+
+???
+
+The detection method should be able to handle different lighting conditions, rotation and image quality - if we plan to use this method on real-world images, we have to be able to handle degraded image quality. Even working with images of shoe soles found online used for marketing purposes, there's a huge variation in image quality and lighting.
+
+In addition, we need new images to be processed quickly. It's tolerable if the algorithm takes a while to train, but the production model needs to be able to process new data efficiently. 
+
+Finally, we need to be able to explain what this algorithm is doing to practitioners, which means that the features that are identified should be explainable and fairly consistent with how humans would label things.
+
+I started this project with the intention to use various computer vision algorithms to detect very basic image features, then potentially try to reconstruct those into higher-level geometric features using a random forest. 
+
+---
+class:primary
+## Feature Detection
+
+.move-margin[
+&lt;img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/&gt;
+]
+
+#### Classic computer vision feature detection methods: 
+
+- Edge, Corner, Blob, Ridge detection
+
+- Template matching: Hough transforms
+    - line, circle, ellipse detection
+    - provide location and orientation
+
+.pull-left[
+Pros
+- No training data necessary
+
+- Relatively simple algorithm
+]
+
+.pull-right[
+Cons
+- Not robust (fragile tuning parameters)
+- Computationally intensive
+- Features lack face validity
+]
+
+???
+
+I started out using standard image processing methods for identifying features. There are edge, corner, blob, and ridge detectors that are used to automatically process microscope and telescope data in many different fields. There are also more complicated template-matching algorithms, including hough transforms, that can find more complicated features like lines, circles, and ellipses and provide location and orientation information. These methods are relatively simple and don't require training data, but they're also very fragile, computationally intensive, and the features they select make sense when you look at a small area of pixels, but aren't globally relevant - they don't match with what you or I would pick out as an edge or a corner. After playing with these methods for a while, I decided to take a different approach. 
+
+Google, Facebook, and many other tech companies have been using neural networks to handle image detection, for better or for worse. So I decided to go for the big guns.
+
+---
+class:primary
+## Feature Detection
+
+.move-margin[
+&lt;img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/&gt;
+]
+
+#### Convolutional neural networks: 
+- Structure designed to mimic perceptual pathways in the human visual system
+- Ubiquitous in modern image recognition tasks (Krizhevsky, et al., 2012)
+
+.pull-left[
+
+Pros
+- Features are interpretable
+- Very fast (after training)
+- Pre-trained networks available    
+.small[AlexNet, VGG16, ResNet, Inception]
+
+]
+
+.pull-right[
+
+Cons
+- Requires labeled training data
+- Computationally expensive to train
+- Opaque - parameters are not interpretable
+
+]
+
+???
+
+Convolutional neural networks are a type of neural network specifically designed to search an image for one or more specific patterns. They mimic what we know about the organization of the human visual cortex, and are very common in modern image recognition tasks because they work so well. 
+
+Convnets produce interpretable features, because they mimic our perceptual processes and are trained using data labeled by humans. They take a while to train (a month or more for some models) but are very fast in processing new images - most image searches use CNNs in the background. They have millions of parameters, which makes inference very difficult - they're mostly "black box" models because of the complex model structure. An additional benefit to CNNs is that there are pre-trained neural networks available; these networks can be used as a basis for other models, so you don't have to start from scratch. They do require labeled training data, though, which means that someone has to sit and label thousands of features before you can start fitting one of these models. Some of the newer Captchas work this way - you end up labeling data for someone's neural network.
+
+While it would be nice to use a model that's more interpretable, CNNs work for image recognition under noisy or degraded data, so that's what we decided to use. 
+
+---
+class:inv-center
+# &lt;br&gt;Convolutional Neural Networks
+
+???
+
+During this portion of the talk, I'm going to walk through a convolutional neural network, discuss the components, and describe the process of model fitting. These models can sometimes be treated as magic, so I hope that I can ruin that for you today.
+
+---
+class:primary
+## Modeling Approach
+
+Let `\(CNN(x)\)` describe a convolutional neural network acting upon an input image `\(x\)` with labels `\({Y_1}, ..., {Y_z} \in \{0,1\}^z\)` 
+&lt;br/&gt;&lt;br/&gt;
+
+
+`\(\displaystyle CNN(x) \rightarrow [{P_1}, ..., {P_z}] \in [0,1]^z\)` 
+
+- `\(z\)` is the number of output classes 
+
+- `\({P_1}, ..., {P_z}\)` are output class probabilities
+
+&lt;br/&gt;
+
+The model has errors `\([{\epsilon_1}, ..., {\epsilon_z}] = [{Y_1} - {P_1}, ..., {Y_z} - {P_z}]\)`
+
+???
+
+Starting from the beginning, we'll describe a CNN as a function that acts on an input image x that has z binary labels Y. 
+
+The CNN maps input x and produces z output probabilities between 0 and 1; one probability for each class. Depending on the CNN structure, additional constraints on these P can be added, but by default, we'll assume this is unconstrained and thus, that the Ps do not necessarily sum to 1. 
+
+Then we can define epsilon, the errors made by CNN(x) during classification. 
+
+Let's look at the structure of a convolutional neural network. 
+
+
+---
+class:primary
+## CNN Architecture
+
+&lt;img src="vgg16-structure/vgg16-shoe-nolabel.png" alt = "Neural Network model structure" width = "95%"/&gt;
+
+???
+
+This is an example of a very deep convolutional neural network, where very deep is a reference to the number of convolutional layers. 
+
+The input image is 256 pixels square, with 3 color channels. The initial convolutional layers produce an output matrix that is 256 by 256 by 64, where 64 is the number of filters applied at that layer. A pooling layer reduces the input size to 128 by 128, and then subsequent convolutional layers apply another 128 filters to that reduced-dimension matrix. 
+
+At each stage of the model, the spatial dimensionality decreases and the number of filters increases, as more complicated patterns are incorporated into the model. At the end of all of these convolutional and pooling layers, there is a model head, which takes the spatial filters and combines them into a unified whole; the very last layer is a softmax activation layer that produces the output probabilities. 
+
+I will talk about each of these layer types in turn, starting with convolutional layers.
+
+---
+class: primary
+## Image Convolution
+
+Let `\(x\)` be an image represented as a numerical matrix, indexed by `\(i, j\)`, and `\(\beta\)` be a filter of dimension `\((2a + 1) \times (2b + 1)\)`
+
+The convolution of image `\(x\)` and filter `\(\beta\)` is `$$(\beta \ast x)(i, j) = \sum_{s = -a}^a\sum_{t = -b}^b \beta(s, t) x(i-s, j-t)$$`
+
+???
+
+Let's start with the convolution part of CNNs. Image convolution is the application of a filter that is smaller than the image to every possible "tile" of the image, where each filter application results in a single value. 
+
+The math is relatively simple, but it's much easier to see what's going on using pictures. Throughout this exercise, we'll refer to the image `\(x\)` and filter `\(\beta\)`; note that the dimension of `\(\beta\)` is odd.
+
+---
+class: primary
+## Convolutional Layers
+
+![Input image and filter](vgg16-structure/filter.png)
+
+.pull-left[.center[Input image 
+`\(\displaystyle x\)`
+]]
+.pull-right[.center[
+Weight matrix
+`\(\displaystyle \mathbf{\beta}\)`
+]]
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+???
+
+Suppose we have a 5 by 5 input matrix and a 3 by 3 spatial filter. We'd start by applying that filter to each possible 3x3 portion of the input, which produces a 3x3 output matrix. 
+
+---
+class: primary
+## Convolutional Layers
+
+![Input image and filter](vgg16-structure/filter1.png)
+
+.pull-left[.center[Convolution: 
+`\(\displaystyle \beta\ast x\)`
+]]
+.pull-right[.center[
+Feature Map
+`\((\beta \ast x)(i, j)\)`
+]]
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+???
+
+We start in the upper left corner of `\(x\)`, applying `\(\beta\)` cell-wise to each overlapping cell of `\(x\)`. We then move over by one and do the same thing.
+
+---
+class: primary
+## Convolutional Layers
+
+![Input image and filter](vgg16-structure/filter2.png)
+
+.pull-left[.center[Convolution: 
+`\(\displaystyle \beta\ast x\)`
+]]
+.pull-right[.center[
+Feature Map
+`\((\beta \ast x)(i, j)\)`
+]]
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+
+???
+
+Some CNNs pad the input image so that the resulting feature map is the same dimension as the input image. That's why the dimensions were so neat in the diagram I showed a few slides ago - image padding was used to ensure similar size output. 
+
+---
+class: primary
+## Convolutional Layers - &lt;br/&gt;Forward Propagation
+
+- `\(x^{0}\)` is an input image
+
+- `\(x^\ell\)`, `\(\ell = 1, ..., n\)` are convolutional layers in the network.
+
+- `\(\beta^\ell_{k}\)` is an `\(m \times m\)` filter matrix in layer `\(\ell\)`, `\(k = 1, ..., p^\ell\)`
+
+- `\(\gamma^\ell\)` is the bias matrix for layer `\(\ell\)`, with the same dimension as `\(\beta^\ell\ast x^{(\ell-1)}\)`
+
+The `\(\ell\)`th layer, `\(x^{(\ell)}\)`, is indexed by `\(i\)`, `\(j\)`, and `\(k\)`:
+
+`$$x^{(\ell)}_k = \sigma\left({\beta^\ell_k}\ast x^{(\ell - 1)} + \gamma^\ell\right)$$`
+
+where `\(\sigma(\cdot)\)` is a nonlinear activation function. 
+
+
+ReLU (Rectified Linear Unit), `\(\sigma(\cdot) = \max\{0, \cdot\}\)` is a common nonlinear activation function
+
+
+???
+
+Now that the convolutional part is explained, we need to understand how values pass from layer to layer through the network. Forward propagation is the numerical calculation that transitions from image to layer output (and then to the next layer, and so on until the model class probabilities are the output)
+
+We're going to refer to `\(x^0\)` more formally at this point as the input image, and `\(x^\ell\)` as successive layers in the network. We have filters `\(\beta^\ell_k\)`, sometimes called model weights, and biases for each layer, `\(\gamma^\ell\)`. Our output layer is a three-dimensional matrix, where i and j index the spatial information and k indexes the filters. A nonlinear function is applied to the convolution of the layer and the filter added to the bias matrix. One common function is called ReLU, which truncates any negative output at 0. 
+
+
+---
+class:primary
+## CNN Architecture
+
+&lt;img src="vgg16-structure/vgg16-shoe-nolabel.png" alt = "VGG16 model structure" width = "95%"/&gt;
+
+???
+
+We've discussed the convolutional layer operations; we'll now talk briefly about the max pooling layers. 
+
+---
+class: primary
+## Max Pooling Layers
+
+![Pooling Layers](vgg16-structure/maxpooling.png)
+
+.footer[Image source: https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2]
+
+???
+
+Max pooling layers take a specified region and take the maximum over all cells. Stride is the offset between pooling regions. With a 2x2 window and stride of 2, the output layer is 1/4 the size of the input layer. 
+
+---
+class:primary
+## CNN Architecture
+
+&lt;img src="vgg16-structure/vgg16-shoe-nolabel.png" alt = "VGG16 model structure" width = "95%"/&gt;
+
+???
+
+We've made it through what's called the model base - the convolutional and pooling layers that aggregate spatial information locally. The model head takes that information and provides a more global integration, culminating in the output of class probabilities after the softmax layer. Different models have different numbers of fully connected layers in the head; the number of layers here has a large influence on the number of parameters that have to be optimized during the fitting process. 
+
+---
+class: primary
+## Fully Connected Layers
+.move-margin[&lt;br&gt;&lt;img src="vgg16-structure/model-head.png" width = "100%"/&gt;]
+&lt;img src="20190129-DeptSeminar_files/figure-html/fully-connected-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+- Connect every cell of previous layer to every cell of new layer
+- Used for spatial pattern integration
+
+???
+
+A fully connected (or dense) layer connects every node in the input to every node in the output; each of these connections has a weight associated with it. Some models use "dropout", where a pre-specified proportion of the weights are set to 0 to reduce the number of parameters and keep only the most useful connections. 
+
+---
+class: primary
+## Dropout Layers
+.move-margin[&lt;br&gt;&lt;img src="vgg16-structure/model-head.png" width = "100%"/&gt;]
+&lt;img src="20190129-DeptSeminar_files/figure-html/dropout-layers-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+- Reduces number of parameters
+- Used for spatial pattern integration
+
+???
+
+Here's a representation of a layer with 50% dropout. All of the layers in the model head have this type of structure; different models use different dropout rates. In the final layer, a nonlinear function is applied to the weights; usually the sigmoid or logistic function, so that the model outputs probabilities between 0 and 1. In models where each image has only one output class, the softmax function is used. 
+
+---
+class: primary
+## Fitting Mechanism
+
+- Forward Propagation: Input -&gt; Filters -&gt; Pooling -&gt; Result
+
+- Backward Propagation: Errors -&gt; Pooling -&gt; Filters
+    - Goal is to update the filter weights
+    - Loss function `\(L\)` describing the prediction errors
+    - Gradient descent using `$$\frac{\partial L}{\partial \beta}$$`
+    at iteration `\(t\)`, with learning rate `\(\lambda\)`, 
+    `$${\beta_k}(t) = \beta_k(t-1) - \lambda \frac{\partial L}{\partial {\beta_k}}$$`
+    
+???
+
+During forward propagation, we begin with an input image and, for each layer, use the filters and pooling operators to compute a series of features that contribute to the resulting output probability. 
+
+To fit the model to the training data, we must be able to move backwards, adjusting the filter weights and biases in order to produce better estimates. Backward propagation, or backpropagation, is how this adjustment occurs. In essence, CNN backpropagation employs gradient descent, applied to each cell of each layer. The learning rate parameter, lambda, is used to control how quickly the model converges. 
+
+Common loss functions are squared error loss and cross-entropy, depending on the constraints placed on the output probabilities.
+
+So how is the gradient computed? 
+
+---
+class: primary
+## Backward Propagation
+
+`$$\begin{align}\left(\frac{\partial L}{\partial \beta^\ell_k}\right) &amp;= \underbrace{\frac{\partial L}{\partial \left(\beta^\ell_k \ast x^{\ell - 1}\right)}}_\text{gradient} x^{\ell-1}\\\\\frac{\partial L}{\partial \left(\beta^\ell_k \ast x^{\ell - 1}\right)}&amp;=\frac{\partial L}{\partial x^\ell} \left[\sigma'\left(\beta^\ell_k \ast x^{\ell - 1}\right)\right] \end{align}$$`
+
+The gradient can be computed with the derivative of the activation function `\(\sigma(\cdot)\)`
+
+&lt;br/&gt;
+.slightly-small[Note: ReLU is not differentiable at 0; common practice is to set 0, 0.5, or 1 as the derivative's value at 0.]
+
+???
+
+I'm going to talk about the backpropagation of the weights and ignore the biases for the time being; the process is even simpler for the biases because they are not convolved with the previous layer. 
+
+Very simply, the gradient used to update the weights can be computed using the derivative of the activation function and the loss at the current layer. This works for a single layer, but we have to update weights at every layer in the model, so we need to be able to calculate the gradient for layer ell - 1 using values at layer ell. 
+
+---
+class: primary
+## Backward Propagation
+
+To propagate errors to the previous layer, 
+
+
+`$$\begin{align}\frac{\partial L}{\partial \left(\beta^{\ell - 1}_k \ast x^{\ell - 2}\right)} = &amp;\frac{\partial L}{\partial x^{\ell - 1}} \left[\sigma'\left(\beta^{\ell - 1}_k \ast x^{\ell - 2}\right)\right]\\\\ \text{where }&amp;\frac{\partial L}{\partial x^{\ell -1}} = \frac{\partial L}{\partial \left(\beta_k^\ell \ast x^{\ell - 1}\right)} \beta_k^\ell \end{align}$$`
+
+.center[&lt;img src="vgg16-structure/vgg16-shoe-nolabel.png" width = "50%"/&gt;]
+
+.center[&lt;b&gt;13 convolutional layers = a lot of backpropagation&lt;/b&gt;]
+
+???
+
+The gradient at the previous layer can be computed using the recurrence relationship shown.
+
+With 13 convolutional layers, and a 256x256 image, this process is repeated a lot. It's only relatively recently that the computational power required to fit neural networks with this complexity became available, even though the process was described and used for smaller networks in the 1980s.
+
+---
+class: primary
+## Parameter Space
+
+.move-margin[&lt;br/&gt;![VGG16 model structure](vgg16-structure/vgg-sideways-nohead.png)]
+- Convolutional base: ~14.5 million parameters
+
+- Simple model head (9 output classes): ~8.4 million parameters
+
+- Total parameter space: ~22.9 million
+
+- Estimated model optimization time: 2-3 weeks with 4 GPUs
+
+- Data requirements: &gt; 1 million labeled images
+
+--
+
+&lt;br/&gt;&lt;br/&gt;
+
+.large[.center[We have &lt;27k labeled images]]
+
+???
+
+These networks are so powerful in part because they have so many parameters; a total of 22.8 million for a model with the convolutional structure we've been working with and a very simple model head. Tuning all of those weights with a learning rate that's slow enough to allow for convergence would take 2-3 weeks and more GPU power than we have easy access to. It would also take more than a million labeled images to train that type of model successfully. 
+
+We have 25 thousand labeled images, so we can either spend a long time labeling images to fit a model, or we can find another option.
+
+---
+class: primary
+## Transfer learning
+
+.move-margin[&lt;br/&gt;![VGG16 model structure](vgg16-structure/vgg-sideways-connorhead.png)]
+
+- Use weights from a model trained on different input data
+
+- Freeze the weights in the convolutional base
+
+- Train a new model head
+
+- Total parameter space: 8.4 million
+
+- Model optimization time: &lt;3 hours
+
+???
+
+We can use transfer learning to take advantage of the fact that there are pre-trained models available: we use the convolutional base (and the weights) from the pre-trained model and fit a new model head using the data we do have. This saves a huge amount of computational time and takes advantage of the fact that visual features generalize fairly well; the same set of filters that can recognize cats and dogs can also recognize circles and squares if the dense layers are properly calibrated. Using this approach, the model takes less than 3 hours to fit (we run model updates every night). 
+
+--
+
+#### VGG16
+- Pre-trained CNN (Simonyan, et al., 2014)
+    - Trained on 1.3 million images from ImageNet    
+    (Krizhevsky, et al., 2012)
+    
+    - Simple structure
+
+???
+
+VGG16 is a pre-trained CNN that conveniently has the structure we've been using as an example during this talk. Its structure is relatively straightforward, compared to ResNet and AlexNet. There are more complicated pre-trained networks with higher accuracy rates, but the simplicity of VGG16's structure makes it a good compromise for our purposes. We want to be able to explain this process to practitioners if necessary, and we want to be able to go back and understand what's happening with each filter and layer. 
+
+
+---
+class: inv-center
+# Fitting CoNNOR: Convolutional Neural Network for Outsole Recognition
+
+???
+
+Now that you have an idea of what's happening inside the computer, let's talk about data collection and the human side of the model fitting process. 
+
+---
+class:primary
+## Acquire Data
+&lt;img alt="Zappos Screenshot showing sole images" src="labelme-imgs/zappos.png" width="90%" style="margin: 0 5%"/&gt;
+
+.move-margin[
+&lt;br/&gt;&lt;br/&gt;[`ShoeScrapeR` package](https://github.com/srvanderplas/ShoeScrapeR)&lt;br/&gt;&lt;br/&gt;
+
+55610 images scraped since April 2018 
+]
+
+???
+
+Shortly after Leslie Hammer's visit, I started writing a web scraper to pull shoe images from Zappos.com. In April, I started aggregating shoe data; the script runs several times a week and automatically downloads new shoes. As of earlier today, we have over 50 thousand distinct images scraped from Zappos, including men, women, and children's shoes. 
+
+We have all of these images, but they're not useful unless we also have labels assigned to regions of each image. 
+
+---
+class:primary
+## Label Data
+![LabelMe](labelme-imgs/LabelMe1.png)
+
+- [LabelMe Annotation Tool](https://github.com/CSAILVision/LabelMeAnnotationTool) used as a web interface - creates XML files with labels and coordinates. (Russell, et al., 2008)
+
+- 26,041 regions labeled with one or more geometric objects
+- 35,320 labels
+
+.small[.move-margin[
+&lt;br/&gt;&lt;br/&gt;Labeling courtesy of 
+- Jenny Kim
+- Ben Wonderlin
+- Mya Fisher
+- Holden Jud
+- Miranda Tilton
+- Charlotte Roiger
+- Joe Zemmels
+- and others
+]]
+
+???
+
+I set up LabelMe Annotation tool, provided by a lab at MIT, to serve up images of the shoes and track labels applied to regions of each shoe. LabelMe provides an xml file for each image that contians the labeled region coordinates; this information is then processed by a series of R scripts I wrote. 
+
+Last summer, we had two high school students, Ben, and Jenny, who spend the better part of 6 weeks labeling features in shoes. We've also had a couple of undergraduate students working over the past semester to label new images and clean up the labels. As we've refined our approach, some of the labeling guidelines have changed; this has meant we've had to go back and fix shoes that were labeled before the new guidelines. 
+
+---
+class:primary
+## Label Data
+&lt;div class="figure"&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/label-data-barchart-1.png" alt="Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon." width="90%" /&gt;
+&lt;p class="caption"&gt;Distribution of classes in all labeled images. Quadrilaterals, lines, circles, text, and chevrons are relatively common; stars, polygons, and bowties are relatively uncommon.&lt;/p&gt;
+&lt;/div&gt;
+
+???
+
+This graph reflects the current state of class labels. There are far more quadrilaterals, lines, and text than any other category; quads in particular are more likely to appear alone than in multiple groups. Stars, polygons, and bowties are much less likely to occur; this large discrepancy in class frequency does make modeling more interesting. 
+
+---
+class:primary
+## Model Specification
+Multiple classes, multiple labels: "One-hot" encoding
+
+Statistically: 
+
+- Model output: `\((P_1, ..., P_9) \in [0,1]^9\)`
+    - Each geometric feature assigned a probability
+    - An image can be labeled with multiple features
+
+- Output probabilities `\(P_i\)` are not independent
+    - Dependencies due to CNN structure
+    - Dependencies due to input data
+    - Dependencies due to geometric similarity -     
+    Polygons vs. Quadrilaterals
+    
+- Covariance structure is ?
+
+???
+
+We talked previously about the model structure in a generic sense; now let's talk about the specifics. We're going to be using what's called "one hot" encoding, that is, indicator variables, and we're going to allow our model to output a separate probability for each of the 9 labeled classes; these probabilities won't sum to one, but they're not independent either. The dependency structure is complicated - output probabilities depend on the model structure, but there are also dependencies based on the geometric similarity - a quadrilateral is likely more similar to a polygon than to a line.  We don't have any real way to describe the complicated dependency structure - this is one of the downsides to using a model that's this complicated. The upside is that the model is actually capable of doing what we're asking of it; less complicated models didn't really succeed at that. 
+
+---
+class:primary
+## Model Training
+
+- 256 x 256 pixel images
+
+- Training data (60%):
+    - 1x Augmented images (rotation, skew, zoom, crop) to prevent overfitting
+    - Class weights used to counteract uneven class sizes
+    
+- Validation and test data (20% each)
+
+- Fit using the `keras` package in R, which provides a high-level API for the `tensorflow` library 
+
+.move-margin[
+&lt;img src="model-imgs/text-1-bernie-mev-kids-catwalk-little-kid-big-kid-multi-camo_product_9084647_color_87089.jpg" width = "45%" style = "margin-right:2%; margin-bottom:2%; margin-top:5%;"/&gt; &lt;img src="model-imgs/aug_text-1-bernie-mev-kids-catwalk-little-kid-big-kid-multi-camo_product_9084647_color_87089_0_1891.jpg" width = "45%" style = "margin-bottom:2%; margin-top:5%;"/&gt;
+&lt;img src="model-imgs/quad-2-nike-kids-downshifter-7-infant-toddler-gunsmoke-sunset-pulse-atmosphere-grey_product_8800875_color_720973.jpg" width = "45%" style = "margin-right:2%; margin-bottom:2%;"/&gt; &lt;img src="model-imgs/aug_quad-2-nike-kids-downshifter-7-infant-toddler-gunsmoke-sunset-pulse-atmosphere-grey_product_8800875_color_720973_0_7533.jpg" width = "45%" style = "margin-bottom:2%;"/&gt;
+&lt;img src="model-imgs/bowtie(R)-1-ugg-sienna-enamel-blue_product_8726365_color_120557.jpg" width = "45%" style = "margin-right:2%; margin-bottom:2%;"/&gt; &lt;img src="model-imgs/aug_bowtie(R)-1-ugg-sienna-enamel-blue_product_8726365_color_120557_0_8344.jpg" width = "45%" style = "margin-bottom:2%;"/&gt;
+&lt;img src="model-imgs/quad-2-puma-suede-classic-x-mac-three-port-royale-port-royale_product_9123838_color_251426.jpg" width = "45%" style = "margin-right:2%; margin-bottom:2%;"/&gt; &lt;img src="model-imgs/aug_quad-2-puma-suede-classic-x-mac-three-port-royale-port-royale_product_9123838_color_251426_0_5689.jpg" width = "45%" style = "margin-bottom:2%;"/&gt;
+]
+
+???
+
+We scaled all of the labeled images to 256 x 256; aspect ratio was not preserved, though some steps have been taken to ensure that the labeled regions are at least square-ish where possible to prevent extreme distortion. 
+
+60% of the labeled images were used as training data; these images were augmented once by zooming, skewing, cropping, and rotating the images. This step is recommended to prevent over-fitting. Examples of original and augmented images are shown on the right side of the slide.
+
+Validation data, which is used within each fitting iteration to calculate the loss function, accounted for 20% of the images, and test data, which is used to evaluate the model at the end of the fitting process, accounted for the remaining 20%. 
+
+We used the keras package in R to fit the model using the tensorflow toolkit. Tensorflow is an extremely efficient implementation that can use either the CPU or GPU to fit the neural network. It was originally developed by Google's Machine Intelligence team. Keras makes it easy to use VGG16, remove the model head, freeze the weights on the base, and add a new head, using only a few lines of code. 
+
+---
+class:primary
+## Model Training
+
+&lt;div class="figure"&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/training-accuracy-1.png" alt="Training and Validation accuracy and loss for each epoch of the fitting process. Training and validation accuracy reach 90% around epoch 14. After that point, validation loss remains about the same and training loss decreases slightly, while validation accuracy increases more slowly than training accuracy." width="99%" /&gt;
+&lt;p class="caption"&gt;Training and Validation accuracy and loss for each epoch of the fitting process. Training and validation accuracy reach 90% around epoch 14. After that point, validation loss remains about the same and training loss decreases slightly, while validation accuracy increases more slowly than training accuracy.&lt;/p&gt;
+&lt;/div&gt;
+
+.move-margin[&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;.small[Binary Cross-entropy Loss: 
+`$$-y\log(p)\\\\-\\!(1\\!-\\!y)\log(1\\!-\\!p)$$`
+]]
+???
+
+This chart shows model performance relative to the loss and accuracy rate during each epoch (backpropagation occurs after each epoch of fitting). The loss function used to fit the model is the cross-entropy function. 
+
+Validation loss levels off after 15 epochs, but hasn't yet begun to increase. Training loss is still decreasing as well. One concern with retraining the head of a CNN is that with relatively little data (e.g. 20 thousand data points instead of 150K) it is easy to over-fit models; what we see is that this hasn't yet happened for this model. Overfitting would be evident if the loss in the training set had beun to increase. 
+
+---
+class:primary
+## Evaluating the Model
+&lt;img src="20190129-DeptSeminar_files/figure-html/overall-roc-1.png" width="100%" /&gt;
+
+???
+
+We can compute an aggregate ROC curve that treats all classes the same. Under this, we see that performance is generally fairly good, though there is obviously room for improvement. The more interesting evaluation is to look at prediction accuracy for each label...
+
+---
+class:primary
+## Evaluating the Model
+&lt;!-- Add in model overall AUC --&gt;
+&lt;!-- Describe the multi-class version as splitting out model performance by class --&gt; 
+
+&lt;div class="figure"&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/class-roc-1.png" alt="Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class." width="99%" /&gt;
+&lt;p class="caption"&gt;Receiver Operating Characteristic curves for the 9 classes used to fit CoNNOR, generated individually for each class.&lt;/p&gt;
+&lt;/div&gt;
+
+???
+
+These plots show ROC curves for each class, computed separately. Equal error rates are marked with a dot, and show the point at which it is equally likely for the model to miss a classification or wrongly classify an image. These EERs are used as an optimized cutoff value for diagnostics which require a hard threshold, like a confusion matrix. Most cutoff rates are around .1, though for classes with less data, such as stars and polygons, the cutoff rate is typically smaller. 
+
+---
+class:primary
+## Evaluating the Model
+&lt;div class="figure"&gt;
+&lt;img src="20190129-DeptSeminar_files/figure-html/ConfMatrix-1.png" alt="Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes." width="80%" /&gt;
+&lt;p class="caption"&gt;Multi-class confusion matrix for CoNNOR. When an image has multiple labels, it is considered separately for each label; additional labels associated with the image are excluded from the calculation of incorrect predictions. The equal-error rate for each class (computed from the ROC curve on the previous slide) is used as a cutoff threshold (e.g. different classes have different thresholds. Most classes achieve greater than 75% prediction accuracy. The model predicts quadrilaterals with higher frequency than supported by the data for all classes.&lt;/p&gt;
+&lt;/div&gt;
+
+.move-margin[
+
+&lt;br/&gt;
+For multi-label images, only incorrect predictions contribute to off-diagonal probabilities
+
+`\(EER_i\)` used as the cutoff
+&lt;br/&gt;
+
+]
+
+???
+
+This confusion matrix shows, for each label, the probability that the image is classified as that label as well as other possible labels. One modification we made to the standard confusion matrix was to exclude any additional "correct" labels from these calculations: If an image was labeled with a circle and a line, but the model assigned circle and triangle as labels, then in the circle column that image would register as a true positive for circle and a false positive for triangle; line would be excluded from calculations in that column.
+
+An important point to make at this juncture is that while we're operating as if our labeled data were "ground truth", that isn't an accurate assumption. People make mistakes, labeling is monotonous, and the criteria for certain classes have changed over time. In some cases, the model is correct, and the labels are wrong. We're working on correcting the labeling, but even in a situation where the labeling is done in accordance with the guidelines, some of the criteria can get fuzzy in practice. 
+
+---
+class:primary
+## Definitions matter
+![Classes get confusing](labelme-imgs/dc_circle_quad_confusion.png)
+
+.move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
+
+![Not everything is labeled correctly](labelme-imgs/adidas_circle_pred_correct.png)
+
+???
+
+We created a shiny application to see the images and the model's predictions. Blue means that the image had that label, grey means it does not. I've selected two images that show both correct and incorrect model classifications. 
+
+In the first image, the design is labeled as a quadrilateral and the model identifies that, but also identifies image as containing a circle very strongly. When we look at the image, the confusion is understandable. One half of the shape is angular, the other is rounded, so the shape has features of both a quadrilateral and a circle. We've decided to label these images as both (owing to the ambiguity), but that means we have to correct all of the previously labeled images. We're working on that. 
+
+In the second image, the model predicts circles, quadrilaterals, and text, but the image is labeled as having quadrilaterals and text. The circles happen to be part of the text (and the letters aren't even Os), and our brains pick up on the text but ignore the circles because we perceive things wholistically; the model does not. We're also in the process of updating these labels, because again, the data is not correct; the model absolutely is. 
+
+We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things. Because we determined the guidelines for labeling the data, labeled the data (or oversaw the labeling), and trained the model ourselves, we have the advantage of knowing the flaws at every point in the process; that means we have the responsibility to fix those flaws where possible. 
+
+We're not doing inference on the model results at this point (nor planning to use the data we're training the model with during the operational stage) so the data -&gt; model -&gt; fix data loop is less of a validity concern. 
+
+When the model is sufficiently well-calibrated, we can then work with engineers to build the device, collect some initial data, and tweak the model weights with new data that better represents what we'll actually see from the collection equipment. By that point, hopefully we'll also have narrowed down the geometric classification scheme so that categories that are now somewhat fuzzy are more clearly operationalized.
+
+
+---
+class:primary
+## Interpreting the model
+
+What is a CNN actually doing? (Olah, et al., 2018)
+
+1. Which regions in the image are relevant to each class?
+
+2. Which regions in the image activate which filters?
+
+3. Which filters are most important for detection of each class?
+    
+4. What do the filters detect?
+    - Semantic segmentation (Shelhamer, et al., 2017)
+    - Filter visualization
+
+&lt;div class="small move-margin"&gt;
+&lt;!-- 2. &lt;b&gt;Regions and Filters:&lt;/b&gt; --&gt;
+&lt;img src="interpretation/cat_dog.png"/&gt;
+&lt;img src="interpretation/cat_dog_filters.png"/&gt;
+&lt;span style="font-size:42%"&gt;Source: https://distill.pub/2018/building-blocks/&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;div class="pull-left"&gt;
+&lt;img src="interpretation/block5_conv3_filters.png" alt="VGG16 Filters, convolutional layer 5, block 3" width = "80%"/&gt;
+&lt;!-- &lt;span style="font-size:30%"&gt;Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html&lt;/span&gt; --&gt;
+&lt;/div&gt;
+
+&lt;div class="pull-right"&gt;
+&lt;img src="interpretation/neuron_attribution.png" width = "74%" style = "margin-left:13%;margin-right:13%;" alt="Which regions and filters?"/&gt;
+&lt;span style = "margin-left:13%;margin-right:13%;font-size:30%"&gt;Source: https://distill.pub/2018/building-blocks/&lt;/span&gt;
+&lt;/div&gt;
+
+???
+
+During this process, it's also helpful to see what the model is using to determine which features are present or absent. 
+
+We'd love to know: 
+
+1. Which regions in an input image are relevant to each class (I will show examples of this on the next slide)
+
+2. Which regions activate which filters  - you can see one visualization of that on the bottom-left, where filters have been clustered and a different color is used to indicate regions activating clusters of filters. Another way to look at this is looking at the maximally activated filter for a particular sub-region of the image; the right side figure shows one way to visualize this. There are more dog-like filters on the top left, cat-like filters on the bottom-right. Both of these are much more interesting in the actual paper, which is interactive. 
+
+3. Which filters are most important for the detection of each class - I haven't seen a great visualization of this yet, but it would be an important diagnostic tool.
+
+4. We'd also like to see what the filters detect, either visually or using semantic categories. You can see at the bottom left a selection of filters from convolutional layer 1 of VGG16. 
+
+This is an extremely active area of research; there is a package for making some of these visualizations in Python, and we're in the process of making an R library with those functions; hopefully within the next month or so we'll be able to generate some of these visualizations for CoNNOR specifically. At the moment, we can look at heatmaps showing activation for each class, so I'll show you those. 
+
+
+
+
+
+---
+class:primary
+## Interpreting the model&lt;br&gt;Class Activation Maps
+
+&lt;br/&gt;
+&lt;br/&gt;
+![unscaled heatmapp - DC](heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png)
+&lt;br/&gt;
+&lt;br/&gt;
+Heatmaps are scaled by class. Yellow = high activation
+
+.move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
+
+???
+
+Class activation maps use the gradient with respect to each class label, back propagated to the last convolutional layer to maintain spatial information. Here, we can see that the D shape discussed previously is activating both circle and quad; the round part is activating the circle class and the straight part is activating the quad class. I've included only the relevant classes plus one comparison heatmap from a class that wasn't activated to cut down on the amount of clutter here, but heatmaps can be generated for each category.
+
+---
+class:primary
+## Interpreting the model&lt;br&gt;Class Activation Maps
+
+&lt;br/&gt;
+&lt;br/&gt;
+![unscaled heatmapp - adidas](heatmaps/heatmap-test_image.png)
+&lt;br/&gt;
+&lt;br/&gt;
+Heatmaps are scaled by class. Yellow = high activation
+
+.move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
+
+???
+
+Here's an image similar to the one I showed you earlier, with adidas text; the heatmap is easier to see using a slightly different color. You can see that the top and bottom of the "d" are most important in determing text, but that the model is clearly cuing in to the circles inside of the a and d. It's doing exactly what we asked it to do - it just might not have been what we meant originally. 
+
+
+---
+class:primary
+## Interpreting the model&lt;br&gt;Class Activation Maps
+
+&lt;br/&gt;
+&lt;br/&gt;
+![unscaled heatmapp - seychelles](heatmaps/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
+&lt;br/&gt;
+&lt;br/&gt;
+Heatmaps are scaled by class. Yellow = high activation
+
+.move-margin[&lt;br/&gt;&lt;br/&gt;Blue: Prediction matches image label &lt;br/&gt;&lt;br/&gt;Grey: Prediction does not match image label]
+
+???
+
+Here's an example of an image where the model is strongly suggesting there are circles, but where we would not agree. It's not hard to see why the model thinks circles would be here, but if it isn't a closed loop, I can't in good conscience suggest it's a circle. Just because the model says something with confidence doesn't mean we change the labels on the original image. It's a screening tool, but we don't want to inflate the model's accuracy at the expense of the actual accuracy.
+
+
+---
+class:primary
+## Project Summary
+
+- Geometric shapes provide a convenient feature space for assessing shoe similarity
+
+- Transfer learning allows application of CNNs to much smaller datasets
+
+- CoNNOR performs well
+    - Reduction in feature space: 256 x 256 x 3 -&gt; 9
+    
+    - 88% accuracy; many errors attributable to data labeling
+
+???
+
+In summary, the use of geometric shapes provides a convenient feature space to assess similarity of shoes. By using transfer learning, we can use powerful neural networks to identify features in images with the small amount of training data we have. CoNNOR performs well; it reduces a 256 x 256 x 3 image to a 9-dimensional vector of probabilities and has about 88% accuracy. We expect the accuracy will improve as we get better at consistently labeling the input images. 
+
+
+---
+class:primary
+## Applying the Model
+
+![Distance matrix for 7 Nike shoes, using CoNNOR's features and euclidean distance.](20190129-DeptSeminar_files/figure-html/demo-distance-1.png)
+
+.move-margin[
+&lt;br/&gt;
+.Large[Goal: 
+`$$\hat{p} = \frac{S}{N}$$`
+]
+&lt;br/&gt;&lt;br/&gt;
+]
+
+???
+
+Using Euclidean distance, we can take the feature vectors and come up with a numerical description of the distance between any two shoe outsole images. Here, I've chosen 7 different Nike shoe outsoles (because 54000 choose 2 is a bit hard to display) and computed the distance between each pair. You can see that the two images with chevrons are more similar to each other than to the other images; this even extends to a sole with chevrons and polygons. From here, we need to define a cutoff for "similar enough", then compare the number of similar shoes in our sample to the total number of shoes, yielding an estimated coincidental match probability. There is obviously still work to be done at this point in the project, but this serves as an excellent demonstration that the model is producing sensible output that meets the requirements we set out initially. Once we can collect real-world data, we know that the computational methods are in place to make the coincidental match probability problem tractable for local populations. 
+
+---
+class:primary
+## Contribution Summary
+
+#### Statistical Computing
+- Data scraping (`ShoeScrapeR`)
+- LabelMe Annotations - Output multi-label images from R
+- Distance calculations for output features
+
+#### Model Training
+- Identified the feature set and initial labeling criteria 
+- Determined augmentation process
+- Model Automation (daily at 5pm)
+
+#### Model Diagnostics
+- Accuracy measures for multi-class, multi-label models &lt;br/&gt;(with M. Tilton)
+- Heatmaps for Convnets in R (with M. Tilton)
+- `KerasVis` package in R (in progress; with J. Seo)
+
+
+???
+
+This is a fairly complicated project, with a fair number of people and moving parts, so here's a different summary, showing the steps from my perspective as to how the project has evolved. 
+
+
+
+
+---
+class:inv-center
+# &lt;br/&gt;&lt;br/&gt;What's Next?
+
+???
+
+This is all work that is currently evolving, so I'd like to give you a preview of the next few months
+
+---
+class: primary
+## What's Next?
+
+- Submit manuscript with M. Tilton
+
+- NIJ Grant - Collaboration with R. Stone (IMSE) to build a prototype and collect local population data
+
+- Extend feature set with spatial information: whole-shoe predictions
+
+- Make CoNNOR more interpretable
+    - keras-vis Python library -&gt; R package 
+
+- Explore training the last convolutional layer of the model
+
+???
+
+Miranda Tilton is writing her creative component, and we will submit a paper by the end of the semester. 
+
+I plan to revise the NIJ grant I submitted last April and resubmit it, so that we can hopefully get funding to develop a prototype scanner and begin data collection around Ames. 
+
+I'd also like to add a spatial component to Connor by predicting features for small chunks of the shoe sole and integrating those predictions back into the entire shoe. 
+
+Finally, we plan to explore CoNNOR's inner workings with the keras-vis package that we're currently porting to R. Eventually, I'd like to explore new visual diagnostics for these types of models. 
+
+---
+class: primary
+## References
+&lt;div class="small"&gt;
+
+&lt;p&gt;[1]&lt;cite&gt;
+I. Benedict, E. Corke, R. Morgan-Smith, et al.
+&amp;ldquo;Geographical variation of shoeprint comparison class correspondences&amp;rdquo;.
+In: &lt;em&gt;Science and Justice&lt;/em&gt; 54.5 (2014), pp. 335&amp;ndash;337.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]&lt;cite&gt;
+S. Gross, D. Jeppesen and C. Neumann.
+&amp;ldquo;The variability and significance of class characteristics in footwear impressions&amp;rdquo;.
+In: &lt;em&gt;Journal of Forensic Identification&lt;/em&gt; 63.3 (2013), p. 332.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[3]&lt;cite&gt;
+A. Krizhevsky, I. Sutskever and G. E. Hinton.
+&amp;ldquo;ImageNet Classification with Deep Convolutional Neural Networks&amp;rdquo;.
+In: 
+&lt;em&gt;Advances in Neural Information Processing Systems 25&lt;/em&gt;.
+Ed. by F. Pereira, C. J. C. Burges, L. Bottou and K. Q. Weinberger.
+Curran Associates, Inc., 2012, pp. 1097&amp;ndash;1105.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[4]&lt;cite&gt;
+C. Olah, A. Satyanarayan, I. Johnson, et al.
+&amp;ldquo;The Building Blocks of Interpretability&amp;rdquo;.
+En.
+In: &lt;em&gt;Distill&lt;/em&gt; 3.3 (Mar. 2018). 00079, p. e10.
+ISSN: 2476-0757.
+DOI: &lt;a href="https://doi.org/10.23915/distill.00010"&gt;10.23915/distill.00010&lt;/a&gt;.
+URL: &lt;a href="https://distill.pub/2018/building-blocks"&gt;https://distill.pub/2018/building-blocks&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[5]&lt;cite&gt;
+B. C. Russell, A. Torralba, K. P. Murphy, et al.
+&amp;ldquo;LabelMe: A Database and Web-Based Tool for Image Annotation&amp;rdquo;.
+En.
+In: &lt;em&gt;International Journal of Computer Vision&lt;/em&gt; 77.1-3 (May. 2008). 02464, pp. 157&amp;ndash;173.
+ISSN: 0920-5691, 1573-1405.
+DOI: &lt;a href="https://doi.org/10.1007/s11263-007-0090-8"&gt;10.1007/s11263-007-0090-8&lt;/a&gt;.
+URL: &lt;a href="http://link.springer.com/10.1007/s11263-007-0090-8"&gt;http://link.springer.com/10.1007/s11263-007-0090-8&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[6]&lt;cite&gt;
+E. Shelhamer, J. Long and T. Darrell.
+&amp;ldquo;Fully Convolutional Networks for Semantic Segmentation&amp;rdquo;.
+In: &lt;em&gt;IEEE Transactions on Pattern Analysis and Machine Intelligence&lt;/em&gt; 39.4 (Apr. 2017), pp. 640-651.
+DOI: &lt;a href="https://doi.org/10.1109/TPAMI.2016.2572683"&gt;10.1109/TPAMI.2016.2572683&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;[7]&lt;cite&gt;
+K. Simonyan and A. Zisserman.
+&amp;ldquo;Very Deep Convolutional Networks for Large-Scale Image Recognition&amp;rdquo;.
+En.
+In: &lt;em&gt;arxiv.org&lt;/em&gt; (Sep. 2014).
+URL: &lt;a href="https://arxiv.org/abs/1409.1556"&gt;https://arxiv.org/abs/1409.1556&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+---
+class: primary
+## Tools
+
+- R Packages and Toolkits: 
+    - Modeling: `keras`, `tensorflow`
+    - Data Wrangling: `magrittr`, `dplyr`, `lubridate`, `stringr`, `tidyr`, `purrr`, `furrr`
+    - Image Processing: `jpeg`, `imager`, `magick`
+    - Annotation Manipulation: `sf`, `sp`
+    - Visualization: `ggplot2`, `viridis`, `ggcorrplot`, `deepviz`, `tidygraph`, `ggraph`, `shiny`
+    - XML/Web Scraping: `xml2`, `XML`, `rvest`, `RSelenium`
+    - Slides/Documentation: `rmarkdown`, `xaringan`, `knitr`
+
+- Other Software: Docker, Selenium, LabelMe Annotation Tool (w/ Matlab toolbox), gimp image editor
+
+???
+
+This project wouldn't have been even remotely feasible without the amazing package infrastructure R provides. I went through and tried to tally up all of the packages used in various parts of the project; here's a list of most of them (I can't actually guarantee I caught them all). Outside of the R infrastructure, I'm also using docker to host the labelme and selenium containers, and I've used gimp extensively to edit and label the images of the VGG16 layers and model structure. 
+
+---
+class: inv-center
+# Questions?
+
+???
+
+I'd be happy to answer your questions now. 
+
+---
+class: primary
+## Outline
+
+- [Forensics Context](#6)
+
+- [Image Analysis](#19)
+
+- [Convolutional Neural Networks](#23)
+
+- [CoNNOR](#43)
+
+- [Future Work](#61)
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
