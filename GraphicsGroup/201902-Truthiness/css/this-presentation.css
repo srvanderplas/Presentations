@@ -1,0 +1,12 @@
+li p a {
+color: #000000 !important;
+}
+h1 a {
+color: #000000 !important;
+}
+.inverse h1 a {
+color: #FFFFFF !important;
+}
+.inv-center h1 a {
+color: #FFFFFF !important;
+}
