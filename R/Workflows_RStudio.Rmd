@@ -394,4 +394,7 @@ class:middle,center
 
 - Basic idea: keep track of what you change in your R code
 
+- Each set of meaningful changes is accompanied by a "commit message" that documents the changes
+
+![](git-commit-msg.png)
 
