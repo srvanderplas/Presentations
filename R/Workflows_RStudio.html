@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>R Workflows with RStudio</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Susan VanderPlas" />
+    <meta name="date" content="2019-04-26" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R Workflows with RStudio
+## Projects, Packages, and more!
+### Susan VanderPlas
+### 2019-04-26
+
+---
+
+
+
+
+
+## Before we start
+
+I will use functions from these packages during this presentation:
+
+- `usethis` - helper functions for best practices in R
+- `here` - friendly relative paths with R projects
+
+
+Inspiration for this set of slides: 
+
+- https://uncoast-unconf.github.io/uu-2019-day-zero/02-project-workflows/workflow.html
+- https://www.tidyverse.org/articles/2017/12/workflow-vs-script/
+
+
+---
+
+## Outline
+
+- Pre-test
+
+- Basic R best practices
+
+- Project oriented workflow
+  - File Paths
+  - File Names
+
+- Package oriented workflow
+
+- Version Control
+
+---
+
+## Working in R
+
+Pre-test: Do you...
+
+- Save your R code in script (.R) or markdown (.Rmd) files?
+
+- Use an IDE (integrated development environment) like RStudio or Emacs?
+
+- Use self contained projects (e.g. projects in RStudio)?
+
+- Use relative paths? (`./data/data.csv` vs `/home/me/Work/Projects/this-one-project/data/data.csv`)
+
+- Write code for a clean environment?
+
+---
+class: middle,center
+
+# Basic R best Practices
+
+---
+
+## Save the source, not the workspace
+
+![](if-you-liked-it-you-should-have-saved-the-source-for-it.jpg)
+
+If your workspace matters, you have a non-reproducible workflow. R processes and workspaces are __disposable__. Everything that mattters should be saved as R code.
+
+---
+
+## Use an IDE
+
+An IDE makes it easy to follow best practices. 
+
+- self-contained projects
+
+- saving R scripts
+
+- version control
+
+- local paths
+
+
+Best practices make it easier for future you as well as current collaborators. 
+
+---
+
+## Clean Slate in R
+
+- Do not save the workspace to an .Rdata file when you quit R.    
+Do not load an .Rdata file when you start R
+
+.center[&lt;img src="rstudio-workspace.png" width="40%"/&gt;]
+
+`usethis::use_blank_slate()` helps you set this up too.
+
+---
+
+## Restart R often
+
+.pull-left[
+![](on-and-off.png)
+]
+.pull-right[
+To restart: 
+- RStudio:
+  - Session -&gt; Restart R
+  - `[Ctrl/Cmd] + Shift + F10`
+
+- Shell:
+  - `Ctrl+D` or `q()` to quit, then restart R
+]
+
+
+---
+
+## Avoid `rm(list = ls())`
+
+- This doesn't go far enough: 
+    - only deletes visible items in the environment
+    - doesn't detach packages that you've loaded
+    - hidden env items still exist
+
+To power-cycle, restart R.
+
+To switch from one project to another, restart R or use an IDE with project support.
+
+
+---
+class:middle,center
+# Project Oriented Workflow
+
+---
+
+## Workflow?
+
+- The computer you use to write code (OS, file path, configuration)
+
+- Custom settings (.Rprofile, .Renviron)
+
+- Your environment
+    - loaded packages
+    - previously loaded data
+
+## Product
+
+- Raw data
+
+- R code to get from data to results
+
+- Paper (Rmd file, Sweave file, word document, ...)
+
+---
+
+## Projects: Self contained Workflow + Product
+
+Assumptions
+
+- R scripts are self-contained: 
+    - Run from a fresh R process
+    - in a working directory set to the project directory
+
+- R script creates everything it needs in its own workspace or folder
+
+- R script touches nothing it did not create
+    - does not install new packages without consent!
+    
+This makes your life easier (switching computers, etc.) and makes it easier for collaborators!
+
+`setwd("path/that/only/works/on/my/machine")` won't work for your collaborators, and probably won't work on your machine in 2 years. 
+
+
+---
+
+## RStudio Projects
+
+![](create_r_project.png)
+
+---
+
+## RStudio Projects
+
+- Opening a project "resets" your environment - avoids cross-contamination
+
+- Provides a (semi)structured, self-contained workflow
+
+- Makes it easier to use relative paths to navigate
+
+- Your *.Rproj file lives in the "project root" directory 
+
+- All other files exist in folders within the root directory
+
+---
+
+## Project-oriented workflow
+
+- Project: one folder on your computer that holds all files needed for a particular piece of work
+
+- Project-oriented workflow: file system discipline
+    - all paths are relative
+    - combine development convenience and code portability
+````
+project_name/
+|-- raw-data
+|   -- data-raw.csv
+|-- data
+|   -- data-clean.csv
+|   -- data-results.csv
+|-- code
+|   -- clean-data.csv
+|   -- analyze-data.csv
+|-- paper
+|   -- figure/
+|      -- fig1.jpg
+|   -- report.Rmd
+````
+
+---
+
+## RStudio Project Organization
+
+My personal philosophy: 
+- R code in `R/` folder (no subfolders)
+- raw data in `data-raw/` folder
+- working data in `data/` folder
+- paper files in `paper/` folder
+- presentations in `presentations/` folder
+
+Biggest thing: discuss with your collaborators how things will be set up!
+
+One advantage to doing things my way: it's compatible with R packages, so you can make your code + paper + data into a package with only a few extra steps.
+
+
+---
+
+## Using Relative Paths
+
+
+![](global_path.png)
+
+`/home/susan/Projects/Web/Presentations/R/Workflows_Rstudio.Rmd` is the __global__ path for this presentation on my laptop.
+
+Working within the `Presentations` R project, the __local__ path is `./R/Workflows_Rstudio.Rmd`
+
+---
+
+## Using Relative Paths
+
+`here` is a package to make paths easier
+
+- within an RStudio project, `here::here()` finds the project root directory (by finding the `.Rproj` file)
+
+
+---
+
+## File Names
+
+.center[&lt;img src="https://imgs.xkcd.com/comics/documents.png" width = "40%"/&gt;]
+
+---
+
+## File Names
+
+- Structured
+
+- Machine Readable
+
+- Human Readable
+
+
+---
+## Structured File Names
+
+- If there is an order to the files, use that
+`01_clean-data.R`, `02_full-analysis.R`, `03_pairwise-tests.R`, etc.
+
+- Pad the numbers with 0s so they're displayed in order
+
+- For dates, use ISO 8601 standard (yyyy-mm-dd) so that everything is sorted correctly in your file manager
+
+---
+
+## Structured File Names
+
+&lt;blockquote class="twitter-tweet" data-lang="en"&gt;&lt;p lang="en" dir="ltr"&gt;Comprehensive map of all countries in the world that use the MMDDYYYY format &lt;a href="http://t.co/jaOQp0oZyN"&gt;pic.twitter.com/jaOQp0oZyN&lt;/a&gt;&lt;/p&gt;&amp;mdash; Michael Donohoe (@donohoe) &lt;a href="https://twitter.com/donohoe/status/597876118688026624?ref_src=twsrc%5Etfw"&gt;May 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;
+
+---
+
+## Machine Readable File Names
+
+1. Regex and globbing friendly: 
+  - Avoid spaces
+  - Limit yourself to `A-z`, `0-9`, `-`, `_`. 
+  - Use the same case conventions for every file.    
+  Note: Windows is case-insensitive. Your collaborators will thank you for making this consistent!
+  - Avoid "." characters that aren't part of the file extension
+  
+2. Use delimeters deliberately
+  - "_" underscore to delimit metadata you want later
+  - "-" hyphen to delimit words
+
+---
+
+## Human Readable File Names
+
+Use descriptive file names - not just `01.R`, `01_clean-up-data.R`
+
+Do this as you go along... it's much more work to fix it later. 
+
+
+.center[&lt;iframe src="https://media.giphy.com/media/HtHQEafAxGP4Y/giphy.gif" width="480" height="269" frameBorder="0"&gt;&lt;/iframe&gt;]
+
+---
+class:middle,center
+# Package Oriented Workflow
+
+---
+
+## Package oriented workflow
+
+&gt; Any time you copy-and-paste code three times, write a function.
+&gt; Any time you copy-and-paste a function three times, write a package.
+&gt; - Hadley Wickham (aka the "Rule of three", which is an old concept)
+
+Packages keep all of these things together:
+- code
+- function documentation (arguments, etc)
+- tests for your code
+- data
+- project-level documentation (e.g. the paper that goes with the code and data)
+
+Packages are self-contained units that are easily share-able and publishable
+
+---
+
+## Guides to package development
+
+- [R packages book](http://r-pkgs.had.co.nz/) by Hadley Wickham (2nd edition is under development, [here](https://r-pkgs.org/))
+
+- [Creating an R package in 20 minutes](https://www.rstudio.com/resources/videos/you-can-make-a-package-in-20-minutes/) by Jim Hester
+
+- [Packages](https://github.com/hfrick/presentations/blob/master/2019-03-12_package_building/2019-03-12_package_building.pdf) and [Best Practices for Packages](https://github.com/hfrick/presentations/blob/master/2018-06-27_goodpractice/2018-06-27_goodpractice.pdf) workshops by Hannah Frick
+
+
+---
+
+## Advantages to using R packages
+
+- Easily shareable (esp. if you host the package on GitHub)
+
+- Keep track of dependencies using DESCRIPTION Imports
+
+- Inline documentation with `roxygen` package - write documentation as you go    
+(future you will be very grateful)
+
+- Don't have to source a bunch of files - just __Ctrl/CMD - Shift - L__ to load all package code
+
+- Ensure updates to your code don't break other functions with unit tests and the [`testthat` package](https://testthat.r-lib.org/)
+
+  - Do this automatically with continuous integration using [travis-ci](https://juliasilge.com/blog/beginners-guide-to-travis/) or [`appveyor`](https://github.com/krlmlr/r-appveyor)
+
+- Publish a paper describing your method, then publish an R package with the code!
+
+---
+class:middle,center
+# Version Control
+&lt;img src="http://www.phdcomics.com/comics/archive/phd101212s.gif" width = "50%" height = "auto"/&gt;
+
+---
+
+## Version control with git and GitHub
+
+- `git` is a version control system
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="https://platform.twitter.com/widgets.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
