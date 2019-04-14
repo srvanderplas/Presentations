@@ -29,6 +29,7 @@ I will use functions from these packages during this presentation:
 
 - `usethis` - helper functions for best practices in R
 - `here` - friendly relative paths with R projects
+- `testthat` - unit tests in R packages
 
 
 Inspiration for this set of slides: 
@@ -43,15 +44,17 @@ Inspiration for this set of slides:
 
 - Pre-test
 
-- Basic R best practices
+- [Basic R best practices](Workflows_RStudio.html#5)
 
-- Project oriented workflow
-  - File Paths
-  - File Names
+- [Project oriented workflow](Workflows_RStudio.html#11)
+  - [File Paths](Workflows_RStudio.html#18)
+  - [File Names](Workflows_RStudio.html#20)
 
-- Package oriented workflow
+- [Package oriented workflow](Workflows_RStudio.html#26)
 
-- Version Control
+- [Version Control and Other Advanced Stuff](Workflows_RStudio.html#31)
+
+- [Writing Documents in R](Workflows_RStudio.html#35)
 
 ---
 
@@ -266,6 +269,8 @@ Working within the `Presentations` R project, the __local__ path is `./R/Workflo
 
 - within an RStudio project, `here::here()` finds the project root directory (by finding the `.Rproj` file)
 
+- `here` will search through all files nested under the project root, so `here("file_name.R")` will find `./subdir/file_name.R`
+
 
 ---
 
@@ -379,6 +384,24 @@ Packages are self-contained units that are easily share-able and publishable
 - Publish a paper describing your method, then publish an R package with the code!
 
 ---
+
+## Outline
+
+- Pre-test
+
+- [Basic R best practices](Workflows_RStudio.html#5)
+
+- [Project oriented workflow](Workflows_RStudio.html#11)
+  - [File Paths](Workflows_RStudio.html#18)
+  - [File Names](Workflows_RStudio.html#20)
+
+- [Package oriented workflow](Workflows_RStudio.html#26)
+
+- [Version Control and Other Advanced Stuff](Workflows_RStudio.html#31)
+
+- [Writing Documents in R](Workflows_RStudio.html#35)
+
+---
 class:middle,center
 # Version Control
 &lt;img src="http://www.phdcomics.com/comics/archive/phd101212s.gif" width = "50%" height = "auto"/&gt;
@@ -388,6 +411,88 @@ class:middle,center
 ## Version control with git and GitHub
 
 - `git` is a version control system
+
+- Basic idea: keep track of what you change in your R code
+
+- Each set of meaningful changes is accompanied by a "commit message" that documents the changes
+
+![](git-commit-msg.png)
+
+---
+
+## Projects and Packages with git and GitHub
+
+- `usethis::use_git()` will set up a local git repository
+
+- `usethis::use_github()` will set up a GitHub repository for your project/package (if git and GitHub are properly configured)
+
+- `git` allows you to collaborate in real-time and helps you resolve conflicts effectively.
+
+- `GitHub` allows the collaboration to happen online in a controlled fashion. 
+
+
+
+.center[
+### git = local machine, GitHub = on the web
+]
+
+---
+
+## Projects and Packages with git and GitHub
+
+Example: [`x3ptools` package](https://github.com/heike/x3ptools)
+
+- `devtools::install_github("heike/x3ptools")` to install a package from GitHub
+
+- `pkgdown` package - make documentation website for your package automatically via [GitHub pages](https://heike.github.io/x3ptools/)
+
+- Continuous integration: [travis-ci.org](https://travis-ci.org/heike/x3ptools), appveyor    
+Changes to github -&gt; package automatically built, tested, and checked
+
+
+---
+class:middle,center
+# Writing Documents in R
+
+---
+## Dynamic Documents
+
+Two main options: 
+1. Simple Formatting: [R markdown](https://rmarkdown.rstudio.com/)
+    - everything is written in simple text + markup
+    - [Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+    - R (and other code) in chunks that start with     
+    ` ```{r chunk-name, options}` and ends with     
+    ` ``` `
+    - Journal templates using [rstudio/rticles](https://github.com/rstudio/rticles) package
+    - Output to pdf, docx, html... 
+2. Complex formatting: [R Sweave/knitr](https://yihui.name/knitr/)
+    - everything is written in LaTeX
+    - [Cheatsheet](https://cran.r-project.org/web/packages/knitr/vignettes/knitr-refcard.pdf)
+    - R in chunks that start with    
+    ` &lt;&lt;chunk-name, options&gt;&gt;=` and ends with    
+    `@`
+    - Use journal templates directly
+    - Output to pdf
+    
+
+---
+
+## Outline
+
+- Pre-test
+
+- [Basic R best practices](Workflows_RStudio.html#5)
+
+- [Project oriented workflow](Workflows_RStudio.html#11)
+  - [File Paths](Workflows_RStudio.html#18)
+  - [File Names](Workflows_RStudio.html#20)
+
+- [Package oriented workflow](Workflows_RStudio.html#26)
+
+- [Version Control and Other Advanced Stuff](Workflows_RStudio.html#31)
+
+- [Writing Documents in R](Workflows_RStudio.html#35)
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script src="https://platform.twitter.com/widgets.js"></script>
