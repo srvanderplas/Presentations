@@ -34,6 +34,7 @@ I will use functions from these packages during this presentation:
 - `here` - friendly relative paths with R projects
 - `testthat` - unit tests in R packages
 
+<br/><br/><br/><br/><br/><br/>
 
 Inspiration for this set of slides: 
 
@@ -53,11 +54,11 @@ Inspiration for this set of slides:
   - [File Paths](Workflows_RStudio.html#18)
   - [File Names](Workflows_RStudio.html#20)
 
-- [Package oriented workflow](Workflows_RStudio.html#26)
+- [Package oriented workflow](Workflows_RStudio.html#27)
 
-- [Version Control and Other Advanced Stuff](Workflows_RStudio.html#31)
+- [Version Control and Other Advanced Stuff](Workflows_RStudio.html#32)
 
-- [Writing Documents in R](Workflows_RStudio.html#35)
+- [Writing Documents in R](Workflows_RStudio.html#36)
 
 ---
 
@@ -67,13 +68,18 @@ Pre-test: Do you...
 
 - Save your R code in script (.R) or markdown (.Rmd) files?
 
-- Use an IDE (integrated development environment) like RStudio or Emacs?
+- Use an IDE (integrated development environment) like RStudio?
 
-- Use self contained projects (e.g. projects in RStudio)?
+- Use self contained projects (e.g. Projects in RStudio)?
 
-- Use relative paths? (`./data/data.csv` vs `/home/me/Work/Projects/this-one-project/data/data.csv`)
+- Use relative paths?     
+e.g.     
+`./data/data.csv`    
+vs     
+`/home/me/Work/Projects/this-one-project/data/data.csv`
 
-- Write code for a clean environment?
+- Write code for a _clean environment_?    
+clean environment = new R session with no data or packages loaded
 
 ---
 class: middle,center
@@ -112,7 +118,7 @@ Best practices make it easier for future you as well as current collaborators.
 - Do not save the workspace to an .Rdata file when you quit R.    
 Do not load an .Rdata file when you start R
 
-.center[<img src="rstudio-workspace.png" width="40%"/>]
+.center[<img src="rstudio-workspace-crop.png" width="80%"/>]
 
 `usethis::use_blank_slate()` helps you set this up too.
 
@@ -131,6 +137,8 @@ To restart:
 
 - Shell:
   - `Ctrl+D` or `q()` to quit, then restart R
+  
+This removes all loaded packages, clears your workspace (if you aren't saving it in .Rdata automatically), and "resets" everything
 ]
 
 
@@ -199,8 +207,12 @@ This makes your life easier (switching computers, etc.) and makes it easier for 
 ![](create_r_project.png)
 
 ---
-
 ## RStudio Projects
+
+.left-column[
+![](recent-rstudio-projects.png)
+]
+.right-column[
 
 - Opening a project "resets" your environment - avoids cross-contamination
 
@@ -211,6 +223,10 @@ This makes your life easier (switching computers, etc.) and makes it easier for 
 - Your *.Rproj file lives in the "project root" directory 
 
 - All other files exist in folders within the root directory
+
+- RStudio knows about recent projects!
+
+]
 
 ---
 
@@ -272,8 +288,14 @@ Working within the `Presentations` R project, the __local__ path is `./R/Workflo
 
 - within an RStudio project, `here::here()` finds the project root directory (by finding the `.Rproj` file)
 
-- `here` will search through all files nested under the project root, so `here("file_name.R")` will find `./subdir/file_name.R`
+- From the project root, here constructs a relative path: `here::here("subdir", "data.csv")` is equivalent to `"./subdir/data.csv"` if subdir is in the project root folder.
 
+<br/>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">If the first line of your <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> script is &quot;setwd(...&quot; I will come into your lab and SET YOUR COMPUTER ON FIRE.</p>&mdash; Dr. Timothée Poisot (@tpoi) <a href="https://twitter.com/tpoi/status/720340395901648897?ref_src=twsrc%5Etfw">April 13, 2016</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<br/>
+See also: [Ode to the here package](https://github.com/jennybc/here_here)
 
 ---
 
@@ -283,7 +305,7 @@ Working within the `Presentations` R project, the __local__ path is `./R/Workflo
 
 ---
 
-## File Names
+## File Names should be...
 
 - Structured
 
@@ -295,8 +317,10 @@ Working within the `Presentations` R project, the __local__ path is `./R/Workflo
 ---
 ## Structured File Names
 
-- If there is an order to the files, use that
-`01_clean-data.R`, `02_full-analysis.R`, `03_pairwise-tests.R`, etc.
+- If there is an order to the files, use that:
+    - `01_clean-data.R`, 
+    - `02_full-analysis.R`, 
+    - `03_pairwise-tests.R`, etc.
 
 - Pad the numbers with 0s so they're displayed in order
 
@@ -326,14 +350,53 @@ Working within the `Presentations` R project, the __local__ path is `./R/Workflo
 
 ---
 
+.left-column[
+.center[
+<br /><br />
+
+# `r emo::ji("scream")`
+
+<br /><br /><br /><br /><br /><br /><br />
+
+#`r emo::ji("smile")`
+]
+]
+.right-column[
+
+`myabstract.docx`
+
+`Joe's Files with Spaces and Punctuation.xlsx`
+
+`figure 1.png`
+
+`homework1.R`
+
+`JW7d^(2sl@deletethisandyourcareerisoverWx2*.txt`
+
+<br /><br />
+
+`2018-01_bryan-abstract-rstudio-conf.docx`
+
+`joes-filenames-are-getting-better.xlsx`
+
+`fig01_scatterplot-talk-length-vs-interest.png`
+
+`bryan_hw01.R`
+
+`1986-01-28_raw-data-from-challenger-o-rings.txt`
+]
+
+---
+
 ## Human Readable File Names
 
 Use descriptive file names - not just `01.R`, `01_clean-up-data.R`
 
 Do this as you go along... it's much more work to fix it later. 
 
+<br/><br/>
 
-.center[<iframe src="https://media.giphy.com/media/HtHQEafAxGP4Y/giphy.gif" width="480" height="269" frameBorder="0"></iframe>]
+.center[<iframe src="https://i.giphy.com/media/HtHQEafAxGP4Y/giphy.webp" width="480" height="269" frameBorder="0"></iframe>]
 
 ---
 class:middle,center
@@ -347,12 +410,14 @@ class:middle,center
 > Any time you copy-and-paste a function three times, write a package.
 > - Hadley Wickham (aka the "Rule of three", which is an old concept)
 
+<br/><br/>
 Packages keep all of these things together:
-- code
-- function documentation (arguments, etc)
-- tests for your code
 - data
-- project-level documentation (e.g. the paper that goes with the code and data)
+- code
+- tests for your code
+- function documentation (arguments, etc)
+- project-level documentation     
+(e.g. the paper that goes with the code and data)
 
 Packages are self-contained units that are easily share-able and publishable
 
@@ -360,7 +425,8 @@ Packages are self-contained units that are easily share-able and publishable
 
 ## Guides to package development
 
-- [R packages book](http://r-pkgs.had.co.nz/) by Hadley Wickham (2nd edition is under development, [here](https://r-pkgs.org/))
+- [R packages book](http://r-pkgs.had.co.nz/) by Hadley Wickham     
+(2nd edition is under development, [here](https://r-pkgs.org/))
 
 - [Creating an R package in 20 minutes](https://www.rstudio.com/resources/videos/you-can-make-a-package-in-20-minutes/) by Jim Hester
 
@@ -375,7 +441,7 @@ Packages are self-contained units that are easily share-able and publishable
 
 - Keep track of dependencies using DESCRIPTION Imports
 
-- Inline documentation with `roxygen` package - write documentation as you go    
+- Inline documentation with `roxygen` - write documentation as you go    
 (future you will be very grateful)
 
 - Don't have to source a bunch of files - just __Ctrl/CMD - Shift - L__ to load all package code
@@ -398,11 +464,11 @@ Packages are self-contained units that are easily share-able and publishable
   - [File Paths](Workflows_RStudio.html#18)
   - [File Names](Workflows_RStudio.html#20)
 
-- [Package oriented workflow](Workflows_RStudio.html#26)
+- [Package oriented workflow](Workflows_RStudio.html#27)
 
-- [Version Control and Other Advanced Stuff](Workflows_RStudio.html#31)
+- [Version Control and Other Advanced Stuff](Workflows_RStudio.html#32)
 
-- [Writing Documents in R](Workflows_RStudio.html#35)
+- [Writing Documents in R](Workflows_RStudio.html#36)
 
 ---
 class:middle,center
@@ -465,15 +531,25 @@ Two main options:
     - everything is written in simple text + markup
     - [Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
     - R (and other code) in chunks that start with     
-    ` ```{r chunk-name, options}` and ends with     
+    ` ```{r chunk-name, options}`     
+    and ends with     
     ` ``` `
     - Journal templates using [rstudio/rticles](https://github.com/rstudio/rticles) package
     - Output to pdf, docx, html... 
+    
+
+---
+## Dynamic Documents
+Two main options: 
+
+1. Simple Formatting: [R markdown](https://rmarkdown.rstudio.com/)
+
 2. Complex formatting: [R Sweave/knitr](https://yihui.name/knitr/)
     - everything is written in LaTeX
     - [Cheatsheet](https://cran.r-project.org/web/packages/knitr/vignettes/knitr-refcard.pdf)
     - R in chunks that start with    
-    ` <<chunk-name, options>>=` and ends with    
+    ` <<chunk-name, options>>=`     
+    and ends with    
     `@`
     - Use journal templates directly
     - Output to pdf
@@ -491,8 +567,9 @@ Two main options:
   - [File Paths](Workflows_RStudio.html#18)
   - [File Names](Workflows_RStudio.html#20)
 
-- [Package oriented workflow](Workflows_RStudio.html#26)
 
-- [Version Control and Other Advanced Stuff](Workflows_RStudio.html#31)
+- [Package oriented workflow](Workflows_RStudio.html#27)
 
-- [Writing Documents in R](Workflows_RStudio.html#35)
+- [Version Control and Other Advanced Stuff](Workflows_RStudio.html#32)
+
+- [Writing Documents in R](Workflows_RStudio.html#36)
