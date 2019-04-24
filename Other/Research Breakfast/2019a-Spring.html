@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Research Breakfast</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Susan VanderPlas" />
+    <meta name="date" content="2019-04-24" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/csafe.css" type="text/css" />
+    <link rel="stylesheet" href="css/csafe-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/this-presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Research Breakfast
+### Susan VanderPlas
+### April 24, 2019
+
+---
+
+class: primary
+
+## &lt;br/&gt;Shoe Wear Characterization
+
+&lt;img src="2019a//001732L_20171031_2_1_1_csafe_bpbryson.jpg" width="auto" height="300px" /&gt;&lt;img src="2019a//001732L_20180124_2_1_1_csafe_jekruse.jpg" width="auto" height="300px" /&gt;&lt;img src="2019a//001732L_20180228_2_1_1_csafe_jekruse.jpg" width="auto" height="300px" /&gt;&lt;img src="2019a//001732L_20180418_2_1_1_csafe_jekruse.jpg" width="auto" height="300px" /&gt;
+
+- Goal: Compare images taken at different time points, develop statistical features that indicate wear
+
+---
+class: primary
+## &lt;br/&gt;"Human Factors"
+
+- How do jurors react to statistical charts?
+
+- Do people use statistical charts to evaluate factual claims?
+
+- What types of charts are most useful for presenting certain types of evidence?
+
+- ``Truthiness" - does showing someone a picture related to a claim make them more likely to believe the claim?
+    - Pilot study done - need to run and analyze data from full Amazon Turk study
+
+---
+class: primary
+## &lt;br/&gt;Data Visualization
+
+- Recent work:    
+Replicating Framed Charts from the 1870 Statistical Atlas
+.move-margin[
+&lt;img src="2019a//Alabama-pie_with_frame1.png" width="100%" /&gt;&lt;img src="2019a//Alabama-pie_without_frame1.png" width="100%" /&gt;
+]
+
+&lt;!-- &lt;div class="move-margin"&gt; --&gt;
+&lt;!-- &lt;img src="2019a/Alabama-pie_with_frame1.png" width="80%"/&gt; --&gt;
+&lt;!-- &lt;img src="2019a/Alabama-pie_without_frame1.png" width="80%"/&gt; --&gt;
+&lt;!-- &lt;/div&gt; --&gt;
+
+- Potential projects: 
+    - Examine effect of different types of aesthetics on conclusions drawn from visual inference plots
+    - Implementing hatching/shading/textures in ggplot2, with perceptual study
+
+.center[
+&lt;img src="2019a//set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png" width="35%" style="margin-left:auto;margin-right:auto;" /&gt;&lt;img src="2019a//set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png" width="35%" style="margin-left:auto;margin-right:auto;" /&gt;
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
