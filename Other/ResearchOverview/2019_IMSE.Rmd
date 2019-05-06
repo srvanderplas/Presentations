@@ -99,12 +99,12 @@ Original Scan    | Circle Detection | Breech Face ID
 
 <img src="images/CNS.jpg" width = "25%" style="position:absolute;top:0px;right:0px;"/>
 
-Worked as a statistical analyst from 2015 - 2018 at     
-Nebraska Public Power District (Cooper Nuclear Station)    
+__Statistical Analyst__: 2015 - 2018 at Nebraska Public     
+Power District (Cooper Nuclear Station)    
 Responsibilities:
-  - Developed an internal program to train employees in R and data science
+  - Develop an internal program to train employees in R and data science
   
-  - Statistical analyses in response to NRC inquiries
+  - Statistical analyses in response to NRC inquiries (e.g. tornado guided missile damage assessment)
   
   - Predict time to complete critical tasks based on equipment reliability and previous performance.
   
@@ -113,6 +113,6 @@ Responsibilities:
   - Assessment of transformer health based on loading data
 
 
-Consultant: Interactive Data web applets (USDA, Iowa Soybean Association)
+__Consultant__: Interactive web applets for statistical data display ([USDA](http://agron.iastate.edu/CroppingSystemsTools/soybean-decisions.html), [Iowa Soybean Association](https://analytics.iasoybeans.com/cool-apps/NitrogenRiskCalculator/))
   
   
