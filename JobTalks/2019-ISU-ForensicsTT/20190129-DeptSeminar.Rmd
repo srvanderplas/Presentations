@@ -4,6 +4,7 @@ author: "Susan VanderPlas"
 date: "Jan 29, 2019"
 output:
   xaringan::moon_reader:
+    self_contained: true
     mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
     css: ["default", "css/csafe.css", "css/csafe-fonts.css", "css/this-presentation.css"]
     lib_dir: libs
@@ -254,7 +255,7 @@ class:primary
 ## What is the probability of<br>a coincidental match?
 
 <!-- <img src="problem-definition/coincidental-match.png" width = "80%" style="margin-left:10%;margin-right:10%" alt="Crime scene print compared with sample print"/> -->
-<img src="problem-definition/crime_scene_90.jpg" height = "200px" style = "position: absolute; left:30px; top: 250px;"/><img src = "problem-definition/suspect_90.png" height = "200px" style="position: absolute; right:30px; top:250px;"/>
+<img src="problem-definition/crime_scene_90.jpg" height = "200px" style = "position: absolute; left:30px; top: 250px;"/><img src="problem-definition/suspect_90.png" height = "200px" style="position: absolute; right:30px; top:250px;"/>
 
 
 ???
