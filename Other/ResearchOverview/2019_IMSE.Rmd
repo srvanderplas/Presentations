@@ -7,6 +7,7 @@ date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
     css: ["default", "css/this-presentation.css"]
+    js: ["css/enlargeimage.js"]
     lib_dir: libs
     nature:
       highlightStyle: github
@@ -14,21 +15,103 @@ output:
       countIncrementalSlides: false
 ---
 
-## Automatic Footwear Forensics Analysis
+## Automatic Footwear Analysis
 
 .pull-left[
 - __Practical Goal__: Automate collection of footwear images from local population
 
-- __Engineering__ (Dr. Stone): Build passive scanning device
+- __Engineering__: (Dr. Stone) Build passive scanning device
 
-- __Data Science__: Recognize geometric shapes, brands, styles from images
+- __Data Science__: Recognize geometric shapes, brands, styles from images automatically    
+(CNNs & computer vision)
 
-- __Statistics__: Estimate random match probability from collected images and identified features
+- __Statistics__: Estimate probability of randomly matching a similar shoe in the population
 
 ]
+
 .pull-right[
 <img src="images/CoNNOR/LabelMe.png" width = "100%" style="display:inline-block"/>
-<img src="images/CoNNOR/20190328_152218.jpg" width = "48%" style="display:inline-block;" class='.rotateimg90'/>
+<img src="images/CoNNOR/20190328_152218.jpg" width = "48%" style="display:inline-block;margin-top=-10px" class='rotateimg90'/>
 <img src="images/CoNNOR/fig-generic-text-line-1.png" width = "48%" style="display:inline-block"/>
-
 ]
+
+---
+
+## Statistical Firearms Analysis
+
+- __Overall Project Goal__: Develop statistical methods for matching bullets and cartridges
+
+- __My Project__: Use computer vision techniques to improve automatic identification of regions of interest in 3D scans of bullet land engraved areas and cartridge cases
+
+<br/><br/>
+Example: Bullet Land Engraved Areas
+
+Vertical Line Detection | Annotated x3p bullet scan
+--- | ---
+<img src="images/bulletQuality/Automatically_marked_hough_transform.png" width = "100%" style="clip:rect(100px,0px,100px,0px)"/> | <img src="images/bulletQuality/Automatically_marked_grooves.png" width = "100%"/>
+
+---
+
+## Human Factors
+
+- The __truthiness__ effect: When making a factual claim, showing a picture related to the claim increases the probability of evaluating the claim as true
+
+- __Goal__: Does this effect extend to statistical graphics?    
+(Important for assessing the implications of using statistical charts in court)
+
+- Pilot Study in November 2018, Full Study in Summer 2019
+
+##### Over 95% Of Belgium's Population Lives in Urban Areas
+
+<img src="images/truthiness/Belgium_Urban-chart_subj_rel_topic_rel_probative.png" width = "35%" style="display:inline-block;vertical-align: middle;"/><img src="images/truthiness/Belgium_Urban-chart_subj_rel_topic_unrel_nonprobative.png" width = "35%" style="display:inline-block;vertical-align: middle;"/><img src="images/truthiness/Belgium_Urban-map_subj_rel_topic_rel_probative.png" width = "29%" style="display:inline-block;vertical-align: middle;"/>
+<!-- <img src="images/truthiness/Belgium_Urban-picture_subject_related.jpg" width = "24%" style="display:inline-block;vertical-align: middle;"/> -->
+
+
+---
+
+## Statistical Graphics
+
+.pull-left[
+- Effect of [optical illusions](https://www.tandfonline.com/doi/full/10.1080/10618600.2014.951547) on statistical chart perception
+
+<img src="images/sine-illusion.png" width = "60%" style="display:inline-block;margin-left:20%;margin-right:20%"/>
+
+- [Numerical biases in estimation](https://www-tandfonline-com.proxy.lib.iastate.edu/doi/full/10.1080/10618600.2018.1562937) caused by different plot designs
+
+<img src="images/framed-plots/Alabama-pie_with_frame2.png" width = "30%" style="display:inline-block;margin-left:15%;margin-right:4%"/>
+<img src="images/framed-plots/Alabama-pie_without_frame2.png" width = "30%" style="display:inline-block;margin-left:4%;margin-right:15%"/>
+]
+.pull-right[
+- [Graphical Hypothesis testing](https://www-tandfonline-com.proxy.lib.iastate.edu/doi/full/10.1080/10618600.2016.1209116) with statistical lineups
+
+.center[
+<img src="images/5bc716f023aae5506677b748f1036961.svg" width = "80%" style="display:inline-block;"/>
+]
+
+- Interactive graphics with ggplot2 and [animint](https://www.tandfonline.com/doi/full/10.1080/10618600.2018.1513367)
+]
+
+---
+
+## Industry Experience
+
+<img src="images/CNS.jpg" width = "25%" style="position:absolute;top:0px;right:0px;"/>
+
+Worked as a statistical analyst from 2015 - 2018 at     
+Nebraska Public Power District (Cooper Nuclear Station)    
+Responsibilities:
+  - Developed an internal program to train employees in R and data science
+  
+  - Statistical analyses in response to NRC inquiries
+  
+  - Predict time to complete critical tasks based on equipment reliability and previous performance.
+  
+  - HR Analytics: Predict resignations, retirements, identify high turnover departments
+  
+  - Predict electrical demand based on weather, historical data, and other factors
+  
+  - Assessment of transformer health based on loading data
+
+
+  
+  
