@@ -9,6 +9,7 @@ output:
     css: ["default", "css/this-presentation.css"]
     js: ["css/enlargeimage.js"]
     lib_dir: libs
+    seal: false
     nature:
       highlightStyle: github
       highlightLines: true
@@ -106,12 +107,11 @@ Responsibilities:
   
   - Predict time to complete critical tasks based on equipment reliability and previous performance.
   
-  - HR Analytics: Predict resignations, retirements, identify high turnover departments
-  
   - Predict electrical demand based on weather, historical data, and other factors
   
   - Assessment of transformer health based on loading data
 
 
+Consultant: Interactive Data web applets (USDA, Iowa Soybean Association)
   
   
