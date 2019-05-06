@@ -1,0 +1,34 @@
+---
+title: "Susan VanderPlas"
+subtitle: "Statistical Applications in Forensics, Graphics, and Perception"
+author: ""
+institute: ""
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/this-presentation.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+## Automatic Footwear Forensics Analysis
+
+.pull-left[
+- __Practical Goal__: Automate collection of footwear images from local population
+
+- __Engineering__ (Dr. Stone): Build passive scanning device
+
+- __Data Science__: Recognize geometric shapes, brands, styles from images
+
+- __Statistics__: Estimate random match probability from collected images and identified features
+
+]
+.pull-right[
+<img src="images/CoNNOR/LabelMe.png" width = "100%" style="display:inline-block"/>
+<img src="images/CoNNOR/20190328_152218.jpg" width = "48%" style="display:inline-block;" class='.rotateimg90'/>
+<img src="images/CoNNOR/fig-generic-text-line-1.png" width = "48%" style="display:inline-block"/>
+
+]
