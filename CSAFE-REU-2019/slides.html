@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bullet Project</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Center for Statistics and Applications in Forensic Evidence" />
+    <meta name="date" content="2019-05-30" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/csafe.css" type="text/css" />
+    <link rel="stylesheet" href="css/csafe-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/this-presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Bullet Project
+### Center for Statistics and Applications in Forensic Evidence<br>
+### May 30, 2019
+
+---
+
+
+class: primary
+## Bullets
+
+.center[&lt;img src="bullet_firing_short.gif" width="90%"/&gt;
+
+Rifling in the barrel causes the bullet to spin, increasing accuracy.
+]
+
+.move-margin[
+Marks are left on the fired bullet by the lands (raised areas) and grooves in the rifling.
+
+These marks are used to identify which gun fired a bullet.]
+
+---
+class: primary
+## Statistical methods for evaluating forensic evidence
+
+.pull-left[&lt;img src="ComparisonMicroscopeBullet.png" width="100%"/&gt;]
+
+.pull-right[
+Currently: 
+- Subjective visual alignment
+- Match determined based on "similar enough"
+
+Goal: Method is
+- transparent
+- objective
+- automated
+- reproducible
+
+Process:
+- Scan with 3d microscope
+- Calculate features (statistics)
+- Compare to other scans
+- Assess match strength
+]
+
+.move-margin[&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;img src="Bullet.png"/&gt;]
+
+---
+class:primary
+## Primary Problem
+
+- Scanning is repetitive
+- Hard to rapidly identify some issues with the scans
+    - Wrong region scanned (Groove engraved area, not Land engraved area)
+    
+    - Too much breakoff
+    
+    - Pitting (physical bullet issue)
+    
+    - Tank Rash (physical bullet issue)
+    
+    - Too many missing values
+
+### Goal: Create a rapid diagnostic tool to identify scan issues and important features
+
+---
+class:primary
+## Scan Issues - &lt;br/&gt;Breakoff
+
+__Breakoff__: Missing pieces of metal on the lower edge of the bullet due to the firing process
+
+Not enough | Too much
+---------- | --------
+&lt;img src="problem_scans/breakoff_issues/Allison_Variability-Round_1-Barrel_Orange-Bullet_1-Land_5.png"/&gt; | &lt;img src="problem_scans/breakoff_issues/Mya_Variability-Round_1-Barrel_Orange-Bullet_1-Land_5.png"/&gt;
+&lt;img src="problem_scans/breakoff_issues/Allison_Variability-Round_1-Barrel_Orange-Bullet_1-Land_6.png"/&gt; | &lt;img src="problem_scans/breakoff_issues/Mya_Variability-Round_1-Barrel_Orange-Bullet_1-Land_2.png"/&gt;
+
+
+---
+class:primary
+## Scan Issues - &lt;br/&gt;GEA
+
+__Wrong Area__: Groove engraved area scanned
+
+Groove | Land 
+------ | ----
+&lt;img src="problem_scans/gea_scans/HS44-Barrel_6-Bullet_2-Land_1.png"/&gt; | &lt;img src="problem_scans/breakoff_issues/Allison_Variability-Round_1-Barrel_Orange-Bullet_1-Land_5.png"/&gt; 
+&lt;img src="problem_scans/gea_scans/HS44-Barrel_6-Bullet_2-Land_2.png"/&gt; | &lt;img src="problem_scans/breakoff_issues/Allison_Variability-Round_1-Barrel_Orange-Bullet_1-Land_6.png"/&gt; 
+
+--
+
+Groove engraved areas are narrower than Land engraved areas
+
+---
+class:primary
+## Scan Issues - &lt;br/&gt;Misalignment
+
+__Misalignment__: Bullet tilted or angled on the scope
+
+&lt;img src="problem_scans/misaligned_on_scope//Connor_Variability-Round_1-Barrel_Green-Bullet_3-Land_3.png" width="49%" /&gt;&lt;img src="problem_scans/misaligned_on_scope//Connor_Variability-Round_1-Barrel_Pink-Bullet_1-Land_3.png" width="49%" /&gt;&lt;img src="problem_scans/misaligned_on_scope//Connor_Variability-Round_1-Barrel_Pink-Bullet_2-Land_6.png" width="49%" /&gt;&lt;img src="problem_scans/misaligned_on_scope//HS44-Barrel_6-Bullet_1-Land_1.png" width="49%" /&gt;&lt;img src="problem_scans/misaligned_on_scope//HS44-Barrel_6-Bullet_1-Land_3.png" width="49%" /&gt;&lt;img src="problem_scans/misaligned_on_scope//Mya_Variability-Round_1-Barrel_Orange-Bullet_1-Land_2.png" width="49%" /&gt;&lt;img src="problem_scans/misaligned_on_scope//Mya_Variability-Round_1-Barrel_Orange-Bullet_2-Land_2.png" width="49%" /&gt;&lt;img src="problem_scans/misaligned_on_scope//Mya_Variability-Round_1-Barrel_Orange-Bullet_3-Land_3.png" width="49%" /&gt;&lt;img src="problem_scans/misaligned_on_scope//Mya_Variability-Round_1-Barrel_Pink-Bullet_1-Land_3.png" width="49%" /&gt;&lt;img src="problem_scans/misaligned_on_scope//Mya_Variability-Round_1-Barrel_Pink-Bullet_2-Land_1.png" width="49%" /&gt;
+
+---
+class:primary
+## Scan Issues - &lt;br/&gt;Damaged Bullet
+
+__Damage__: The bullet was damaged by gunpowder explosions or collision with another object, making the striae hard to use.
+
+&lt;img src="problem_scans/tankrash_or_pitting//Allison_Variability-Round_1-Barrel_Pink-Bullet_1-Land_6.png" width="49%" /&gt;&lt;img src="problem_scans/tankrash_or_pitting//Carley_Variability-Round_1-Barrel_Green-Bullet_1-Land_3.png" width="49%" /&gt;&lt;img src="problem_scans/tankrash_or_pitting//Connor_Variability-Round_1-Barrel_Orange-Bullet_3-Land_5.png" width="49%" /&gt;
+
+---
+class:inverse
+# Goal: Create a rapid diagnostic tool to provide useful feedback to scanners in the microscopy lab
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

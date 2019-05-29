@@ -1,0 +1,11 @@
+li p a {
+color: #000000 !important; /* This makes links in lists look the same as the other text */
+}
+
+.title-slide > h3:first-of-type { /* Author */
+  padding-left: 30px;
+  padding-bottom: 20px;
+  margin: 0px;
+  color: #ffffff;
+  text-align: left;
+}
