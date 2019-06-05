@@ -202,7 +202,7 @@ S. VanderPlas and M. Tilton.
 
 ???
 
-I've published several papers in JCGS and one paper in TVCG (Transactions on Visualization and Computer Graphics)
+I've published several papers in JCGS, an R package in JSS, and a paper at InfoVis that was published in TVCG (Transactions on Visualization and Computer Graphics)
 
 ---
 class:primary
@@ -220,13 +220,15 @@ S. VanderPlas, T. Klep, M. Nally, C. Cadeval, and H. Hofmann.
 
 <p style = "font-weight:700">[In Progress]<cite>
 M. Tilton and S. VanderPlas
-&ldquo;CoNNOR: A Convolutional Neural Network for Outsole Recognition.&rdquo;</cite></p>
+&ldquo;CoNNOR: A Convolutional Neural Network for Outsole Recognition.&rdquo; To be submitted to Forensic Science International.<cite></p>
 
 #### Grants
 
 <p> <cite>NIJ R&D in Forensic Science. &ldquo;Statistical Infrastructure for the Use of Error Rate Studies in the Interpretation of Forensic Evidence.&rdquo; Collaborator. Funded for FY 2019</cite></p>
 
-<p> [In Progress] <cite>NIJ R&D in Forensic Science. &ldquo;Passive Acquisition of Footwear Class Characteristics in Local Populations&rdquo; PI. Submitted April 2019 for FY 2020</cite></p>
+<p> [Under Review] <cite>NIJ R&D in Forensic Science. &ldquo;Passive Acquisition of Footwear Class Characteristics in Local Populations&rdquo; PI. Submitted April 2019 for FY 2020</cite></p>
+
+<p> [In Preparation] <cite>NSF. &ldquo;Smart Shrinkage: Characteristics of Rural Towns Which Maintain Quality of Life With Declining Populations&rdquo; Collaborator. To be submitted Sept 2019.</cite></p>
 ]
 
 ???
