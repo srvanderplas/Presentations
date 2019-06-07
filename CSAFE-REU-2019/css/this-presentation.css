@@ -9,3 +9,14 @@ color: #000000 !important; /* This makes links in lists look the same as the oth
   color: #ffffff;
   text-align: left;
 }
+
+.featuretable {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
+.featuretable > thead > tr > th, .featuretable > tbody > tr > td {
+  width: 33% !important;
+} 
+.featuretable tbody tr td img{
+  width: 100% !important;
+} 

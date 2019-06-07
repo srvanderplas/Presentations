@@ -4,8 +4,6 @@ author: "Susan VanderPlas"
 date: "June 13, 2019"
 output:
   xaringan::moon_reader:
-    self_contained: true
-    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
     css: ["default", "css/csafe.css", "css/csafe-fonts.css", "css/this-presentation.css"]
     lib_dir: libs
     nature:
@@ -185,42 +183,42 @@ I'll start by giving you a brief overview of my past research, and then I'll tal
 ---
 class:primary
 
-## Graphics Publications
+## Graphics and Computing Publications
 
 .smaller[
 ```{r graphics-pubs, results='asis', echo=FALSE, cache = F}
 mypubs <- ReadBib("./mypubs.bib", check = T)
 NoCite(mypubs)
-PrintBibliography(mypubs, .opts = list(sorting = "ydnt", no.print.fields = c("note", "file", "url", "issn", "url-date"), bib.style = "numeric"))
+PrintBibliography(mypubs[-2], .opts = list(sorting = "ydnt", no.print.fields = c("note", "file", "url", "issn", "url-date"), bib.style = "numeric"))
 ```
-
-<p>[In Progress]<cite>
-S. VanderPlas and M. Tilton.
-&ldquo;Truthiness, Maps, and Graphs&rdquo;</cite></p>
 
 ]
 
 ???
 
-I've published several papers in JCGS, an R package in JSS, and a paper at InfoVis that was published in TVCG (Transactions on Visualization and Computer Graphics)
+I've published several papers in JCGS, an R package in JSS, and a paper at InfoVis that was published in TVCG (Transactions on Visualization and Computer Graphics); almost all of these papers address graphics and visualization and most of them explore how people perceive graphics. 
 
 ---
 class:primary
 ## Forensics
 .slightly-small[
 #### Papers
+```{r forensics-pubs, results='asis', echo=FALSE, cache = F}
+PrintBibliography(mypubs[2], .opts = list(sorting = "ydnt", no.print.fields = c("note", "file", "url", "issn", "url-date", "eprint"), bib.style = "numeric"))
+```
 
 <p>[In Progress]<cite>
-S. VanderPlas.
-&ldquo;BulletsamplR: Resampling Bullet Cross Sections&rdquo;</cite></p>
+M. Tilton and S. VanderPlas
+&ldquo;CoNNOR: A Convolutional Neural Network for Outsole Recognition.&rdquo; To be submitted to Forensic Science International Summer 2019.<cite></p>
 
 <p>[In Progress]<cite>
 S. VanderPlas, T. Klep, M. Nally, C. Cadeval, and H. Hofmann.
 &ldquo;Case study validations of automatic bullet matching.&rdquo;</cite></p>
 
-<p style = "font-weight:700">[In Progress]<cite>
-M. Tilton and S. VanderPlas
-&ldquo;CoNNOR: A Convolutional Neural Network for Outsole Recognition.&rdquo; To be submitted to Forensic Science International.<cite></p>
+<p>[In Progress]<cite>
+S. VanderPlas.
+&ldquo;BulletsamplR: Resampling Bullet Cross Sections&rdquo; To be submitted to Forensic Science International Summer 2019.</cite></p>
+
 
 #### Grants
 
@@ -233,7 +231,7 @@ M. Tilton and S. VanderPlas
 
 ???
 
-Since I started at CSAFE in March, I've worked on several projects that are nearing completion. Today, I'm going to talk about a Convolutional Neural Network for Outsole recognition, or CoNNOR for short. 
+I started at CSAFE in March 2018, and since then I've worked on several projects that are nearing completion. Today, I'm going to talk about a Convolutional Neural Network for Outsole recognition, or CoNNOR for short. 
 
 ---
 class:primary
@@ -337,7 +335,7 @@ $$\hat{p} = \frac{S}{N}$$
 ]]]
 How to collect data from the comparison population? 
 
-1. Build a low profile scanner that can be placed in a high traffic area
+1. Build a low profile scanner, place in a high traffic area
 
 2. Scan shoes of those walking past
 
@@ -345,13 +343,17 @@ How to collect data from the comparison population?
 
 --
 
-### .center[This is an engineering problem]
+#### .center[This is an engineering problem]
+
+Prototype Scanner | Shoe sole
+----------------- | ----------
+![](prototype/20190328_152218.jpg) | ![](prototype/GOPR1231-blur-enhance.JPG)
 
 ???
 
 We could build a scanner that would fit into a pedestrian pathway and would scan the shoes of passers-by. After some data collection in one or more very local areas over a period of time, we might be able to generalize our spatial sample to the population of interest.
 
-Unfortunately, I didn't take a whole lot of classes in gadget design while I was doing my PhD. This is a problem for engineers, and a couple of very good ones have assured me that this is doable if we can get the budget (hopefully resubmitting that proposal in April). Statisticians have the luxury of making assumptions about the real world, so ...
+Unfortunately, I didn't take a whole lot of classes in gadget design while I was doing my PhD. This is a problem for engineers, and a couple of very good ones have assured me that this is doable, and have built a working prototype. 
 
 ---
 class:primary
@@ -424,7 +426,7 @@ In forensics, class characteristics are broad descriptors shared by many differe
 
 Randomly acquired characteristics, which occur due to random damage as the shoe is worn or during the manufacturing process, can be used to make an individualized match.
 
-We've already discussed why make and model are difficult to work with - there's no index data set to use. Similarly, shoe size isn't as related to tread size as you'd expect, so that's off the list too. Working with tread pattern seems like a better option. 
+We've already discussed why make and model are difficult to work with - there's no indexed data set to use. Similarly, shoe size isn't as related to tread size as you'd expect, so that's off the list too. Working with tread pattern seems like a better option. 
 
 ---
 class:primary
@@ -445,7 +447,7 @@ Use features other than make/model and size to characterize shoes
 
 If we work off of features within the shoe tread, we get some additional benefits. 
 
-First, similar tread patterns are found in shoes of similar style - knockoffs specifically try to emulate a tread pattern, but even across well known brands, shoes that serve a similar function often have similar tread patterns - here are 3 different models of work boots, from different manufacturers, each with the same tread pattern. The number of design elements may differ slightly, but that variation happens even within shoe make and model - different sizes have different tread elements in some cases. 
+First, similar tread patterns are found in shoes of similar style - knockoffs specifically try to emulate a tread pattern, but even across well known brands, shoes that serve a similar function often have similar tread patterns - here are 3 different models of work boots, from different manufacturers, each with the same tread pattern. The number of design elements may differ slightly, but that variation happens even within shoe make and model - different sizes have different tread elements in some cases. These shoes would all leave a similar print, so working with the entire set of shoes with these features makes more sense than specifically identifying the make and model.
 
 An additional benefit is that unknown shoes can still be classified and addressed. If we define our feature set as "Shoes with quadrilaterals around the edge that have triangle cutouts, and diamond-shaped plus signs in the middle", we can start off by estimating the probability that a shoe like these 3 exists, and then can increase the specificty of the query from there as data quality and amount allows. It's definitely not a perfect solution, but crime scene prints are typically degraded, so this is a level of detail that matches the practical problem fairly well. It's an abstraction, but at a level that makes sense both statistically and pragmatically. 
 
@@ -455,17 +457,14 @@ After some deliberation and attempts to manually identify features, we settled o
 class:primary
 ## Relevant Features
 
-| Bowtie | Chevron | Circle |
-| ------ | ------- | ------ |
-| ![Bowtie examples](class_examples/bowtie_examples.png) | ![Chevron examples](class_examples/chevron_examples.png) | ![Circle examples](class_examples/circle_examples.png) |
-
-| Line | Polygon | Quadrilateral |
-| ---- | ------- | ---- |
-| ![Line examples](class_examples/line_examples.png) | ![Polygon examples](class_examples/polygon_examples.png) | ![Quad examples](class_examples/quad_examples.png) |
-
-| Star | Text | Triangle |
-| ---- | ---- | -------- |
-| ![Star examples](class_examples/star_examples.png) | ![text examples](class_examples/text_examples.png) | ![Triangle examples](class_examples/triangle_examples.png) |
+<table class="featuretable">
+<thead><tr><th style = "width:33%"> Bowtie </th><th style = "width:33%"> Chevron </th><th style = "width:33%"> Circle </th></tr></thead>
+<tr><td><img src="class_examples/bowtie_examples.png" alt = "Bowtie examples"/></td><td><img src="class_examples/chevron_examples.png" alt = "Chevron examples"/></td><td><img src="class_examples/circle_examples.png" alt = "Circle examples"/></td></tr>
+<tr><th> Line </th><th> Polygon </th><th> Quadrilateral </th></tr>
+<tr><td><img src="class_examples/line_examples.png" alt = "Line examples"/></td><td><img src="class_examples/polygon_examples.png" alt = "Polygon examples"/></td><td><img src="class_examples/quad_examples.png" alt = "Quadrilateral examples"/></td></tr>
+<tr><th> Star </th><th> Text </th><th> Triangle </th></tr>
+<tr><td><img src="class_examples/star_examples.png" alt = "Star examples"/></td><td><img src="class_examples/text_examples.png" alt = "Text examples"/></td><td><img src="class_examples/triangle_examples.png" alt = "Triangle examples"/></td></tr>
+</table>
 
 Used to separate shoes by make/model in (small) local samples `r Citep(bb, 'gross_variability_2013', .opts = list(max.names = 1, longnamesfirst = F))`
 
@@ -554,7 +553,7 @@ Pros
 
 .pull-right[
 Cons
-- Not robust (fragile tuning parameters)
+- Fragile
 - Computationally intensive
 - Features lack face validity
 ]
@@ -619,7 +618,7 @@ class:inv-center
 
 ???
 
-During this portion of the talk, I'm going to walk through a convolutional neural network, discuss the components, and describe the process of model fitting. These models can sometimes be treated as magic, so I hope that I can ruin that for you today.
+During this portion of the talk, I'm going to walk through a convolutional neural network, discuss the components, and describe the process of model fitting. I'm going to be fairly brief, but these models can sometimes be treated as magic, so I hope that I can ruin that for you today.
 
 ---
 class:primary
@@ -807,7 +806,7 @@ class: primary
 ## Fully Connected Layers
 .move-margin[<br><img src="vgg16-structure/model-head.png" width = "100%"/>]
 ```{r fully-connected, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
-plot_deepviz2(c(12, 4), r = .005)
+plot_deepviz_arrows(c(6,6,3)) 
 ```
 - Connect every cell of previous layer to every cell of new layer
 - Used for spatial pattern integration
@@ -821,11 +820,11 @@ class: primary
 ## Dropout Layers
 .move-margin[<br><img src="vgg16-structure/model-head.png" width = "100%"/>]
 ```{r dropout-layers, out.width = "75%", fig.width = 6, fig.height = 4, fig.align = "center"}
-plot_deepviz_sample(c(12, 4), r = .005, dropout_rate = 0.5) + 
+plot_deepviz_dropout(c(6,6,3), rm_nodes = c(3,4,6,8,10,11), cross_out = T) +
   theme(legend.position = c(1, 0), legend.justification = c(1, 0))
 ```
 - Reduces number of parameters
-- Used for spatial pattern integration
+- Reduces node dependence and overfitting
 
 ???
 
@@ -1547,7 +1546,7 @@ class:primary
 #### Model Training
 - Identified the feature set and initial labeling criteria 
 - Determined augmentation process
-- Model Automation (daily at 5pm)
+- Automation of model training (runs daily at 5pm if there is new data)
 
 #### Model Diagnostics
 - Accuracy measures for multi-class, multi-label models <br/>(with M. Tilton)
@@ -1560,40 +1559,43 @@ class:primary
 This is a fairly complicated project, with a fair number of people and moving parts, so here's a different summary, showing the steps from my perspective as to how the project has evolved. 
 
 
-
-
 ---
 class:inv-center
 # <br/><br/>What's Next?
 
 ???
 
-This is all work that is currently evolving, so I'd like to give you a preview of the next few months
+I'd like to give you a preview of the next few months
 
 ---
 class: primary
 ## What's Next?
 
-- Submit manuscript with M. Tilton
+- Publications
+    - CNNs for shoeprint examiners
+    - Model Diagnostics for multiclass multilabel problems
 
-- NIJ Grant - Collaboration with R. Stone (IMSE) to build a prototype and collect local population data
-
-- Extend feature set with spatial information: whole-shoe predictions
+- NIJ Grant - Build the scanner, collect local population data
 
 - Make CoNNOR more interpretable
     - keras-vis Python library -> R package 
 
-- Explore training the last convolutional layer of the model
+- Explore truncating VGG16 earlier or pruning using "brain surgery"
+
+- Extend feature set with spatial information: whole-shoe predictions
 
 ???
 
-Miranda Tilton is writing her creative component, and we will submit a paper by the end of the semester. 
+The student I've worked on this project with finished her masters this semester, so we're now working on turning her creative component into two different papers. 
 
-I plan to revise the NIJ grant I submitted last April and resubmit it, so that we can hopefully get funding to develop a prototype scanner and begin data collection around Ames. 
+I submitted an NIJ grant in April for funding to build the scanner and collect a whole year's worth of data
+
+We're building a package for visualizing these models in R. I'm hoping to add new diagnostics to the package once we have the python/R bindings worked out. 
+
+One area we're exploring this summer is whether we can get better results by truncating VGG16 at an earlier convolutional block. That allows us to use lower-level features, which might match our simple geometric features better. There are also approaches in python that use a surgical approach to remove filters that aren't useful from the model - I am hoping to get some time to explore that soon too. 
 
 I'd also like to add a spatial component to Connor by predicting features for small chunks of the shoe sole and integrating those predictions back into the entire shoe. 
 
-Finally, we plan to explore CoNNOR's inner workings with the keras-vis package that we're currently porting to R. Eventually, I'd like to explore new visual diagnostics for these types of models. 
 
 ---
 class: primary
