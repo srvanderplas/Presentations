@@ -201,7 +201,7 @@ I've published several papers in JCGS, an R package in JSS, and a paper at InfoV
 ---
 class:primary
 ## Forensics
-.slightly-small[
+.smaller[
 #### Papers
 ```{r forensics-pubs, results='asis', echo=FALSE, cache = F}
 PrintBibliography(mypubs[2], .opts = list(sorting = "ydnt", no.print.fields = c("note", "file", "url", "issn", "url-date", "eprint"), bib.style = "numeric"))
@@ -213,11 +213,11 @@ M. Tilton and S. VanderPlas
 
 <p>[In Progress]<cite>
 S. VanderPlas, T. Klep, M. Nally, C. Cadeval, and H. Hofmann.
-&ldquo;Case study validations of automatic bullet matching.&rdquo;</cite></p>
+&ldquo;Case study validations of automatic bullet matching; To be submitted to Forensic Science International Summer 2019.&rdquo;</cite></p>
 
 <p>[In Progress]<cite>
 S. VanderPlas.
-&ldquo;BulletsamplR: Resampling Bullet Cross Sections&rdquo; To be submitted to Forensic Science International Summer 2019.</cite></p>
+&ldquo;BulletsamplR: Resampling Bullet Cross Sections&rdquo;</cite></p>
 
 
 #### Grants
@@ -226,12 +226,13 @@ S. VanderPlas.
 
 <p> [Under Review] <cite>NIJ R&D in Forensic Science. &ldquo;Passive Acquisition of Footwear Class Characteristics in Local Populations&rdquo; PI. Submitted April 2019 for FY 2020</cite></p>
 
-<p> [In Preparation] <cite>NSF. &ldquo;Smart Shrinkage: Characteristics of Rural Towns Which Maintain Quality of Life With Declining Populations&rdquo; Collaborator. To be submitted Sept 2019.</cite></p>
+<!-- No idea where to put this... -->
+<!-- <p> [In Preparation] <cite>NSF. &ldquo;Smart Shrinkage: Characteristics of Rural Towns Which Maintain Quality of Life With Declining Populations&rdquo; Collaborator. To be submitted Sept 2019.</cite></p> -->
 ]
 
 ???
 
-I started at CSAFE in March 2018, and since then I've worked on several projects that are nearing completion. Today, I'm going to talk about a Convolutional Neural Network for Outsole recognition, or CoNNOR for short. 
+I started at CSAFE in March 2018, and since then I've worked on several projects that are nearing completion. Today, I'm going to talk about a Convolutional Neural Network for Outsole recognition, or CoNNOR for short. The statistical methods I'll discuss can be applied to domains far outside of forensics, but the forensics problem is particularly fun. 
 
 ---
 class:primary
@@ -283,7 +284,7 @@ $S$ similar shoes in the $N$ shoe sample
 ???
 
 Probability would tell us that this is a fairly simple calculation. 
-We first define the comparison population, that is, the population of people who could have made the print - say, individuals in Ames. 
+We first define the comparison population, that is, the population of people who could have made the print - say, individuals in Lincoln.  
 Then, we would sample from that comparison population to see what shoes the people in the comparison set have.
 We would then identify similar shoes - shoes which could have made the print at the crime scene, and estimate the probability of a coincidental match as the number of similar shoes divided by the size of the comparison population sample. 
 
@@ -295,11 +296,11 @@ We would then identify similar shoes - shoes which could have made the print at 
 
 ???
 
-It's generally not that easy. Shortly after I started working at CSAFE in March, we brought in Leslie Hammer, who is a well-known forensic footwear examiner to give a seminar. During a discussion later that day, I was somewhat shocked to hear her say that the community considers the problem of local population characterization impossible. 
+It's generally not that easy. Shortly after I started working at CSAFE, we brought in Leslie Hammer, who is a well-known forensic footwear examiner to give a seminar. During a discussion later that day, I was somewhat shocked to hear her say that the community considers the problem of local population characterization impossible. I've since heard the same sentiment from several other practitioners.
 
-Challenge accepted, Leslie Hammer. 
+The fastest way to get me to do something is to tell me it's not allowed or impossible. 
 
-There are completely legitimate reasons for thinking this is a difficult problem to solve, though.
+I will concede that there are a few good reasons this problem hasn't been tractable in the past.
 
 ---
 class:primary
@@ -308,7 +309,7 @@ class:primary
 - No 100% complete database of all shoes 
     - manufacturer, model, size, tread style, manufacturing molds
     
-- Shoe purchases vs. frequency of wear
+- Shoe purchases vs. frequency of wear (temperature, weather dependence)
 
 - Local populations may differ wildly .small[`r Citep(bb, "benedict_geographical_2014", .opts = list(max.names = 1, longnamesfirst = F))`]
 
@@ -320,9 +321,9 @@ class:primary
 
 For starters, while there are databases for other pattern match evidence, like tire tread patterns, there is not a complete database of all shoes sold in the US. Tires have to be certified; shoes do not. There are also many more manufacturers for shoes, new models are released all the time. A single model may have multiple tread patterns, a single tread pattern may be used on multiple shoe models. The tread pattern may change depending on the style of shoe; there are also different molds for a single size/tread combination, and these molds may have different characteristics. 
 
-You may think about instead tracking sales data - surely, we could get a database of shoe preferences that way? How many of you have shoes in your closet that you've never worn? That you've worn once? Or less than once a year? Purchase data doesn't provide a realistic picture of the shoes people wear day to day - most of us have one or two "favorites". 
+You may think about instead tracking sales data - surely, we could get a database of shoe preferences that way? How many of you have shoes in your closet that you've never worn? That you've worn once? Or less than once a year? Purchase data doesn't provide a realistic picture of the shoes people wear day to day - most of us have one or two "favorites". In addition, that provides us no information about how the match probability changes with season and weather. Obviously, most people aren't wearing sandals in the middle of winter, but there aren't any studies of footwear frequency to back that up with data.
 
-In addition, we know that local populations differ wildly in footwear choices. The footwear chosen by people on Main Street in Ames is likely to differ significantly from the shoes worn in Campustown; the populations that frequent them are different. This is another problem with sales data - it doesn't generalize well to the hyper-local regions that we have to consider when characterizing coincidental match probability.
+In addition, we know that local populations differ wildly in footwear choices. The footwear worn on campus might not be all that similar to the footwear worn near the capitol building, because the populations that frequent them are different and the dress codes are different. This is another problem with sales data - it doesn't generalize well to the hyper-local regions that we might want to consider when characterizing coincidental match probability.
 
 So how do we solve this problem? How do we collect this data at a (potentially) neighborhood level?
 
@@ -353,7 +354,7 @@ Prototype Scanner | Shoe sole
 
 We could build a scanner that would fit into a pedestrian pathway and would scan the shoes of passers-by. After some data collection in one or more very local areas over a period of time, we might be able to generalize our spatial sample to the population of interest.
 
-Unfortunately, I didn't take a whole lot of classes in gadget design while I was doing my PhD. This is a problem for engineers, and a couple of very good ones have assured me that this is doable, and have built a working prototype. 
+I've been working with a manufacturing engineering professor to build a prototype, and if we get grant funding, we'll build a much more robust, weatherized version of this that has privacy protections. There are a number of interesting engineering problems here, but I'm not an engineer, so I'm going to instead assume that the engineering problems are solvable and work on the statistical problems. 
 
 ---
 class:primary
@@ -397,7 +398,7 @@ Assume a machine exists that can scan shoe outsoles of pedestrians
 
 Let's assume that this machine exists and that it's producing image-quality data. 
 
-From that point, we still need to identify relevant features within the scans - these features will be "data" used in comparisons
+From that point, we still need to identify relevant features within the scans - these features will be "data" used in comparisons. The feature identification problem occurs in any pattern-matching problem. To recognize flowers, you would also have to determine what characteristics (color, number of petals, flower shape) matter.
 
 Then, we have to define a similarity metric used for comparing two samples
 
@@ -412,6 +413,7 @@ class:primary
 ## Relevant Features
 
 Footwear Class Characteristics
+
 - Make, Model, Tread pattern, Size, Type of shoe
 
 - Cannot be used to identify an individual match
@@ -560,10 +562,7 @@ Cons
 
 ???
 
-I started out using standard image processing methods for identifying features. There are edge, corner, blob, and ridge detectors that are used to automatically process microscope and telescope data in many different fields. There are also more complicated template-matching algorithms, including hough transforms, that can find more complicated features like lines, circles, and ellipses and provide location and orientation information. These methods are relatively simple and don't require training data, but they're also very fragile, computationally intensive, and the features they select make sense when you look at a small area of pixels, but aren't globally relevant - they don't match with what you or I would pick out as an edge or a corner. After playing with these methods for a while, I decided to take a different approach. 
-
-Google, Facebook, and many other tech companies have been using neural networks to handle image detection, for better or for worse. So I decided to go for the big guns.
-
+I started out using standard image processing methods for identifying features. There are edge, corner, blob, and ridge detectors that are used to automatically process microscope and telescope data in many different fields. There are also more complicated template-matching algorithms, including hough transforms, that can find more complicated features like lines, circles, and ellipses and provide location and orientation information. These methods are relatively simple and don't require training data, but they're also very fragile, they can be computationally intensive, and the features they select make sense when you look at a small area of pixels, but aren't globally relevant - they don't match with what you or I would pick out as an edge or a corner. After playing with these methods for a while, I decided to take out the big guns and use convolutional neural networks, which have been responsible for huge improvements in image recognition tasks over the past 7-10 years. 
 ---
 class:primary
 ## Feature Detection
@@ -608,7 +607,7 @@ Cons
 
 Convolutional neural networks are a type of neural network specifically designed to search an image for one or more specific patterns. They mimic what we know about the organization of the human visual cortex, and are very common in modern image recognition tasks because they work so well. 
 
-Convnets produce interpretable features, because they mimic our perceptual processes and are trained using data labeled by humans. They take a while to train (a month or more for some models) but are very fast in processing new images - most image searches use CNNs in the background. They have millions of parameters, which makes inference very difficult - they're mostly "black box" models because of the complex model structure. An additional benefit to CNNs is that there are pre-trained neural networks available; these networks can be used as a basis for other models, so you don't have to start from scratch. They do require labeled training data, though, which means that someone has to sit and label thousands of features before you can start fitting one of these models. Some of the newer Captchas work this way - you end up labeling data for someone's neural network.
+Convnets produce interpretable features, because they mimic our perceptual processes and are trained using data labeled by humans. They take a while to train (a month or more for some models) but are very fast in processing new images - most image searches use CNNs in the background. They have millions of parameters, which makes inference very difficult - they're mostly "black box" models because of the complex model structure. An additional benefit to CNNs is that there are pre-trained neural networks available; these networks can be used as a basis for other models, so you don't have to start from scratch. They do require labeled training data, though, which means that someone has to sit and label thousands of features before you can start fitting one of these models. Some captchas work this way - you end up labeling data for someone's neural network.
 
 While it would be nice to use a model that's more interpretable, CNNs work for image recognition under noisy or degraded data, so that's what we decided to use. 
 
@@ -618,7 +617,7 @@ class:inv-center
 
 ???
 
-During this portion of the talk, I'm going to walk through a convolutional neural network, discuss the components, and describe the process of model fitting. I'm going to be fairly brief, but these models can sometimes be treated as magic, so I hope that I can ruin that for you today.
+During this portion of the talk, I'm going to walk through a convolutional neural network, discuss the components, and describe the process of model fitting. One of my interests is in perception, and the structure of these models are built to mimic our understanding of the structure of the human visual system. I don't like black box models, so my goal for the next few minutes is to look under the hood. This type of deep neural network model became popular in computer science, so I'm going to start by laying out the statistical framework for this problem. 
 
 ---
 class:primary
@@ -657,7 +656,7 @@ class:primary
 
 ???
 
-This is an example of a very deep convolutional neural network, where very deep is a reference to the number of convolutional layers. 
+This is one example of a very deep convolutional neural network, where very deep is a reference to the number of convolutional layers. 
 
 The input image is 256 pixels square, with 3 color channels. The initial convolutional layers produce an output matrix that is 256 by 256 by 64, where 64 is the number of filters applied at that layer. A pooling layer reduces the input size to 128 by 128, and then subsequent convolutional layers apply another 128 filters to that reduced-dimension matrix. 
 
@@ -677,7 +676,7 @@ The convolution of image $x$ and filter $\beta$ is $$(\beta \ast x)(i, j) = \sum
 
 Let's start with the convolution part of CNNs. Image convolution is the application of a filter that is smaller than the image to every possible "tile" of the image, where each filter application results in a single value. 
 
-The math is relatively simple, but it's much easier to see what's going on using pictures. Throughout this exercise, we'll refer to the image $x$ and filter $\beta$; note that the dimension of $\beta$ is odd.
+The math is relatively simple, but it's much easier to see what's going on using pictures. Throughout this exercise, we'll refer to the image $x$ and filter $\beta$; note that the dimension of $\beta$ is odd. The convolution operation is what makes these networks a bit different from the classical artificial neural networks that have been around for much longer.
 
 ---
 class: primary
@@ -813,7 +812,7 @@ plot_deepviz_arrows(c(6,6,3))
 
 ???
 
-A fully connected (or dense) layer connects every node in the input to every node in the output; each of these connections has a weight associated with it. Some models use "dropout", where a pre-specified proportion of the weights are set to 0 to reduce the number of parameters and keep only the most useful connections. 
+A fully connected (or dense) layer connects every node in the input to every node in the output; each of these connections has a weight associated with it. Some models use "dropout", where a pre-specified proportion of the nodes are removed, reducing the number of parameters and forcing the network to be robust. 
 
 ---
 class: primary
