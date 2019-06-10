@@ -1232,103 +1232,6 @@ When the model is sufficiently well-calibrated, we can then work with engineers 
 
 ---
 class:primary
-## Interpreting the model
-
-What is a CNN actually doing? `r Citep(bb, 'olah_building_2018', .opts = list(max.names = 1, longnamesfirst = F))`
-
-1. Which regions in the image are relevant to each class?
-
-2. Which regions in the image activate which filters?
-
-3. Which filters are most important for detection of each class?
-    
-4. What do the filters detect?
-    - Semantic segmentation `r Citep(bb, 'long_fully_2015', .opts = list(max.names = 1, longnamesfirst = F))`
-    - Filter visualization
-
-<div class="small move-margin">
-<!-- 2. <b>Regions and Filters:</b> -->
-<img src="interpretation/cat_dog.png"/>
-<img src="interpretation/cat_dog_filters.png"/>
-<span style="font-size:42%">Source: https://distill.pub/2018/building-blocks/</span>
-</div>
-
-<div class="pull-left">
-<img src="interpretation/block5_conv3_filters.png" alt="VGG16 Filters, convolutional layer 5, block 3" width = "80%"/>
-<!-- <span style="font-size:30%">Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html</span> -->
-</div>
-
-<div class="pull-right">
-<img src="interpretation/neuron_attribution.png" width = "74%" style = "margin-left:13%;margin-right:13%;" alt="Which regions and filters?"/>
-<span style = "margin-left:13%;margin-right:13%;font-size:30%">Source: https://distill.pub/2018/building-blocks/</span>
-</div>
-
-???
-
-During this process, it's also helpful to see what the model is using to determine which features are present or absent. 
-
-We'd love to know: 
-
-1. Which regions in an input image are relevant to each class (I will show examples of this on the next slide)
-
-2. Which regions activate which filters  - you can see one visualization of that on the bottom-left, where filters have been clustered and a different color is used to indicate regions activating clusters of filters. Another way to look at this is looking at the maximally activated filter for a particular sub-region of the image; the right side figure shows one way to visualize this. There are more dog-like filters on the top left, cat-like filters on the bottom-right. Both of these are much more interesting in the actual paper, which is interactive. 
-
-3. Which filters are most important for the detection of each class - I haven't seen a great visualization of this yet, but it would be an important diagnostic tool.
-
-4. We'd also like to see what the filters detect, either visually or using semantic categories. You can see at the bottom left a selection of filters from convolutional layer 1 of VGG16. 
-
-This is an extremely active area of research; there is a package for making some of these visualizations in Python, and we're in the process of making an R library with those functions; hopefully within the next month or so we'll be able to generate some of these visualizations for CoNNOR specifically. At the moment, we can look at heatmaps showing activation for each class, so I'll show you those. 
-
-```{r load-model-weights, include = F}
-model_wts_file <- file.path(newest_model$path, newest_model$base_file)
-loaded_model <- set_weights(model_wts_file)
-image_dir <- file.path("/models/shoe_nn/RProcessedImages", newest_model$process_dir)
-test_images <- list.files(file.path(image_dir, "images"), "*.jpg", full.names = T)
-```
-
-```{r heatmap-generation, eval = F, include = F}
-if (!dir.exists("heatmaps")) { dir.create("heatmaps")}
-calc_heatmap(test_images[grepl("dc-pure-se-navy_product_7270757_color_9", test_images) & grepl("quad", test_images)][4], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
-file.rename(from = "heatmaps/heatmap-quad(R)-4-dc-pure-se-navy_product_7270757_color_9.png", 
-            to = "heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png")
-calc_heatmap(test_images[grepl("ugg-kids-bailey-bow-ii-toddler-little-kid-chestnut-pink-azalea_product_8920367_color_705035", test_images) & grepl("circle", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
-calc_heatmap(test_images[grepl("jambu-emma-black_product_9089180_color_3", test_images) & grepl("circle", test_images) & grepl("star", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
-calc_heatmap(test_images[grepl("adidas-kids-adilette-clf-adj-toddler-little-kid-big-kid-black-white_product_8987203_color_151.jpg", test_images) & grepl("text", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
-calc_heatmap(test_images[grepl("seychelles-slow-down-blush-metallic_product_9017725_color_34700.jpg", test_images) & grepl("text", test_images)][2], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
-calc_heatmap(test_images[grepl("adidas-kids-rapidarun-knit-toddler-grey-white_product_8987200_color_1522.jpg", test_images) & grepl("text", test_images)][1], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
-tmp <- calc_heatmap("heatmaps/test_image.jpg", loaded_model, scale_by_prob = F)
-tmp2 <- tmp
-idx <- which(tmp$classes %in% c("line", "circle", "text"))
-tmp2$heatmap <- tmp2$heatmap[idx, , ]
-tmp2$predictions <- tmp2$predictions[idx]
-tmp2$truth <- tmp2$truth[idx]
-tmp2$classes <- tmp2$classes[idx]
-tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
-
-tmp <- calc_heatmap(test_images[grepl("dc-pure-se-navy_product_7270757_color_9", test_images) & grepl("quad", test_images)][4], loaded_model)
-tmp2 <- tmp
-idx <- which(tmp$classes %in% c("quad", "circle", "text"))
-tmp2$heatmap <- tmp2$heatmap[idx, , ]
-tmp2$predictions <- tmp2$predictions[idx]
-tmp2$truth <- tmp2$truth[idx]
-tmp2$classes <- tmp2$classes[idx]
-tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
-file.rename(from = "heatmaps/heatmap-quad(R)-4-dc-pure-se-navy_product_7270757_color_9.png", 
-            to = "heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png")
-
-
-tmp <- calc_heatmap(test_images[grepl("seychelles-slow-down-blush-metallic_product_9017725_color_34700.jpg", test_images) & grepl("text", test_images)][2], loaded_model)
-tmp2 <- tmp
-idx <- which(tmp$classes %in% c("quad", "circle", "text"))
-tmp2$heatmap <- tmp2$heatmap[idx, , ]
-tmp2$predictions <- tmp2$predictions[idx]
-tmp2$truth <- tmp2$truth[idx]
-tmp2$classes <- tmp2$classes[idx]
-tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
-```
-
----
-class:primary
 ## Interpreting the model<br>Class Activation Maps
 
 <br/>
@@ -1576,9 +1479,6 @@ class: primary
 
 - NIJ Grant - Build the scanner, collect local population data
 
-- Make CoNNOR more interpretable
-    - keras-vis Python library -> R package 
-
 - Explore truncating VGG16 earlier or pruning using "brain surgery"
 
 - Extend feature set with spatial information: whole-shoe predictions
@@ -1646,3 +1546,100 @@ class: primary
 
 - [Future Work](#61)
 
+
+---
+class:primary
+## Interpreting the model
+
+What is a CNN actually doing? `r Citep(bb, 'olah_building_2018', .opts = list(max.names = 1, longnamesfirst = F))`
+
+1. Which regions in the image are relevant to each class?
+
+2. Which regions in the image activate which filters?
+
+3. Which filters are most important for detection of each class?
+    
+4. What do the filters detect?
+    - Semantic segmentation `r Citep(bb, 'long_fully_2015', .opts = list(max.names = 1, longnamesfirst = F))`
+    - Filter visualization
+
+<div class="small move-margin">
+<!-- 2. <b>Regions and Filters:</b> -->
+<img src="interpretation/cat_dog.png"/>
+<img src="interpretation/cat_dog_filters.png"/>
+<span style="font-size:42%">Source: https://distill.pub/2018/building-blocks/</span>
+</div>
+
+<div class="pull-left">
+<img src="interpretation/block5_conv3_filters.png" alt="VGG16 Filters, convolutional layer 5, block 3" width = "80%"/>
+<!-- <span style="font-size:30%">Source: https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html</span> -->
+</div>
+
+<div class="pull-right">
+<img src="interpretation/neuron_attribution.png" width = "74%" style = "margin-left:13%;margin-right:13%;" alt="Which regions and filters?"/>
+<span style = "margin-left:13%;margin-right:13%;font-size:30%">Source: https://distill.pub/2018/building-blocks/</span>
+</div>
+
+???
+
+During this process, it's also helpful to see what the model is using to determine which features are present or absent. 
+
+We'd love to know: 
+
+1. Which regions in an input image are relevant to each class (I will show examples of this on the next slide)
+
+2. Which regions activate which filters  - you can see one visualization of that on the bottom-left, where filters have been clustered and a different color is used to indicate regions activating clusters of filters. Another way to look at this is looking at the maximally activated filter for a particular sub-region of the image; the right side figure shows one way to visualize this. There are more dog-like filters on the top left, cat-like filters on the bottom-right. Both of these are much more interesting in the actual paper, which is interactive. 
+
+3. Which filters are most important for the detection of each class - I haven't seen a great visualization of this yet, but it would be an important diagnostic tool.
+
+4. We'd also like to see what the filters detect, either visually or using semantic categories. You can see at the bottom left a selection of filters from convolutional layer 1 of VGG16. 
+
+This is an extremely active area of research; there is a package for making some of these visualizations in Python, and we're in the process of making an R library with those functions; hopefully within the next month or so we'll be able to generate some of these visualizations for CoNNOR specifically. At the moment, we can look at heatmaps showing activation for each class, so I'll show you those. 
+
+```{r load-model-weights, include = F}
+model_wts_file <- file.path(newest_model$path, newest_model$base_file)
+loaded_model <- set_weights(model_wts_file)
+image_dir <- file.path("/models/shoe_nn/RProcessedImages", newest_model$process_dir)
+test_images <- list.files(file.path(image_dir, "images"), "*.jpg", full.names = T)
+```
+
+```{r heatmap-generation, eval = F, include = F}
+if (!dir.exists("heatmaps")) { dir.create("heatmaps")}
+calc_heatmap(test_images[grepl("dc-pure-se-navy_product_7270757_color_9", test_images) & grepl("quad", test_images)][4], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
+file.rename(from = "heatmaps/heatmap-quad(R)-4-dc-pure-se-navy_product_7270757_color_9.png", 
+            to = "heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png")
+calc_heatmap(test_images[grepl("ugg-kids-bailey-bow-ii-toddler-little-kid-chestnut-pink-azalea_product_8920367_color_705035", test_images) & grepl("circle", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
+calc_heatmap(test_images[grepl("jambu-emma-black_product_9089180_color_3", test_images) & grepl("circle", test_images) & grepl("star", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
+calc_heatmap(test_images[grepl("adidas-kids-adilette-clf-adj-toddler-little-kid-big-kid-black-white_product_8987203_color_151.jpg", test_images) & grepl("text", test_images)], loaded_model, scale_by_prob = F) %>% create_composite(save_file = T, outdir = "heatmaps")
+calc_heatmap(test_images[grepl("seychelles-slow-down-blush-metallic_product_9017725_color_34700.jpg", test_images) & grepl("text", test_images)][2], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
+calc_heatmap(test_images[grepl("adidas-kids-rapidarun-knit-toddler-grey-white_product_8987200_color_1522.jpg", test_images) & grepl("text", test_images)][1], loaded_model) %>% create_composite(save_file = T, outdir = "heatmaps")
+tmp <- calc_heatmap("heatmaps/test_image.jpg", loaded_model, scale_by_prob = F)
+tmp2 <- tmp
+idx <- which(tmp$classes %in% c("line", "circle", "text"))
+tmp2$heatmap <- tmp2$heatmap[idx, , ]
+tmp2$predictions <- tmp2$predictions[idx]
+tmp2$truth <- tmp2$truth[idx]
+tmp2$classes <- tmp2$classes[idx]
+tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
+
+tmp <- calc_heatmap(test_images[grepl("dc-pure-se-navy_product_7270757_color_9", test_images) & grepl("quad", test_images)][4], loaded_model)
+tmp2 <- tmp
+idx <- which(tmp$classes %in% c("quad", "circle", "text"))
+tmp2$heatmap <- tmp2$heatmap[idx, , ]
+tmp2$predictions <- tmp2$predictions[idx]
+tmp2$truth <- tmp2$truth[idx]
+tmp2$classes <- tmp2$classes[idx]
+tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
+file.rename(from = "heatmaps/heatmap-quad(R)-4-dc-pure-se-navy_product_7270757_color_9.png", 
+            to = "heatmaps/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png")
+
+
+tmp <- calc_heatmap(test_images[grepl("seychelles-slow-down-blush-metallic_product_9017725_color_34700.jpg", test_images) & grepl("text", test_images)][2], loaded_model)
+tmp2 <- tmp
+idx <- which(tmp$classes %in% c("quad", "circle", "text"))
+tmp2$heatmap <- tmp2$heatmap[idx, , ]
+tmp2$predictions <- tmp2$predictions[idx]
+tmp2$truth <- tmp2$truth[idx]
+tmp2$classes <- tmp2$classes[idx]
+tmp2 %>% create_composite(save_file = T, outdir = "heatmaps")
+```
