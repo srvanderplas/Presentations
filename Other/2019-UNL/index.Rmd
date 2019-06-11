@@ -232,7 +232,9 @@ S. VanderPlas.
 
 ???
 
-I started at CSAFE in March 2018, and since then I've worked on several projects that are nearing completion. Today, I'm going to talk about a Convolutional Neural Network for Outsole recognition, or CoNNOR for short. The statistical methods I'll discuss can be applied to domains far outside of forensics, but the forensics problem is particularly fun. 
+I started at CSAFE in March 2018, and since then I've worked on several projects that are nearing completion. Today, I'm going to talk about a Convolutional Neural Network for Outsole recognition, or CoNNOR for short. The statistical methods I'll discuss can be applied to domains far outside of forensics, from astronomy to zoology, but the forensics problem is particularly fun because there is not currently any foundation or infrastructure for the statistical analysis of the weight of shoeprint evidence. 
+
+It might seem like there's not much statistics until the very end of this talk, but that's because this project is laying the foundation for the future, so I've had to think very carefully about both the ideal statistical analysis years down the road and also about factors which would influence the adoption of this method by the wider forensics community. 
 
 ---
 class:primary
@@ -240,13 +242,14 @@ class:primary
 
 - [Forensics Context](#6)
 
-- [Image Analysis](#19)
+- [Image Analysis](#16)
 
-- [Convolutional Neural Networks](#23)
+- [Convolutional Neural Networks](#21)
 
-- [CoNNOR](#43)
+- [CoNNOR](#41)
 
-- [Future Work](#61)
+- [Future Work](#58)
+
 
 ???
 
@@ -519,97 +522,9 @@ In addition, we need new images to be processed quickly. It's tolerable if the a
 
 Finally, we need to be able to explain what this algorithm is doing to practitioners, which means that the features that are identified should be explainable and fairly consistent with how humans would label things.
 
-I started this project with the intention to use various computer vision algorithms to detect very basic image features, then potentially try to reconstruct those into higher-level geometric features using a random forest. 
+I started this project with the intention to use various computer vision algorithms to detect very basic image features, then potentially try to reconstruct those into higher-level geometric features using a random forest. I very quickly realized that some of the classic image analysis techniques were fragile, worked with very small regions of the image (and thus didn't use context), and were generally not well suited for this problem.
 
----
-class:primary
-## Feature Detection
-
-.move-margin[
-<img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/>
-<br/>
-<br/>
-<img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/>
-<br/>
-<br/>
-<img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/>
-<br/>
-<br/>
-<img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/>
-]
-
-#### Classic computer vision feature detection methods: 
-
-- Edge, Corner, Blob, Ridge detection
-
-- Template matching: Hough transforms
-    - line, circle, ellipse detection
-    - provide location and orientation
-
-.pull-left[
-Pros
-- No training data necessary
-
-- Relatively simple algorithm
-]
-
-.pull-right[
-Cons
-- Fragile
-- Computationally intensive
-- Features lack face validity
-]
-
-???
-
-I started out using standard image processing methods for identifying features. There are edge, corner, blob, and ridge detectors that are used to automatically process microscope and telescope data in many different fields. There are also more complicated template-matching algorithms, including hough transforms, that can find more complicated features like lines, circles, and ellipses and provide location and orientation information. These methods are relatively simple and don't require training data, but they're also very fragile, they can be computationally intensive, and the features they select make sense when you look at a small area of pixels, but aren't globally relevant - they don't match with what you or I would pick out as an edge or a corner. After playing with these methods for a while, I decided to take out the big guns and use convolutional neural networks, which have been responsible for huge improvements in image recognition tasks over the past 7-10 years. 
----
-class:primary
-## Feature Detection
-
-.move-margin[
-<img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/>
-<br/>
-<br/>
-<img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/>
-<br/>
-<br/>
-<img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/>
-<br/>
-<br/>
-<img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/>
-]
-
-#### Convolutional neural networks: 
-- Structure designed to mimic perceptual pathways in the human visual system
-- Ubiquitous in modern image recognition tasks `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst = F))`
-
-.pull-left[
-
-Pros
-- Features are interpretable
-- Very fast (after training)
-- Pre-trained networks available    
-.small[AlexNet, VGG16, ResNet, Inception]
-
-]
-
-.pull-right[
-
-Cons
-- Requires labeled training data
-- Computationally expensive to train
-- Opaque - parameters are not interpretable
-
-]
-
-???
-
-Convolutional neural networks are a type of neural network specifically designed to search an image for one or more specific patterns. They mimic what we know about the organization of the human visual cortex, and are very common in modern image recognition tasks because they work so well. 
-
-Convnets produce interpretable features, because they mimic our perceptual processes and are trained using data labeled by humans. They take a while to train (a month or more for some models) but are very fast in processing new images - most image searches use CNNs in the background. They have millions of parameters, which makes inference very difficult - they're mostly "black box" models because of the complex model structure. An additional benefit to CNNs is that there are pre-trained neural networks available; these networks can be used as a basis for other models, so you don't have to start from scratch. They do require labeled training data, though, which means that someone has to sit and label thousands of features before you can start fitting one of these models. Some captchas work this way - you end up labeling data for someone's neural network.
-
-While it would be nice to use a model that's more interpretable, CNNs work for image recognition under noisy or degraded data, so that's what we decided to use. 
+Convolutional neural networks are a newer approach that has dominated the image recognition field; they are currently used in self-driving cars, automatic license plate readers, automatic photo tagging, and more. When I gave up on the classic image analysis techniques, I turned to CNNs. They're a black box model, which is problematic, but a model that is hard to interpret but works is better than an easy-to-interpret model that doesn't work. 
 
 ---
 class:inv-center
@@ -1288,13 +1203,16 @@ class:primary
 ## Project Summary
 
 - Geometric shapes provide a convenient feature space for assessing shoe similarity
+    - Comparisons between shoes take place within that feature space
 
 - Transfer learning allows application of CNNs to much smaller datasets
 
-- CoNNOR performs well
+- CoNNOR performance
     - Reduction in feature space: 256 x 256 x 3 -> 9
     
     - 88% accuracy; many errors attributable to data labeling
+
+- This model provides a foundation for future automatic data collection and statistical inferences about footwear forensics.
 
 ???
 
@@ -1538,13 +1456,105 @@ class: primary
 
 - [Forensics Context](#6)
 
-- [Image Analysis](#19)
+- [Image Analysis](#16)
 
-- [Convolutional Neural Networks](#23)
+- [Convolutional Neural Networks](#21)
 
-- [CoNNOR](#43)
+- [CoNNOR](#41)
 
-- [Future Work](#61)
+- [Future Work](#58)
+
+
+
+---
+class:primary
+## Feature Detection
+
+.move-margin[
+<img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/>
+]
+
+#### Classic computer vision feature detection methods: 
+
+- Edge, Corner, Blob, Ridge detection
+
+- Template matching: Hough transforms
+    - line, circle, ellipse detection
+    - provide location and orientation
+
+.pull-left[
+Pros
+- No training data necessary
+
+- Relatively simple algorithm
+]
+
+.pull-right[
+Cons
+- Fragile
+- Computationally intensive
+- Features lack face validity
+]
+
+???
+
+I started out using standard image processing methods for identifying features. There are edge, corner, blob, and ridge detectors that are used to automatically process microscope and telescope data in many different fields. There are also more complicated template-matching algorithms, including hough transforms, that can find more complicated features like lines, circles, and ellipses and provide location and orientation information. These methods are relatively simple and don't require training data, but they're also very fragile, they can be computationally intensive, and the features they select make sense when you look at a small area of pixels, but aren't globally relevant - they don't match with what you or I would pick out as an edge or a corner. After playing with these methods for a while, I decided to take out the big guns and use convolutional neural networks, which have been responsible for huge improvements in image recognition tasks over the past 7-10 years. 
+---
+class:primary
+## Feature Detection
+
+.move-margin[
+<img src="imageanalysis/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg" alt="cyan shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg" alt="multicolor navy,green, and white shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg" alt="grey shoe"/>
+<br/>
+<br/>
+<img src="imageanalysis/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg" alt="multicolor red and white shoe"/>
+]
+
+#### Convolutional neural networks: 
+- Structure designed to mimic perceptual pathways in the human visual system
+- Ubiquitous in modern image recognition tasks `r Citep(bb, 'krizhevsky_imagenet_2012', .opts = list(max.names = 1, longnamesfirst = F))`
+
+.pull-left[
+
+Pros
+- Features are interpretable
+- Very fast (after training)
+- Pre-trained networks available    
+.small[AlexNet, VGG16, ResNet, Inception]
+
+]
+
+.pull-right[
+
+Cons
+- Requires labeled training data
+- Computationally expensive to train
+- Opaque - parameters are not interpretable
+
+]
+
+???
+
+Convolutional neural networks are a type of neural network specifically designed to search an image for one or more specific patterns. They mimic what we know about the organization of the human visual cortex, and are very common in modern image recognition tasks because they work so well. 
+
+Convnets produce interpretable features, because they mimic our perceptual processes and are trained using data labeled by humans. They take a while to train (a month or more for some models) but are very fast in processing new images - most image searches use CNNs in the background. They have millions of parameters, which makes inference very difficult - they're mostly "black box" models because of the complex model structure. An additional benefit to CNNs is that there are pre-trained neural networks available; these networks can be used as a basis for other models, so you don't have to start from scratch. They do require labeled training data, though, which means that someone has to sit and label thousands of features before you can start fitting one of these models. Some captchas work this way - you end up labeling data for someone's neural network.
+
+While it would be nice to use a model that's more interpretable, CNNs work for image recognition under noisy or degraded data, so that's what we decided to use. 
 
 
 ---
