@@ -1465,7 +1465,6 @@ class: primary
 - [Future Work](#58)
 
 
-
 ---
 class:primary
 ## Feature Detection
@@ -1555,6 +1554,85 @@ Convolutional neural networks are a type of neural network specifically designed
 Convnets produce interpretable features, because they mimic our perceptual processes and are trained using data labeled by humans. They take a while to train (a month or more for some models) but are very fast in processing new images - most image searches use CNNs in the background. They have millions of parameters, which makes inference very difficult - they're mostly "black box" models because of the complex model structure. An additional benefit to CNNs is that there are pre-trained neural networks available; these networks can be used as a basis for other models, so you don't have to start from scratch. They do require labeled training data, though, which means that someone has to sit and label thousands of features before you can start fitting one of these models. Some captchas work this way - you end up labeling data for someone's neural network.
 
 While it would be nice to use a model that's more interpretable, CNNs work for image recognition under noisy or degraded data, so that's what we decided to use. 
+
+---
+class:primary
+## Intra-Class Variability
+
+```{r intraclass-variability}
+img_names <- dfunion$filename %>% basename() %>% as.vector
+
+labs <- sapply(classes, grepl, x = str_extract(img_names, "^.*?-\\d?-"))
+str <- gsub("^.*?-\\d{0,2}-", "", img_names)
+
+# Extract first, first two, and first three words of string
+brand_1 <- str_extract(str, "^.*?-")
+brand_2 <- str_extract(str, "^.*?-.*?-")
+brand_3 <- str_extract(str, "^.*?-.*?-.*?-")
+
+# These are the beginning of brands that need an extra word extracted
+multi_brands <- c("the", "the-north", "polo", "polo-ralph", "5", "5-11",
+                  "1", "to", "dr", "la", "new", "old", "under",
+                  "steve", "bernie", "cole", "tory",
+                  "harley", "kristin", "eric",
+                  "spring", "chinese", "dirty")
+
+brand <- ifelse(brand_1 %in% paste0(multi_brands, "-"),
+                ifelse(brand_2 %in% paste0(multi_brands, "-"),
+                       brand_3, brand_2),
+                brand_1) %>%
+  gsub(. , pattern = "-", replacement = " ") %>%
+  trimws(., "right"); rm(brand_1, brand_2, brand_3, multi_brands)
+
+df_images <- cbind(tibble(str, brand), labs)
+
+df_shoes <- df_images %>%
+  group_by(str, brand) %>%
+  summarize_at(vars(bowtie:triangle), any)
+
+top_brands <- df_shoes %>%
+  group_by(brand) %>%
+  summarize(n = n()) %>%
+  arrange(desc(n))
+
+df_summ <- filter(df_shoes, brand %in% c(head(top_brands$brand, 10), "birkenstock")) %>%
+  group_by(brand) %>%
+  summarize(n = n(),
+            bowtie = sum(bowtie)/n, chevron = sum(chevron)/n,
+            circle = sum(circle)/n, line = sum(line)/n,
+            polygon = sum(polygon)/n, quad = sum(quad)/n,
+            star = sum(star)/n, text = sum(text)/n, triangle = sum(triangle)/n)
+
+df_summ_long <- df_summ %>%
+  gather(key = shape, value = prop, -brand, -n) %>%
+  arrange(brand)
+
+df_summ_long$brand <- as.factor(df_summ_long$brand)
+df_summ_long$shape <- factor(df_summ_long$shape, levels = classes)
+
+# # Line plot
+# ggplot(df_summ_long) + geom_point(aes(x = prop, y = shape, color = brand)) +
+#   geom_path(aes(x = prop, y = shape, group = brand, color = brand)) +
+#   ggtitle("Shape proportions by brand")
+
+# unicode_symbols <- c(bowtie = "\u26FB", chevron = "\uFE3D",
+#                      circle =  "\u23FA", line = "\u2225",
+#                      polygon = "\u2B23", quad = "\u25A0",
+#                      star = "\u2605", text = "a", triangle = "\u25BC",
+#                      other = "\u003F")
+
+ggplot(df_summ_long, aes(x = brand, y = prop, shape = factor(shape),
+                         color = factor(shape))) +
+  geom_jitter(size = 4, width = .25) +
+  scale_shape_manual("Label", values = c("\u26FB","\uFE3D","\u23FA","\u2225",
+                                "\u2B23","\u25A0","\u2605","a","\u25BC")) +
+  scale_color_brewer("Label", palette = "Dark2") + 
+  theme_bw() +
+  # theme(legend.position = "none") +
+  coord_flip() +
+  ggtitle("Proportion of labeled shoes containing each shape by brand")
+
+```
 
 
 ---
