@@ -348,7 +348,7 @@ How to collect data from the comparison population?
 
 Prototype Scanner | Shoe sole
 ----------------- | ----------
-![](prototype/20190328_152218.jpg) | ![](prototype/GOPR1231-blur-enhance.JPG)
+<img src="prototype/20190328_152218.jpg" width="80%"/> | <img src="prototype/GOPR1231-blur-enhance.JPG" width="90%"/>
 
 ???
 
