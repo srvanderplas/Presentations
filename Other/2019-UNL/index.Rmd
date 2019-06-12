@@ -1352,32 +1352,28 @@ $$\hat{p} = \frac{S}{N}$$
 
 ???
 
-Using Euclidean distance, we can take the feature vectors and come up with a numerical description of the distance between any two shoe outsole images. Here, I've chosen 7 different Nike shoe outsoles (because 54000 choose 2 is a bit hard to display) and computed the distance between each pair. You can see that the two images with chevrons are more similar to each other than to the other images; this even extends to a sole with chevrons and polygons. From here, we need to define a cutoff for "similar enough", then compare the number of similar shoes in our sample to the total number of shoes, yielding an estimated coincidental match probability. There is obviously still work to be done at this point in the project, but this serves as an excellent demonstration that the model is producing sensible output that meets the requirements we set out initially. Once we can collect real-world data, we know that the computational methods are in place to make the coincidental match probability problem tractable for local populations. 
+Using Euclidean distance, we can take the feature vectors and come up with a numerical description of the distance between any two shoe outsole images. Here, I've chosen 7 different Nike shoe outsoles (because 80000 choose 2 is a bit hard to display) and computed the distance between each pair. You can see that the two images with chevrons are more similar to each other than to the other images; this even extends to a sole with chevrons and polygons. From here, we need to define a cutoff for "similar enough", then compare the number of similar shoes in our sample to the total number of shoes, yielding an estimated coincidental match probability. There is obviously still work to be done at this point in the project, but this serves as an excellent demonstration that the model is producing sensible output that meets the requirements we set out initially. Once we can collect real-world data, we know that the computational methods are in place to make the coincidental match probability problem tractable for local populations. 
 
 ---
 class:primary
 ## Contribution Summary
 
-#### Statistical Computing
-- Data scraping (`ShoeScrapeR`)
-- LabelMe Annotations - Output multi-label images from R
+- Identified the feature set and labeling criteria
+- Acquired data (`ShoeScrapeR`)
+- Pipeline for labeled images (LabelMe, R scripts)
+- Modeling automation     
+(model updates at 5pm if there is new data)
+<br/><br/>
+- Diagnostics for multi-class multi-label models (with M. Tilton)
+- Heatmap code and `KerasVis` bindings for R    
+(with M. Tilton and J. Seo)
 - Distance calculations for output features
-
-#### Model Training
-- Identified the feature set and initial labeling criteria 
-- Determined augmentation process
-- Automation of model training (runs daily at 5pm if there is new data)
-
-#### Model Diagnostics
-- Accuracy measures for multi-class, multi-label models <br/>(with M. Tilton)
-- Heatmaps for Convnets in R (with M. Tilton)
-- `KerasVis` package in R (in progress; with J. Seo)
-
+<br/><br/>
+- Specifications for equipment design
 
 ???
 
-This is a fairly complicated project, with a fair number of people and moving parts, so here's a different summary, showing the steps from my perspective as to how the project has evolved. 
-
+This is a fairly complicated project, with a fair number of people and moving parts, so here's a different summary, showing the contributions I've made to the project along the way. By using a feature set that makes sense to practitioners, identifying how the machine needs to be built, and setting up a data pipeline to automatically process those images, I've tried to lay a strong foundation that will allow us to eventually calculate the coincidental match probability for shoes; with this calculation, we can then use likelihood ratios to represent the strength of evidence. There are a whole host of spatial sampling problems, explorations of sources of variation due to season, weather, and other effects... but all of these things depend on the ability to collect and automatically label data for future use. 
 
 ---
 class:inv-center
@@ -1396,6 +1392,8 @@ class: primary
     - Model Diagnostics for multiclass multilabel problems
 
 - NIJ Grant - Build the scanner, collect local population data
+    - Analyze spatial and temporal patterns in shoe selection
+    - Examine sub-feature frequency - e.g. types of stars
 
 - Explore truncating VGG16 earlier or pruning using "brain surgery"
 
@@ -1590,48 +1588,39 @@ df_shoes <- df_images %>%
   group_by(str, brand) %>%
   summarize_at(vars(bowtie:triangle), any)
 
-top_brands <- df_shoes %>%
-  group_by(brand) %>%
-  summarize(n = n()) %>%
-  arrange(desc(n))
+df_shoes_long <- df_shoes %>%
+  tidyr::gather(key = feature, value = value, -str, -brand) %>%
+  ungroup() %>%
+  tidyr::nest(c(str, value)) %>%
+  mutate(n_true = purrr::map_int(data, ~sum(.$value)),
+         n_shoes_brand = purrr::map_int(data, ~length(.$value)))
 
-df_summ <- filter(df_shoes, brand %in% c(head(top_brands$brand, 10), "birkenstock")) %>%
-  group_by(brand) %>%
-  summarize(n = n(),
-            bowtie = sum(bowtie)/n, chevron = sum(chevron)/n,
-            circle = sum(circle)/n, line = sum(line)/n,
-            polygon = sum(polygon)/n, quad = sum(quad)/n,
-            star = sum(star)/n, text = sum(text)/n, triangle = sum(triangle)/n)
+brand_prop_by_feature <- df_shoes_long %>%
+  group_by(feature) %>%
+  mutate(prop = n_true/sum(n_true)) %>%
+  arrange(feature, desc(prop)) %>%
+  mutate(brand_cat = ifelse(row_number() <= 10, brand, "other")) %>%
+  group_by(feature) %>%
+  mutate(rank = pmin(row_number(), 11))
+brand_prop_by_feature_10 <- brand_prop_by_feature %>%
+  group_by(feature, brand_cat, rank) %>%
+  summarize(prop = sum(prop)) %>%
+  ungroup() %>% 
+  group_by(feature) %>% 
+  arrange(feature, rank) %>%
+  mutate(cprop = cumsum(prop), 
+         cprop2 = lag(cprop, 1, default = 0),
+         mid = (cprop + cprop2)/2,
+         rank = ifelse(rank == 11, NA, rank))
+  
 
-df_summ_long <- df_summ %>%
-  gather(key = shape, value = prop, -brand, -n) %>%
-  arrange(brand)
 
-df_summ_long$brand <- as.factor(df_summ_long$brand)
-df_summ_long$shape <- factor(df_summ_long$shape, levels = classes)
-
-# # Line plot
-# ggplot(df_summ_long) + geom_point(aes(x = prop, y = shape, color = brand)) +
-#   geom_path(aes(x = prop, y = shape, group = brand, color = brand)) +
-#   ggtitle("Shape proportions by brand")
-
-# unicode_symbols <- c(bowtie = "\u26FB", chevron = "\uFE3D",
-#                      circle =  "\u23FA", line = "\u2225",
-#                      polygon = "\u2B23", quad = "\u25A0",
-#                      star = "\u2605", text = "a", triangle = "\u25BC",
-#                      other = "\u003F")
-
-ggplot(df_summ_long, aes(x = brand, y = prop, shape = factor(shape),
-                         color = factor(shape))) +
-  geom_jitter(size = 4, width = .25) +
-  scale_shape_manual("Label", values = c("\u26FB","\uFE3D","\u23FA","\u2225",
-                                "\u2B23","\u25A0","\u2605","a","\u25BC")) +
-  scale_color_brewer("Label", palette = "Dark2") + 
-  theme_bw() +
-  # theme(legend.position = "none") +
-  coord_flip() +
-  ggtitle("Proportion of labeled shoes containing each shape by brand")
-
+ggplot(data = brand_prop_by_feature_10) + 
+  geom_bar(aes(x = feature, y = prop, fill = factor(rank)), position = "stack", stat = "identity", color = "black") + 
+  geom_text(aes(x = feature, y = 1-mid, label = brand_cat), data = filter(brand_prop_by_feature_10, rank < 6), size = 3) + 
+  scale_fill_brewer(palette = "Paired", guide = F, na.value = "grey") + 
+  scale_y_continuous("Proportion") + scale_x_discrete("") + 
+  ggtitle("Proportion of Labeled Features by Brand")
 ```
 
 
