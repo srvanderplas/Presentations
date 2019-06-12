@@ -880,7 +880,8 @@ class:primary
 .move-margin[
 <br/><br/>[`ShoeScrapeR` package](https://github.com/srvanderplas/ShoeScrapeR)<br/><br/>
 
-`r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "images")` scraped since April 2018 
+<!-- `r system("tree /home/srvander/Projects/CSAFE/ShoeScrapeR/extra/photos/ | tail -1", intern = T) %>% str_extract("\\d{1,} files") %>% str_replace("files", "images")`  -->
+80710 images scraped since April 2018
 ]
 
 ???
@@ -1557,7 +1558,7 @@ While it would be nice to use a model that's more interpretable, CNNs work for i
 class:primary
 ## Intra-Class Variability
 
-```{r intraclass-variability}
+```{r intraclass-variability, fig.width = 8, fig.height = 5, out.width = "100%"}
 img_names <- dfunion$filename %>% basename() %>% as.vector
 
 labs <- sapply(classes, grepl, x = str_extract(img_names, "^.*?-\\d?-"))
@@ -1617,7 +1618,7 @@ brand_prop_by_feature_10 <- brand_prop_by_feature %>%
 
 ggplot(data = brand_prop_by_feature_10) + 
   geom_bar(aes(x = feature, y = prop, fill = factor(rank)), position = "stack", stat = "identity", color = "black") + 
-  geom_text(aes(x = feature, y = 1-mid, label = brand_cat), data = filter(brand_prop_by_feature_10, rank < 6), size = 3) + 
+  geom_text(aes(x = feature, y = 1-mid, label = brand_cat), data = filter(brand_prop_by_feature_10, prop > .05), size = 3) + 
   scale_fill_brewer(palette = "Paired", guide = F, na.value = "grey") + 
   scale_y_continuous("Proportion") + scale_x_discrete("") + 
   ggtitle("Proportion of Labeled Features by Brand")
@@ -1673,7 +1674,7 @@ We'd love to know:
 
 This is an extremely active area of research; there is a package for making some of these visualizations in Python, and we're in the process of making an R library with those functions; hopefully within the next month or so we'll be able to generate some of these visualizations for CoNNOR specifically. At the moment, we can look at heatmaps showing activation for each class, so I'll show you those. 
 
-```{r load-model-weights, include = F}
+```{r load-model-weights, include = F, eval = F}
 model_wts_file <- file.path(newest_model$path, newest_model$base_file)
 loaded_model <- set_weights(model_wts_file)
 image_dir <- file.path("/models/shoe_nn/RProcessedImages", newest_model$process_dir)
