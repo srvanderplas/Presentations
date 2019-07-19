@@ -1,0 +1,159 @@
+---
+title: "Statistical Lineups for Bayesians"
+author: "Susan Vanderplas & Heike Hofmann"
+date: "2019-07-31"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "thispres.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(echo = F, fig.width = 8, fig.height = 8)
+library(tidyverse)
+source("code/photo_lineup.R")
+```
+
+# Outline
+
+1. Modeling Lineup Plot Selection
+
+2. P-values and Bayes Factors
+
+3. Estimating $\alpha$
+
+4. Implications for Visual Inference
+
+---
+class: inverse, middle,center
+# Modeling Lineup Plot Selection
+
+---
+
+# Modeling Lineup Plot Selection
+.pull-left[
+- $m$ panel lineup with $m_0$ null plots<br><br>
+- panel selection probabilities $$\theta_1, ..., \theta_m$$
+- $c_1, ..., c_m$ panel selection counts with    
+$\displaystyle K = \sum_{i=1}^m c_i$ lineup evaluations
+]
+.pull-right[
+```{r lineup-puppy, eval = F, fig.height = 5, fig.width = 4.2, dpi = 300, out.width = "100%"}
+set.seed(50293403)
+
+corg_stuffed <- c(list.files("aww", pattern = "corg1?\\d\\.", full.names = T), list.files("aww", pattern = "3headedcorg", full.names = T))
+
+corg_stuffed %>% photo_lineup_prep() %>% image_lineup()
+ggsave("corg-lineup-3head_5.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+
+corg_null <- c(list.files("aww", pattern = "corg\\d{1,2}\\.", full.names = T))
+corg_null %>% photo_lineup_prep() %>% image_lineup()
+ggsave("corg-null_0.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+
+dog_null <- c(list.files("aww", pattern = "dog\\d{1,2}\\.", full.names = T))
+dog_null %>% photo_lineup_prep() %>% image_lineup()
+ggsave("dog-null_0.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+
+dog_fox <- c(list.files("aww", pattern = "dog1?\\d\\.", full.names = T),
+             list.files("aww", pattern = "fox", full.names = T))
+dog_fox %>% photo_lineup_prep() %>% image_lineup()
+ggsave("dog-fox_3.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+
+dog_cat <- c(list.files("aww", pattern = "dog1?\\d\\.", full.names = T),
+             list.files("aww", pattern = "cat", full.names = T))
+dog_cat %>% photo_lineup_prep() %>% image_lineup()
+ggsave("dog-cat_7.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+```
+]
+
+---
+
+# Modeling Lineup Plot Selection
+
+$$\vec\theta \sim \text{Dirichlet}(\alpha) \;\;\;\text{  where  }\;\;\;\alpha = \alpha_1 = \cdots = \alpha_m$$
+
+$$\vec{c}\sim\text{Multinomial}(\vec{\theta}, K)$$
+.center[
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Arrow_southwest.svg" width = "8%" style = "padding-right:5%;"/>
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Arrow_southeast.svg" width = "8%" style = "padding-left:5%;"/>
+]
+.pull-left[
+.center[
+### Probability of Observed Results
+]
+$$\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
+\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\& \text{Dirichlet-multinomial distribution}\end{align}$$
+]
+.pull-right[
+.center[
+### Bayesian Inference
+]
+$$\begin{align}f(\vec\theta | \vec{c},\alpha) & \sim Dirichlet(\vec c + \alpha)\end{align}$$
+]
+
+---
+# Modeling Lineup Plot Selection
+.pull-left[
+.center[
+### Probability of Observed Results
+]
+$$\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
+\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\& \text{Dirichlet-multinomial distribution}\\\\\\
+P(c_i\geq x) &= \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}\end{align}$$
+]
+.pull-right[
+.center[
+### Bayesian Inference
+]
+$$\begin{align}f(\vec\theta | \vec{c},\alpha) &\sim Dirichlet(\vec c + \alpha)\\\\\\\\\\
+f(\theta_i|c_i, K, \alpha) &\sim Beta(A_1, B_1)\\A_1 &= c_i + \alpha,\\ B_1 &=  K - c_i + m_0\alpha\end{align}$$
+]
+
+---
+# Modeling Lineup Plot Selection
+
+
+
+---
+class: middle,center,inverse
+# P-values and Bayes Factors
+
+---
+# Visual P-values
+```{r vis-p-val, include = F}
+vis_p_value <- function(C, K, alpha = 1, m = 20){
+  single_p <- function(cc, kk, aa, mm) {
+    x <- cc:kk
+    sum(exp(lchoose(kk, x) - lbeta(aa, (mm - 1) * aa) + lbeta(x + aa, kk - x + (mm - 1) * aa)))
+  }
+
+  df <- tibble(cc = C,
+               kk = K,
+               aa = alpha,
+               mm = m) %>%
+    unnest() %>%
+    mutate(p = purrr::pmap_dbl(., single_p))
+  df$p
+}
+```
+
+Majumder (2013): $$P(x \geq c_i) = \choose{K}{x} \sum_{i=1}^m \left(\frac{1}{m}\right)}^x\left(1-\frac{1}{m}\right)}^{K-x}$$
+
+--
+
+$$P(c_i\geq x) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}$$
+Calculated via simulation where $\alpha = 1$
+
+--
+
+What impact does $\alpha$ have?
