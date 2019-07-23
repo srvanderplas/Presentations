@@ -7,6 +7,7 @@ output:
     css: ["default", "default-fonts", "thispres.css"]
     lib_dir: libs
     nature:
+      beforeInit: ["mypres.js"]
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
@@ -25,81 +26,194 @@ source("code/photo_lineup.R")
 
 2. P-values and Bayes Factors
 
-3. Estimating $\alpha$
+3. Examining the Null Panels
 
 4. Implications for Visual Inference
+
+???
+
+Today, I'm going to discuss modeling the process of selecting a panel from a lineup. I'll start by explaining the hierarchical model that we're using for plot selection. Then I'll discuss the p-values and Bayes Factors which can be computed with experimental data, explaining why the published approach for computing lineup p-values doesn't match what we know about human perception. I'll present a way to adjust the calculated p-values by using the Bayesian model to inform the Frequentist p-value calculation. Finally, I'll discuss how this research might be used to modify the visual inference paradigm to produce more accurate results.
 
 ---
 class: inverse, middle,center
 # Modeling Lineup Plot Selection
 
----
+???
 
-# Modeling Lineup Plot Selection
-.pull-left[
-- $m$ panel lineup with $m_0$ null plots<br><br>
-- panel selection probabilities $$\theta_1, ..., \theta_m$$
-- $c_1, ..., c_m$ panel selection counts with    
-$\displaystyle K = \sum_{i=1}^m c_i$ lineup evaluations
-]
-.pull-right[
-```{r lineup-puppy, eval = F, fig.height = 5, fig.width = 4.2, dpi = 300, out.width = "100%"}
+I'll start with modeling the process of selecting a panel from a lineup, but first, let's talk about types of lineups. 
+Throughout this talk, I'm going to use lineups with animals for conceptual examples (and because who doesn't like puppies?). 
+
+```{r lineup-puppy, eval = F, include = F, fig.height = 5, fig.width = 4.2, dpi = 300, out.width = "100%"}
 set.seed(50293403)
 
-corg_stuffed <- c(list.files("aww", pattern = "corg1?\\d\\.", full.names = T), list.files("aww", pattern = "3headedcorg", full.names = T))
+corgs <- list.files("aww", pattern = "corg\\d{1,2}", full.names = T) %>% 
+  purrr::map(imager::load.image)
+corg_3h <- list.files("aww", pattern = "3headedcorg", full.names = T) %>% 
+  purrr::map(imager::load.image)
+dogs <- list.files("aww", pattern = "dog\\d{1,2}", full.names = T) %>% 
+  purrr::map(imager::load.image)
+fox <- list.files("aww", pattern = "fox", full.names = T) %>% 
+  purrr::map(imager::load.image)
+cat <- list.files("aww", pattern = "cat", full.names = T) %>% 
+  purrr::map(imager::load.image)
+puli <- list.files("aww", pattern = "puli\\d{1,2}", full.names = T) %>%
+  purrr::map(imager::load.image)
 
-corg_stuffed %>% photo_lineup_prep() %>% image_lineup()
-ggsave("corg-lineup-3head_5.jpg", dpi = 100, width = 8, height = 8/5*4.2)
-
-
-corg_null <- c(list.files("aww", pattern = "corg\\d{1,2}\\.", full.names = T))
-corg_null %>% photo_lineup_prep() %>% image_lineup()
-ggsave("corg-null_0.jpg", dpi = 100, width = 8, height = 8/5*4.2)
-
-
-dog_null <- c(list.files("aww", pattern = "dog\\d{1,2}\\.", full.names = T))
-dog_null %>% photo_lineup_prep() %>% image_lineup()
-ggsave("dog-null_0.jpg", dpi = 100, width = 8, height = 8/5*4.2)
-
-
-dog_fox <- c(list.files("aww", pattern = "dog1?\\d\\.", full.names = T),
-             list.files("aww", pattern = "fox", full.names = T))
-dog_fox %>% photo_lineup_prep() %>% image_lineup()
-ggsave("dog-fox_3.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+# corg_stuffed <- c(list.files("aww", pattern = "corg1?\\d\\.", full.names = T), 
+#                   list.files("aww", pattern = "3headedcorg", full.names = T))
+lineup_corg_3h <- c(corgs[1:19], corg_3h)
+lineup_corg_3h %>% photo_lineup_prep() #%>% image_lineup()
+# ggsave("corg-lineup-3head_5.jpg", dpi = 100, width = 8, height = 8/5*4.2)
 
 
-dog_cat <- c(list.files("aww", pattern = "dog1?\\d\\.", full.names = T),
-             list.files("aww", pattern = "cat", full.names = T))
-dog_cat %>% photo_lineup_prep() %>% image_lineup()
-ggsave("dog-cat_7.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+# corg_null <- c(list.files("aww", pattern = "corg\\d{1,2}\\.", full.names = T))
+corgs %>% photo_lineup_prep() #%>% image_lineup()
+# ggsave("corg-null_0.jpg", dpi = 100, width = 8, height = 8/5*4.2)
 
+
+# dog_null <- c(list.files("aww", pattern = "dog\\d{1,2}\\.", full.names = T))
+dogs %>% photo_lineup_prep() #%>% image_lineup()
+# ggsave("dog-null_0.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+
+# dog_fox <- c(list.files("aww", pattern = "dog1?\\d\\.", full.names = T),
+#              list.files("aww", pattern = "fox", full.names = T))
+dog_fox <- c(dogs[1:19], fox)
+dog_fox %>% photo_lineup_prep() #%>% image_lineup()
+# ggsave("dog-fox_3.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+
+# dog_cat <- c(list.files("aww", pattern = "dog1?\\d\\.", full.names = T),
+#              list.files("aww", pattern = "cat", full.names = T))
+dog_cat <- c(dogs[1:19], cat)
+dog_cat %>% photo_lineup_prep() #%>% image_lineup()
+# ggsave("lineups/dog-cat_7.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+dog_2target <- c(dogs[1:18], cat, fox)
+dog_2target %>% photo_lineup_prep() #%>% image_lineup()
+# ggsave("lineups/dog-2-target_13_14.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+puli_cat <- c(puli[1:19], cat)
+puli_cat %>% photo_lineup_prep() #%>% image_lineup()
+# ggsave("lineups/puli-cat_1.jpg", dpi = 100, width = 8, height = 8/5*4.2)
+
+puli %>% photo_lineup_prep() #%>% image_lineup()
+# ggsave("lineups/puli-null_0.jpg", dpi = 100, width = 8, height = 8/5*4.2)
 ```
+
+---
+
+# Types of Lineups
+.right-column[
+![](lineups/puli-null_0.jpg)
 ]
+--
+.left-column[.middle[
+<br/><br/>
+<br/><br/>
+__Null Lineup__     
+(AKA Rorshach Lineup)    
+
+
+Consists entirely of null plots
+]]
+ 
+???
+Which panel is different?
+
+In a null lineup, all of the plots are drawn from the same null distribution: in this case, we have a lineup consisting of 20 komondor pictures. The dogs aren't all the same, and we'd expect that one or two panels might be selected more frequently even though all of the panels are from the same distribution, because we're very good at picking out differences between sets of things. Our brains were optimized to separate "predator" from "nature scene", and we apply that same discriminative ability to less threatening stimuli.
+
+---
+
+# Types of Lineups
+.right-column[
+![](lineups/corg-lineup-3head_5.jpg)
+]
+--
+.left-column[.middle[
+<br/><br/><br/><br/>
+__Standard__    
+Lineup
+
+One target plot
+]]
+
+???
+Which panel is different?
+
+In a standard lineup, one of the panels shows real data and the rest of the panels show null data, that is, data generated from the null distribution. In this case, panel 5 - the corgi has an extra two (stuffed) heads. 
+
+
+---
+
+# Types of Lineups
+.right-column[
+![](lineups/dog-2-target_13_14.jpg)
+]
+--
+.left-column[
+<br/><br/><br/><br/>
+__Two-Target__ Lineups
+
+Head-to-head comparisons of two models
+
+Null plots from a third and/or mixture distribution.
+]
+
+???
+Which panel is different?
+
+In a two-target lineup, the goal is to determine which target is more visually salient. Here, we have dogs for the null plots, and a fox and a cat for the two different "models". The cat is quite a bit more salient than the fox. 
 
 ---
 
 # Modeling Lineup Plot Selection
 
-$$\vec\theta \sim \text{Dirichlet}(\alpha) \;\;\;\text{  where  }\;\;\;\alpha = \alpha_1 = \cdots = \alpha_m$$
+- $m$ panel lineup with $m_0$ null plots<br><br>
+- Panel selection probabilities $\displaystyle\theta_1, ..., \theta_m\;\;\text{and}\;\;\sum_{i=1}^m \theta_i = 1$
+- $K$ evaluations resulting in panel selection counts $c_1, ..., c_m$,     
+where $\displaystyle K = \sum_{i=1}^m c_i$
+
+???
+
+
+To start, let's define some terminology. Suppose we have an $m$ panel lineup, with $m_0$ null plots (usually, $m = 20$ and $m_0 = 19$, but I've done studies where $m_0 = 18$). A participant would select panel $i$ with probability $\theta_i$, where $\sum\theta_i = 1$. The lineup is evaluated by $K$ participants, who select panels with frequency $c$. 
+
+---
+
+# Modeling Lineup Plot Selection
+
+$$\displaystyle\vec\theta \sim \text{Dirichlet}(\alpha) \;\;\;\text{  where  }\;\;\;\alpha = \alpha_1 = \cdots = \alpha_m$$
 
 $$\vec{c}\sim\text{Multinomial}(\vec{\theta}, K)$$
-.center[
-<img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Arrow_southwest.svg" width = "8%" style = "padding-right:5%;"/>
-<img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Arrow_southeast.svg" width = "8%" style = "padding-left:5%;"/>
-]
+???
+Then we can model $\theta$ as symmetric Dirichlet-distributed random variables with hyperparameter $\alpha$ the same for each panel in the lineup, and the counts $c$ would have a multinomial($\theta$,K) distribution. Note that this is similar to the straight multinomial model used in Majumder(2013) and most other visual inference studies, but allows for more variability or overdispersion in $\theta$. 
+
+--
 .pull-left[
+.right[
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Arrow_southwest.svg" width = "15%" style = "padding-right:5%;"/>]
 .center[
 ### Probability of Observed Results
 ]
-$$\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
-\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\& \text{Dirichlet-multinomial distribution}\end{align}$$
-]
+.left[
+.small[
+$$\small{\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
+\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\& \text{Dirichlet-multinomial distribution}\end{align}}$$
+]]]
 .pull-right[
+.left[
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Arrow_southeast.svg" width = "15%" style = "padding-left:5%;"/>]
 .center[
 ### Bayesian Inference
 ]
-$$\begin{align}f(\vec\theta | \vec{c},\alpha) & \sim Dirichlet(\vec c + \alpha)\end{align}$$
-]
+.right[
+.small[
+$\begin{align}f(\vec\theta | \vec{c},\alpha) & \sim Dirichlet(\vec c + \alpha)\end{align}$
+]]]
+
+???
+From this point, we can use the model to produce a probability of observed results, as an analog to the calculations in Majumder(2013), or we could conduct inference on the $\theta$s as in a standard Bayesian model.
 
 ---
 # Modeling Lineup Plot Selection
@@ -107,27 +221,68 @@ $$\begin{align}f(\vec\theta | \vec{c},\alpha) & \sim Dirichlet(\vec c + \alpha)\
 .center[
 ### Probability of Observed Results
 ]
-$$\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
+.left[.small[
+$$\small{\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
 \prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\& \text{Dirichlet-multinomial distribution}\\\\\\
-P(c_i\geq x) &= \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}\end{align}$$
-]
+P(c_i\geq x) &= \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}\end{align}}$$
+]]]
 .pull-right[
 .center[
 ### Bayesian Inference
 ]
+.right[
+.small[
 $$\begin{align}f(\vec\theta | \vec{c},\alpha) &\sim Dirichlet(\vec c + \alpha)\\\\\\\\\\
 f(\theta_i|c_i, K, \alpha) &\sim Beta(A_1, B_1)\\A_1 &= c_i + \alpha,\\ B_1 &=  K - c_i + m_0\alpha\end{align}$$
-]
+]]]
+
+???
+Note that I've been giving you equations for the full lineup specification, but in many cases we only care about the marginal distribution consisting of the target panel and the sum of all other selections. These reduce to Beta-binomial distributions in both cases.
 
 ---
-# Modeling Lineup Plot Selection
+# What is $\large\alpha$?
 
+```{r prior-predictive, echo = F, fig.width = 7, fig.height = 3.5, out.width = "100%", dpi = 300}
+sim_lineup_model <- function(alpha, m = 20, k = 20, N = 50) {
+  theta <- gtools::rdirichlet(1, rep(alpha, m))
+  sels <- rmultinom(N, size = k, prob = theta)
+  sels
+}
 
+alphas <- c(.001, .02, .05, .1, .5, 1, 2, 10, 20, 1000)
+prior_pred <- tibble(alpha = alphas,
+                     plot_sels = purrr::map(alpha, sim_lineup_model, N = 100)) %>%
+  mutate(
+    sel_ordered = purrr::map(plot_sels, ~apply(., 2, sort, decreasing = T)),
+    sel_ordered_long = purrr::map(
+      sel_ordered,
+      ~tibble(idx = rep(1:nrow(.x), times = ncol(.x)),
+              rep = rep(1:ncol(.x), each = nrow(.x)),
+              sels = as.vector(.x, mode = "numeric")))
+  ) %>%
+  select(-plot_sels, -sel_ordered) %>%
+  unnest() %>%
+  arrange(alpha) %>%
+  mutate(label = sprintf("alpha == %f", alpha) %>% factor(levels = sprintf("alpha == %f", alphas), ordered = T))
+
+ggplot(prior_pred) +
+  geom_path(aes(x = idx, y = jitter(sels, amount = .4), group = interaction(rep, alpha)), alpha = .05) +
+  facet_wrap(~label, labeller = label_parsed, nrow = 2) +
+  scale_x_continuous("Ordered panel number") +
+  scale_y_continuous("# Simulated Panel Selections (of 20 evaluations)") + 
+  theme_bw()
+
+```
+
+???
+If we're going to use this model, we should get some intuition as to what $\alpha$ does. I created a prior predictive distribution where there were 20 evaluations of a lineup according to the model we've specified. I then sorted the resulting panel counts from largest to smallest (because panels are exchangeable) and plotted the counts (on the y axis) and the panel rank (on the x axis). You can see that when $\alpha$ is small, evaluations tend to be concentrated on one or two panels, while when $\alpha$ is large, evaluations are widely distributed across all panels. Note that even for $\alpha = 1000$, we do not get an exactly even distribution of panel selections as might be expected with Majumder(2013)'s $\theta = 1/m$ specification.
 
 ---
 class: middle,center,inverse
 # P-values and Bayes Factors
 
+???
+With the model specified, we can then talk about hypothesis testing and the Bayesian equivalent:
 ---
 # Visual P-values
 ```{r vis-p-val, include = F}
@@ -147,13 +302,71 @@ vis_p_value <- function(C, K, alpha = 1, m = 20){
 }
 ```
 
-Majumder (2013): $$P(x \geq c_i) = \choose{K}{x} \sum_{i=1}^m \left(\frac{1}{m}\right)}^x\left(1-\frac{1}{m}\right)}^{K-x}$$
+Majumder (2013): 
+$$P(x \geq c_i) = \sum_{x = c_i}^K \binom{K}{x} \left(\frac{1}{m}\right)^x\left(1-\frac{1}{m}\right)^{K-x}$$
+???
+Majumder (2013) used a strict 1/m for $\theta$, with no variation - that is, every panel is selected with 1/m probability. We know this is unreasonable, because even in Rorshach lineups, not all plots are equally likely to be selected. 
 
 --
+Dirichlet-Multinomial version:
 
-$$P(c_i\geq x) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}$$
-Calculated via simulation where $\alpha = 1$
+$$P(x \geq c_i) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}$$
+`heike/vinference` package: Calculate via simulation where $\alpha = 1$
+???
+The Dirichlet-Multinomial version allows for a lot more flexibility, but depends heavily on $\alpha$. Heike's vinference package uses this strategy with $\alpha = 1$, which is an assumption but at least doesn't assume that each panel is equally likely to be selected. You might remember from the plot a few slides ago that when $\alpha = 1$ the selections are relatively diffuse.
 
---
+---
+# Bayes Factors
 
-What impact does $\alpha$ have?
+A Bayesian analogue to the visual p-value would be a Bayes Factor: 
+
+- Model 1: $\alpha_{1} < 1$, indicating that one or two of the panels would be selected more frequently
+- Model 2: $\alpha_2 \geq 1$, indicating that each panel is approximately equally likely to be selected
+
+If we assume M1 and M2 are equally likely, then the (marginal) Bayes factor is
+
+$$BF(M_1, M_2) = \frac{B(\alpha_{2}, m_0\alpha_{2})}{B(\alpha_{1}, m_0\alpha_{1})}
+\frac{B(c_i + \alpha_{1}, K - c_i + m_0\alpha_{1})}{B(c_i + \alpha_{2}, K - c_i + m_0\alpha_{2})}$$
+
+The prior hyperparameter provides $\alpha$ pseudo-observations for each panel in the lineup. 
+
+```{r bayesfactorcode, include = F}
+mvbeta <- function(alpha, log = F) {
+  z <- sum(lgamma(alpha)) - lgamma(sum(alpha))
+  if (!log) return(exp(z)) else return(z)
+}
+
+bf <- function(a1, a2, m = 20, c, k = sum(c)) {
+  stopifnot(a1 > 0, a2 > 0, c <= k, m > 1)
+
+  beta(a2, (m - 1)*a2) * beta(c + a1, k - c + (m - 1)*a1) /
+    (beta(a1, (m - 1)*a1) * beta(c + a2, k - c + (m - 1)*a2))
+}
+bf_vec <- function(a1, a2, m = 20, c, k = sum(c)) {
+  stopifnot(a1 > 0, a2 > 0, c <= k, m > 1)
+
+ exp(mvbeta(rep(a2, length(c)), log = T) + mvbeta(a1 + c, log = T) -
+   mvbeta(rep(a1, length(c)), log = T) - mvbeta(a2 + c, log = T))
+}
+
+```
+```{r bf-studies, include = F}
+source(here::here("code/process_all_lineup_data.R"))
+```
+---
+# Bayes Factors
+
+
+```{r}
+t13plot_data %>%
+  ggplot() +
+  geom_ribbon(aes(x = naive1.env.fit.value, ymin = naive1.env.lower, ymax = naive1.env.upper), alpha = .1) +
+  geom_point(aes(x = naive1.qq.x, y = naive1.qq.y)) +
+  geom_abline(aes(slope = 1, intercept = 0), color = "grey30") +
+  geom_text(aes(x = -Inf, y = Inf, label = sprintf("c[%d] == %.0f", .sample_inner, n)),
+            hjust = -0.2, vjust = 1, parse = T, data = counts_turk13, inherit.aes = F) +
+  geom_text(aes(x = Inf, y = -Inf, label = sprintf("BF == %.2f", bf)),
+            vjust = -0.2, hjust = 1, parse = T, data = filter(counts_turk13, .sample_inner == 14), inherit.aes = F) +
+  facet_wrap(~.sample_inner) +
+  theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank())
+```
