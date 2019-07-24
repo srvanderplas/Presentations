@@ -351,7 +351,7 @@ bf_vec <- function(a1, a2, m = 20, c, k = sum(c)) {
 
 ```
 ```{r bf-studies, include = F}
-source(here::here("code/process_all_lineup_data.R"))
+source("code/process_all_lineup_data.R")
 ```
 ---
 # Bayes Factors
