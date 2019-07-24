@@ -1,6 +1,5 @@
-photo_lineup_prep <- function(img_paths) {
-  img_paths %>%
-    purrr::map(imager::load.image) %>%
+photo_lineup_prep <- function(imgs) {
+  imgs %>%
     shuffle() %>%
     purrr::map(imager::resize, size_x = 256, size_y = 256) %>%
     purrr::map_df(as.data.frame, wide = "c", .id = ".id") %>%
@@ -11,7 +10,7 @@ photo_lineup_prep <- function(img_paths) {
 image_lineup <- function(df, nrow = 4) {
   ggplot(df, aes(x = x, y = y, fill = rgb.val)) + 
     scale_fill_identity() + 
-    scale_y_continuous(trans=scales::reverse_trans()) + 
+    scale_y_continuous(trans = scales::reverse_trans()) + 
     geom_raster() + 
     facet_wrap(~.id, nrow = nrow) + 
     coord_equal() + 
@@ -25,5 +24,6 @@ image_lineup <- function(df, nrow = 4) {
 }
 
 shuffle <- function(x) {
-  sample(x, size = length(x), replace = F)
+  idx <- sample(1:length(x), size = length(x), replace = F)
+  x[idx]
 }

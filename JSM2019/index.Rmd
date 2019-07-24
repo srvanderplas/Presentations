@@ -22,13 +22,15 @@ source("code/photo_lineup.R")
 
 # Outline
 
-1. Modeling Lineup Plot Selection
+1. Types of Lineups
 
-2. P-values and Bayes Factors
+2. Modeling Lineup Plot Selection
 
-3. Examining the Null Panels
+3. P-values and Bayes Factors
 
-4. Implications for Visual Inference
+4. Examining the Null Panels
+
+5. Implications for Visual Inference
 
 ???
 
@@ -36,12 +38,12 @@ Today, I'm going to discuss modeling the process of selecting a panel from a lin
 
 ---
 class: inverse, middle,center
-# Modeling Lineup Plot Selection
+# Types of Lineups
 
 ???
 
-I'll start with modeling the process of selecting a panel from a lineup, but first, let's talk about types of lineups. 
-Throughout this talk, I'm going to use lineups with animals for conceptual examples (and because who doesn't like puppies?). 
+Let's talk about types of lineups. 
+Throughout this talk, I'm going to use lineups with animals when we're discussing concepts (and because who doesn't like puppies?). 
 
 ```{r lineup-puppy, eval = F, include = F, fig.height = 5, fig.width = 4.2, dpi = 300, out.width = "100%"}
 set.seed(50293403)
@@ -166,6 +168,10 @@ Which panel is different?
 In a two-target lineup, the goal is to determine which target is more visually salient. Here, we have dogs for the null plots, and a fox and a cat for the two different "models". The cat is quite a bit more salient than the fox. 
 
 ---
+class:inverse,center,middle
+# Modeling Lineup Plot Selection
+
+---
 
 # Modeling Lineup Plot Selection
 
@@ -193,24 +199,19 @@ Then we can model $\theta$ as symmetric Dirichlet-distributed random variables w
 .pull-left[
 .right[
 <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Arrow_southwest.svg" width = "15%" style = "padding-right:5%;"/>]
-.center[
-### Probability of Observed Results
-]
 .left[
+### Probability of Observed Results
 .small[
-$$\small{\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
-\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\& \text{Dirichlet-multinomial distribution}\end{align}}$$
+$$\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
+\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\& \text{Dirichlet-multinomial distribution}\end{align}$$
 ]]]
 .pull-right[
 .left[
 <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Arrow_southeast.svg" width = "15%" style = "padding-left:5%;"/>]
-.center[
-### Bayesian Inference
-]
 .right[
-.small[
+### Bayesian Inference
 $\begin{align}f(\vec\theta | \vec{c},\alpha) & \sim Dirichlet(\vec c + \alpha)\end{align}$
-]]]
+]]
 
 ???
 From this point, we can use the model to produce a probability of observed results, as an analog to the calculations in Majumder(2013), or we could conduct inference on the $\theta$s as in a standard Bayesian model.
@@ -283,7 +284,9 @@ class: middle,center,inverse
 
 ???
 With the model specified, we can then talk about hypothesis testing and the Bayesian equivalent:
+
 ---
+
 # Visual P-values
 ```{r vis-p-val, include = F}
 vis_p_value <- function(C, K, alpha = 1, m = 20){
@@ -315,21 +318,6 @@ $$P(x \geq c_i) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0
 ???
 The Dirichlet-Multinomial version allows for a lot more flexibility, but depends heavily on $\alpha$. Heike's vinference package uses this strategy with $\alpha = 1$, which is an assumption but at least doesn't assume that each panel is equally likely to be selected. You might remember from the plot a few slides ago that when $\alpha = 1$ the selections are relatively diffuse.
 
----
-# Bayes Factors
-
-A Bayesian analogue to the visual p-value would be a Bayes Factor: 
-
-- Model 1: $\alpha_{1} < 1$, indicating that one or two of the panels would be selected more frequently
-- Model 2: $\alpha_2 \geq 1$, indicating that each panel is approximately equally likely to be selected
-
-If we assume M1 and M2 are equally likely, then the (marginal) Bayes factor is
-
-$$BF(M_1, M_2) = \frac{B(\alpha_{2}, m_0\alpha_{2})}{B(\alpha_{1}, m_0\alpha_{1})}
-\frac{B(c_i + \alpha_{1}, K - c_i + m_0\alpha_{1})}{B(c_i + \alpha_{2}, K - c_i + m_0\alpha_{2})}$$
-
-The prior hyperparameter provides $\alpha$ pseudo-observations for each panel in the lineup. 
-
 ```{r bayesfactorcode, include = F}
 mvbeta <- function(alpha, log = F) {
   z <- sum(lgamma(alpha)) - lgamma(sum(alpha))
@@ -350,14 +338,32 @@ bf_vec <- function(a1, a2, m = 20, c, k = sum(c)) {
 }
 
 ```
+
+---
+# Bayes Factors
+
+A Bayesian analogue to the visual p-value would be a Bayes Factor: 
+
+- Model 1: $\alpha_{1} < 1$, indicating that one or two of the panels would be selected more frequently
+- Model 2: $\alpha_2 \geq 1$, indicating that each panel is approximately equally likely to be selected
+
+If we assume M1 and M2 are equally likely, then the (marginal) Bayes factor is
+
+$$BF(M_1, M_2) = \frac{B(\alpha_{2}, m_0\alpha_{2})}{B(\alpha_{1}, m_0\alpha_{1})}
+\frac{B(c_i + \alpha_{1}, K - c_i + m_0\alpha_{1})}{B(c_i + \alpha_{2}, K - c_i + m_0\alpha_{2})}$$
+
+The prior hyperparameter provides $\alpha$ pseudo-observations for each panel in the lineup. 
+
 ```{r bf-studies, include = F}
 source("code/process_all_lineup_data.R")
+load("data/turk6_13_examples.Rdata")
 ```
+
 ---
 # Bayes Factors
 
 
-```{r}
+```{r, fig.width = 8, fig.height = 8, out.width = "70%", fig.align = "center"}
 t13plot_data %>%
   ggplot() +
   geom_ribbon(aes(x = naive1.env.fit.value, ymin = naive1.env.lower, ymax = naive1.env.upper), alpha = .1) +
@@ -368,5 +374,48 @@ t13plot_data %>%
   geom_text(aes(x = Inf, y = -Inf, label = sprintf("BF == %.2f", bf)),
             vjust = -0.2, hjust = 1, parse = T, data = filter(counts_turk13, .sample_inner == 14), inherit.aes = F) +
   facet_wrap(~.sample_inner) +
+  ggtitle(substitute(list("Marginal Bayes Factor", alpha[1] == a, alpha[2] == b), list(a = .5, b = 2))) + 
   theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank())
 ```
+
+???
+
+Here's an example of how this would work with a relatively unimpressive lineup taken from Loy (2015). The target plot is panel 14, which was selected twice; panel 4, which was a null panel, was selected 5 times. The visual p-value calculated using $\alpha=1$ is 0.065, though it's not significant at alpha = .5 or alpha = 2 either. The Bayes factor is also completely unimpressive - in this example, I've used .5 and 2 as the alpha values for model 1 and model 2, respectively. These are relatively weak values. 
+
+---
+# Bayes Factors
+```{r turk6-lineup, fig.width = 8, fig.height = 8, out.width = "70%", fig.align = "center"}
+ggplot(t6_plot_lineup_data, aes(x = group, y = vals)) +
+  geom_boxplot(outlier.colour = 'NA', colour = "grey60", width = 0.75) +
+  geom_point(aes(x = newx, y = newy, colour = factor(group)), shape = 1, size = 1) +
+  scale_color_discrete(guide = F) +
+  facet_wrap(~.sample, ncol = 5) +
+  theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank()) +
+  xlab("") + scale_y_continuous(expand = c(0.1,0)) +
+  ggtitle(substitute(list("Marginal Bayes Factor", alpha[1] == a, alpha[2] == b), list(a = .5, b = 2))) + 
+  geom_text(aes(x = -Inf, y = Inf, label = sprintf("c[%d] == %.0f", .sample, n)),
+            hjust = -0.2, vjust = 1, parse = T, data = counts_turk6, inherit.aes = F) +
+  geom_text(aes(x = Inf, y = -Inf, label = sprintf("BF == %9.3e", bf)),
+            vjust = -0.2, hjust = 1, parse = T, data = filter(counts_turk6, .sample == 4), inherit.aes = F)
+```
+
+???
+Here, we see that in a case where there is strong evidence, the bayes factor produced is overwhelming; the p-value with alpha = 1 is also extremely small. 
+The fact remains, though, that we don't really understand what the value of alpha ought to be. We could try to estimate it from the selection of null plots in a lineup.
+
+---
+class:middle,center,inverse
+# Examining the Null Panels
+
+---
+# Examining the Null Panels
+
+$$\mathscr{L}(\alpha|\theta) = \prod_{j=1}^n \left(\frac{1}{B(\alpha)}\right)^{m_0} \prod_{i=1}^{m_0} \theta_{ij}^{\alpha - 1}$$
+
+$$\frac{d}{d\alpha}\ln \mathscr{L}(\alpha|\theta) = nm_0\psi(\alpha m_0) - nm_0\psi(\alpha) + \sum_{ij} \ln \theta_{ij}$$
+where $\psi(x) = \frac{d}{dx}\ln\Gamma(x)$ is the digamma function.
+
+
+The MLE of $\hat\alpha$ is then the solution to:
+
+$$\psi(\alpha) - \psi(\alpha m_0) = \frac{1}{nm_0}\sum_{ij} \ln \theta_{ij}$$

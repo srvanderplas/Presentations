@@ -1,7 +1,7 @@
 # Script to pull and anonymize results from all turk studies.
 
 library(tidyverse)
-source(here::here("code/alpha_ml.R"))
+source(here::here("JSM2019/code/alpha_ml.R"))
 # dir <- "~/Dropbox/GraphicsGroup/Lineups-nf/"
 #
 # pic_details <- tibble(pic_details_path = list.files(dir, pattern = "picture[\\._-]details.csv", recursive = T, full.names = T),
@@ -103,7 +103,7 @@ source(here::here("code/alpha_ml.R"))
 #
 # write_csv(studies_sum, "data/all-turk-studies-summary.csv")
 
-studies_sum <- read_csv("data/all-turk-studies-summary.csv")
+studies_sum <- read_csv(here::here("JSM2019/data/all-turk-studies-summary.csv"))
 studies_alpha_est <- studies_sum %>%
   mutate(targets = ifelse(study %in% c("turk16", "turk18"), 2, 1)) %>%
   filter(targets == 1) %>%
