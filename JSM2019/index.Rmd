@@ -15,7 +15,7 @@ output:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(echo = F, fig.width = 8, fig.height = 8)
+knitr::opts_chunk$set(echo = F, fig.width = 8, fig.height = 8, dpi = 300)
 library(tidyverse)
 source("code/photo_lineup.R")
 ```
@@ -24,11 +24,11 @@ source("code/photo_lineup.R")
 
 1. Types of Lineups
 
-2. Modeling Lineup Plot Selection
+2. Modeling Lineup Panel Selection
 
-3. P-values and Bayes Factors
+3. Visual P-values
 
-4. Examining the Null Panels
+4. Informative Null Panels
 
 5. Implications for Visual Inference
 
@@ -169,11 +169,11 @@ In a two-target lineup, the goal is to determine which target is more visually s
 
 ---
 class:inverse,center,middle
-# Modeling Lineup Plot Selection
+# Modeling Lineup Panel Selection
 
 ---
 
-# Modeling Lineup Plot Selection
+# Modeling Lineup Panel Selection
 
 - $m$ panel lineup with $m_0$ null plots<br><br>
 - Panel selection probabilities $\displaystyle\theta_1, ..., \theta_m\;\;\text{and}\;\;\sum_{i=1}^m \theta_i = 1$
@@ -185,63 +185,40 @@ where $\displaystyle K = \sum_{i=1}^m c_i$
 
 To start, let's define some terminology. Suppose we have an $m$ panel lineup, with $m_0$ null plots (usually, $m = 20$ and $m_0 = 19$, but I've done studies where $m_0 = 18$). A participant would select panel $i$ with probability $\theta_i$, where $\sum\theta_i = 1$. The lineup is evaluated by $K$ participants, who select panels with frequency $c$. 
 
----
+--
+<br/><br/><br/><br/>
+$$\Large\displaystyle\vec\theta \sim \text{Dirichlet}(\alpha) \;\;\;\text{  where  }\;\;\;\alpha = \alpha_1 = \cdots = \alpha_m$$
 
-# Modeling Lineup Plot Selection
-
-$$\displaystyle\vec\theta \sim \text{Dirichlet}(\alpha) \;\;\;\text{  where  }\;\;\;\alpha = \alpha_1 = \cdots = \alpha_m$$
-
-$$\vec{c}\sim\text{Multinomial}(\vec{\theta}, K)$$
+$$\Large\vec{c}\sim\text{Multinomial}(\vec{\theta}, K)$$
 ???
 Then we can model $\theta$ as symmetric Dirichlet-distributed random variables with hyperparameter $\alpha$ the same for each panel in the lineup, and the counts $c$ would have a multinomial($\theta$,K) distribution. Note that this is similar to the straight multinomial model used in Majumder(2013) and most other visual inference studies, but allows for more variability or overdispersion in $\theta$. 
 
---
-.pull-left[
-.right[
-<img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Arrow_southwest.svg" width = "15%" style = "padding-right:5%;"/>]
-.left[
-### Probability of Observed Results
-.small[
-$$\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
-\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\& \text{Dirichlet-multinomial distribution}\end{align}$$
-]]]
-.pull-right[
-.left[
-<img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Arrow_southeast.svg" width = "15%" style = "padding-left:5%;"/>]
-.right[
-### Bayesian Inference
-$\begin{align}f(\vec\theta | \vec{c},\alpha) & \sim Dirichlet(\vec c + \alpha)\end{align}$
-]]
-
-???
-From this point, we can use the model to produce a probability of observed results, as an analog to the calculations in Majumder(2013), or we could conduct inference on the $\theta$s as in a standard Bayesian model.
 
 ---
-# Modeling Lineup Plot Selection
-.pull-left[
-.center[
-### Probability of Observed Results
-]
-.left[.small[
-$$\small{\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
-\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\& \text{Dirichlet-multinomial distribution}\\\\\\
-P(c_i\geq x) &= \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}\end{align}}$$
-]]]
-.pull-right[
-.center[
-### Bayesian Inference
-]
-.right[
-.small[
-$$\begin{align}f(\vec\theta | \vec{c},\alpha) &\sim Dirichlet(\vec c + \alpha)\\\\\\\\\\
-f(\theta_i|c_i, K, \alpha) &\sim Beta(A_1, B_1)\\A_1 &= c_i + \alpha,\\ B_1 &=  K - c_i + m_0\alpha\end{align}$$
-]]]
+
+# Modeling Lineup Panel Selection
+
+### Joint Probability of Observed Results
+
+$$\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
+\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\ & \text{Dirichlet-multinomial distribution}\end{align}$$
 
 ???
+
+From this point, we can use the model to produce a probability of observed results, as an analog to the calculations in Majumder(2013), or we could conduct inference on the $\theta$s as in a standard Bayesian model.
+
+--
+
+### Marginal Probability of Observed Results
+$$P(c_i\geq x) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}$$
+
+???
+
 Note that I've been giving you equations for the full lineup specification, but in many cases we only care about the marginal distribution consisting of the target panel and the sum of all other selections. These reduce to Beta-binomial distributions in both cases.
 
 ---
-# What is $\large\alpha$?
+
+# What does $\Large\alpha$ mean?
 
 ```{r prior-predictive, echo = F, fig.width = 7, fig.height = 3.5, out.width = "100%", dpi = 300}
 sim_lineup_model <- function(alpha, m = 20, k = 20, N = 50) {
@@ -276,14 +253,15 @@ ggplot(prior_pred) +
 ```
 
 ???
-If we're going to use this model, we should get some intuition as to what $\alpha$ does. I created a prior predictive distribution where there were 20 evaluations of a lineup according to the model we've specified. I then sorted the resulting panel counts from largest to smallest (because panels are exchangeable) and plotted the counts (on the y axis) and the panel rank (on the x axis). You can see that when $\alpha$ is small, evaluations tend to be concentrated on one or two panels, while when $\alpha$ is large, evaluations are widely distributed across all panels. Note that even for $\alpha = 1000$, we do not get an exactly even distribution of panel selections as might be expected with Majumder(2013)'s $\theta = 1/m$ specification.
+
+If we're going to use this model, we should get have some intuition as to what $\alpha$ does. I simulated 20 evaluations of a lineup from the joint distribution with different values of alpha. I then sorted the resulting panel counts from largest to smallest (because panels are exchangeable) and plotted the counts (on the y axis) and the panel rank (on the x axis). You can see that when $\alpha$ is small, evaluations tend to be concentrated on one or two panels, while when $\alpha$ is large, evaluations are widely distributed across all panels. Note that even for $\alpha = 1000$, we do not get an exactly even distribution of panel selections as might be expected with Majumder(2013)'s $\theta = 1/m$ specification.
 
 ---
 class: middle,center,inverse
-# P-values and Bayes Factors
+# Visual P-values
 
 ???
-With the model specified, we can then talk about hypothesis testing and the Bayesian equivalent:
+With the model specified, we can then talk about hypothesis testing, even under the Bayesian paradigm. 
 
 ---
 
@@ -303,20 +281,39 @@ vis_p_value <- function(C, K, alpha = 1, m = 20){
     mutate(p = purrr::pmap_dbl(., single_p))
   df$p
 }
+vis_p_value_orig <- function(C, K, m = 20){
+  single_p <- function(cc, kk, aa, mm) {
+    x <- cc:kk
+    sum(exp(lchoose(kk, x) - x*log(mm) + (kk-x)*log(1-1/mm)))
+  }
+
+  df <- tibble(cc = C,
+               kk = K,
+               mm = m) %>%
+    unnest() %>%
+    mutate(p = purrr::pmap_dbl(., single_p))
+  df$p
+}
 ```
 
 Majumder (2013): 
 $$P(x \geq c_i) = \sum_{x = c_i}^K \binom{K}{x} \left(\frac{1}{m}\right)^x\left(1-\frac{1}{m}\right)^{K-x}$$
 ???
-Majumder (2013) used a strict 1/m for $\theta$, with no variation - that is, every panel is selected with 1/m probability. We know this is unreasonable, because even in Rorshach lineups, not all plots are equally likely to be selected. 
+Majumder (2013) used a strict 1/m for $\theta$, with no variation - that is, every panel is selected with 1/m probability. We know this is unreasonable, because even in Rorshach lineups, not all plots are equally likely to be selected. The calculation of the visual p-value using this approach is, however, fairly simple. If we relax the assumption that every null plot is precisely equally likely to be selected, we need the $\alpha$ hyperparameter and the Dirichlet Multinomial calculation shown here. 
 
 --
 Dirichlet-Multinomial version:
 
 $$P(x \geq c_i) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}$$
-`heike/vinference` package: Calculate via simulation where $\alpha = 1$
+
+--
+<br/><br/>
+.small[.center[`heike/vinference` package: Calculate via simulation where $\alpha = 1$ 
+]]
+
 ???
-The Dirichlet-Multinomial version allows for a lot more flexibility, but depends heavily on $\alpha$. Heike's vinference package uses this strategy with $\alpha = 1$, which is an assumption but at least doesn't assume that each panel is equally likely to be selected. You might remember from the plot a few slides ago that when $\alpha = 1$ the selections are relatively diffuse.
+The Dirichlet-Multinomial version allows for a lot more flexibility, but depends heavily on $\alpha$. Heike's vinference package used this model with $\alpha = 1$, which doesn't assume that each panel is equally likely to be selected, but assumes the probability of panel selection $\theta$ is uniformly distributed on the (m-1) simplex. You might remember from the plot a few slides ago that when $\alpha = 1$ the simulated panel selections are relatively diffuse. If we want to explore how $\alpha$ values affect the calculation of visual p-values, 
+
 
 ```{r bayesfactorcode, include = F}
 mvbeta <- function(alpha, log = F) {
@@ -340,76 +337,56 @@ bf_vec <- function(a1, a2, m = 20, c, k = sum(c)) {
 ```
 
 ---
-# Bayes Factors
+# Visual p-values
 
-A Bayesian analogue to the visual p-value would be a Bayes Factor: 
-
-- Model 1: $\alpha_{1} < 1$, indicating that one or two of the panels would be selected more frequently
-- Model 2: $\alpha_2 \geq 1$, indicating that each panel is approximately equally likely to be selected
-
-If we assume M1 and M2 are equally likely, then the (marginal) Bayes factor is
-
-$$BF(M_1, M_2) = \frac{B(\alpha_{2}, m_0\alpha_{2})}{B(\alpha_{1}, m_0\alpha_{1})}
-\frac{B(c_i + \alpha_{1}, K - c_i + m_0\alpha_{1})}{B(c_i + \alpha_{2}, K - c_i + m_0\alpha_{2})}$$
-
-The prior hyperparameter provides $\alpha$ pseudo-observations for each panel in the lineup. 
-
-```{r bf-studies, include = F}
-source("code/process_all_lineup_data.R")
-load("data/turk6_13_examples.Rdata")
-```
-
----
-# Bayes Factors
+```{r vis-p-val-sensitivity, fig.width = 8, fig.height = 5, out.width = "100%"}
+alphas <- exp(seq(-6, 6, by = .01))
+data_breaks <- c(1:5, 6, 8, 10, 15, 20)
 
 
-```{r, fig.width = 8, fig.height = 8, out.width = "70%", fig.align = "center"}
-t13plot_data %>%
-  ggplot() +
-  geom_ribbon(aes(x = naive1.env.fit.value, ymin = naive1.env.lower, ymax = naive1.env.upper), alpha = .1) +
-  geom_point(aes(x = naive1.qq.x, y = naive1.qq.y)) +
-  geom_abline(aes(slope = 1, intercept = 0), color = "grey30") +
-  geom_text(aes(x = -Inf, y = Inf, label = sprintf("c[%d] == %.0f", .sample_inner, n)),
-            hjust = -0.2, vjust = 1, parse = T, data = counts_turk13, inherit.aes = F) +
-  geom_text(aes(x = Inf, y = -Inf, label = sprintf("BF == %.2f", bf)),
-            vjust = -0.2, hjust = 1, parse = T, data = filter(counts_turk13, .sample_inner == 14), inherit.aes = F) +
-  facet_wrap(~.sample_inner) +
-  ggtitle(substitute(list("Marginal Bayes Factor", alpha[1] == a, alpha[2] == b), list(a = .5, b = 2))) + 
-  theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank())
+pv <- tidyr::crossing(alpha = alphas, C = data_breaks, K = 20) %>%
+  mutate(p = vis_p_value(C, K, alpha))
+pv2 <- tidyr::crossing(C = data_breaks, K = 20) %>%
+  mutate(p = vis_p_value_orig(C, K))
+
+ggplot(pv, aes(x = alpha, y = p, color = factor(C), group = factor(C))) +
+  geom_line(size = 1) +
+  geom_point(aes(x = exp(6.25), y = p, color = factor(C), shape = "Binomial\np-value"), data = pv2) + 
+  scale_y_continuous("Visual p-value") +
+  scale_x_continuous(expression(alpha), trans = "log10", breaks = c(0.001, 0.01, .1, 1, 10, 100),
+                     labels = c("0.001", "0.01", "0.1", "1", "10", "100")) +
+  scale_color_brewer("# Data\nPanel\nIdentifications\n(K = 20)", palette = "Paired") +
+  scale_shape_discrete("") + 
+  geom_hline(yintercept = 0.05, color = "grey") +
+  guides(color = guide_legend(override.aes = list(shape = NA))) +
+  theme_bw()
 ```
 
 ???
+Similarly, the effect of alpha under the multinomial-dirichlet p-value calculation is significant. Depending on the value of alpha, you may need between 4 and 10 data identifications (out of 20) to achieve p<0.05. Note that as $\alpha \rightarrow\infty$ the p-value converges to the binomial calculation. 
 
-Here's an example of how this would work with a relatively unimpressive lineup taken from Loy (2015). The target plot is panel 14, which was selected twice; panel 4, which was a null panel, was selected 5 times. The visual p-value calculated using $\alpha=1$ is 0.065, though it's not significant at alpha = .5 or alpha = 2 either. The Bayes factor is also completely unimpressive - in this example, I've used .5 and 2 as the alpha values for model 1 and model 2, respectively. These are relatively weak values. 
-
----
-# Bayes Factors
-```{r turk6-lineup, fig.width = 8, fig.height = 8, out.width = "70%", fig.align = "center"}
-ggplot(t6_plot_lineup_data, aes(x = group, y = vals)) +
-  geom_boxplot(outlier.colour = 'NA', colour = "grey60", width = 0.75) +
-  geom_point(aes(x = newx, y = newy, colour = factor(group)), shape = 1, size = 1) +
-  scale_color_discrete(guide = F) +
-  facet_wrap(~.sample, ncol = 5) +
-  theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank()) +
-  xlab("") + scale_y_continuous(expand = c(0.1,0)) +
-  ggtitle(substitute(list("Marginal Bayes Factor", alpha[1] == a, alpha[2] == b), list(a = .5, b = 2))) + 
-  geom_text(aes(x = -Inf, y = Inf, label = sprintf("c[%d] == %.0f", .sample, n)),
-            hjust = -0.2, vjust = 1, parse = T, data = counts_turk6, inherit.aes = F) +
-  geom_text(aes(x = Inf, y = -Inf, label = sprintf("BF == %9.3e", bf)),
-            vjust = -0.2, hjust = 1, parse = T, data = filter(counts_turk6, .sample == 4), inherit.aes = F)
-```
-
-???
-Here, we see that in a case where there is strong evidence, the bayes factor produced is overwhelming; the p-value with alpha = 1 is also extremely small. 
-The fact remains, though, that we don't really understand what the value of alpha ought to be. We could try to estimate it from the selection of null plots in a lineup.
+Since alpha is related to the lineup difficulty (how many null panels have interesting characteristics), we might want to estimate alpha from the null panels in a lineup (or from an entirely null lineup)
 
 ---
 class:middle,center,inverse
-# Examining the Null Panels
+# Informative Null Panels
 
 ---
-# Examining the Null Panels
+# Informative Null Panels
 
+![:scale 32%](lineups/puli-null_0.jpg)
+![:scale 32%](lineups/corg-lineup-3head_5-display.jpg)
+![:scale 32%](lineups/dog-2-target_13_14-display.jpg)
+
+- Consider null panel selection counts:
+$$c_{i^*}, i = 1, ..., m_0\;\;\;\sum_{i^*} c_{i^*} = K^*$$
+- Ideally, need between 5 and 8 null panel selections to get an estimate of $\alpha$
+- Rorshach lineups are the best way to do this, but standard lineups will work
+
+---
+# Informative Null Panels
+
+For lineups $j=1, ..., n$ with null panels $i = 1, ..., m_0$,
 $$\mathscr{L}(\alpha|\theta) = \prod_{j=1}^n \left(\frac{1}{B(\alpha)}\right)^{m_0} \prod_{i=1}^{m_0} \theta_{ij}^{\alpha - 1}$$
 
 $$\frac{d}{d\alpha}\ln \mathscr{L}(\alpha|\theta) = nm_0\psi(\alpha m_0) - nm_0\psi(\alpha) + \sum_{ij} \ln \theta_{ij}$$
@@ -419,3 +396,108 @@ where $\psi(x) = \frac{d}{dx}\ln\Gamma(x)$ is the digamma function.
 The MLE of $\hat\alpha$ is then the solution to:
 
 $$\psi(\alpha) - \psi(\alpha m_0) = \frac{1}{nm_0}\sum_{ij} \ln \theta_{ij}$$
+
+---
+
+# Estimating $\Large\alpha$ - Null Lineup
+```{r, include = F}
+source("code/alpha_ml.R")
+
+turk16_sum <- read_csv("data/turk16_results_summary.csv")
+```
+.pull-left[![](lineups/null-set-1-plot-1-k-3-sdline-0.25-sdgroup-0.30.png)]
+.pull-right[Panel | 1 | 5 | 6 | 10 | 14 | 15 | 16
+--- | -- | -- | -- | -- | -- | -- | -- 
+Count | 2 | 1 | 1 | 2 | 1 | 2 | 5
+
+$$\Large{\begin{align}\hat\alpha_\text{Rorshach} &= `r round(alpha.ml(c(2, 1, 1, 2, 1, 2, 5, rep(0, 13))), 4)`\\
+\hat\alpha_\text{Null panels}&= `r filter(turk16_sum, param_value == "k-3-sdline-0.25-sdgroup-0.30", test_param == "turk16-plain") %>% filter(!target) %>% group_by(pic_id) %>% mutate(response_null = 1:n()) %>% select(pic_id, response_null, n) %>% ungroup() %>% tidyr::spread(key = response_null, value = n) %>% ungroup() %>% select(-pic_id) %>% as.matrix() %>% alpha.ml(., rowSums(.)) %>% round(digits = 4) `\end{align}}$$
+]
+
+---
+
+# Estimating $\Large\alpha$ - Null Lineup
+.pull-left[![](lineups/null-set-1-plot-6-k-3-sdline-0.25-sdgroup-0.30.png)]
+.pull-right[Panel | 2 | 3 | 10 | 16
+--- | -- | -- | -- | -- 
+Count | 1 | 11 | 1 | 1
+
+$$\Large{\begin{align}\hat\alpha_{\text{Rorshach}} &= `r round(alpha.ml(c(1, 11, 1, 1, rep(0, 16))), 4)`\\
+\hat\alpha_\text{Null panels}&= `r filter(turk16_sum, param_value == "k-3-sdline-0.25-sdgroup-0.30", test_param == "turk16-colorEllipse") %>% filter(!target) %>% group_by(pic_id) %>% mutate(response_null = 1:n()) %>% select(pic_id, response_null, n) %>% ungroup() %>% tidyr::spread(key = response_null, value = n) %>% ungroup() %>% select(-pic_id) %>% as.matrix() %>% alpha.ml(., rowSums(.)) %>% round(digits = 4)`\end{align}}$$
+]
+
+---
+# Estimating $\Large\alpha$ - Standard Lineup
+
+```{r all-lineup-alpha, fig.width = 8, fig.height = 5, out.width = "100%", message = F, warning = F}
+source("code/process_all_lineup_data.R")
+plot_df %>%
+  ggplot(aes(x = dataset2, y = alpha, color = type, group = presentation)) +
+  facet_wrap(~study, scales = "free_x", ncol = 4) +
+  scale_color_manual("Panel Selection Type", values = c("orange4", "purple")) +
+  geom_point(position = position_dodge(width = .3), shape = 1) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  theme(axis.title.x = element_blank()) + 
+  scale_y_continuous(expression(hat(alpha))) +
+  ggtitle(expression(paste(hat(alpha), " for Single-Target Lineup Studies")), subtitle = "Estimated from 19 null plots")
+```
+???
+
+Using this method, I combed through 8 past lineup studies with single-target lineups, and estimated alpha for each set of parameters used to generate data. What I found is that the alpha values are remarkably consistent across most studies; the exception, studies 5 and 6, were so difficult that when looking over the lineups, I thought they were null lineups - they're from Loy(2015), and the study showed that residual plots which violated normality were indistinguishable from those generated from a normal model. In those studies, we see higher $\alpha$ values, indicating that the selection probability for each null panel is more equal. Some of these studies allowed participants to select multiple panels; typically, when this happens, estimated alpha values are slightly higher, but most participants still only select a single response for most lineups. 
+
+---
+class:middle,inverse,center
+# Implications for Visual Inference
+
+---
+# Implications for Visual Inference
+
+```{r vis-p-val-sensitivity-redux, fig.width = 8, fig.height = 5, out.width = "100%", warning = F}
+alphas <- exp(seq(-6, 6, by = .01))
+data_breaks <- c(1:5, 6, 8, 10, 15, 20)
+
+
+pv <- tidyr::crossing(alpha = alphas, C = data_breaks, K = 20) %>%
+  mutate(p = vis_p_value(C, K, alpha))
+pv2 <- tidyr::crossing(C = data_breaks, K = 20) %>%
+  mutate(p = vis_p_value_orig(C, K))
+
+ggplot(pv, aes(x = alpha, y = p, color = factor(C), group = factor(C))) + 
+  annotate("segment", x = exp(6.25), xend = exp(6.25), y = -Inf, yend = .7, color = "grey", alpha = .5) +
+  annotate("text", x = exp(6.25), y = 0.7, 
+           label = "Majumder\n(2013)", vjust = -0.1) + 
+  annotate("segment", x = 1, xend = 1, y = -Inf, yend = .7, color = "grey", alpha = .5) +
+  annotate("text", x = 1, y = 0.7, 
+           label = "vinference\npackage", vjust = 0-0.1) + 
+  annotate("rect", xmin = quantile(plot_df$alpha, 0.025), xmax = quantile(plot_df$alpha, 0.975), ymin = -Inf, ymax = .7, color = NA, alpha = .25, fill = "grey75") +
+  annotate("segment", x = quantile(plot_df$alpha, 0.5), 
+           xend = quantile(plot_df$alpha, 0.5), y = -Inf, yend = .7, 
+           color = "grey40", alpha = .5) +
+  annotate("text", x = quantile(plot_df$alpha, 0.5), y = 0.7, 
+           label = expression(hat(alpha)), vjust = -0.1) + 
+  geom_line(size = 1) +
+  geom_point(aes(x = exp(6.25), y = p, color = factor(C), shape = "Binomial\np-value"), data = pv2) + 
+  scale_y_continuous("Visual p-value", limits = c(0, .8)) +
+  scale_x_continuous(expression(alpha), trans = "log10", breaks = c(0.001, 0.01, .1, 1, 10, 100),
+                     labels = c("0.001", "0.01", "0.1", "1", "10", "100"), limits = c(0.001, 650)) +
+  scale_color_brewer("# Data\nPanel\nIdentifications\n(K = 20)", palette = "Paired") +
+  scale_shape_discrete("") + 
+  geom_hline(yintercept = 0.05, color = "grey") +
+  guides(color = guide_legend(override.aes = list(shape = NA))) +
+  theme_bw()
+```
+
+---
+# Implications for Visual Inference
+
+- Estimate $\alpha$ for null plot generation models using 
+    - Rorshach lineups evaluated by participants (better)
+    - Null plot selections in standard lineups 
+    
+- When $\alpha$ is not known a priori, a value between 0.05 and 0.1 is consistent with most previous studies.
+    
+- Using estimated $\alpha$ to calculate visual p-values will produce more conservative results
+
+- Accounting for null plot characteristics through $\alpha$ better models our experience with statistical lineups
+
