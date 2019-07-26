@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Statistical Lineups for Bayesians</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Susan Vanderplas &amp; Heike Hofmann" />
+    <meta name="date" content="2019-07-31" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="thispres.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Statistical Lineups for Bayesians
+### Susan Vanderplas &amp; Heike Hofmann
+### 2019-07-31
+
+---
+
+
+
+
+# Outline
+
+1. Types of Lineups
+
+2. Modeling Lineup Panel Selection
+
+3. Visual P-values
+
+4. Informative Null Panels
+
+5. Implications for Visual Inference
+
+???
+
+I'll start out discussing different types of lineups, and how we model lineup panel selection. From there, I'll discuss the calculation of visual p-values according to different methods. I'll talk about how to get information out of the null panels of a lineup that will allow us to better calibrate the visual p-values, and then we can discuss the implications for visual inference.
+
+---
+class: inverse, middle,center
+# Types of Lineups
+
+???
+
+Let's talk about types of lineups. 
+Throughout this talk, I'm going to use lineups with animals when we're discussing concepts (and because who doesn't like puppies?). 
+
+
+
+---
+
+# Types of Lineups
+.right-column[
+![](lineups/puli-null_0.jpg)
+]
+--
+.left-column[.middle[
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+__Null Lineup__     
+(AKA Rorshach Lineup)    
+
+
+Consists entirely of null plots
+]]
+ 
+???
+Which panel is different?
+
+In a null lineup, all of the plots are drawn from the same null distribution: in this case, we have a lineup consisting of 20 komondor pictures. The dogs aren't all the same, and we'd expect that one or two panels might be selected more frequently even though all of the panels are from the same distribution, because we're very good at picking out differences between sets of things. Our brains were optimized to separate "predator" from "nature scene", and we apply that same discriminative ability to less threatening stimuli.
+
+---
+
+# Types of Lineups
+.right-column[
+![](lineups/corg-lineup-3head_5.jpg)
+]
+--
+.left-column[.middle[
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+__Standard__    
+Lineup
+
+One target plot
+]]
+
+???
+Which panel is different?
+
+In a standard lineup, one of the panels shows real data and the rest of the panels show null data, that is, data generated from the null distribution. In this case, panel 5 - the corgi has an extra two (stuffed) heads. 
+
+
+---
+
+# Types of Lineups
+.right-column[
+![](lineups/dog-2-target_13_14.jpg)
+]
+--
+.left-column[
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+__Two-Target__ Lineups
+
+Head-to-head comparisons of two models
+
+Null plots from a third and/or mixture distribution.
+]
+
+???
+Which panel is different?
+
+In a two-target lineup, the goal is to determine which target is more visually salient. Here, we have dogs for the null plots, and a fox and a cat for the two different "models". The cat is quite a bit more salient than the fox. 
+
+---
+class:inverse,center,middle
+# Modeling Lineup Panel Selection
+
+---
+
+# Modeling Lineup Panel Selection
+
+- `\(m\)` panel lineup with `\(m_0\)` null plots&lt;br&gt;&lt;br&gt;
+- Panel selection probabilities `\(\displaystyle\theta_1, ..., \theta_m\;\;\text{and}\;\;\sum_{i=1}^m \theta_i = 1\)`
+- `\(K\)` evaluations resulting in panel selection counts `\(c_1, ..., c_m\)`,     
+where `\(\displaystyle K = \sum_{i=1}^m c_i\)`
+
+???
+
+
+To start, let's define some terminology. Suppose we have an `\(m\)` panel lineup, with `\(m_0\)` null plots (usually, `\(m = 20\)` and `\(m_0 = 19\)`, but I've done studies where `\(m_0 = 18\)`). A participant would select panel `\(i\)` with probability `\(\theta_i\)`, where `\(\sum\theta_i = 1\)`. The lineup is evaluated by `\(K\)` participants, who select panels with frequency `\(c\)`. 
+
+--
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+`$$\Large\displaystyle\vec\theta \sim \text{Dirichlet}(\alpha) \;\;\;\text{  where  }\;\;\;\alpha = \alpha_1 = \cdots = \alpha_m$$`
+
+`$$\Large\vec{c}\sim\text{Multinomial}(\vec{\theta}, K)$$`
+???
+Then we can model `\(\theta\)` as symmetric Dirichlet-distributed random variables with hyperparameter `\(\alpha\)` the same for each panel in the lineup, and the counts `\(c\)` would have a multinomial($\theta$,K) distribution. Note that this is similar to the straight multinomial model used in Majumder(2013) and most other visual inference studies, but allows for more variability or overdispersion in `\(\theta\)`. 
+
+
+---
+
+# Modeling Lineup Panel Selection
+
+### Joint Probability of Observed Results
+
+`$$\begin{align} \text{Pr}(\vec{c} | \alpha) &amp;= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
+\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\ &amp; \text{Dirichlet-multinomial distribution}\end{align}$$`
+
+???
+
+The multinomial-Dirichlet model produces a joint probability of observed results shown here. From this point, we could conduct Bayesian inference on the thetas, or we could calculate a p-value to determine how significant the observed results are in a method similar to Majumder(2013). 
+
+--
+
+### Marginal Probability of Observed Results
+`$$P(c_i\geq x) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}$$`
+
+???
+
+Thus far we've worked with the entire vector of selected plots, but typically we work in the marginal distribution, where the target panel is compared to the aggregate selection of the null panel. The p-value calculation for the marginal scenario under this modeling scheme is shown here.
+
+To fully understand how this model is working, though, it might help to have some intuition about the meaning of alpha. 
+
+---
+
+# What does `\(\Large\alpha\)` mean?
+
+&lt;img src="index_files/figure-html/prior-predictive-1.png" width="100%" /&gt;
+
+???
+
+To get that intuition, I simulated 20 evaluations of a lineup from the joint distribution shown on the last slide, using different values of alpha. I then sorted the resulting panel counts from largest to smallest (because panels are exchangeable) and plotted the counts (on the y axis) and the panel rank (on the x axis). You can see that when `\(\alpha\)` is small, evaluations tend to be concentrated on one or two panels, while when `\(\alpha\)` is large, evaluations are widely distributed across all panels. Note that even for `\(\alpha = 1000\)`, we do not get an exactly even distribution of panel selections as might be expected with Majumder(2013)'s `\(\theta = 1/m\)` specification.
+
+---
+class: middle,center,inverse
+# Visual P-values
+
+???
+With the model specified, we can then talk about hypothesis testing. I'm going to start by discussing how visual p-values have been calculated in the past, and then compare this approach to the approach shown on the last few slides. 
+
+---
+
+# Visual P-values
+
+
+Majumder (2013): 
+`$$P(x \geq c_i) = \sum_{x = c_i}^K \binom{K}{x} \left(\frac{1}{m}\right)^x\left(1-\frac{1}{m}\right)^{K-x}$$`
+???
+Majumder (2013) used a strict 1/m for `\(\theta\)`, with no variation - that is, every panel is selected with 1/m probability. 
+
+We know this is unreasonable, because even in Rorshach lineups, not all plots are equally likely to be selected - there's always one or two "weird" plots that stand out in some way. The calculation of the visual p-value using this approach is, however, fairly simple. 
+
+If we relax the assumption that every null plot is precisely equally likely to be selected, we need the `\(\alpha\)` hyperparameter and the Dirichlet Multinomial calculation shown here. 
+
+--
+Dirichlet-Multinomial version:
+
+`$$P(x \geq c_i) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\alpha\right)}{B(\alpha, m_0\alpha)}$$`
+
+--
+&lt;br/&gt;&lt;br/&gt;
+.small[.center[`heike/vinference` package: Calculate via simulation where `\(\alpha = 1\)` 
+]]
+
+???
+The Dirichlet-Multinomial version allows for a lot more flexibility, but depends heavily on `\(\alpha\)`. Heike's vinference package used this model with `\(\alpha = 1\)`, which doesn't assume that each panel is equally likely to be selected, but assumes the probability of panel selection `\(\theta\)` is uniformly distributed on the (m-1) simplex. You might remember from the plot a few slides ago that when `\(\alpha = 1\)` the simulated panel selections are relatively diffuse. If we want to explore how `\(\alpha\)` values affect the calculation of visual p-values, we can do that. 
+
+
+
+
+---
+# Visual p-values
+
+&lt;img src="index_files/figure-html/vis-p-val-sensitivity-1.png" width="100%" /&gt;
+
+???
+Similarly, the effect of alpha under the multinomial-dirichlet p-value calculation is significant. Depending on the value of alpha, you may need between 4 and 10 data identifications (out of 20) to achieve p&lt;0.05. Note that as `\(\alpha \rightarrow\infty\)` the p-value converges to the binomial calculation. 
+
+Since alpha is related to the lineup difficulty (how many null panels have interesting characteristics), we might want to estimate alpha from the null panels in a lineup (or from an entirely null lineup)
+
+---
+class:middle,center,inverse
+# Informative Null Panels
+
+---
+# Informative Null Panels
+
+![:scale 32%](lineups/puli-null_0.jpg)
+![:scale 32%](lineups/corg-lineup-3head_5-display.jpg)
+![:scale 32%](lineups/dog-2-target_13_14-display.jpg)
+???
+We can work with null panels in any of the three types of lineups I discussed earlier. Because we usually only get information from the target panels + the total number of nulls selected, we can use the distribution of selections within the nulls to estimate `\(\alpha\)`.
+
+--
+
+- Consider null panel selection counts:
+`$$c_{i^*}, i = 1, ..., m_0\;\;\;\sum_{i^*} c_{i^*} = K^*$$`
+- Rorshach lineups are the best way to do this, but standard lineups will work    
+(if there are enough null panel selections)
+
+???
+
+We can reindex c to only include the null panel selection counts. Rorshach lineups are the best way to go here, because we can control K and ensure that it's sufficient; when we use the nulls in standard or two-target lineups, we don't control K* anymore, so we can end up with very sparse null panel selection counts. Ideally, we can slip a couple of null lineups into the set of lineups users are evaluating to estimate alpha independently. 
+
+---
+# Informative Null Panels
+
+For lineups `\(j=1, ..., n\)` with null panels `\(i = 1, ..., m_0\)`,
+`$$\mathscr{L}(\alpha|\theta) = \prod_{j=1}^n \left(\frac{1}{B(\alpha)}\right)^{m_0} \prod_{i=1}^{m_0} \theta_{ij}^{\alpha - 1}$$`
+
+`$$\frac{d}{d\alpha}\ln \mathscr{L}(\alpha|\theta) = nm_0\psi(\alpha m_0) - nm_0\psi(\alpha) + \sum_{ij} \ln \theta_{ij}$$`
+where `\(\psi(x) = \frac{d}{dx}\ln\Gamma(x)\)` is the digamma function.
+
+
+The MLE of `\(\hat\alpha\)` is then the solution to:
+
+`$$\psi(\alpha) - \psi(\alpha m_0) = \frac{1}{nm_0}\sum_{ij} \ln \theta_{ij}$$`
+
+???
+
+The MLE of `\(\alpha\)` is the solution to this equation, which we can solve computationally.
+---
+
+# Estimating `\(\Large\alpha\)` - Null Lineup
+
+.pull-left[![](lineups/null-set-1-plot-1-k-3-sdline-0.25-sdgroup-0.30.png)]
+
+???
+
+What do you think the most interesting panel is?
+
+---
+
+# Estimating `\(\Large\alpha\)` - Null Lineup
+.pull-left[![](lineups/null-set-1-plot-1-k-3-sdline-0.25-sdgroup-0.30.png)]
+.pull-right[Panel | 1 | 5 | 6 | 10 | 14 | 15 | 16
+--- | -- | -- | -- | -- | -- | -- | -- 
+Count | 2 | 1 | 1 | 2 | 1 | 2 | 5
+
+`$$\Large{\begin{align}\hat\alpha_\text{Rorshach} &amp;= 0.0811\\&amp;(14 \text{ evaluations})\\
+\hat\alpha_\text{Null panels} &amp;= 0.068\\&amp;(7 \text{ evaluations})\end{align}}$$`
+]
+
+???
+
+I created a few null lineups to match the generation method in a two-target lineup study. Then, I estimated `\(\alpha\)` using the rorshach lineup and compared it to the `\(\alpha\)` estimated from the null panels. Notice that even though the original study was much larger than the null study I did for this presentation (79 total evaluations), we got more data from the single null panel with 14 evaluations. 
+
+---
+
+# Estimating `\(\Large\alpha\)` - Null Lineup
+.pull-left[![](lineups/null-set-1-plot-6-k-3-sdline-0.25-sdgroup-0.30.png)]
+
+---
+
+# Estimating `\(\Large\alpha\)` - Null Lineup
+.pull-left[![](lineups/null-set-1-plot-6-k-3-sdline-0.25-sdgroup-0.30.png)]
+.pull-right[Panel | 2 | 3 | 10 | 16
+--- | -- | -- | -- | -- 
+Count | 1 | 11 | 1 | 1
+
+`$$\Large{\begin{align}\hat\alpha_{\text{Rorshach}} &amp;= 0.0663\\&amp;(14 \text{ evaluations})\\
+\hat\alpha_\text{Null panels}&amp;= 0.0701\\&amp;(13 \text{ evaluations})\end{align}}$$`
+]
+
+???
+
+In this lineup, which incidentally is made up of the same data as the last lineup, we see that the estimate for alpha is a bit lower, but that the estimates are similar when there are similar numbers of evaluations. The next obvious thing to explore is whether alpha is similar across lineup studies, and under what conditions it might vary. 
+
+---
+# Estimating `\(\Large\alpha\)` - Standard Lineup
+
+&lt;img src="index_files/figure-html/all-lineup-alpha-1.png" width="100%" /&gt;
+???
+
+Using this method, I combed through 8 past lineup studies with single-target lineups, and estimated alpha for each set of parameters used to generate data. What I found is that the alpha values are remarkably consistent across most studies; the exception, studies 5 and 6, were so difficult that when looking over the lineups, I thought they were null lineups - they're from Loy(2015), and the study showed that residual plots which violated normality were indistinguishable from those generated from a normal model. In those studies, we see higher `\(\alpha\)` values, indicating that the selection probability for each null panel is more equal. Some of these studies allowed participants to select multiple panels; typically, when this happens, estimated alpha values are slightly higher, but most participants still only select a single response for most lineups. 
+
+---
+class:middle,inverse,center
+# Implications for Visual Inference
+
+---
+# Implications for Visual Inference
+
+&lt;img src="index_files/figure-html/vis-p-val-sensitivity-redux-1.png" width="100%" /&gt;
+
+???
+
+Returning to the plot showing the p-values calculated for lineups with 20 evaluations under different alpha values, what we see is that the estimated alphas are much smaller than those used by even the vinference package. While this does mean that we need more target hits and more data than we might have needed before, it allows us to get p-values which are much more reasonable than before. Visual inference is such a powerful tool that I think in most cases we won't see much of a practical difference in the results; most studies I'm familiar with would still have similar results because the initial p-values were so small that even with this adjustment they will still be significant. 
+
+
+---
+# Implications for Visual Inference
+
+- Estimate `\(\alpha\)` for null plot generation models using 
+    - Rorshach lineups evaluated by participants (better)
+    - Null plot selections in standard lineups 
+    
+- When `\(\alpha\)` is not known a priori, a value between 0.05 and 0.1 is consistent with most previous studies.
+    
+- Using estimated `\(\alpha\)` to calculate visual p-values will produce more conservative results
+
+- Accounting for null plot characteristics through `\(\alpha\)` better models our experience with statistical lineups
+
+???
+
+To summarize, we can model lineup plot selection using hierarchical bayesian models (or if you prefer, overdispersed frequentist models). Using this framework, we can estimate the value of the hyperparameter alpha, producing results which are calibrated to the specific lineup task and null plot generation method. This produces more conservative results that better map to our experience of lineups. 
+
+---
+# References
+.tiny[
+[1] A. Buja, D. Cook, H. Hofmann, et al. "Statistical inference
+for exploratory data analysis and model diagnostics". In:
+_Philosophical Transactions of the Royal Society of London A:
+Mathematical, Physical and Engineering Sciences_ 367.1906 (2009),
+pp. 4361-4383.
+
+[2] H. Hofmann, L. Follett, M. Majumder, et al. "Graphical tests
+for power comparison of competing designs". In: _IEEE Transactions
+on Visualization and Computer Graphics_ 18.12 (2012), pp.
+2441-2448.
+
+[3] A. Loy, L. Follett and H. Hofmann. "Variations of Q-Q Plots:
+The Power of Our Eyes!" En. In: _The American Statistician_ 70.2
+(Apr. 2016), pp. 202-214. DOI:
+[10.1080/00031305.2015.1077728](https://doi.org/10.1080/00031305.2015.1077728).
+
+[4] A. Loy and H. Hofmann. "Are You Normal? The Problem of
+Confounded Residual Structures in Hierarchical Linear Models". En.
+In: _Journal of Computational and Graphical Statistics_ 24.4 (Oct.
+2015), pp. 1191-1209. DOI:
+[10.1080/10618600.2014.960084](https://doi.org/10.1080/10618600.2014.960084).
+
+[5] M. Majumder, H. Hofmann and D. Cook. "Human Factors
+Influencing Visual Statistical Inference". En. In:
+_arXiv:1408.1974_ (Aug. 2014). URL:
+[http://arxiv.org/abs/1408.1974](http://arxiv.org/abs/1408.1974).
+
+[6] M. Majumder, H. Hofmann and D. Cook. "Validation of visual
+statistical inference, applied to linear models". In: _Journal of
+the American Statistical Association_ 108.503 (2013), pp. 942-956.
+
+[7] N. Roy Chowdhury, D. Cook, H. Hofmann, et al. "Using visual
+statistical inference to better understand random class
+separations in high dimension, low sample size data". En. In:
+_Computational Statistics_ 30.2 (Jun. 2015), pp. 293-316. ISSN:
+1613-9658. DOI:
+[10.1007/s00180-014-0534-x](https://doi.org/10.1007/s00180-014-0534-x).
+
+[8] H. Wickham, D. Cook, H. Hofmann, et al. "Graphical inference
+for infovis". In: _IEEE Transactions on Visualization and Computer
+Graphics_ 16.6 (2010), pp. 973-979.
+
+[9] T. Yin, M. Majumder, N. Chowdhury, et al. "Visual Mining
+Methods for RNA-Seq Data: Data Structure, Dispersion Estimation
+and Significance Testing". En. In: _Journal of Data Mining in
+Genomics &amp; Proteomics_ 04.04 (2013). DOI:
+[10.4172/2153-0602.1000139](https://doi.org/10.4172/2153-0602.1000139).
+]
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="mypres.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
