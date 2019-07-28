@@ -20,23 +20,6 @@ library(tidyverse)
 source("code/photo_lineup.R")
 ```
 
-# Outline
-
-1. Types of Lineups
-
-2. Modeling Lineup Panel Selection
-
-3. Visual P-values
-
-4. Informative Null Panels
-
-5. Implications for Visual Inference
-
-???
-
-I'll start out discussing different types of lineups, and how we model lineup panel selection. From there, I'll discuss the calculation of visual p-values according to different methods. I'll talk about how to get information out of the null panels of a lineup that will allow us to better calibrate the visual p-values, and then we can discuss the implications for visual inference.
-
----
 class: inverse, middle,center
 # Types of Lineups
 
@@ -123,7 +106,7 @@ Consists entirely of null plots
 ???
 Which panel is different?
 
-In a null lineup, all of the plots are drawn from the same null distribution: in this case, we have a lineup consisting of 20 komondor pictures. The dogs aren't all the same, and we'd expect that one or two panels might be selected more frequently even though all of the panels are from the same distribution, because we're very good at picking out differences between sets of things. Our brains were optimized to separate "predator" from "nature scene", and we apply that same discriminative ability to less threatening stimuli.
+In a null lineup, all of the plots are drawn from the same null distribution: in this case, we have a lineup consisting of 20 komondor pictures. The dogs aren't all the same, and we'd expect that one or two panels might be selected more frequently even though all of the panels are from the same distribution, because we're very good at picking out differences between sets of things. Our brains were optimized to separate "predator" from "nature scene", and we apply that same discriminative ability to less threatening stimuli. Notice that many of the plots in this lineup weren't mentioned at all - that's because even though the pictures are all from the same "distribution", they have different features, and some of those features are more salient than others.
 
 ---
 
@@ -167,6 +150,10 @@ Which panel is different?
 
 In a two-target lineup, the goal is to determine which target is more visually salient. Here, we have dogs for the null plots, and a fox and a cat for the two different "models". The cat is quite a bit more salient than the fox. 
 
+In each of these types of lineups, we've seen that not all panels are equally likely to be selected, even when there are only null panels. Introduction of target panels produces even more inequality in panel selection, and the more complex the lineup design, the more opportunities there are to form alternate hypotheses than the ones actually being tested by the experimenter.
+
+When we analyze statistical lineups, we usually assume that all panels are equally likely to be selected, but we know that that's not how things go in reality. I'm going to talk today about a framework that allows us to relax the assumption that all panels are equally likely to be selected. 
+
 ---
 class:inverse,center,middle
 # Modeling Lineup Panel Selection
@@ -183,7 +170,7 @@ where $\displaystyle K = \sum_{i=1}^m c_i$
 ???
 
 
-To start, let's define some terminology. Suppose we have an $m$ panel lineup, with $m_0$ null plots (usually, $m = 20$ and $m_0 = 19$, but I've done studies where $m_0 = 18$). A participant would select panel $i$ with probability $\theta_i$, where $\sum\theta_i = 1$. The lineup is evaluated by $K$ participants, who select panels with frequency $c$. 
+To start, let's define some notation Suppose we have an $m$ panel lineup, with $m_0$ null plots (usually, $m = 20$ and $m_0 = 19$, but in two target lineups, $m_0 = 18$). A participant would select panel $i$ with probability $\theta_i$, where $\sum\theta_i = 1$. The lineup is evaluated by $K$ participants, who select panels with frequency $c$. 
 
 --
 <br/><br/><br/><br/>
@@ -191,7 +178,12 @@ $$\Large\displaystyle\vec\theta \sim \text{Dirichlet}(\alpha) \;\;\;\text{  wher
 
 $$\Large\vec{c}\sim\text{Multinomial}(\vec{\theta}, K)$$
 ???
-Then we can model $\theta$ as symmetric Dirichlet-distributed random variables with hyperparameter $\alpha$ the same for each panel in the lineup, and the counts $c$ would have a multinomial($\theta$,K) distribution. Note that this is similar to the straight multinomial model used in Majumder(2013) and most other visual inference studies, but allows for more variability or overdispersion in $\theta$. 
+
+Using this notation, a natural model for $\theta$ is a symmetric Dirichlet distribution. Note that equal alphas doesn't imply that each panel is equally likely to be selected; it allows the $\theta$s to vary while not assuming that the location of the most interesting panel is known. 
+
+Using $\theta$, we can model the panel selection vector $c$ as a multinomial distribution, with $K$ total evaluations. 
+
+Mahbub's paper in 2013 used 1/m as the theta, which corresponds to a strict assumption that all panels are equally likely to be selected; this model is similar in structure but allows a bit more flexibility. It's compatible with bayesian inference, if you think of the dirichlet distribution as the prior, but it's also equivalent to an overdispersion model in Frequentist world, so you don't have to pick a side unless you want to. Either way, I think we can all agree that this additional flexibility would seem to align better with how we actually evaluate lineups.
 
 
 ---
@@ -205,8 +197,9 @@ $$\begin{align} \text{Pr}(\vec{c} | \alpha) &= \frac{(K)!\,\, \Gamma(m\alpha)}{\
 
 ???
 
-The multinomial-Dirichlet model produces a joint probability of observed results shown here. From this point, we could conduct Bayesian inference on the thetas, or we could calculate a p-value to determine how significant the observed results are in a method similar to Majumder(2013). 
+To use this model, we could assess the joint probability of the observed counts, but we usually don't do that because usually we care about the target plot vs. the total number of null plot selections... that is, we want the marginal model.
 
+We could conduct inference on the thetas directly, but we can also use this structure to come up with a visual p-value similar to that proposed in Majumder(2013), but that better reflects the reality of how lineups are evaluated. 
 --
 
 ### Marginal Probability of Observed Results
@@ -214,7 +207,9 @@ $$P(c_i\geq x) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0\
 
 ???
 
-Thus far we've worked with the entire vector of selected plots, but typically we work in the marginal distribution, where the target panel is compared to the aggregate selection of the null panel. The p-value calculation for the marginal scenario under this modeling scheme is shown here.
+Working with the marginal distribution, we can come up with a p-value which represents the probability that the target plot was selected as many or more times under the model structure we're describing here. This is usually the quantity we're interested in when conducting visual inference.
+
+So far, so good? This talk has more notation than it did when I'd imagined it in my head a few months ago...
 
 To fully understand how this model is working, though, it might help to have some intuition about the meaning of alpha. 
 
@@ -256,14 +251,15 @@ ggplot(prior_pred) +
 
 ???
 
-To get that intuition, I simulated 20 evaluations of a lineup from the joint distribution shown on the last slide, using different values of alpha. I then sorted the resulting panel counts from largest to smallest (because panels are exchangeable) and plotted the counts (on the y axis) and the panel rank (on the x axis). You can see that when $\alpha$ is small, evaluations tend to be concentrated on one or two panels, while when $\alpha$ is large, evaluations are widely distributed across all panels. Note that even for $\alpha = 1000$, we do not get an exactly even distribution of panel selections as might be expected with Majumder(2013)'s $\theta = 1/m$ specification.
+To get that intuition, I simulated 20 evaluations of a lineup from the joint distribution shown on the last slide, using different values of alpha. I then sorted the resulting panel counts from largest to smallest (because panels are exchangeable) and plotted the counts (on the y axis) and the panel rank (on the x axis). You can see that when $\alpha$ is small, evaluations tend to be concentrated on one or two panels, while when $\alpha$ is large, evaluations are widely distributed across all panels. Note that even for $\alpha = 1000$, we do not get an exactly even distribution of panel selections as might be expected with Majumder(2013)'s $\theta = 1/m$ specification, which corresponds to an $\alpha$ of infinity.
 
 ---
 class: middle,center,inverse
 # Visual P-values
 
 ???
-With the model specified, we can then talk about hypothesis testing. I'm going to start by discussing how visual p-values have been calculated in the past, and then compare this approach to the approach shown on the last few slides. 
+
+Let's compare the results from this method to the visual p-values computed under the strict 1/m probability model. 
 
 ---
 
@@ -299,7 +295,7 @@ vis_p_value_orig <- function(C, K, m = 20){
 ```
 
 Majumder (2013): 
-$$P(x \geq c_i) = \sum_{x = c_i}^K \binom{K}{x} \left(\frac{1}{m}\right)^x\left(1-\frac{1}{m}\right)^{K-x}$$
+$$P(c_i\geq x) = \sum_{x = c_i}^K \binom{K}{x} \left(\frac{1}{m}\right)^x\left(1-\frac{1}{m}\right)^{K-x}$$
 ???
 Majumder (2013) used a strict 1/m for $\theta$, with no variation - that is, every panel is selected with 1/m probability. 
 
@@ -318,6 +314,7 @@ $$P(x \geq c_i) = \sum_{x = c_i}^{K} \binom{K}{x} \frac{B\left(x+\alpha, K-x+m_0
 ]]
 
 ???
+
 The Dirichlet-Multinomial version allows for a lot more flexibility, but depends heavily on $\alpha$. Heike's vinference package used this model with $\alpha = 1$, which doesn't assume that each panel is equally likely to be selected, but assumes the probability of panel selection $\theta$ is uniformly distributed on the (m-1) simplex. You might remember from the plot a few slides ago that when $\alpha = 1$ the simulated panel selections are relatively diffuse. If we want to explore how $\alpha$ values affect the calculation of visual p-values, we can do that. 
 
 
@@ -369,7 +366,7 @@ ggplot(pv, aes(x = alpha, y = p, color = factor(C), group = factor(C))) +
 ```
 
 ???
-Similarly, the effect of alpha under the multinomial-dirichlet p-value calculation is significant. Depending on the value of alpha, you may need between 4 and 10 data identifications (out of 20) to achieve p<0.05. Note that as $\alpha \rightarrow\infty$ the p-value converges to the binomial calculation. 
+So we can see that the effect of $\alpha$ on the visual p-value calculation is significant under this model. Depending on the value of alpha, you may need between 4 and 10 data identifications (out of 20) to achieve p<0.05. Note that as $\alpha \rightarrow\infty$ the p-value converges to the binomial calculation. 
 
 Since alpha is related to the lineup difficulty (how many null panels have interesting characteristics), we might want to estimate alpha from the null panels in a lineup (or from an entirely null lineup)
 
@@ -390,12 +387,14 @@ We can work with null panels in any of the three types of lineups I discussed ea
 
 - Consider null panel selection counts:
 $$c_{i^*}, i = 1, ..., m_0\;\;\;\sum_{i^*} c_{i^*} = K^*$$
-- Rorshach lineups are the best way to do this, but standard lineups will work    
-(if there are enough null panel selections)
+- Rorshach lineups (ideal)
+- Standard lineups will work (if there are enough null panel selections)
 
 ???
 
-We can reindex c to only include the null panel selection counts. Rorshach lineups are the best way to go here, because we can control K and ensure that it's sufficient; when we use the nulls in standard or two-target lineups, we don't control K* anymore, so we can end up with very sparse null panel selection counts. Ideally, we can slip a couple of null lineups into the set of lineups users are evaluating to estimate alpha independently. 
+We can reindex c to only include the null panel selection counts. Rorshach lineups are the best way to go here, because we can control K and ensure that it's sufficient; when we use the nulls in standard or two-target lineups, we don't control K* anymore, so we can end up with very sparse null panel selection counts. 
+
+Ideally, we can slip a couple of null lineups into the set of lineups users are evaluating to estimate alpha independently. 
 
 ---
 # Informative Null Panels
@@ -413,7 +412,10 @@ $$\psi(\alpha) - \psi(\alpha m_0) = \frac{1}{nm_0}\sum_{ij} \ln \theta_{ij}$$
 
 ???
 
-The MLE of $\alpha$ is the solution to this equation, which we can solve computationally.
+The MLE of $\alpha$ is the solution to this equation, and it's a lot easier to let the computer get the actual value of alpha that satisfies this. 
+
+So now that we've found a way to offload the work onto the computer, what do estimated $\alpha$ values look like?
+
 ---
 
 # Estimating $\Large\alpha$ - Null Lineup
@@ -442,7 +444,7 @@ $$\Large{\begin{align}\hat\alpha_\text{Rorshach} &= `r round(alpha.ml(c(2, 1, 1,
 
 ???
 
-I created a few null lineups to match the generation method in a two-target lineup study. Then, I estimated $\alpha$ using the rorshach lineup and compared it to the $\alpha$ estimated from the null panels. Notice that even though the original study was much larger than the null study I did for this presentation (79 total evaluations), we got more data from the single null panel with 14 evaluations. 
+I created a few null lineups to match the generation method in a two-target lineup study. Then, I estimated $\alpha$ using the rorshach lineup and compared it to the $\alpha$ estimated from the null panels. Notice that even though the original study was much larger than the null study I did for this presentation, which had 79 total evaluations, we got more data from the single null panel with 14 evaluations. In the grand scheme of things, though, the estimate of $\alpha$ from the normal lineup isn't that different from the estimate from the null lineups, which suggests that if there are enough null panel selections, we can estimate $\alpha$ from a normal lineup. It's still better to use a Rorshach lineup, though.
 
 ---
 
@@ -463,7 +465,7 @@ $$\Large{\begin{align}\hat\alpha_{\text{Rorshach}} &= `r round(alpha.ml(c(1, 11,
 
 ???
 
-In this lineup, which incidentally is made up of the same data as the last lineup, we see that the estimate for alpha is a bit lower, but that the estimates are similar when there are similar numbers of evaluations. The next obvious thing to explore is whether alpha is similar across lineup studies, and under what conditions it might vary. 
+In this lineup, which incidentally is made up of the same data as the last lineup, we see that the estimate for alpha is a bit lower, but that the estimates are similar when there are similar numbers of evaluations. I originally thought that it might be necessary to estimate alpha separately for each aesthetic combination ... and it could be necessary, but so far I haven't found that many cases where there'd be a huge benefit to that approach. The next obvious thing to explore is whether alpha is similar across lineup studies, and under what conditions it might vary. 
 
 ---
 # Estimating $\Large\alpha$ - Standard Lineup
@@ -483,7 +485,7 @@ plot_df %>%
 ```
 ???
 
-Using this method, I combed through 8 past lineup studies with single-target lineups, and estimated alpha for each set of parameters used to generate data. What I found is that the alpha values are remarkably consistent across most studies; the exception, studies 5 and 6, were so difficult that when looking over the lineups, I thought they were null lineups - they're from Loy(2015), and the study showed that residual plots which violated normality were indistinguishable from those generated from a normal model. In those studies, we see higher $\alpha$ values, indicating that the selection probability for each null panel is more equal. Some of these studies allowed participants to select multiple panels; typically, when this happens, estimated alpha values are slightly higher, but most participants still only select a single response for most lineups. 
+Using the alpha estimation method I've shown, I combed through 8 past lineup studies with single-target lineups, and estimated alpha for each set of parameters used to generate data. What I found is that the alpha values are remarkably consistent across most studies; the exception, studies 5 and 6, were so difficult that when looking over the lineups, I thought they were null lineups - they're from Loy(2015), and the study showed that residual plots which violated normality were indistinguishable from those generated from a normal model. In those studies, we see higher $\alpha$ values, indicating that the selection probability for each null panel is more equal. Some of these studies allowed participants to select multiple panels; typically, when this happens, estimated alpha values are slightly higher, but most participants still only select a single response for most lineups. 
 
 ---
 class:middle,inverse,center
@@ -531,6 +533,39 @@ ggplot(pv, aes(x = alpha, y = p, color = factor(C), group = factor(C))) +
 
 Returning to the plot showing the p-values calculated for lineups with 20 evaluations under different alpha values, what we see is that the estimated alphas are much smaller than those used by even the vinference package. While this does mean that we need more target hits and more data than we might have needed before, it allows us to get p-values which are much more reasonable than before. Visual inference is such a powerful tool that I think in most cases we won't see much of a practical difference in the results; most studies I'm familiar with would still have similar results because the initial p-values were so small that even with this adjustment they will still be significant. 
 
+
+---
+# Implications for Visual Inference
+
+.pull-left[
+![](lineups/file147f93f77aae9.png)
+]
+---
+# Implications for Visual Inference
+
+```{r vispval-change}
+exdf <- filter(studies_sum, pic_name =="file147f93f77aae9.png")
+exdf_targetcount <- sum(filter(exdf, response_no == obs_plot_location)$n)
+exdf_nullcount <- sum(filter(exdf, response_no != obs_plot_location)$n)
+total_n <- exdf_targetcount+exdf_nullcount
+old_vispval <- vis_p_value_orig(exdf_targetcount, total_n)
+new_vispval <- vis_p_value(exdf_targetcount, total_n, alpha = .07)
+```
+.pull-left[
+![](lineups/file147f93f77aae9-answers.png)
+]
+--
+.pull-right[
+.center[
+Old p-value: <br> `r sprintf("%.4g", old_vispval)`
+
+
+p-value with $\alpha = 0.07$: <br>`r sprintf("%.4f", new_vispval)`
+]]
+
+???
+
+This plot is one where we have some support for the idea that the target plot (plot 8) is different from the nulls - it got the highest number of selections, but overall null plots got more selections than the target. Under the strict null hypothesis that all panels are equally likely, the p-value for this plot is tiny... much smaller than we would expect given that there are null panels that are selected almost as frequently. Under the mixture model, with alpha = 0.07 (selected because it's in the range that most alpha estimates are in, not based on null lineups at all), the p-value is 0.0476, which is much more in line with the gut check that says that the target plot is a bit more likely to be selected. 
 
 ---
 # Implications for Visual Inference
