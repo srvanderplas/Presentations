@@ -131,6 +131,7 @@ t13plot_data %>%
   theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank())
 ```
 
+Data plot: 14
 
 ---
 # Introduction to Visual Inference
@@ -161,6 +162,8 @@ ggplot(t6_sig_data, aes(x = group, y = vals)) +
             hjust = -0.2, vjust = 1.2, data = filter(counts_t6_sig, n > 0), inherit.aes = F) 
 
 ```
+
+Data plot: 4
 
 ---
 # Introduction to Visual Inference
@@ -200,6 +203,7 @@ ggplot(t6_ambig_data, aes(y = vals, fill = factor(group))) +
             hjust = -0.2, vjust = 1.2, data = filter(counts_t6_ambig, n > 0), inherit.aes = F) 
 ```
 
+Data plot: 8
 
 ---
 class: inverse, middle,center
@@ -475,6 +479,8 @@ vis_p_value_orig <- function(C, K, m = 20){
   df$p
 }
 ```
+If plots are test statistics, how do we calculate a p-value for the lineup?
+
 
 Majumder (2013): 
 $$P(c_i\geq x) = \sum_{x = c_i}^K \binom{K}{x} \left(\frac{1}{m}\right)^x\left(1-\frac{1}{m}\right)^{K-x}$$
