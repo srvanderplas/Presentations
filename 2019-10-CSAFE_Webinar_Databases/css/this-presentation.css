@@ -1,0 +1,8 @@
+li p a {
+color: #000000 !important;
+}
+
+.title-slide > h3:first-of-type {
+  font-size:30px;
+  padding-bottom:10px;
+}
