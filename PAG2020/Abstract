@@ -1,0 +1,23 @@
+PAG 2020 Abstract
+
+Title: Strategies for Ineffective Experiments: Data collection gone wrong
+
+If data creates problems, then big data creates even bigger problems. In this talk, I discuss many different ways you can ensure a study fails, and how those decisions are magnified in "big data" settings. If you've ever thought pilot studies are a waste of time, or that planning your data analysis before data collection begins is for losers, or if you think of your instrumentation as a magic box that produces data, this talk is for you. Using several recent experiments which generated TB of data, I talk about the analysis of misshapen, noisy, and problematic data, and how to avoid these pitfalls in during experimental design and data collection. 
+
+What not to do with big (or small) data
+How to ensure your experiment is useless in 10 steps
+Strategies for Ineffective Experiments: Data collection gone wrong
+10 strategies for guaranteed science fails
+
+- Jump right into the deep end: get involved in a new research area with a giant study (shoes)
+- Pilot studies are a waste of time (shoes)
+- You don't really need to know how your instruments work (shoes)
+- Don't write any code until after the experiment is complete, it's a waste of time (shoes)
+- Don't worry about how you're going to analyze the data until after it's collected (shoes)
+- Explore every possible factor combinatorially, all in one big experiment (shoes)
+- Control for the small factors, but not the big ones (shoes)
+- Allow your collaborators to change the research procedures at any time during the study - it's the nice thing to do (shoes, bullets)
+- It's totally fine if your data are in a proprietary format! (shoes)
+- Make everything reproducible, then constantly tinker with the reproducible script (lineups)
+- There's no point in sharing your data, no one will ever want to see it anyways (shoes - DMV data)
+
