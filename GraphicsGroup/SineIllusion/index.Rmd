@@ -51,7 +51,7 @@ This is an artifact of two different gestalt effects: gestalt proximity/similari
 It's simpler to see the image as a rotating circle of dots (or a square, or ... ) than it is to see them as single dots moving along a diameter.
 
 ---
-class: center, inverse
+class: center
 ## Which orange dot is bigger?
 
 ![](https://assets.pcmag.com/media/images/579671-which-orange-circle-is-bigger.jpg?width=740&height=740&boxFit=y)
@@ -77,19 +77,21 @@ class: center
 ![](https://upload.wikimedia.org/wikipedia/commons/2/21/Grey_square_optical_illusion_proof2.svg)
 
 ---
-class: center, inverse
+class: center
 ## Which is longer?
 
-![](https://upload.wikimedia.org/wikipedia/commons/0/02/Ponzo_illusion.gif)
+<img src="http://www.newopticalillusions.com/wp-content/uploads/2017/06/Ponzo-Wall-Ilusion.jpg" width="65%"/>
 
-??? 
+???
 
 This illusion leverages depth perception - lines that are the same length but further away are obviously longer
 
 ---
 class: middle, center
 # So can you trust your eyes?
+
 --
+
 ## Probably not
 
 ---
@@ -97,21 +99,32 @@ class: middle, center
 # What does this have to do with graphics? Or statistics?
 
 ---
-class: middle, center
+class: center
 ## Describe the variability of this data
 
-![](../)
+<img src="../../Dissertation/Final Oral/figure/example-sineillusion-1.png" width="60%"/>
+
+---
+class: center
+## Describe the variability of this data
+
+<img src="../../Dissertation/Final Oral/figure/example-sineillusion2-1.png" width = "60%"/>
 
 
 ---
+class: center
 ## The Sine Illusion
 
 link: https://bigfoot.csafe.iastate.edu:442/srvander/SineIllusionDemo/
 
+<img src="../../Dissertation/Final Oral/figure/sineillusion-original-1.png" width = "70%"/>
+
+
 ---
+class: center
 ## The Sine Illusion
 
-```{r}
+```{r echo = F}
 x <- seq(0, 2*pi, length=42)[2:41]
 data <- do.call("rbind", lapply(seq(-.5, .5, 1), function(i) data.frame(x=x, y=2*sin(x), z=i)))
 
@@ -148,9 +161,57 @@ lines(trans3d(x=xline[3:4], y=yline[3:4], z=zline[3:4], p2), lty=2)
 points(trans3d(x=xline[c(1,3)], y=yline[c(1,3)], z=zline[c(1,3)], p2), pch=2, cex=.75)
 text(trans3d(x=pi, y=max(yline)-.25, z=0, p2), label="Near-infinite Vanishing Point")
 text(trans3d(x=pi, y=min(yline), z=-pi, p2), label="Sine Illusion + Shading")
-
-
+ 
 ```
+
+---
+class: center
+## Geometry
+
+![](../../Dissertation/Final Oral/figure/illusion-geometry-1.png)
+
+---
+class: center
+## Fixing the Illusion
+
+<img src="../../Dissertation/Final Oral/figure/y-generalcorrectioncartoon-1.png" width="45%"/>
+
+---
+class: center
+## Fixing the Illusion
+
+
+<img src="../../Dissertation/Final Oral/figure/y-linearcorrectioncartoon-1.png" width="90%"/>
+
+
+---
+class: center
+## Fixing the Illusion
+
+
+<img src="../../Dissertation/Final Oral/figure/xaxisdemo-1.png" width="90%"/>
+
+---
+class: center
+## Fixing the Illusion
+
+
+<img src="../../Dissertation/Final Oral/figure/xaxisdemoweight-1.png" width="100%"/>
+
+---
+class: center,middle,inverse
+## Why the visual system matters
+
+---
+## What size are the bars?
+
+---
+## What area are the slices?
+
+
+
+
+
 ---
 class: center, inverse
 ## This one is a real trip
