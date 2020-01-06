@@ -1,0 +1,183 @@
+---
+title: "Big Data, Big Experiments, and Big Problems"
+author: "Susan Vanderplas"
+date: "Jan 12, 2020"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    css: ["default", "css/csafe.css", "css/csafe-fonts.css", "css/this-presentation.css"]
+    lib_dir: libs
+    nature:
+      countIncrementalSlides: false
+---
+class: primary
+```{r setup, echo = F, cache = F, include = F}
+library(magrittr)
+library(tidyverse)
+library(ggplot2)
+mytheme <- theme_bw() + 
+  theme(panel.grid.major = element_line(color = "grey50"),
+        panel.grid.minor = element_line(color = "grey60"))
+
+theme_set(mytheme)
+knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, cache = T, dpi = 300, dev = 'png')
+
+```
+
+class:primary,middle,center
+## Slides at: 
+<h3>srvanderplas.github.io/Presentations/PAG2020/</h3>
+
+---
+class:inverse
+# Alternate Title: <br/>10 ways to screw up your experiment
+
+---
+class:primary
+## Disclaimer
+
+.large[All of these examples are real. 
+
+*Most* of the mistakes I discuss are my own or occurred on projects I was a major participant in.
+
+Other studies will be included either anonymously or if the experimenters can be assumed to be deceased. ]
+
+--
+
+***
+.large[
+Everyone screws up. 
+
+My goal is to ensure that you find **new** and **innovative** ways to screw up.]
+
+---
+class:inverse
+# \# 1. Jump Right In: Start a GIANT study in a new field
+
+---
+class:primary
+## Jump Right In: <br/>Longitudinal Shoe Study
+
+- 160 Pairs of shoes, each worn for ~6 months
+
+- 2 shoe models with different patterns and sole materials
+
+- 7 different methods for imaging the shoes
+
+- 3-4 different timepoints collected for each pair of shoes
+
+--
+
+***
+Problems:
+
+- Poor experimental technique
+
+- Controlled for the wrong variables
+
+- Data collection methods didn't approximate real life forensic techniques
+
+???
+
+The Center for Statistics and Applications in Forensic Evidence (or CSAFE, for short) was created 5 years ago through a grant from NIST. Before that point, there were relatively few people doing research in statistics and forensics. So when CSAFE started, everyone was pretty new to the field of forensics, even if we were well-trained statisticians. 
+
+Thing is, in many cases, statisticians don't collect their own data. So hopefully, you wouldn't make these mistakes.
+
+We started out by creating a giant study using new-to-us equipment for collecting data. Why not make this study serve multiple purposes, right? It'll be efficient that way.
+
+We varied shoe size, shoe model, collected data on the level of use the shoes got, the height and weight of the participants, the whole deal. We monitored these participants for a semester to see how the wear patterns started to emerge. Sounds great, right?
+
+What we didn't do is refine the data collection methods first. We didn't spend a lot of time consulting with experts in the field until the experiment was underway, only to find out we'd done things sub-optimally.
+
+You'll hear a lot about this experiment during this talk - I've been working with the data for a year or more now, so I'm possibly using this as a combination of group therapy and "scared straight". In my opinion, there were a couple of large errors made in this study, and they can be summarized as "trying to do too much, too soon". Sometimes you have to do the study while you have the money, but we would have been much better off starting with several smaller studies. 
+
+
+---
+class:primary
+## Jump Right In: <br/>Milk Nutrition Study
+
+[Lanarkshire Milk Experiment](https://www.jstor.org/stable/2332424) described by Student (of Student's T-test fame)
+
+- 20,000 children spread across 67 schools
+
+- 5,000 given pasteurized milk, 5,000 given raw milk, 10,000 controls
+
+- Several issues:
+  - Random assignment problems
+  - Weighing children with clothes (winter vs. summer weight)
+  - Combining controls for groups (preventing school-wise comparison)
+
+.center[Starting out with smaller studies might have made these issues apparent]
+
+---
+class:inverse,center,middle
+# \# 2. Pilot studies are a waste of time
+
+---
+class:primary
+## Pilot studies are a waste <br/>of time
+
+Statisticians: 
+- pilot studies to get error estimates (classroom context)
+- determine power/study size for the main study
+
+If you don't really need error estimates, and you design your main study to be as big as is feasible, you don't need a pilot study, right?
+
+--
+
+.center[
+<img src="https://media.giphy.com/media/1Pfd5qmaqBvjO/giphy.gif" alt="Picard stupid gif"/>
+]
+
+
+---
+class:primary
+## Pilot studies are a waste <br/>of time
+
+- Pilot studies give you a chance to test your methods, your code, your analysis...
+
+- If everything goes perfectly during the pilot study and you don't change anything afterwards, you can always throw the data into the main study (Phase 1 and Phase 2)
+--
+
+> (I've never seen this happen)
+
+---
+class:inverse
+# \# 3. Data collection for its own sake is good
+
+---
+class:primary
+## Data collection for its <br/>own sake is good
+
+Very context dependent.
+
+- Every study should have a goal in mind
+
+- Sometimes, that goal can be stated as a hypothesis
+
+- It's generally not worth collecting the data unless you have a purpose for it.
+
+.center[
+<img src="https://media.giphy.com/media/3o7btZ3T6y3JTmjg4w/giphy.gif" alt="Floating in space gif"/>
+]
+
+---
+class:primary
+## Data collection for its<br/>own sake is good
+
+- Purpose-driven data collection
+
+- Exploratory data collection still involves goals    
+--
+
+Example: Shoe data
+  - want a large population of shoe prints to use for testing new matching methods
+  - Need to be able to resolve patterns on the shoe
+  - Ideally would be able to resolve randomly acquired damage (1mm or smaller)
+  - Prints should be smudged and otherwise unclear, just like in a crime scene
+
+--
+All of these are goals that inform data collection methods
+
+- 
