@@ -11,7 +11,6 @@ Strategies for Ineffective Experiments: Data collection gone wrong
 
 - Jump right into the deep end: get involved in a new research area with a giant study (shoes)
 - Pilot studies are a waste of time (shoes)
-- You don't really need to know how your instruments work (shoes)
 - Don't write any code until after the experiment is complete, it's a waste of time (shoes)
 - Don't worry about how you're going to analyze the data until after it's collected (shoes)
 - Explore every possible factor combinatorially, all in one big experiment (shoes)
@@ -21,3 +20,5 @@ Strategies for Ineffective Experiments: Data collection gone wrong
 - Make everything reproducible, then constantly tinker with the reproducible script (lineups)
 - There's no point in sharing your data, no one will ever want to see it anyways (shoes - DMV data)
 
+
+- You don't really need to know how your instruments work (shoes)

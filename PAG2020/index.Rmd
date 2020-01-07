@@ -40,16 +40,15 @@ class:primary
 .large[All of these examples are real. 
 
 *Most* of the mistakes I discuss are my own or occurred on projects I was a major participant in.
-
-Other studies will be included either anonymously or if the experimenters can be assumed to be deceased. ]
+]
 
 --
 
 ***
 .large[
-Everyone screws up. 
-
-My goal is to ensure that you find **new** and **innovative** ways to screw up.]
+Everyone screws up. My goal is to ensure that we discover
+**new** and **innovative** ways to screw up.
+]
 
 ---
 class:inverse
@@ -144,11 +143,11 @@ class:primary
 
 ---
 class:inverse
-# \# 3. Data collection for its own sake is good
+# \# 3. Data collection for the sake of data collection
 
 ---
 class:primary
-## Data collection for its <br/>own sake is good
+## Data collection for its own sake
 
 Very context dependent.
 
@@ -168,16 +167,86 @@ class:primary
 
 - Purpose-driven data collection
 
-- Exploratory data collection still involves goals    
+- Exploratory data collection still involves goals  
+
+???
+I should start out by asking... do any of you have someone leading your group, your organization, or your section who is enthusiastic to a fault, but tends to not want to get into the details?
+
+CSAFE is about to launch a project named "Project Tread" which is supposed to be primarily an outreach project. With that said, we can't get our director to actually write off the idea of using the data for ... something... at some point in time.
+
+I get it. I'm a packrat too when it comes to data. I have datasets sitting on my machine that are obscure and probably useless, but I can't bring myself to delete them. However, not thinking about what you want to do with the data can lead to some really big problems down the road.
+
+So using this particular project as an example, we forced our project director to come up with the following uses: 
+
 --
 
 Example: Shoe data
+
   - want a large population of shoe prints to use for testing new matching methods
   - Need to be able to resolve patterns on the shoe
   - Ideally would be able to resolve randomly acquired damage (1mm or smaller)
   - Prints should be smudged and otherwise unclear, just like in a crime scene
 
 --
+
 All of these are goals that inform data collection methods
 
-- 
+???
+
+Ideally, we'd still have a specific analysis we would want to do with the collected data. But, even with the really rough goals we have listed above, we changed the protocol of the experiment to make the downstream data processing easier with one simple modification: we're now asking each person to trace the bottom of their shoe and upload that picture with all of the shoe print pictures. That image will serve as a "mask" and help us clean up the other images.
+
+---
+class:inverse
+# \# 4. You can figure out how to analyze the data after it's collected
+
+---
+class:primary
+## You can figure out how to analyze the data later
+
+Statistically, this is bad practice because you should set up your hypotheses and analysis methods before you collect the data.
+
+In Data Science, this is bad practice for some additional reasons:
+
+1. You need to know how to clean the data before you can analyze it
+  - It's a good idea to test the cleaning pipeline before you collect all of the data
+
+2. How you want to analyze the data may change the methods you use to collect it
+
+3. Pre-testing the analysis pipeline gives you the chance to find bugs (saving time, \$, and retracted publications)
+
+--
+
+If you do the pilot study and analysis... you're already in the clear on this one
+
+---
+class:inverse
+# \# 5. Don't write the code until after the experiment is complete
+
+---
+class:primary
+## Don't write the code until<br/>the experiment is complete
+
+.center[
+<img src="https://media.giphy.com/media/AFjfPUJ0mjWJG/giphy.gif" alt="rage gif- parks and rec" width="50%" class="center"/>
+]
+
+---
+class:inverse
+# \# 6. Allow your collaborators to change experimental procedures any time
+
+---
+class:inverse
+# \# 7. Store your data in a proprietary format
+
+---
+class:inverse
+# \# 8. Don't make anything reproducible
+
+---
+class:inverse
+# \# 9. Make everything reproducible, and then overwrite your data
+
+---
+class:inverse
+# \# 10. No one is that interested in your data, so why share it?
+
