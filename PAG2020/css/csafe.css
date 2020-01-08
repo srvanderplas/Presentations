@@ -169,6 +169,10 @@ strong {
   padding-top:-50px !important;
 }
 
+.move-down {
+  padding-top:50px !important;
+}
+
 .move-left {
   margin-left:-25px !important;
 }
@@ -178,4 +182,15 @@ strong {
  .remark-container.remark-presenter-mode .remark-slide-notes {
   margin-top:700px;
  }
+}
+
+
+.remark-slide table.blank {
+  margin:0;
+  border-top:0;
+  border-bottom:0;
+  background-color:#FFFFFF;
+}
+.remark-slide table.blank tr {
+  background-color:#FFFFFF;
 }
