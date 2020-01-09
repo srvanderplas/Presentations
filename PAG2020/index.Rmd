@@ -42,17 +42,30 @@ class:primary
 *Most* of the mistakes I discuss are my own or occurred on projects I was a major participant in.
 ]
 
---
+???
 
-.large[.move-down[
-***
-Everyone screws up. My goal is to ensure that we find new ways to screw up. 
-]]
+In the spirit of transparency, I'm going to spend this talk discussing some really big, really expensive mistakes (and some other mistakes that were a little less expensive). 
 
-<div class="move-margin" style="padding-top:80px">
+---
+class:primary
+## Disclaimer
+
+.large[
+.center[
 <img src="https://media.giphy.com/media/emCxAd8L3cEwM/giphy.gif" alt="tiger yawning"/>
-<p class="small">Making the same mistakes is boring</p>
-</div>
+
+Making the same mistakes is boring. 
+]
+
+Learn from my mistakes so you can be more creative in making your own.
+]
+
+
+???
+
+My goal is to ensure that you don't make the same type of mistake - hopefully, you'll find new ways to screw up your studies, and then you can warn others about them.
+
+As with most confessional situations, though, I'd ask that you not judge us too harshly. Every one of my collaborators on these projects is very smart and talented; but even the best of us make mistakes and get carried away sometimes. This talk primarily discusses one of those times. 
 
 ---
 class:inverse
@@ -70,68 +83,73 @@ class:primary
 
 - 3-4 different timepoints collected for each pair of shoes
 
-<table class="blank" width="100%">
-<tr><td><img src="small-005772L_20171031_2_1_1_csafe_bpbryson.jpg" alt="Digital Scan Image - Nike"/></td><td><img src="small-005772L_20171213_4_1_1_csafe_jekruse.jpg" alt="Camera Image - Nike"/></td><td><img src="small-005772L_20171211_5_1_1_csafe_kruse-bryson-zwart.jpg" alt="Film Image - Nike"/></td><td><img src="small-005772L_20180411_6_1_1_kruse_zwart_Kruse.jpg" alt="Paper Image - Nike"/></td></tr>
-<tr><td><img src="small-007961L_20171031_2_1_1_csafe_bpbryson.jpg"  alt="Digital Scan Image - Adidas"/></td><td><img src="small-007961L_20171030_4_1_1_csafe_hdzwart.jpg" alt="Camera Image - Adidas"/></td><td><img src="small-007961L_20171211_5_1_1_csafe_kruse-bryson-zwart.jpg" alt="Film Image - Adidas"/></td><td><img src="small-007961L_20180411_6_1_1_kruse_zwart_Kruse.jpg" alt="Paper Image - Adidas"/></td></tr></table>
-
+<table class="move-down" width="100%">
+<tr class="blank"><td><img src="small-005772L_20171031_2_1_1_csafe_bpbryson.jpg" alt="Digital Scan Image - Nike"/></td><td><img src="small-005772L_20171213_4_1_1_csafe_jekruse.jpg" alt="Camera Image - Nike"/></td><td><img src="small-005772L_20171211_5_1_1_csafe_kruse-bryson-zwart.jpg" alt="Film Image - Nike"/></td><td><img src="small-005772L_20180411_6_1_1_kruse_zwart_Kruse.jpg" alt="Paper Image - Nike"/></td></tr>
+<tr class="blank"><td><img src="small-007961L_20171031_2_1_1_csafe_bpbryson.jpg"  alt="Digital Scan Image - Adidas"/></td><td><img src="small-007961L_20171030_4_1_1_csafe_hdzwart.jpg" alt="Camera Image - Adidas"/></td><td><img src="small-007961L_20171211_5_1_1_csafe_kruse-bryson-zwart.jpg" alt="Film Image - Adidas"/></td><td><img src="small-007961L_20180411_6_1_1_kruse_zwart_Kruse.jpg" alt="Paper Image - Adidas"/></td></tr>
+</table>
 <div class="move-margin">
-<img src="small-005772L_20171108_7_1_1_csafe_bpbryson.jpg" alt = "Realistic crime scene print - Nike"/>
-<img src="small-007961L_20171108_7_1_1_csafe_bpbryson.jpg" alt = "Realistic crime scene print - Adidas"/>
+<br/><br/>
 <img src="3d_shoes_Participant_005_Turntable_scan.png" alt="3D scan - high quality - Nike"/>
 <img src="3d_shoes_Participant_007_Turntable_scan.png" alt="3D scan - high quality - Adidas"/>
+<br/><br/><br/>
+<img src="small-005772L_20171108_7_1_1_csafe_bpbryson.jpg" alt = "Realistic crime scene print - Nike"/>
+<img src="small-007961L_20171108_7_1_1_csafe_bpbryson.jpg" alt = "Realistic crime scene print - Adidas"/>
 </div>
 
 ???
 
-The Center for Statistics and Applications in Forensic Evidence (or CSAFE, for short) was created 5 years ago through a grant from NIST. Before that point, there were relatively few people doing research in statistics and forensics. So when CSAFE started, everyone was pretty new to the field of forensics, even if we were well-trained statisticians. 
+The Center for Statistics and Applications in Forensic Evidence (or CSAFE, for short) was created 5 years ago through a grant from NIST to address the lack of scientific foundations in forensic pattern evidence. When CSAFE started, everyone was pretty new to the field of forensics.
 
-Thing is, in many cases, statisticians don't collect their own data. So hopefully, you wouldn't make these mistakes. I wasn't around for the design (or most of the execution) of this study, but I'm involved in the analysis and have seen the fallout. 
+In most subfields, statisticians don't collect their own data. So hopefully you wouldn't make these mistakes. I wasn't around for the design (or most of the execution) of this study, but I'm responsible for a good portion of the analysis work that has been done to date.
 
-We started out by creating a giant study using new-to-us equipment for collecting data we'd never worked with before. Why not make this study serve multiple purposes, right? It'll be efficient that way.
+Forensics has a lack of reference databases for comparison, so we set out to address that by building a giant reference database of shoe prints and measurements. There isn't much data out there about how shoes wear over time, so let's make this study longitudinal. We want to get more than one type of shoe, and we want to include a lot of people, so let's use several sizes of two different shoe models that are completely different types of shoes. And, we don't know that much about how to record this data precisely, so let's use 6 different methods of recording data about these shoes. We collected data on the level of use the shoes got, the height and weight of the participants, the types of surfaces the shoes were used on, ... We monitored these participants for a semester to see how the wear patterns started to emerge. Sounds great, right?
 
-We varied shoe size, shoe model, collected data on the level of use the shoes got, the height and weight of the participants, the whole deal. We monitored these participants for a semester to see how the wear patterns started to emerge. Sounds great, right?
+Unfortunately, not so much. We didn't know enough about shoes, about data collection methods for shoes and other tread pattern evidence, etc. We controlled for all of the things we could possibly think of - our lab assistants had to change socks so that the socks they wore during data collection were consistent. The experiment was huge, complicated, took more than a year to run, all in all, and was really expensive. 
 
-What we didn't do is refine the data collection methods first. We didn't spend a lot of time consulting with experts in the field until the experiment was underway, only to find out we'd done things sub-optimally. We didn't know enough about the types of shoes to intentionally manipulate the materials or patterns in each of the two shoe models. 
-
-You'll hear a lot about this experiment during this talk - I was working on this data when I got the invitation to give the talk, so you might say this study was my inspiration. In my opinion, there were a couple of large errors made in this study, and they can be summarized as "trying to do too much, too soon". Sometimes you have to do the study while you have the money, but we would have been much better off starting with several smaller studies and then doing the giant factorial experiment of doom.
+You'll hear a lot about this experiment during this talk - it was the inspiration for this talk/vent session. In my opinion, there were a couple of large errors made in this study, and they can be summarized as "trying to do too much, too soon". Sometimes you have to do the study while you have the money, but we would have been much better off starting with several smaller studies.
 
 
----
-class:primary
-## Jump Right In: <br/>Milk Nutrition Study
+<!-- --- -->
+<!-- class:primary -->
+<!-- ## Jump Right In: <br/>Milk Nutrition Study -->
 
-[Lanarkshire Milk Experiment](https://www.jstor.org/stable/2332424) described by Student (of Student's T-test fame)
+<!-- [Lanarkshire Milk Experiment](https://www.jstor.org/stable/2332424) described by Student (of Student's T-test fame) -->
 
-- 20,000 children spread across 67 schools
+<!-- - 20,000 children spread across 67 schools -->
 
-- 5,000 given pasteurized milk, 5,000 given raw milk, 10,000 controls
+<!-- - 5,000 given pasteurized milk, 5,000 given raw milk, 10,000 controls -->
 
-- Several issues:
-  - Random assignment problems
-  - Weighing children with clothes (winter vs. summer weight)
-  - Combining controls for groups (preventing school-wise comparison)
+<!-- - Several issues: -->
+<!--   - Random assignment problems -->
+<!--   - Weighing children with clothes (winter vs. summer weight) -->
+<!--   - Combining controls for groups (preventing school-wise comparison) -->
 
-???
-This problem is incidentally, as old as formal studies (at least). I found a paper from William Gosset, who published under the name "A student" describing a similarly gigantic study with several methodological issues that severely limited the impact. The paper is actually very interesting. 
+<!-- ??? -->
+<!-- This problem is incidentally, as old as formal studies (at least). I found a paper from William Gosset, who published under the name "A student" describing a similarly gigantic study with several methodological issues that severely limited the impact. The paper is actually very interesting.  -->
 
-The main reason I bring this up is that over and over again, we see that starting out with a smaller study might be a better option for refining the experimental design and methodology.
+<!-- The main reason I bring this up is that over and over again, we see that starting out with a smaller study might be a better option for refining the experimental design and methodology. -->
 
---
+<!-- -- -->
 
-***
-.center[Starting out with smaller studies might have made these issues apparent]
+<!-- *** -->
+<!-- .center[Starting out with smaller studies might have made these issues apparent] -->
 
 ---
 class:primary
-## Don't get in over your head too quickly
+## Don't get in over your <br/>head too quickly
 .center[
 
 <img src="https://j.gifs.com/GvAD20.gif" alt="corgi jumping into snow gif" width = "80%"/>
 
 ]
+
 ---
 class:inverse,center,middle
 # \# 2. Pilot studies are a waste of time
+
+???
+
+Closely related to the first surefire way to screw things up is to not run a pilot study. This is particularly important for studies that use equipment or analyses you haven't worked with before, or where your experimental protocol changes significantly. 
 
 ---
 class:primary
@@ -143,6 +161,10 @@ Statisticians:
 - determine power/study size for the main study
 
 If you don't really need error estimates, and you design your main study to be as big as is feasible, you don't need a pilot study, right?
+
+???
+
+Statistics classes discuss pilot studies as a way to get error estimates, so you can do power calculations. That's great and all, but it misses the more important part of pilot studies in the real world...
 
 --
 
@@ -166,6 +188,13 @@ class:primary
     - Just plug new data in and re-generate your results
 
 - If everything goes perfectly during the pilot study and you don't change anything afterwards, you can usually throw the data into the main study (e.g. Phase 1 and Phase 2)
+
+???
+
+The most important reason to run a pilot study is to make sure your data collection methods, equipment, lab personnel, code, and analyses all work together before you spend all the money on an experiment. We'll talk about reproducibility in a bit, but with tools like rmarkdown, you can basically use your pilot study to write most of the final paper, and then just swap out the data.
+
+If you change nothing between the pilot study and the main experiment, then sure, group the data together. I've never seen that happen - there's always something to tweak or make work better.
+
 --
 
 > (I've never seen this happen)
@@ -186,70 +215,17 @@ In *most* cases, you can still construct a dataset that will let you test your m
 
 <table class="blank"><tr><td><img src="Mantis3.png" alt="Shoe Scanner Model"/></td><td><img src="20190328_152239.jpg" alt="Shoe Scanner Prototype"/></td><td><img src="GOPR1219-blur-enhance.JPG" alt="Picture from prototype"</td></tr></table>
 
----
-class:inverse
-# \# 3. Data collection for the sake of data collection
-
----
-class:primary
-## Data collection<br/>for its own sake
-
-Very context dependent.
-
-- Every study should have a goal in mind
-
-- Sometimes, that goal can be stated as a hypothesis
-
-- It's generally not worth collecting the data unless you have a purpose for it.
-
-.center[
-<img src="https://media.giphy.com/media/3VydkbG6UOcUg/giphy.gif" alt="Pointless gif" width="60%"/>
-]
-???
-I should start out by asking... do any of you have someone leading your group, your organization, or your section who is enthusiastic to a fault, but tends to not want to get into the details?
-
-CSAFE is about to launch a project named "Project Tread" which is supposed to be primarily an outreach project. With that said, we're statisticians, and we can't completely write off the idea of using the data for ... something... at some point in time.
-
-I'll confess that I'm a data packrat. I have datasets sitting on my machine that are obscure and probably useless, but I can't bring myself to delete them. However, not thinking about what you want to do with the data can lead to some really big problems down the road.
-
----
-class:primary
-## Data collection<br/>for its own sake
-Exploratory data collection still involves goals!
-
-**Example: Shoe data**
-
-  - Want lots of shoe prints
-  - Need to be able to resolve patterns on the shoe
-  - Need to have a good scale for the size of the shoe
-  - Ideally would be able to resolve randomly acquired damage (1mm or smaller)
-  - Some of the prints should be smudged, just like in a crime scene
-  - Want photo of the bottom of the shoe as well
-
-***
-
-  - Care less about variability in camera pictures
-  - Don't need repetitions of the same print
-  - Probably don't need both left and right shoe
-  
-
-.move-margin[
-![Resulting print](https://raw.githubusercontent.com/CSAFE-ISU/this-is-us/master/images/shoes/ProjectTread/SP2_1.PNG)
-]
-
---
-***
-These goals inform data collection methods and the design of the study
-
 ???
 
-So using this particular project as an example, we forced ourselves to come up with the following uses:
+In some cases, there's no way to get the exact data you need. I'm working on a project right now which was like that - I needed images of shoe soles from a local area (a small town or university or something) to be able to do the computing work I needed to do. The instrument to get that data didn't exist. So instead of piloting the entire study, I started developing code to solve the computational problem, using data from the internet - Zappos and other shopping sites have lots of shoe information and pictures. 
 
-Ideally, we'd still have a specific analysis we would want to do with the collected data. Maybe even some code for cleaning that data. But, even with the really rough goals we have listed above, we changed the protocol of the experiment to make the downstream data processing easier with one simple modification: we're now asking each person to trace the bottom of their shoe and upload that picture with all of the shoe print pictures. That image will serve as a "mask" and help us clean up the other images.
+While it couldn't test the whole experiment, it did allow me to test my method and code, and then we were able to get funding to build a prototype for a way to collect the data. With those two pieces, we got a grant to build the scanner we wanted, and will be doing a pilot study with that scanner to test the interplay between the model trained on clean data and the model that results from "wild" data.
+
+There's almost always a way to break a study down until you can test most pieces of it. Even in areas that are not well investigated.
 
 ---
 class:inverse
-# \# 4. You can figure out how to analyze the data after it's collected
+# \# 3. You can figure out how to analyze the data after it's collected
 
 ---
 class:primary
@@ -317,6 +293,79 @@ If you do the pilot study and analysis... you're already in the clear on this on
 
 ---
 class:inverse
+# \# 4. Data collection for the sake of data collection
+
+???
+
+Data collection for its own sake is another good way to ruin an analysis. 
+
+I should start out by asking... do any of you have someone leading your group, your organization, or your section who is enthusiastic to a fault, but tends to not want to get into the details?
+
+CSAFE is about to launch a project named "Project Tread" which is supposed to be primarily an outreach project. With that said, we're statisticians, and we can't completely write off the idea of using the data for ... something... at some point in time.
+
+I'll confess that I'm a data packrat. I have datasets sitting on my machine that are obscure and probably useless, but I can't bring myself to delete them. However, not thinking about what you want to do with the data can lead to some really big problems down the road.
+
+
+---
+class:primary
+## Data collection<br/>for its own sake
+
+Very context dependent.
+
+- Every study should have a goal in mind
+
+- Sometimes, that goal can be stated as a hypothesis
+
+- It's generally not worth collecting the data unless you have a purpose for it.
+
+.center[
+<img src="https://media.giphy.com/media/3VydkbG6UOcUg/giphy.gif" alt="Pointless gif" width="60%"/>
+]
+???
+
+In forensics, there's often a tendency to collect data and create reference databases that are large and poorly organized. You get grants for these kind of databases. But as a result, we tend to jump the gun a little bit and not think about how the data we're storing might be used. Not in a general sense, but very specifically - what analyses would be done with this data, and how would they be approached.
+
+---
+class:primary
+## Data collection<br/>for its own sake
+Exploratory data collection still involves goals!
+
+**Example: Shoe data**
+
+  - Want lots of shoe prints
+  - Need to be able to resolve patterns on the shoe
+  - Need to have a good scale for the size of the shoe
+  - Ideally would be able to resolve randomly acquired damage (1mm or smaller)
+  - Some of the prints should be smudged, just like in a crime scene
+  - Want photo of the bottom of the shoe for comparison
+
+***
+
+  - Variability in camera pictures isn't interesting
+  - Don't need repetitions of the same print
+  - Probably don't need both left and right shoe
+  
+
+.move-margin[
+![Resulting print](https://raw.githubusercontent.com/CSAFE-ISU/this-is-us/master/images/shoes/ProjectTread/SP2_1.PNG)
+]
+???
+
+After spending so much of my life working with the shoe data from the longitudinal study, I was pretty outspoken about the need to have code and specific analyses set up before starting data collection. Luckily, some of my code could be repurposed here. We don't have a full pipeline (still, ugh), but we have enough to know what at least some of the pitfalls are going to be. 
+
+So using this particular project as an example, we forced ourselves to come up with the following uses:
+
+--
+***
+These goals inform data collection methods and the design of the study
+
+???
+
+Ideally, we'd still have a specific analysis we would want to do with the collected data. Maybe even some code for cleaning that data. But, even with the really rough goals we have listed above, we changed the protocol of the experiment to make the downstream data processing easier with one simple modification: we're now asking each person to trace the bottom of their shoe and upload that picture with all of the shoe print pictures. That image will serve as a "mask" and help us clean up the other images.
+
+
+---
+class:inverse
 # \# 5. You don't need to know how your equipment works
 
 ---
@@ -332,16 +381,31 @@ Handheld scan | Turntable scan
 ------------- | --------------
 ![Handheld scan image](3d_shoes_Participant_005_Handheld_scan.png) | ![Turntablel scan image](3d_shoes_Participant_005_Turntable_scan.png)
 
+???
+
+During the longitudinal shoe study planning phase, we got a lot of new equipment - 2D and 3D scanners, flatbed scanners, fingerprint powder, a pressure mat scanner... it was a bit overwhelming. So overwhelming that we didn't play with the equipment too much before using it in the study. As a result, we ended up with several things that could have been done *much* better. The best example of this is the 3D scanner. At the very end of the study, we discovered that the scanner actually came with a turntable that took a bit longer to use but resulted in very high quality scans. If we'd used that at the beginning, we would have had an amazing comparison of the wear along different parts of the shoe. Without that, we can't easily compare the low-resolution handheld scans to the high-resolution scans. It's a real waste. 
 
 ---
 class:inverse
 # \# 6. Allow your collaborators to change experimental procedures any time
+
+???
+
+This is another huge problem we came across during the shoe study. We did consult with experts before starting the study about how to collect the data, but we were new to the field and didn't consult with the right experts or get sufficiently detailed instructions.
 
 ---
 class:primary
 ## Change experimental procedures
 
 <table class="blank"><tr><td><img src="075718L_20171117_4_1_1_csafe_boekhoff.jpg" alt="Nov 2017"/></td><td><img src="075718L_20180207_4_1_1_csafe_hanrahan.jpg" alt="Feb 2018"/></td></tr><tr><td><img src="075718L_20180321_4_2_1_csafe_boekhoff.jpg" alt="Mar 2018"/></td><td><img src="075718L_20180509_4_1_1_csafe_jekruse.jpg" alt="May 20178"/></td></tr></table>
+
+???
+
+
+After the first round of data collection, our collaborators started telling us what to change procedurally to collect better data. That's really nice of them, right? Unfortunately, all of those changes meant that we don't have consistency across each time point of the study. Here's one single shoe over the four timepoints; each picture was taken with a digital camera. 
+
+This happened with most of the ways we were measuring the shoes; it's just easier to see how with this particular set of pictures. 
+
 ---
 class:primary
 ## Change experimental procedures
@@ -358,52 +422,170 @@ Unnecessary mid-experiment changes
 - Add another 3 rulers to the image 
 - Change the order of data collection in a way that affects the data
 
----
-class:inverse
-# \# 7. Store your data in a proprietary or closed format
+???
 
----
-class:primary
-## Proprietary Formats
+Some experimental changes, particularly when experiments run over a long time period, are inevitable. Our film supplier changed during the experiment, so some of the film has a slightly different tint and background pattern than the stuff we used in the beginning. Equipment breaks and is replaced. People leave the lab and are replaced.
 
-- Depend on a company to maintain software to access the data
+However, with each non-mandatory change, you have to weigh how much it is going to affect the utility of your data and whether it will complicate the analysis. 
 
-- Data isn't "future proof"
+Another example is that we had to change the order of data collection. The fingerprint powder we used was getting into the 2d scanner, so we had to scan shoes before we powdered them up for the prints. The photography step, however, didn't really need to move. It did, though, which means that the image processing code has to be able to recognize black patterns on shoes as well as brightly colored patterns, and then has to compare them. That change wasn't exactly well thought out. If there had been code to analyze this data ahead of time, a lot of these changes would have been weighed more carefully.
 
-- Data can't be easily combined with other information
 
-- Proprietary formats are less likely to be well documented
-
-- Closed data formats are harder to get accepted to long-term data repositories
-
-.center[Even the .doc format cannot be fully reverse engineered. ]
 
 ---
 class:inverse
-# \# 8. Don't make anything reproducible
+# \# 7. Don't make anything reproducible
+
+???
+
+The next mistake you can make (very easily) is to not think about reproducibility when you're doing your data collection, analysis, and writeup. There are obviously levels of reproducibility, but keeping track of important code, function parameters, and such is critical. 
 
 ---
 class:primary
 ## Reproducibility
 
-- Software such as knitr and Rmarkdown allow you to package your code, writing, and results in a single document that depends on your data
+- R projects: keep all of your dependencies in a single place
+- R packages: keep up with all of your code 
 
+- Version control (git) and online repositories (github) 
+    - save working versions of code
+    - stop writing ```paper_version1_revision5.Rmd```
+    - share your code easily
+    - make results available easily
+
+- knitr/rmarkdown: package code, writing, and results together
+    - easy sharing
+    - reuse code with new data
+    - better code documentation ("literate programming") 
+    
 - Be kind to future you!
 
-- Make your studies and data accessible to others
+.move-margin[.move-up[
+.center[
+<img src="github.png" alt="github logo" width="65%"/>
+<img src="https://www.libraries.rutgers.edu/sites/default/files/styles/resize_to_300px_width/public/events/2019/09/knitr.png" alt = "knitr hex sticker" width = "65%"/>
+<img src="https://bookdown.org/yihui/rmarkdown/images/hex-rmarkdown.png" alt="rmarkdown hex sticker" width="65%"/>
+]]]
 
-- Easily update and reuse analyses with new data
+???
 
-.move-down[
-.move-margin[
-![knitr hex sticker](https://www.libraries.rutgers.edu/sites/default/files/styles/resize_to_300px_width/public/events/2019/09/knitr.png)
-![rmarkdown hex sticker](https://bookdown.org/yihui/rmarkdown/images/hex-rmarkdown.png)
-]]
+I don't just work on shoes, I also work on bullet matching algorithms. We have a machine learning model that we fit using data processed by the current working version of the code we'd built. Now, the code is in a package, but then, it was just in a script. The problem is, we don't know what script, because if we were using version control at the time, we didn't write down which version we used to fit the model. 
+
+So now, all of our bullet analyses are depending on this model that works really well, but that we can't re-derive from the data, because parameter defaults have changed and none of us knows exactly what they were originally.
+
+This is the kind of thing that happens when you're exploring and playing around with data. The problem is, it's not really great science. If we'd set out at the beginning of the project with the idea that all of the code we wrote would be in an R package and version controlled, we'd have been much better off. 
+
+Similarly, if you've ever gone back to an old paper you wrote and tried to make that code run... it sucks, and not just because past you wrote awful code. You've rearranged your file system since then, or gotten a new computer, and you're missing critical files. Or you can't remember what you did back then, and why on earth did you make that stupid decision? Rmarkdown or knitr help a ton with that - you have your code, your data, your paper, and any comments in the code or paper all in one place. It's harder to get lost. 
+
+
 ---
 class:inverse
-# \# 9. Make everything reproducible, and then overwrite your data
+# \# 8. You don't need to protect your data (from yourself)
+
+???
+
+This one may not be a common problem, but it's one that I hope no one ever repeats, so it made the list. The 3rd chapter of my dissertation involved a simulation model to generate data, which was then plotted and used in a user study. 
+
+I was very diligent and set the project up very neatly. I wasn't using R packages then, but I had code in one folder, simulation data in another, I'd carefully saved all of the pictures we were using in the experiment for posterity, and all of the parameters were encoded in the picture file names. We saved seeds for reproducibility. Great, right? 
+
+
+
+---
+class:primary
+## You don't need to protect </br>your data (from yourself)
+
+- Write protect your data
+
+- Separate your code/analysis from your data: code produces downstream results
+
+- NOTHING CHANGES THE ORIGINAL DATA FILE
+
+.center[
+<img alt="Incredibles force field gif" src="https://media.giphy.com/media/13EUNyzJTWzpWE/giphy.gif" width="50%"/>
+]
+
+???
+
+Unfortunately, I didn't write-protect my experimental stimuli once we had tweaked the data generating model. 
+
+So at some point during the analysis, I was a bit too thorough and re-ran the data generating script; but this time, something changed somewhere and the plots got overwritten, along with the correct keys.
+
+This wreaked havoc on everything and very nearly ruined the (massive, factorial) experiment. We managed to rescue it (yay backups!) and everything was fine, but I learned a very valueable lesson about write protecting data.
+
+If you're separating your code from your data well enough, you should be able to write-protect your original data, then run your code to get your results. You might have to save intermediate results along the way to save time, but the original data can be write protected.
+
+Don't be me.
+
+---
+class:inverse
+# \# 9. Store your data in a proprietary or closed format
+
+---
+class:primary
+## Using Proprietary Formats
+
+- You depend on a company to maintain software to access your data
+
+- You may only be able to use a specific OS
+
+- If the company goes out of business or drops support, your data is effectively gone
+
+- The data storage format is less likely to be well documented
+
+- It may be harder to get the data accepted to long-term data repositories
+
+???
+
+Another way to really limit the reach of your experiments (and your ability to use your data later) is to store things in proprietary formats. 
+
+During the shoe study, we used a pressure mat scanner to record the weight distribution across people's feet as they walked. This scanner was cool, but everything was stored in a proprietary format, so you couldn't access the data unless you were using Windows. 
+
+Then, to get the data into a form we could actually analyze properly using R, we had to pay extra for a different piece of software to export the data. 
+
+When we went to upload the data to a long term repository, they wouldn't take the original data format, because no one would be able to open it anyways.
+
+--
+
+.center[.move-down[
+.strong[Even the .doc format cannot be fully reverse engineered. ]
+]]
+
+???
+
+
+Sometimes there are reverse-engineered programs to maintain compatibility, but it's worth remembering that as ubiquitous as word is, we still haven't completely reverse engineered doc files. Libre Office and Google docs are great, but they aren't 100% compatible because Microsoft uses a proprietary format to store the data in.
 
 ---
 class:inverse
 # \# 10. No one is that interested in your data, so why share it?
 
+---
+class: primary
+## Why share your data?
+
+- Help someone else out with pilot data!
+
+- Allow external reproductions of your studies
+
+- The process of curating your data forces you to document it
+
+- Minimal effort + an extra publication!
+
+- Google search optimization - make your work easier to find
+
+Nature recommended databases (by field): <br/>https://www.nature.com/sdata/policies/repositories
+
+General data upload: 
+![figshare logo](https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Figshare_logo.svg/500px-Figshare_logo.svg.png)
+
+???
+
+I talked earlier about how I got some starter data from the internet for a study that was so exploratory that getting pilot data seemed unlikely. 
+
+In fact, there were a couple of studies that had exactly the types of data I needed. They just didn't have data available (and I couldn't even get in contact with the PIs). While I figured out how to get usable data eventually, the data from those studies would have been much more topically relevant and much better for my analysis.
+
+An open ecosystem for data advances science and makes it more efficient. It allows mistakes to be caught more quickly. Some of you may have heard about the economics study that was one of the main bases for the "deficit spending is bad" claim came under fire back in 2013. The study was done much earlier, but the data was only released in 2013; when it was released, they discovered an error in the Excel spreadsheet that changed the results. They didn't change that much, but it's a bit scary that a single study was a huge factor in determining economic policy across the western world, and that study had an error! Data sharing helps catch these kind of issues, and everyone is better off. 
+
+---
+class:inverse
+# Questions? <br/> <br/>  .halfsize[Contact me: <br/>susan.vanderplas@unl.edu<br/> @srvanderplas (github)]

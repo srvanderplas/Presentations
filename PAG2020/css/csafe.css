@@ -138,6 +138,9 @@
 .small { 
   font-size: 70% 
 }
+.halfsize { 
+  font-size: 50% 
+}
 .tiny { 
   font-size: 30% 
 }
@@ -193,4 +196,15 @@ strong {
 }
 .remark-slide table.blank tr {
   background-color:#FFFFFF;
+}
+
+.remark-slide table tr.blank {
+  background-color:#FFFFFF;
+}
+.remark-slide table tr.shade {
+  background-color:gray;
+}
+
+.remark-slide .strong {
+  font-weight:bold;
 }
