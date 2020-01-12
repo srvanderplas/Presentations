@@ -559,3 +559,19 @@ An open ecosystem for data advances science and makes it more efficient. It allo
 ---
 class:inverse
 # Questions? <br/> <br/>  .halfsize[Contact me: <br/>susan.vanderplas@unl.edu<br/> @srvanderplas (github)]
+
+---
+class:primary
+# Acknowledgements
+
+Collaborators: 
+
+- Alicia Carriquiry
+- Guillermo Basulto-Elias
+- James Kruse
+- Heike Hofmann
+
+
+
+
+This work was partially funded by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement #70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
