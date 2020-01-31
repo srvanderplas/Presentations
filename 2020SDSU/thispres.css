@@ -1,0 +1,13 @@
+.pull-left{
+  float: left;
+  width: 50%;
+}
+.pull-right{
+  float: right;
+  width: 50%;
+}
+
+.largish{font-size:110%;}
+.reg{font-size:100%;}
+
+.tiny{font-size:65%;}

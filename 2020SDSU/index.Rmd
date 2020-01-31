@@ -1,0 +1,29 @@
+---
+title: "One of these things is not like the others"
+subtitle: "Visual Statistics and Testing in Statistical Graphics"
+date: "2020-02-11"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "thispres.css"]
+    lib_dir: libs
+    nature:
+      beforeInit: ["mypres.js"]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(echo = F, fig.width = 8, fig.height = 8, dpi = 300)
+library(tidyverse)
+source("code/photo_lineup.R")
+```
+
+.center[
+<img src="lineups/fileac6d6d9106c7-single.svg" width = "80%" alt = "Really obvious lineup"/>
+]
+
+---
+## Significant Plots
+
