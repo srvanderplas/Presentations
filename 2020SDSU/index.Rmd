@@ -17,6 +17,7 @@ output:
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(echo = F, fig.width = 8, fig.height = 8, dpi = 300)
 library(tidyverse)
+library(nullabor)
 source("code/photo_lineup.R")
 ```
 
@@ -25,5 +26,63 @@ source("code/photo_lineup.R")
 ]
 
 ---
-## Significant Plots
+## Lineup Logic
+.pull-left[
+1. A statistic is a function of the sample data, so a plot is a __(visual) statistic__
 
+2. Generate __null plots__ by randomizing the data or sampling from the null distribution
+
+3. Construct a __visual hypothesis test__ consisting of $m$ plots, with $m_0$ null plots and $m-m_0$ target plots
+
+4. User testing: $K$ evaluations of the lineup with panel selection counts $c_1, ..., c_m$ where $\displaystyle K = \sum_{i=1}^m c_i$ 
+
+].pull-right[
+.center[
+<img src="lineups/fileac6d6d9106c7-single.svg" width = "100%" alt = "Really obvious lineup"/>
+]]
+
+---
+class:center
+
+<img src="lineups/polar_line2_1_0_3.png" width="80%" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/>
+
+---
+class:center
+
+<img src="lineups/euc_line2_1_0_13.png" width="80%" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/>
+
+
+---
+## Visual Power
+
+Lineups allow us to determine the (visual) power of different plot types
+
+<img src="lineups/euc_line2_1_0_13-ans.png" height="330px" width = "auto" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/>
+<img src="lineups/polar_line2_1_0_3-ans.png" height="330px" width = "auto" alt = "Lineup (plot 3 is the target)" style="margin-left:10px;margin-right:0;"/>
+
+---
+
+<img src="lineups/set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png" width="80%" alt = "Lineup with trendline (plot 12 and 5 are the targets)" style="margin-left:0;margin-right:10px;"/>
+
+---
+
+<img src="lineups/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png" width="80%" alt = "Lineup with colored points and 95% bounding ellipses (plot 12 and 5 are the targets)" style="margin-left:0;margin-right:10px;"/>
+
+
+---
+## Two-Target Lineups
+
+<img src="image/datamodels-1.png" width = "30%" alt = "Trend model" style="margin-left:0;margin-right:10px;"/>
+<img src="image/datamodels-2.png" width = "30%" alt = "Mixture model" style="margin-left:10px;margin-right:10px;"/>
+<img src="image/datamodels-3.png" width = "30%" alt = "Cluster model" style="margin-left:10px;margin-right:0;"/>
+
+With carefully chosen model parameters, two-target lineups test subtle aesthetic choices and the effect of summary objects 
+
+???
+
+We can also construct lineups which compare two extremes. Here, the null plots are mixtures of the two base models. The goal of these lineups is to determine which model is more visually salient (and, with different aesthetics, how that answer changes)
+
+---
+## Visual P-values
+
+- 
