@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>One of these things is not like the others</title>
+    <meta charset="utf-8" />
+    <meta name="date" content="2020-02-11" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="thispres.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# One of these things is not like the others
+## Visual Statistics and Testing in Statistical Graphics
+### 2020-02-11
+
+---
+
+
+
+
+.center[
+&lt;img src="lineups/fileac6d6d9106c7-single.svg" width = "80%" alt = "Really obvious lineup"/&gt;
+]
+
+---
+## Lineup Logic
+.pull-left[
+1. A statistic is a function of the sample data, so a plot is a __(visual) statistic__
+
+2. Generate __null plots__ by randomizing the data or sampling from the null distribution
+
+3. Construct a __visual hypothesis test__ consisting of `\(m\)` plots, with `\(m_0\)` null plots and `\(m-m_0\)` target plots
+
+4. User testing: `\(K\)` evaluations of the lineup with panel selection counts `\(c_1, ..., c_m\)` where `\(\displaystyle K = \sum_{i=1}^m c_i\)` 
+
+].pull-right[
+.center[
+&lt;img src="lineups/fileac6d6d9106c7-single.svg" width = "100%" alt = "Really obvious lineup"/&gt;
+]]
+
+
+---
+## Visual P-values
+
+- `\(K\)` evaluations of the lineup by different individuals
+- Panel selection counts `\(c_i, i = 1, ..., m\)`
+- `\(\theta_i \sim \text{Dirichlet}(\alpha)\)` (symmetric Dirichlet distribution)
+
+We can model the panel selection counts `\(c_i\)` as a Multinomial with a Dirichlet prior: 
+
+
+`$$\begin{align} \text{Pr}(\vec{c} | \alpha) &amp;= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
+\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\ &amp; \text{Dirichlet-multinomial distribution}\end{align}$$`
+
+With appropriate values for the hyperparameter `\(\alpha\)`, we can calculate a "visual p-value"
+
+--
+
+Not all lineup studies depend on explicit calculation of the visual p-values
+
+---
+class:center
+
+&lt;img src="lineups/polar_line2_1_0_3.png" width="80%" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/&gt;
+
+---
+class:center
+
+&lt;img src="lineups/euc_line2_1_0_13.png" width="80%" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/&gt;
+
+---
+## Visual Power
+
+Lineups allow us to determine the (visual) power of different plot types
+
+&lt;img src="lineups/euc_line2_1_0_13-ans.png" height="330px" width = "auto" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/&gt;
+&lt;img src="lineups/polar_line2_1_0_3-ans.png" height="330px" width = "auto" alt = "Lineup (plot 3 is the target)" style="margin-left:10px;margin-right:0;"/&gt;
+
+---
+
+&lt;img src="lineups/set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png" width="80%" alt = "Lineup with trendline (plot 12 and 5 are the targets)" style="margin-left:0;margin-right:10px;"/&gt;
+
+---
+
+&lt;img src="lineups/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png" width="80%" alt = "Lineup with colored points and 95% bounding ellipses (plot 12 and 5 are the targets)" style="margin-left:0;margin-right:10px;"/&gt;
+
+---
+## Two-Target Lineups
+
+.pull-left[
+
+- Original lineup design modeled on classical hypothesis testing: &lt;br/&gt;under `\(H_0\)`, `$$P(\text{target plot selected}) = 0.05$$`
+
+- Two-target lineups use simulated data from two different data-generating models
+
+- Null plots are a mixture between the two models
+
+].pull-right[
+&lt;img src="lineups/287be2de779da8641715f91d3b5c4277.svg"/&gt;
+]
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+&lt;img src="image/datamodels-1.png" width = "30%" alt = "Trend model" style="margin-left:0;margin-right:10px;"/&gt;
+&lt;img src="image/datamodels-2.png" width = "30%" alt = "Mixture model" style="margin-left:10px;margin-right:10px;"/&gt;
+&lt;img src="image/datamodels-3.png" width = "30%" alt = "Cluster model" style="margin-left:10px;margin-right:0;"/&gt;
+
+- 1 trend model dataset - "trend target"
+- 18 mixture model datasets for null plots
+- 1 cluster model dataset - "cluster target"
+
+Goal: Which of the two target plots are most likely to be selected?
+
+- influence of aesthetic choices
+- influence of summary objects
+???
+
+We can also construct lineups which compare two extremes. Here, the null plots are mixtures of the two base models. The goal of these lineups is to determine which model is more visually salient (and, with different aesthetics, how that answer changes)
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+&lt;table width="100%" class="blank"&gt;
+&lt;tr class="blank"&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-1.png" width="auto"/&gt;
+&lt;/td&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-2.png" width="auto"/&gt;
+&lt;/td&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-3.png" width="auto"/&gt;
+&lt;/td&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-4.png" width="auto"/&gt;
+&lt;/td&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-5.png" width="auto"/&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr class="blank"&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-6.png" width="auto"/&gt;
+&lt;/td&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-7.png" width="auto"/&gt;
+&lt;/td&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-8.png" width="auto"/&gt;
+&lt;/td&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-9.png" width="auto"/&gt;
+&lt;/td&gt;&lt;td&gt;
+&lt;img src="image/plot-aes-demo-10.png" width="auto"/&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+
+- 10 different combinations of aesthetics
+
+- Each combination emphasizes clusters (color, shape, ellipse) or linear trends (trend line, prediction interval)
+
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+Other factors:
+
+- Parameter values - cluster standard deviation, error around the linear trend line
+
+- Number of clusters
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+In the end...
+
+3 levels of variability for cluster model    
+3 levels of variability for trend model    
+2 levels of # clusters (3, 5)    
+
+= 18 parameter combinations
+
+--
+
+x 3 lineup datasets per parameter combination
+
+= 54 datasets
+
+--
+
+x 10 aesthetic combinations per lineup dataset
+
+= 540 different plots
+
+***
+
+1201 participants    
+10 plot evaluations per participant
+
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+![](image/cluster-vs-line-1.png)
+
+Comparing only data where one or both of the target plots were selected...
+
+???
+
+- Error bands increase the likelihood of selecting the trend target
+- Color, Shape, Ellipses increase the likelihood of selecting the cluster target
+
+- Color beats trend
+- Error bands beat color + ellipse
+
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+But how do participants justify their choices?
+
+When shown a **plain** plot... Participants who chose ______ said: 
+
+Cluster | Null | Trend
+------- | ---- | -------
+&lt;img src="image/wordles-plain-1.png" width = "auto"/&gt; | &lt;img src="image/wordles-plain-2.png" width = "auto"/&gt; | &lt;img src="image/wordles-plain-3.png" width = "auto"/&gt; 
+
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+But how do participants justify their choices?
+
+When shown a **color** plot... Participants who chose ______ said: 
+
+Cluster | Null | Trend
+------- | ---- | -------
+&lt;img src="image/wordles-color-1.png" width = "auto"/&gt; | &lt;img src="image/wordles-color-2.png" width = "auto"/&gt; | &lt;img src="image/wordles-color-3.png" width = "auto"/&gt; 
+
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+But how do participants justify their choices?
+
+When shown a **line** plot... Participants who chose ______ said: 
+
+Cluster | Null | Trend
+------- | ---- | -------
+&lt;img src="image/wordles-line-1.png" width = "auto"/&gt; | &lt;img src="image/wordles-line-2.png" width = "auto"/&gt; | &lt;img src="image/wordles-line-3.png" width = "auto"/&gt; 
+
+---
+## Conclusion
+
+- Lineups are a powerful tool for examining the strength of a visual signal in data
+
+- Lineups can be used to compare the visual power of different plot designs
+
+- Two-target lineups can be used to explore the effect of different aesthetics and statistical layers 
+
+- Visual exploration is equivalent to simultaneously running many different numerical tests for single features
+    - Formalizing this in an experimental framework leverages the power of the visual system
+
+---
+## References
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="mypres.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
