@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>One of these things is not like the others</title>
     <meta charset="utf-8" />
@@ -21,10 +21,12 @@ class: center, middle, inverse, title-slide
 
 
 
+
+
 .center[
 &lt;img src="lineups/fileac6d6d9106c7-single.svg" width = "80%" alt = "Really obvious lineup"/&gt;
 ]
-
+.bottom[Lineup from Loy et al (2017)]
 ---
 ## Lineup Logic
 .pull-left[
@@ -41,51 +43,77 @@ class: center, middle, inverse, title-slide
 &lt;img src="lineups/fileac6d6d9106c7-single.svg" width = "100%" alt = "Really obvious lineup"/&gt;
 ]]
 
+.bottom[Lineup from Loy et al (2017)]
 
 ---
 ## Visual P-values
 
 - `\(K\)` evaluations of the lineup by different individuals
-- Panel selection counts `\(c_i, i = 1, ..., m\)`
-- `\(\theta_i \sim \text{Dirichlet}(\alpha)\)` (symmetric Dirichlet distribution)
-
-We can model the panel selection counts `\(c_i\)` as a Multinomial with a Dirichlet prior: 
-
-
-`$$\begin{align} \text{Pr}(\vec{c} | \alpha) &amp;= \frac{(K)!\,\, \Gamma(m\alpha)}{\Gamma(K + m\alpha)\left(\Gamma(\alpha)\right)^m}
-\prod_{i=1}^{m} \frac{\Gamma\left(c_i + \alpha\right)}{c_i!} \\ &amp; \text{Dirichlet-multinomial distribution}\end{align}$$`
-
-With appropriate values for the hyperparameter `\(\alpha\)`, we can calculate a "visual p-value"
+- Panel selection counts `\(c_i, i = 1, ..., m\)` where `\(\sum_i c_i = K\)`
 
 --
+***
+Option 1: All plots are equally likely to be selected 
+`$$\vec{c} \sim\text{Multinomial}(1/20, K)$$`
 
-Not all lineup studies depend on explicit calculation of the visual p-values
+--
+***
+Option 2: Some null plots may be visually interesting by chance
+
+We can model the panel selection counts `$$\vec{c} \sim\text{Multinomial}(\vec{\theta}, K)$$`
+
+with panel selection probabilities `\(\theta_i\)` distributed as a symmetric Dirichlet distribution `$$\vec\theta \sim \text{Dirichlet}(\alpha)$$`
 
 ---
-class:center
+## Visual P-values
 
+Option 1 | Option 2
+:------: | :------:
+All plots are equally likely to be selected | Some null plots may be visually interesting by chance
+`$$\vec{c} \sim\text{Multinomial}(1/20, K)$$` | `$$\vec{c} \sim\text{Multinomial}(\vec{\theta}, K)$$` `$$\vec\theta \sim \text{Dirichlet}(\alpha)$$`
+
+Either method allows us to calculate a "visual p-value" analogous to a simulation-based hypothesis test
+
+---
+
+.center[
 &lt;img src="lineups/polar_line2_1_0_3.png" width="80%" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/&gt;
+]
+.bottom[Lineup from Hofmann et al (2012)]
 
 ---
-class:center
 
+.center[
 &lt;img src="lineups/euc_line2_1_0_13.png" width="80%" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/&gt;
+]
+.bottom[Lineup from Hofmann et al (2012)]
 
 ---
 ## Visual Power
 
 Lineups allow us to determine the (visual) power of different plot types
 
-&lt;img src="lineups/euc_line2_1_0_13-ans.png" height="330px" width = "auto" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/&gt;
 &lt;img src="lineups/polar_line2_1_0_3-ans.png" height="330px" width = "auto" alt = "Lineup (plot 3 is the target)" style="margin-left:10px;margin-right:0;"/&gt;
+&lt;img src="lineups/euc_line2_1_0_13-ans.png" height="330px" width = "auto" alt = "Lineup (plot 13 is the target)" style="margin-left:0;margin-right:10px;"/&gt;
+
+.bottom[Lineups from Hofmann et al (2012)]
+--
+
+Whichever design results in the target being identified more often is more visually powerful.
 
 ---
 
+.center[
 &lt;img src="lineups/set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png" width="80%" alt = "Lineup with trendline (plot 12 and 5 are the targets)" style="margin-left:0;margin-right:10px;"/&gt;
+]
+.bottom[Lineup from Vanderplas &amp; Hofmann (2017)]
 
 ---
 
+.center[
 &lt;img src="lineups/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png" width="80%" alt = "Lineup with colored points and 95% bounding ellipses (plot 12 and 5 are the targets)" style="margin-left:0;margin-right:10px;"/&gt;
+]
+.bottom[Lineup from Vanderplas &amp; Hofmann (2017)]
 
 ---
 ## Two-Target Lineups
@@ -102,12 +130,16 @@ Lineups allow us to determine the (visual) power of different plot types
 &lt;img src="lineups/287be2de779da8641715f91d3b5c4277.svg"/&gt;
 ]
 
+.bottom[Lineup from Vanderplas &amp; Hofmann (2017)]
+
 ---
 ## The Giant Two-Target Lineup Factorial Study
 
 &lt;img src="image/datamodels-1.png" width = "30%" alt = "Trend model" style="margin-left:0;margin-right:10px;"/&gt;
 &lt;img src="image/datamodels-2.png" width = "30%" alt = "Mixture model" style="margin-left:10px;margin-right:10px;"/&gt;
 &lt;img src="image/datamodels-3.png" width = "30%" alt = "Cluster model" style="margin-left:10px;margin-right:0;"/&gt;
+
+Each lineup contains: 
 
 - 1 trend model dataset - "trend target"
 - 18 mixture model datasets for null plots
@@ -120,6 +152,31 @@ Goal: Which of the two target plots are most likely to be selected?
 ???
 
 We can also construct lineups which compare two extremes. Here, the null plots are mixtures of the two base models. The goal of these lineups is to determine which model is more visually salient (and, with different aesthetics, how that answer changes)
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+&lt;img src="image/datamodels-1.png" width = "30%" alt = "Trend model" style="margin-left:0;margin-right:10px;"/&gt;
+&lt;img src="image/datamodels-2.png" width = "30%" alt = "Mixture model" style="margin-left:10px;margin-right:10px;"/&gt;
+&lt;img src="image/datamodels-3.png" width = "30%" alt = "Cluster model" style="margin-left:10px;margin-right:0;"/&gt;
+
+Data generating parameters:
+- `\(\sigma_T\)` - variability around the trend line
+- `\(\sigma_C\)` - variability around cluster centers
+- `\(k\)` - number of clusters ( `\(k\in\{3, 5\}\)` )
+- `\(N\)` - number of points (fixed at `\(15\cdot k\)` )
+
+Levels of data generating parameters chosen to be easy, medium, and hard to discriminate, based on numerical assessments - correlation, Gini inequality
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+### Big picture: 
+How do Gestalt principles of perception apply to statistical graphics, and which effects are stronger?
+
+![Gestalt Laws of Perception](image/Gestalt.svg)
+
+.bottom[Figure modified from [Valessio CC BY  https://creativecommons.org/licenses/by/4.0](https://commons.wikimedia.org/wiki/File:Gestalt.svg)]
 
 ---
 ## The Giant Two-Target Lineup Factorial Study
@@ -158,15 +215,6 @@ We can also construct lineups which compare two extremes. Here, the null plots a
 ---
 ## The Giant Two-Target Lineup Factorial Study
 
-Other factors:
-
-- Parameter values - cluster standard deviation, error around the linear trend line
-
-- Number of clusters
-
----
-## The Giant Two-Target Lineup Factorial Study
-
 In the end...
 
 3 levels of variability for cluster model    
@@ -177,28 +225,34 @@ In the end...
 
 --
 
-x 3 lineup datasets per parameter combination
-
-= 54 datasets
+x 3 lineup datasets per parameter combination **= 54 datasets**
+***
 
 --
 
-x 10 aesthetic combinations per lineup dataset
-
-= 540 different plots
+x 10 aesthetic combinations per lineup dataset **= 540 different plots**
 
 ***
 
-1201 participants    
-10 plot evaluations per participant
+1201 participants x 10 evaluations each    
+`\(=\)` 12010 participant evaluations of 540 different plots
+
+`\(\approx\)` 22 evaluations per plot
+
+---
+## The Giant Two-Target Lineup Factorial Study
+
+![](image/accuracy-1.png)&lt;!-- --&gt;
 
 
 ---
 ## The Giant Two-Target Lineup Factorial Study
 
+Modeling `\(P(\text{Cluster selected} | \text{Cluster or Trend target selected})\)`, 
+
 ![](image/cluster-vs-line-1.png)
 
-Comparing only data where one or both of the target plots were selected...
+Fitting models is one thing, but we might get some more clarity from asking participants why they selected their answer.
 
 ???
 
@@ -214,7 +268,7 @@ Comparing only data where one or both of the target plots were selected...
 
 But how do participants justify their choices?
 
-When shown a **plain** plot... Participants who chose ______ said: 
+When shown a **plain** plot... Participants who chose .underline[.hidden[some plot]] said: 
 
 Cluster | Null | Trend
 ------- | ---- | -------
@@ -226,7 +280,7 @@ Cluster | Null | Trend
 
 But how do participants justify their choices?
 
-When shown a **color** plot... Participants who chose ______ said: 
+When shown a **color** plot... Participants who chose .underline[.hidden[some plot]] said: 
 
 Cluster | Null | Trend
 ------- | ---- | -------
@@ -238,7 +292,7 @@ Cluster | Null | Trend
 
 But how do participants justify their choices?
 
-When shown a **line** plot... Participants who chose ______ said: 
+When shown a **line** plot... Participants who chose .underline[.hidden[some plot]] said: 
 
 Cluster | Null | Trend
 ------- | ---- | -------
@@ -258,6 +312,16 @@ Cluster | Null | Trend
 
 ---
 ## References
+
+- [Wickham, H., Cook, D., Hofmann, H., &amp; Buja, A. (2010). Graphical inference for infovis. IEEE Transactions on Visualization and Computer Graphics, 16(6), 973-979.](https://doi.org/10.1109/TVCG.2010.161)
+
+- [Hofmann, H., Follett, L., Majumder, M., &amp; Cook, D. (2012). Graphical tests for power comparison of competing designs. IEEE Transactions on Visualization and Computer Graphics, 18(12), 2441-2448.](https://doi.org/10.1109/TVCG.2012.230)
+
+- [Majumder, M., Hofmann, H., &amp; Cook, D. (2013). Validation of visual statistical inference, applied to linear models. Journal of the American Statistical Association, 108(503), 942-956.](https://doi.org/10.1080/01621459.2013.808157)
+
+- [Loy, A., Hofmann, H., &amp; Cook, D. (2017). Model Choice and Diagnostics for Linear Mixed-Effects Models Using Statistics on Street Corners. Journal of Computational and Graphical Statistics, 26(3), 478-492.](https://doi.org/10.1080/10618600.2017.1330207)
+
+- [VanderPlas, S., &amp; Hofmann, H. (2017). Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics. Journal of Computational and Graphical Statistics, 26(2), 231-242.](https://doi.org/10.1080/10618600.2016.1209116)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

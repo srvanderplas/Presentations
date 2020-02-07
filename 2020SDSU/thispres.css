@@ -26,3 +26,19 @@
 .remark-slide table tr.blank {
   background-color:#FFFFFF;
 }
+
+
+.bottom,.footer {
+  position: absolute;
+  bottom: 3px;
+  width: 100%;
+  font-size: 50%;
+}
+
+.underline {
+  border-bottom:1px solid black;display:inline-block;
+}
+
+.hidden{
+  visibility:hidden;
+}
