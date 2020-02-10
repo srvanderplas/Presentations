@@ -410,3 +410,10 @@ Cluster | Null | Trend
 - [Loy, A., Hofmann, H., & Cook, D. (2017). Model Choice and Diagnostics for Linear Mixed-Effects Models Using Statistics on Street Corners. Journal of Computational and Graphical Statistics, 26(3), 478-492.](https://doi.org/10.1080/10618600.2017.1330207)
 
 - [VanderPlas, S., & Hofmann, H. (2017). Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics. Journal of Computational and Graphical Statistics, 26(2), 231-242.](https://doi.org/10.1080/10618600.2016.1209116)
+
+---
+
+.center[
+<img src="lineups/set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png" width="80%" alt = "Lineup with colored points and 95% bounding ellipses (plot 12 and 5 are the targets)" style="margin-left:0;margin-right:10px;"/>
+]
+.bottom[Lineup from Vanderplas & Hofmann (2017)]
