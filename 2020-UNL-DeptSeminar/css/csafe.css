@@ -161,8 +161,19 @@
   max-height:400px;
 }
 
+.move-margin-wide {
+  position: absolute;
+  margin: auto;
+  top: 227px; bottom: 50px; right: 10px;
+  max-width: 320px;
+  max-height:400px;
+}
+
 .move-up {
   margin-top:-50px !important;
+}
+.move-up-more {
+  margin-top:-170px !important;
 }
 
 .nudge-up {

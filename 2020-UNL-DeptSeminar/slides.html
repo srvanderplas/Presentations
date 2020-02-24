@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
-    <title>Challenges in Automatic Pattern Matching in Forensics</title>
+    <title>Challenges in Statistical Forensics</title>
     <meta charset="utf-8" />
     <meta name="author" content="Susan Vanderplas" />
     <meta name="date" content="2020-03-11" />
@@ -9,18 +9,21 @@
     <link rel="stylesheet" href="css/csafe.css" type="text/css" />
     <link rel="stylesheet" href="css/csafe-fonts.css" type="text/css" />
     <link rel="stylesheet" href="css/this-presentation.css" type="text/css" />
+    <link rel="stylesheet" href="css/modal.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Challenges in Automatic Pattern Matching in Forensics
+# Challenges in Statistical Forensics
 ### Susan Vanderplas
 ### March 11, 2020
 
 ---
 
 class: secondary
+
+
 
 
 &lt;img src="images/bitemark-headline.png" width="100%" alt="bitemark analysis headline"/&gt;
@@ -44,20 +47,302 @@ class: primary
 
 - 2009 National Academy of Sciences Report - [*Strengthening Forensic Science in the United States: A Path Forward*](https://www.ncjrs.gov/pdffiles1/nij/grants/228091.pdf)
 
-- 2015 President's Council of Advisors on Science and Technology (PCAST) report - [*Forensic Science in Criminal Courts: Ensuring Scientific Validity of Feature Comparison Methods*](https://obamawhitehouse.archives.gov/sites/default/files/microsites/ostp/PCAST/pcast_forensic_science_report_final.pdf)
+- 2016 President's Council of Advisors on Science and Technology (PCAST) report - [*Forensic Science in Criminal Courts: Ensuring Scientific Validity of Feature Comparison Methods*](https://obamawhitehouse.archives.gov/sites/default/files/microsites/ostp/PCAST/pcast_forensic_science_report_final.pdf)
 
 #### Fundamental Conclusions:
 
-- Subjective
-- Not founded in good science
-- No statistical basis for making claims of identification (match) or exclusion (non-match)
-- Error rate estimates are ?
+- Science - Poor or nonexistent scientific foundations for specific analyses
+
+- Subjectivity - Conclusions are based off of subjective evaluations
+
+- Screw ups - Estimates of error rates are nonexistent or not credible
 
 Primary problems in "Pattern Evidence" - Shoeprints, Fingerprints, Bullet/Cartridge, Blood spatter, Handwriting.
 
+???
+Over the past 15 years or so, there was a bit of a revolution in forensics; starting with DNA. It became possible to revisit old cases and examine evidence from these cases using new DNA techniques, which has led to the overturning of at least 365 different verdicts. As a result of these cases, some of the errors in the forensic sciences became much more obvious; generally, the falsely accused were convicted through a combination of shoddy science, false confessions, and poor legal representation. 
+
+There have been two major reports which analyzed the state of forensic science in the US: the National Academy of Science report in 2009 and the PCAST report in 2016. These reports highlight a number of problems in forensics, but primarily focus on the "pattern" disciplines - disciplines that involve the analysis of evidence that is usually stored in image form. 
+
+The reports note that the scientific foundations of these disciplines is poor - we do not know enough about the mechanisms that generate the evidence (tooling marks on a rifle barrel, how fingerprints are formed, the distribution of shoes in the population) to be able to characterize the process of leaving pattern evidence at a crime scene in a scientific way. 
+
+In addition, at the moment, most pattern evidence is evaluated subjectively. Examiners will compare the crime scene evidence to evidence generated using a test object (a recovered gun, a pair of the suspect's shoes, etc.) visually, with little or no quantitative evidence to back that up. This makes it very hard to assess the strength of any particular match - examiners will testify based on their experience as an examiner, it is extremely unlikely that a match that good would come from two different sources, but there isn't any scientific foundation there or any objective method for evaluation. 
+
+Finally, the reports found that error rate quantification in the forensic sciences is poor. During training, examiners are taught that it is part of their job to contribute to the discipline's foundations by doing these error rate studies, but the design of these studies, and the conclusions that can be drawn from them, leaves a lot to be desired.
+
+Today, I'm going to talk about some of the work I'm doing in forensics, touching briefly on a couple of different projects and situating them in the wider context of the state of the field as a whole. I'm going to primarily focus on work with firearms and toolmark examination data, but the concepts are applicable across a wide range of pattern disciplines.
+
+---
+class:secondary
+.move-up-more[
+![Gif of bullet firing](images/bullet_firing_short.gif)
+]
+
+
+&lt;img src="images/Cartridge.png" alt = "Image of a cartridge case after firing" width = "49%" style="vertical-align:bottom"/&gt; 
+.move-margin-wide[
+&lt;img src="images/Bullet.png" alt = "Image of a bullet after firing" style="vertical-align:bottom"/&gt;
+]
+
+
+???
+Before I start talking about the research addressing the deficiencies in forensic science, however, I think it's probably worth talking a bit about firearms evidence and the comaprisons which are made. 
+
+This gif shows a bullet being fired from a rifled handgun. At the end of the clip, there are two pieces of metal left - the cartridge, which has a mark from the firing pin and has slammed into the "breech face" (which was cut away in this image so you could see the firing process) leaving an impression. There's also the bullet, which has been forced through the barrel at high speed, leaving scrapes along the bullet surface. These scrapes are a result of microscopic imperfections left behind during the rifling process, and are believed to be unique to the barrel.
+
+
+---
+class:secondary
+.move-up-more[
+.pull-left[
+![Comparison Microscope](images/ComparisonMicroscope.png)
+].pull-right[
+&lt;img alt="Scan Comparison Up Close" src="images/Comparison_Scope_Crop_View.png" width="80%"/&gt;
+]
+]
+![Aligned Bullet Comparison](images/Bullets_Aligned_comparison_horiz.png)
+
+???
+
+Cartridge cases are harder for me to see and show you, but it's really easy to see why it seems like these two bullets would have come from the same source - the microscopic striations line up exactly; this is indicative of the same pattern of imperfections along the barrel's length. 
+
+An examiner would use a comparison microscope, like the one shown on the left, to examine the striation marks on each bullet at the same time, yielding a view like the top-right image. 
+
+In higher detail, you can see a similar image created using 3D scans of two matching bullet lands to see just how much correspondance there is between bullets that are from the same source.
+
+But we don't actually have any scientific foundation for making the claim that with substantial similarity the only reasonable explanation is that the bullets came from the same source.
+
 ---
 class:primary
-## Forensic Examiner Conclusions
+## Science
+
+&gt; Conclusions drawin in firearms identification should not be made to imply the presence of a firm statistical basis when none has been demonstrated
+
+What would we need? According to Spiegelman &amp; Tobin (2013)
+
+- Every rifled firearm brand
+  - different production settings, batches, tempering methods, barrel alloys
+- Different ammunition types and sizes
+- Different break-in periods for the guns
+- Different maintenance procedures and lubrication types
+
+THEN, examine multiple fired bullets/cartridges from each combination of factors to see how unique the markings are across different factors. 
+
+And even then, you can't generalize to new firearms
+
+???
+
+To completely understand how the marking process works and how identifiable everything is, some people suggest that a rigorous study of all possible environmental conditions, firearm/ammunition combinations, manufacturing conditions, and other factors should be examined. If any bullets found have similar markings and were fired from different guns, then game over, firearms examination is not scientifically valid. Similarly, if bullets with different markings came from the same gun, there's no scientific validity.
+
+I think that view is too harsh on a number of levels: This experiment is not possible to do, but it's also worth pointing out that there are reasons why bullets might not have the same striation marks even if they were fired from the same gun - they may collide with other objects, they may have been damaged during the firing process (explosions are unpredictable), the trajectory through the barrel might have resulted in certain imperfections not making contact with the bullet surface.
+
+In any case, addressing the question of scientific validity from a head-on approach is not particularly easy. 
+
+---
+class:primary
+## Subjectivity
+
+Hare, Hofmann, and Carriquiry (2017) proposed a method for automated bullet matching
+
+.pull-left[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgHS36BulletWithCrosscut' src='images/HS36-Bullet-With-Crosscut.png' alt='Bullet with Crosscut' =''&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalHS36BulletWithCrosscut' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalHS36BulletWithCrosscut'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionHS36BulletWithCrosscut' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgCombinedcrosssection' src='images/Combined-cross-section.png' alt='Crosscut and profile' =''&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalCombinedcrosssection' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalCombinedcrosssection'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionCombinedcrosssection' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+].pull-right[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgsignaturecombined' src='images/signature-combined.png' alt='Bullet smooth and resulting signature' =''&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalsignaturecombined' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalsignaturecombined'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionsignaturecombined' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgsignaturealigned' src='images/signature-aligned.png' alt='Aligned bullet signatures' =''&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalsignaturealigned' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalsignaturealigned'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionsignaturealigned' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+]
+
+.move-margin[
+Numeric features derived from aligned signatures 
+
+Features used to train a random forest
+
+Random forest votes used to assess similarity
+]
+
+---
+class:primary
+## Subjectivity
+
+- Random Forest initially trained on data from the [NIST Ballistics Toolmark Research Database](https://tsapps.nist.gov/NRBTD/Account/Login)
+  - 35 bullets from the "Hamby" studies used for training
+  - 10 consecutively rifled Ruger P-85 barrels
+  - Digital scans with resolution of 1.5625 microns
+  
+- How well does the Hare, Hofmann, and Carriquiry algorithm generalize to other (similar) firearms?
+&gt; Vanderplas, Nally, Klep, Cadevall, &amp; Hofmann (2020) Comparison of three similarity scores for bullet LEA matching. Forensic Science International
+
+  - 3 different test sets
+  - different scan resolution (0.65 microns)
+  - different firearms (Ruger P-85, Ruger P-95, Ruger LCP)
+  - different types of ammunition
+
+
+---
+class:primary
+## Subjectivity
+
+Comparison of 3 different quantitative measures for bullet LEA matching:
+- Consecutive Matching Striae (CMS)
+- Cross-correlation (CCF)
+- Random forest score (RF)
+
+Goals:
+- Quantify error rates on external test sets
+- Is the optimal cutoff (EER) stable across different firearms?
+
+
+---
+class:primary
+## Subjectivity
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgcompare1' src='images/compare-1.png' alt='Bullet-to-Bullet Average Score Discrimination' width='46%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgcomparelandtoland1' src='images/compare-land-to-land-1.png' alt='Land-to-land Score Discrimination' width='50%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalcompare1' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalcompare1'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captioncompare1' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalcomparelandtoland1' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalcomparelandtoland1'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captioncomparelandtoland1' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+- Complete separation of bullet-to-bullet scores for both RF and CCF
+- Consecutive Matching Striae are terrible at the land-to-land level and not great at the bullet-to-bullet level.
+- The RF score has better separation on most land-to-land measures than CCF
+
+---
+class:primary
+## Subjectivity
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgrocauc1' src='images/roc-auc-1.png' alt='ROC Curves' width='49%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgrocauc2' src='images/roc-auc-2.png' alt='Equal Error Rates with 95% CIs' width='49%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalrocauc1' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalrocauc1'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionrocauc1' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalrocauc2' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalrocauc2'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionrocauc2' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+
+---
+class:primary
+## Subjectivity
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imghou1' src='images/hou-1.png' alt='Houston Set 1' width='60%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalhou1' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalhou1'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionhou1' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imghou2' src='images/hou-2.png' alt='Houston Set 2' width='60%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalhou2' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalhou2'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionhou2' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imghou3' src='images/hou-3.png' alt='Houston Set 3' width='60%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalhou3' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalhou3'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionhou3' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+.move-margin[Coming soon: &lt;br/&gt;A paper comparing the matching algorithm's performance to examiner performance on the Houston FSC test sets.]
+
+---
+class:primary
+## Screw-Ups &lt;br/&gt;(Error Rate Estimates)
+
 Two or more pieces of evidence of the same type: A and B
 
 - Identification: A and B were produced by the same source
@@ -66,13 +351,17 @@ Two or more pieces of evidence of the same type: A and B
 
 - Exclusion/Elimination: A and B were produced by different sources
 
+To be admitted in court, examiner testimony must pass the Daubert standard: Relevance, reliability, based on scientific methodology. 
 
+.small[Additional factors: general acceptance in the scientific community, peer review, whether it can be tested, whether the known or potential error rate is acceptable]
 
+???
+
+Right now, when examiners testify, they usually have two pieces of evidence of the same type: A and B. Then they visually examine A and B to decide whether they originated from the same source (the same gun, shoe, finger) or a different source; if there is not enough detail or the examiner is not sure, they can also say that their examination was inconclusive. Sometimes, they'll say "Could not be excluded", sometimes, they'll say "Insufficient individualizing characteristics to make an identification" -- this terminology differs by forensic lab.
 
 ---
 class: primary
-
-## Juror Perception of Evidence
+## Screw-Ups &lt;br/&gt;(Error Rate Estimates)
 
 Estimated frequency that a qualified, experienced forensic scientist would make a false identification:
 
@@ -82,6 +371,10 @@ Estimated frequency that a qualified, experienced forensic scientist would make 
 - 1 in 100,000 for handwriting
 
 (PCAST Report, 2016)
+
+???
+
+The classification system has its problems, but the larger problem is the so-called CSI effect: Jurors tend to believe forensic examiners are far more knowledgeable and far less likely to make a mistake than in reality.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -127,6 +420,194 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();</script>
+
+<script>
+        /* Get the modal*/
+          var modalHS36BulletWithCrosscut = document.getElementById('modalHS36BulletWithCrosscut');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgHS36BulletWithCrosscut = document.getElementById('imgHS36BulletWithCrosscut');
+          var modalImgHS36BulletWithCrosscut = document.getElementById('imgmodalHS36BulletWithCrosscut');
+          var captionTextHS36BulletWithCrosscut = document.getElementById('captionHS36BulletWithCrosscut');
+          imgHS36BulletWithCrosscut.onclick = function(){
+            modalHS36BulletWithCrosscut.style.display = 'block';
+            modalImgHS36BulletWithCrosscut.src = this.src;
+            captionTextHS36BulletWithCrosscut.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgHS36BulletWithCrosscut.onclick = function() {
+            modalHS36BulletWithCrosscut.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalCombinedcrosssection = document.getElementById('modalCombinedcrosssection');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgCombinedcrosssection = document.getElementById('imgCombinedcrosssection');
+          var modalImgCombinedcrosssection = document.getElementById('imgmodalCombinedcrosssection');
+          var captionTextCombinedcrosssection = document.getElementById('captionCombinedcrosssection');
+          imgCombinedcrosssection.onclick = function(){
+            modalCombinedcrosssection.style.display = 'block';
+            modalImgCombinedcrosssection.src = this.src;
+            captionTextCombinedcrosssection.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgCombinedcrosssection.onclick = function() {
+            modalCombinedcrosssection.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalsignaturecombined = document.getElementById('modalsignaturecombined');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgsignaturecombined = document.getElementById('imgsignaturecombined');
+          var modalImgsignaturecombined = document.getElementById('imgmodalsignaturecombined');
+          var captionTextsignaturecombined = document.getElementById('captionsignaturecombined');
+          imgsignaturecombined.onclick = function(){
+            modalsignaturecombined.style.display = 'block';
+            modalImgsignaturecombined.src = this.src;
+            captionTextsignaturecombined.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgsignaturecombined.onclick = function() {
+            modalsignaturecombined.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalsignaturealigned = document.getElementById('modalsignaturealigned');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgsignaturealigned = document.getElementById('imgsignaturealigned');
+          var modalImgsignaturealigned = document.getElementById('imgmodalsignaturealigned');
+          var captionTextsignaturealigned = document.getElementById('captionsignaturealigned');
+          imgsignaturealigned.onclick = function(){
+            modalsignaturealigned.style.display = 'block';
+            modalImgsignaturealigned.src = this.src;
+            captionTextsignaturealigned.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgsignaturealigned.onclick = function() {
+            modalsignaturealigned.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcompare1 = document.getElementById('modalcompare1');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcompare1 = document.getElementById('imgcompare1');
+          var modalImgcompare1 = document.getElementById('imgmodalcompare1');
+          var captionTextcompare1 = document.getElementById('captioncompare1');
+          imgcompare1.onclick = function(){
+            modalcompare1.style.display = 'block';
+            modalImgcompare1.src = this.src;
+            captionTextcompare1.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcompare1.onclick = function() {
+            modalcompare1.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcomparelandtoland1 = document.getElementById('modalcomparelandtoland1');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcomparelandtoland1 = document.getElementById('imgcomparelandtoland1');
+          var modalImgcomparelandtoland1 = document.getElementById('imgmodalcomparelandtoland1');
+          var captionTextcomparelandtoland1 = document.getElementById('captioncomparelandtoland1');
+          imgcomparelandtoland1.onclick = function(){
+            modalcomparelandtoland1.style.display = 'block';
+            modalImgcomparelandtoland1.src = this.src;
+            captionTextcomparelandtoland1.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcomparelandtoland1.onclick = function() {
+            modalcomparelandtoland1.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalrocauc1 = document.getElementById('modalrocauc1');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgrocauc1 = document.getElementById('imgrocauc1');
+          var modalImgrocauc1 = document.getElementById('imgmodalrocauc1');
+          var captionTextrocauc1 = document.getElementById('captionrocauc1');
+          imgrocauc1.onclick = function(){
+            modalrocauc1.style.display = 'block';
+            modalImgrocauc1.src = this.src;
+            captionTextrocauc1.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgrocauc1.onclick = function() {
+            modalrocauc1.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalrocauc2 = document.getElementById('modalrocauc2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgrocauc2 = document.getElementById('imgrocauc2');
+          var modalImgrocauc2 = document.getElementById('imgmodalrocauc2');
+          var captionTextrocauc2 = document.getElementById('captionrocauc2');
+          imgrocauc2.onclick = function(){
+            modalrocauc2.style.display = 'block';
+            modalImgrocauc2.src = this.src;
+            captionTextrocauc2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgrocauc2.onclick = function() {
+            modalrocauc2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalhou1 = document.getElementById('modalhou1');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imghou1 = document.getElementById('imghou1');
+          var modalImghou1 = document.getElementById('imgmodalhou1');
+          var captionTexthou1 = document.getElementById('captionhou1');
+          imghou1.onclick = function(){
+            modalhou1.style.display = 'block';
+            modalImghou1.src = this.src;
+            captionTexthou1.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImghou1.onclick = function() {
+            modalhou1.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalhou2 = document.getElementById('modalhou2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imghou2 = document.getElementById('imghou2');
+          var modalImghou2 = document.getElementById('imgmodalhou2');
+          var captionTexthou2 = document.getElementById('captionhou2');
+          imghou2.onclick = function(){
+            modalhou2.style.display = 'block';
+            modalImghou2.src = this.src;
+            captionTexthou2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImghou2.onclick = function() {
+            modalhou2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalhou3 = document.getElementById('modalhou3');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imghou3 = document.getElementById('imghou3');
+          var modalImghou3 = document.getElementById('imgmodalhou3');
+          var captionTexthou3 = document.getElementById('captionhou3');
+          imghou3.onclick = function(){
+            modalhou3.style.display = 'block';
+            modalImghou3.src = this.src;
+            captionTexthou3.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImghou3.onclick = function() {
+            modalhou3.style.display = 'none';
+          }
+</script>
 
 <script>
 (function() {
