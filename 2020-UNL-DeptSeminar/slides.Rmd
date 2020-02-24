@@ -292,14 +292,6 @@ cat(img_modal(src = "images/hou-3.png", alt = "Houston Set 3", other=list(width=
 class:primary
 ## Screw-Ups <br/>(Error Rate Estimates)
 
-Two or more pieces of evidence of the same type: A and B
-
-- Identification: A and B were produced by the same source
-
-- Inconclusive: Insufficient information in A and B to make a decision
-
-- Exclusion/Elimination: A and B were produced by different sources
-
 To be admitted in court, examiner testimony must pass the **Daubert standard** as codified in Rule 702 of Federal rules of evidence
 - Relevance - the method is relevant to the evidence
 - Reliability - the method rests on a reliable foundation
@@ -311,29 +303,73 @@ To be admitted in court, examiner testimony must pass the **Daubert standard** a
 
 Right now, when examiners testify, they usually have two pieces of evidence of the same type: A and B. Then they visually examine A and B to decide whether they originated from the same source (the same gun, shoe, finger) or a different source; if there is not enough detail or the examiner is not sure, they can also say that their examination was inconclusive. Sometimes, they'll say "Could not be excluded", sometimes, they'll say "Insufficient individualizing characteristics to make an identification" -- this terminology differs by forensic lab.
 
----
-class: primary
-## Screw-Ups <br/>(Error Rate Estimates)
-
-Estimated frequency that a qualified, experienced forensic scientist would make a false identification:
-
-- 1 in 5.5 million for fingerprints
-- 1 in 1 million for bitemark
-- 1 in 1 million for hair
-- 1 in 100,000 for handwriting
-
-(PCAST Report, 2016)
-
-???
-
-The classification system has its problems, but the larger problem is the so-called CSI effect: Jurors tend to believe forensic examiners are far more knowledgeable and far less likely to make a mistake than in reality. 
-
-
 
 ---
 class: primary
 ## Screw-Ups <br/>(Error Rate Estimates)
 
-So the jury population is perhaps poor at estimating error rates... but what do studies say?
+Types of forensic evidence error rate studies:
+- In a *closed set* study, all unknown samples share the same source as one of the knowns in the set (*open set* studies contain unknowns that do not match any knowns)
+
+- A *white-box* study asks examiners to explain why they made a decision, by marking images of the samples or otherwise indicating their thought process. (A *black-box* study only records the answers)
+
+- A *blind* study is one where examiners do not know they are participating in a study -- the test is designed to look like casework. This is hard to pull off effectively.
+
+Different numbers of known and unknown samples in each study - varies the number of comparisons required.
+
+---
+class:primary
+## AFTE Theory of <br/>Identification
+
+Option 1: Identification
+> Agreement of a combination of individual characteristics and all discernible class characteristics where the extent of agreement exceeds that which can occur in the comparison of toolmarks made by different tools and is consistent with the agreement demonstrated by toolmarks known to have been produced by the same tool.
+
+Option 2: Elimination
+> Significant disagreement of discernible class characteristics and/or individual characteristics.
+
+---
+class:primary
+## AFTE Theory of <br/>Identification
+
+Option 3: Inconclusive
+> (a) Some agreement of individual characteristics and all discernible class characteristics, but insufficient for an identification.
+
+> (b) Agreement of all discernible class characteristics without agreement or disagreement of individual characteristics due to an absence, insufficiency, or lack of reproducibility.
+
+> (c) Agreement of all discernible class characteristics and disagreement of individual characteristics, but insufficient for an elimination.
+
+Under AFTE Theory of Identification, inconclusive results are not errors. An examiner could report nothing but inconclusive results for their entire career and have a 0% error rate.
+
+---
+class:primary
+## AFTE Theory of <br/>Identification
+
+Option 4: Unsuitable
+> Unsuitable for examination.
+
+Unsuitable evidence should be discarded when considered alone and not as part of a set of known and unknown evidence.
+
+---
+class:primary
+## Error Rate Estimates<br/>The Good
+
+Keisler
+
+---
+class:primary
+## Error Rate Estimates<br/>The Good
+
+Baldwin et al. (2014): A Study of False-Positive and False-Negative Error Rates in Cartridge Case Comparisons
+
+---
+class:primary
+## Error Rate Estimates<br/>The Bad
+Hamby
+
+---
+class:primary
+## Error Rate Estimates<br/>The Ugly
+Lyons
+
 
 
