@@ -1,5 +1,5 @@
 ---
-title: "Statistical Evaluation of Forensic Firearms and Toolmark Evidence"
+title: "Statistical Evaluation of Firearms and Toolmark Evidence"
 author: "Susan Vanderplas"
 date: "March 11, 2020"
 output:
@@ -658,7 +658,20 @@ class:primary
 class:primary
 ## Error Rate Estimates<br/>The Good
 
-Keisler
+Keisler et al. (2018) Isolated Pairs Research Study, AFTE Journal
+
+- 9 Smith & Wessons
+- 20 pairs of one known and one unknown cartridge
+  - 12 same-source, 8 different-source
+- 126 participants
+
+<table>
+<tr><th></th><th colspan=3>Examiner Decision</th></tr>
+<tr><th>Ground Truth</th><th>Identification</th><th>Inconclusive</th><th>Elimination</th></tr>
+<tr><th>Same Source</th><td> 1508 </td><td> 4 </td><td> 0 </td></tr>
+<tr><th>Different Source</th><td> 0 </td><td> 203 </td><td> 805 </td></tr>
+</table>
+
 
 ---
 class:primary
