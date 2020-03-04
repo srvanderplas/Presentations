@@ -727,5 +727,11 @@ Lyons (2009) The Identification of Consecutively Manufactured Extractors, AFTE J
 
 ![Paper screenshot from Lyons (2009) indicating that some examiners got a do-over](images/lyons.png)
 
+---
+class:primary
+## Subtle Problems
+
+![The distribution of inconclusives should be equivalent to the ratio of same-source and different-source comparisons](images/shape-overview.png)
+
 
 
