@@ -1,0 +1,87 @@
+---
+title: "Extra Slides"
+output: html_document
+---
+
+---
+class: primary
+## Screw-Ups <br/>(Error Rate Estimates)
+
+Problems identified with firearms error rate studies:
+
+- Study designs have fixed numbers of same-source and different-source unknowns to identify
+    - May provide examiners with extra information
+    - FTE community is small and people talk to each other even when they shouldn't
+
+???
+
+Part of the controversy is that the studies suggesting firearms examiners have a very low error rate are not generally designed by statisticians... and you can about imagine how messy that can get.
+
+One problem is that often studies don't vary the number of same source and different source unknowns to identify. So if you have 15 unknowns to match, and you have 4 that match, 10 that don't, and you aren't sure about 1, you might be tempted to say it matches just to make things nice and even. Or, multiple people in the same lab do the test, and so you might have some additional information going in, just from seeing a coworker take the same test yesterday.
+
+--
+
+- Lack of independence between successive conclusions (logical reasoning can reduce the number of comparisons necessary)
+    - Some studies only have unknowns that match knowns in the test set (closed sets)
+    
+???
+
+Another common issue is that tests may be designed so that every unknown matches a known (so that you know it has to match something) or, if there are multiple knowns in a set that you can compare to, if your unknown matches a known, you don't have to do the comparisons with the other knowns to find out it doesn't work. This is an obvious consequence of basic logical reasoning.
+
+--
+
+- Studies are not designed to be similar to case work
+    - Do the error rates generalize?
+    
+???
+
+Another issue is that studies aren't structured in a way similar to case work - instead of having 1 or 2 knowns and at most a few unknowns (e.g. you're trying to figure out who shot what gun in a shootout), most of these sets have 5 or 10 knowns and up to 15 unknowns. So not only does the task not really mimic casework in that you don't have fragments or bullets that have collided with other things (because that's hard to systematically generate), you have way more dependencies than you'd normally have with casework and you're obviously aware it's a test.
+
+You can't really generalize the errors under those conditions.
+
+
+---
+class: primary
+## Screw-Ups <br/>(Error Rate Estimates)
+
+- Examiners know they are being tested
+    - Blind studies are studies that look like casework
+    - Little details can signal that something is a test to an observant examiner
+        - lack of additional evidence from other domains
+        - handwriting on the evidence bags
+        - features on familiar firearms known in the facility
+        
+.move-margin[
+
+```{r results='asis'}
+img_modal(src = "images/DCI-guns.jpg", alt = "Handgun library at Division of Criminal Investigation in Ankeny, Iowa")
+```
+
+]
+        
+???
+
+Another problem is the blinding. First, examiners don't understand blinding. At least 2 of the most commonly cited cases in legal challenges use phrasing like "the test was blind in that the participants did not know the correct answers". Really.
+
+Even when attempts are made to do blind proficiency tests, there are tells. Within labs, for instance, the same person may set up all of the tests, so if you notice the handwriting is distinctive on the evidence, you can conclude it's a test. Or, if there isn't also DNA, fingerprint evidence, etc. and a case description to go with it, it is likely a test. I've also heard of people using firearms that are distinctive to generate tests... that doesn't work out well either. Of course, when you have a library of confiscated guns, you'd think you could avoid that, but stuff happens.
+        
+--
+
+- Not all labs use the same rules
+    - Some labs will not allow eliminations when all of the class characteristics (rifling angle, caliber, etc.) match
+
+???
+
+Another major challenge is that some labs use different rules - evaluations based on CMS, whether or not you can exclude based on class characteristics, etc. 
+
+To control for that, though, examiners have to agree to use a common set of rules, which destroys any hope of blinding the study AND may limit your sample - some labs won't allow examiners to use a different set of evaluation rules. 
+
+--
+
+- Sufficient sample size
+    - Many tests only within the FBI laboratory (doesn't generalize well)
+    - Hard to get examiners to participate in studies - casework backlogs
+
+???
+
+Another common issue is that many tests are inside a single laboratory, which means it's hard to generalize those to other labs, and they certainly don't represent the entire field. But while this is obvious if you're a statistician, it hasn't prevented those studies from being cited in court as reliable evidence that no one ever makes a mistake.

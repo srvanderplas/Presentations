@@ -186,20 +186,3 @@
             modalrocauc2.style.display = 'none';
           }
 </script>
-<script>
-        /* Get the modal*/
-          var modalDCIguns = document.getElementById('modalDCIguns');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgDCIguns = document.getElementById('imgDCIguns');
-          var modalImgDCIguns = document.getElementById('imgmodalDCIguns');
-          var captionTextDCIguns = document.getElementById('captionDCIguns');
-          imgDCIguns.onclick = function(){
-            modalDCIguns.style.display = 'block';
-            modalImgDCIguns.src = this.src;
-            captionTextDCIguns.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgDCIguns.onclick = function() {
-            modalDCIguns.style.display = 'none';
-          }
-</script>
