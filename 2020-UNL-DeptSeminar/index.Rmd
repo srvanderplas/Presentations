@@ -929,10 +929,19 @@ In general, we don't doubt that there is a signal that examiners are picking up 
 class:primary
 ## References
 
+.small[
 - Baldwin, D. P., Bajic, S. J., Morris, M., & Zamzow, D. (2014). A Study of False-Positive and False-Negative Error Rates in Cartridge Case Comparisons: Defense Technical Information Center. https://doi.org/10.21236/ADA611807
-- Hamby, J. E., Brundage, D. J., Petraco, N. D. K., & Thorpe, J. W. (2019). A Worldwide Study of Bullets Fired From 10 Consecutively Rifled 9MM RUGER Pistol Barrels???Analysis of Examiner Error Rate. Journal of Forensic Sciences, 64(2), 551???557. https://doi.org/10.1111/1556-4029.13916
-- Hare, E., Hofmann, H., Carriquiry, A., & others. (2017). Automatic matching of bullet land impressions. The Annals of Applied Statistics, 11(4), 2332???2356.
-- Keisler, M. A., Hartman, S., & Kil, A. (2018). Isolated Pairs Research Study. AFTE Journal, 50(1), 56???58.
+
+- Hamby, J. E., Brundage, D. J., Petraco, N. D. K., & Thorpe, J. W. (2019). A Worldwide Study of Bullets Fired From 10 Consecutively Rifled 9MM RUGER Pistol Barrels???Analysis of Examiner Error Rate. Journal of Forensic Sciences, 64(2), 551 - 557. https://doi.org/10.1111/1556-4029.13916
+
+- Hare, E., Hofmann, H., Carriquiry, A., & others. (2017). Automatic matching of bullet land impressions. The Annals of Applied Statistics, 11(4), 2332 - 2356.
+
+- Keisler, M. A., Hartman, S., & Kil, A. (2018). Isolated Pairs Research Study. AFTE Journal, 50(1), 56 - 58.
+
 - Lyons, D. (2009). The Identification of Consecutively Manufactured Extractors. AFTE Journal, 41(3), 246???256.
-- Vanderplas, S., Nally, M., Klep, T., Cadevall, C., & Hofmann, H. (2020). Comparison of three similarity scores for bullet LEA matching. Forensic Science International, 110167. https://doi.org/10.1016/j.forsciint.2020.110167
+
+- Spiegelman, C., & Tobin, W. A. (2013). Analysis of experiments in forensic firearms/toolmarks practice offered as support for low rates of practice error and claims of inferential certainty. Law, Probability and Risk, 12(2), 115 - 133. https://doi.org/10.1093/lpr/mgs028
+
+- Vanderplas, S., Nally, M., Klep, T., Cadevall, C., & Hofmann, H. (2020). Comparison of three similarity scores for bullet LEA matching. Forensic Science International. https://doi.org/10.1016/j.forsciint.2020.110167
+]
 
