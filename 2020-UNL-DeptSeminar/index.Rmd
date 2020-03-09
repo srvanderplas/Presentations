@@ -634,7 +634,7 @@ The PCAST report (and addendum) summarized the problems with existing error rate
 
 These guidelines are pretty basic experimental design/experimental control principles. Unfortunately, they're also contradictory, since examiners who are forced to use different critera than normal are going to know it is for test purposes.
 
-I'm sure this will shock you all, but it's also important to do tests that are broad - it isn't enough to just test the 8 examiners in the FBI laboratory and generalize that to all examiners in the US. Shocking, right?
+I'm sure this will shock you all, but it's also important to do tests that are broad - it isn't enough to just test the 8 examiners in the FBI laboratory and generalize that to all examiners in the US.
 
 ---
 class:primary
@@ -661,12 +661,15 @@ Option 3 describes the error in the examination process; option 2 describes exam
 
 ???
 
-This portion of the talk covers a good chunk of a paper I started last month; we started out intending to write one paper and ended up with something that's quite different from what we expected. 
+In any study, we'd expect results to look something like this. 
 
-We started out thinking we were going to just argue that inconclusives should be included in the error rates reported in studies - that is, the AFTE guidelines are not sufficient for calculation of error rates. We listed out the ways you could handle error rate assessment, given that the two classification states of "same source" and "different source" don't line up with the 3 possible conclusions from AFTE. 
-Our plan was to argue that we should be measuring error rates using the full process error - that's what matters in court. So we started looking at these studies to see how much worse adding inconclusives in would make the error rates.
+If we want to examine the overall error rate, we have 3 options to handle the inconclusives: we can condition them out, we can consider them correct, or we can consider them to be errors.
 
-We found a couple of interesting things: first, the study design issues were possibly under-stated. Second, there is another problem with the results from these studies... see if you can spot it as I run through the best and worst studies we found.
+The original plan when we started surveying studies was to discuss what happened to the error rate when we switched from Option 2 to Option 3 - that is, when we include the errors in the process of firearms examination (including recording the evidence), and not just the errors made by the examiner. 
+
+When we started this project last month, we were expecting to go through the most cited studies and compute the error rates under each scenario, then discuss which rates might be suitable for which legal situations. What we found was something entirely different. 
+
+First, the study design issues were possibly under-stated. Second, there is another problem with the results from these studies... see if you can spot it as I run through the best and worst studies we found.
 
 ---
 class:primary
@@ -686,16 +689,25 @@ Keisler et al. (2018) Isolated Pairs Research Study, AFTE Journal
 <tr><th>Different Source</th><td> 0 </td><td> 203 </td><td> 805 </td></tr>
 </table>
 
+???
+
+This study was one of two with a halfway decent experimental design. Participants evaluated 20 pairs of cartridge cases, where one was from a known source, and one was from an unknown source. In each set of 20 pairs, 12 were from the same source, 8 were from a different source. 
+
+The nice thing about this study design is that we can say for sure that there were 20 comparisons done - the design doesn't allow for any logical reasoning to cut down on comparisons. 
+
 --
 
 - Fixed proportion of same-source comparisons
 - Not blind
 - Examiners used lab rules for classification (more variability)
 
+???
+
+The problems are pretty minor - examiners used lab rules for classification, so some examiners could not make eliminations at all. The study wasn't blind, and there was no variation in the proportion of same and different source comparisons, so examiners could talk to each other (or just assume that the split was a nice, round number). 
+
 ---
 class:primary
 ## Error Rate Estimates:<br/>The Good
-
 
 Baldwin et al. (2014) A Study of False-Positive and False-Negative Error Rates in Cartridge Case Comparisons. Ames Laboratory report
 
@@ -711,13 +723,21 @@ Baldwin et al. (2014) A Study of False-Positive and False-Negative Error Rates i
 <tr><th>Different Source</th><td> 22 </td><td> 737 </td><td> 1421 </td></tr>
 </table>
 
+???
+
+This study used a more convoluted design, but is essentially the same as the Keisler study. There are a couple of changes - they included 3 cartridges for each "known" source to allow examiners to evaluate how well the gun "marks" - so examiners got more information. Also, they managed to design this so that you couldn't get any information by comparing across sets. 
+
+The other big plus of this study is that they included more different-source comparisons than same-source comparisons, which mimics case work and allows them to more precisely pin down the probability of false positive errors.
+
 --
 
 - Fixed proportion of same-source comparisons
 - Not blind
 - Examiners used lab rules for classification (more variability)
 
+???
 
+The downsides of this study are the same as in Keisler. You may be wondering why examiners are allowed to use lab rules, and the answer is that they have to follow the lab procedure for everything they do. Also, the number of examiners isn't *huge* and they won't participate in studies that force the use of a specific evaluation criteria. Examiners deal with huge case backlogs, and while they recognize that proficiency tests and error rate studies are important, they are able to be selective about which ones they do.
 
 ---
 class:primary
@@ -736,12 +756,26 @@ Brundage-Hamby study: Hamby et al. (2019) A Worldwide Study of Bullets Fired Fro
 <tr><th>Different Source</th><td> 0 </td><td> ? </td><td> ? </td></tr>
 </table>
 
+???
+
+Ok, so the first thing to know is that this study has been going on for about 40 years at this point. It predates any of the major critiques of forensics by a lot. And that's probably the last nice thing I can say about it.
+
+The Hamby studies include 2 known samples from each of 10 barrels, with 15 unknowns that are also from those 10 barrels. The barrels are consecutively manufactured, so as similar as possible. The study is what's known as a "closed set" - you know ahead of time that each of the unknowns matches a known.
+
 --
 
 - Focus is only on identification, not elimination
-- Can't determine the total number of different source comparisons -- can only simulate it using logical reasoning
-- Closed set study (well known format) - examiners know a bullet should match one of the knowns
+- Can't determine the total number of different source comparisons
+- Closed set study
 - Not blind
+
+???
+
+As a result, there's no way to estimate how many comparisons were done. Unlike in Keisler or Baldwin, you could have up to n choose 2 unique pairwise comparisons (treating the duplicate knowns as if they were a single unit), but as soon as one of those comparisons results in a match, you know the unknown bullet isn't going to match anything else. As a result, you can only estimate the distribution of the number of comparisons. 
+
+In addition, there's no way to estimate the number of correct different-source comparisons, nor the number of inconclusive different source comparisons. The study design is systematically biased to only estimate the false positive rate. When they report errors, they only look at the false positive rate -- which means they aren't reporting something that would be helpful to the defense in any way. It's a systematic bias that's pervasive enough that the study design itself reinforces it.
+
+This design is one of the most common designs emulated when examiners do their own studies. Thus, examiners generally know what's coming and what the study structure is going to be ahead of time. 
 
 
 ---
@@ -759,6 +793,12 @@ Lyons (2009) The Identification of Consecutively Manufactured Extractors, AFTE J
 
 ![Paper screenshot from Lyons (2009) indicating that some examiners got a do-over](images/lyons.png)
 
+???
+
+Finally, there are some studies out there that are just completely useless. Lyons has the same structure as Hamby, but looks at extractor marks on cartridges. This study is the study that is used to establish extractor marks as a valid comparison... and one of the most glaring methodological issues is that they actually gave someone who misunderstood the instructions a second pass. There are a couple of other issues with this study, but when you read something like that in a published paper that has been cited in court, you just have to stop reading to protect your own sanity. 
+
+So did anyone spot the other issue? What did you see?
+
 ---
 class:primary
 ## Inconclusive Problems
@@ -769,6 +809,13 @@ If inconclusives are a category that is necessary to describe situations where t
 <img alt="The distribution of inconclusives should be equivalent to the ratio of same-source and different-source comparisons" src="images/shape-overview.png" width = "60%"/>
 ]
 
+???
+
+In addition to noticing the bias towards the prosecution in the design of many of these studies, we also noticed that there were issues with how inconclusives were used. 
+
+AFTE's theory is that bullets sometimes don't mark well enough for comparison. Sometimes the evidence just isn't properly recorded. The problem is, you wouldn't expect the rate of that happening to be distributed differently across same-source and different-source comparisons - if a bullet doesn't have enough characteristics to exclude, it should also not have enough to match, right?
+
+If you look at this picture, you see that the rate of inconclusives across the two sets of comparisons is the same - this is what we'd expect to see.
 
 
 
@@ -788,8 +835,6 @@ Across multiple studies,
 
 - P(DS | Inconclusive) $\approx 0.98$
 
-
-
 Reasons:
 - Lab rules
 
@@ -798,6 +843,15 @@ Reasons:
 - ???
 
 ]
+
+
+???
+
+What we actually see, however, is more like this. There are almost no inconclusives at all when making a same source comparison, and there are many inconclusives when making a different source comparison.
+
+Some of this is that there are lab rules prohibiting elimination on the basis of individual characteristics, but regardless of the reason for why this effect occurs, it is a sign of significant bias in the system. Examiners don't need as much evidence to make an identification as they need to make an elimination - that is, they're happy to help convict you but not to exonerate you.
+
+This was something we really didn't expect to find. To be honest, it rather derailed the writing of the paper we'd intended. 
 
 ---
 class:primary
@@ -808,10 +862,23 @@ class:primary
 - Language used for identifications is an issue because of the scientific foundations
     - we can't be *sure* that things came from the same gun
     - with good experiments, examiners can report P(SS|Identification), which is generally > 99%
-    - Reporting positive and negative predictive value means inconclusives aren't an issue
     
 - Reporting error rates as conditional on the examiner's decision provides more relevant information
-    - P(Different Source | Identification), P(Same Source | Elimination)
+    - $P(\text{Different Source} | \text{Identification})$, $P(\text{Same Source} | \text{Elimination})$
+    
+???
+
+So if we go back to the legal context, we know a few things. Courts, which are precedent-based, are slowly starting to challenge firearms and toolmark identifications - that is, they are restricting examiner testimony that evidence X came from source Y to the exclusion of all others. 
+
+Most of the time, they still allow examiner testimony, they just can't make statements that imply certainty or make it sound like there is probabilistic evidence to back the claim.
+
+When error rates are reported in court, they are usually reporting the false positive or false negative rate, or an overall error rate that excludes inconclusives. Occasionally, they'll report the probability that something is an identification given that it was from the same source, or the equivalent different source/exclusion probability. 
+
+That should change, but it doesn't have to raise the error rates. What we suggest is instead reporting the probability of an error conditioned on the examiner's decision. The advantage to this is that it provides precise information about the error rate in the relevant situation, and that you're conditioning on information that is known in casework, rather than conditioning on the source, which is unknown.
+
+It also has the advantage of removing inconclusives from the equation in most cases. Plus, if they do testify about an inconclusive, this method would accurately provide the jury with information about the inconclusive bias, without requiring examiners to somehow overrule their own subconscious.
+
+The only downside is that to get these probabilities, error rate studies have to be well designed, and avoid having multiple knowns for a given unknown. 
 
 ---
 class:primary
@@ -828,6 +895,11 @@ instead, they're much more likely to be different source.
     - Numerical score provides jury with more information
     - Input features aren't biased towards the prosecution or the defense
 
+???
+
+We also think it is worth discussing the difference between examiner proficiency studies and system-wide error rate studies. Lab directors care about whether their examiners get the right answer, but what juries care about is how the system as a whole functions. Thus, if overall error rates are used, inconclusives should be counted as errors because they are part of the data recording and analysis process. This shouldn't reflect poorly on the examiner. 
+
+Our final point is that if we move away from subjective evaluation, we remove the inconclusive bias. The random forest scores for comparisons which examiners marked as inconclusive are the same as the scores for comparisons which examiners marked as eliminations. So the statistical model, in this case, does not have the bias towards the prosecution that examiners exhibit. 
 
 ---
 class:primary
@@ -840,3 +912,27 @@ class:primary
 - Work with examiners and laboratories to get 3D microscopes into labs and start using the random forest score in case work
 
 - Conduct eye-tracking studies to see which features examiners use to make a conclusion; use this information to augment the feature space in the RF model
+
+???
+
+Moving forward, we're planning to publish a study comparing the random forest's performance against examiners -- from exploratory analysis, it definitely wins. We'd like to know if the scores for difficult comparisons are more moderate than the scores for easy comparisons, and whether there are any situations where the random forest doesn't succeed when humans do. 
+
+We're also slowly working our way through validating every step of the feature derivation algorithm. When we wrote the bulletxtrctr package, some of the steps were optimized, and the results don't match -- basically we fixed some errors. But we need to know how that effects things going forward. Once the validation step is done, we'll refit the random forest with a variety of new data including non-ruger bullets. Our hope is that we'll be able to get the random forest to select for features that are broadly applicable, rather than specific to any specific type of gun.
+
+I'm working on a grant to try to get a 3D microscope into a lab at Houston Forensic Science Center, to try to move the statistics from theory into practice. One really interesting facet of this research is that we have to stay on everyone's good side - examiners have to trust us and the algorithm before they'll use it in court; judges have to admit the evidence; juries have to believe it. So we have to be very careful when we call out the problems in the discipline to do it in a way that pushes change without breaking trust. Examiners and lawyers and judges all seem to be fairly math-phobic, so the visualizations we generate are aimed at providing a more approachable explanation of the algorithm and its results. 
+
+Finally, we're hoping to acquire an eye tracker and get examiners to use a comparison scope while wearing the eye tracking device. That will allow us to see exactly what features they are spending time on, and hopefully allow us to replicate that process from an algorithmic perspective. 
+
+In general, we don't doubt that there is a signal that examiners are picking up on -- what we want to do is to make the analysis as objective as possible, giving them the tools to address most of the problems.
+
+---
+class:primary
+## References
+
+- Baldwin, D. P., Bajic, S. J., Morris, M., & Zamzow, D. (2014). A Study of False-Positive and False-Negative Error Rates in Cartridge Case Comparisons: Defense Technical Information Center. https://doi.org/10.21236/ADA611807
+- Hamby, J. E., Brundage, D. J., Petraco, N. D. K., & Thorpe, J. W. (2019). A Worldwide Study of Bullets Fired From 10 Consecutively Rifled 9MM RUGER Pistol Barrels???Analysis of Examiner Error Rate. Journal of Forensic Sciences, 64(2), 551???557. https://doi.org/10.1111/1556-4029.13916
+- Hare, E., Hofmann, H., Carriquiry, A., & others. (2017). Automatic matching of bullet land impressions. The Annals of Applied Statistics, 11(4), 2332???2356.
+- Keisler, M. A., Hartman, S., & Kil, A. (2018). Isolated Pairs Research Study. AFTE Journal, 50(1), 56???58.
+- Lyons, D. (2009). The Identification of Consecutively Manufactured Extractors. AFTE Journal, 41(3), 246???256.
+- Vanderplas, S., Nally, M., Klep, T., Cadevall, C., & Hofmann, H. (2020). Comparison of three similarity scores for bullet LEA matching. Forensic Science International, 110167. https://doi.org/10.1016/j.forsciint.2020.110167
+
