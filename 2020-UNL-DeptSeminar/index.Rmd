@@ -13,6 +13,28 @@ output:
     nature:
       countIncrementalSlides: false
 ---
+
+class:primary
+## Outline
+
+- Legal challenges to forensic analysis
+
+- Firearms and Toolmark Examination primer
+
+- Issues
+    - Scientific foundations
+    - Subjectivity of comparisons
+    - Error Rates
+
+???
+
+Today, I'm going to talk about a bullet analysis project I've been a part of at CSAFE, the center for statistics and forensic evidence; even though I'm at UNL now, I'm still maintaining my affiliation with that project. Specifically, I'm going to place the statistical work in context in the political and legal systems that motivate the work. It will be a bit of a ride, and I'm giving broad overviews of work in the field that happens to include some of the projects I've worked on; I like to show the wider context, which means I'm talking briefly about a few projects that I wasn't a part of but that are related or foundational to later work.
+
+In the past 20 years, CSI-style forensic analysis (outside of DNA)  has taken quite a beating. DNA is the gold standard for forensic evidence - it's unique to the individual, matches can be objectively determined with error rates that are quantifiable, and it could be used to reexamine evidence from old cases.
+
+That's great news, right, because people who were falsely convicted should get justice. Unfortunately for forensics, what started to become clear was that there were major problems with evidence in many of these exonerations - specifically, eyewitness testimony, false confessions, and shoddy forensic analysis. It brought the problems out into the open, leading to a number of very public and embarrassing cases where forensic analyses were proved to be faulty.
+
+---
 class: secondary
 
 ```{r, include = F, eval = T}
@@ -73,12 +95,31 @@ write("", file = "js-addins.html")
 <img class="mw" src="images/bitemark-headline.png" width="125%" alt="bitemark analysis headline"/>
 ]
 
+???
+
+Bitemark analysis has been thoroughly discredited at this point
+
 ---
 class: secondary
 
 .move-up-more[
 <img class="mw" src="images/crimelab-headline.png" width="125%" alt="crime lab headline"/>
 ]
+
+???
+
+Several crime labs were shown to have employed people who would just make up results for cases. 
+
+---
+class: secondary
+
+.move-up-more[
+<img class="mw" src="images/ear-prints.png" width="125%" alt="ear prints as evidence"/>
+]
+
+???
+
+Several rather interesting methods for forensic analysis have been found in legal records and utterly dismissed for lacking any foundation.
 
 ---
 class: secondary
@@ -87,8 +128,13 @@ class: secondary
 <img class="mw" src="images/ballistic-headline-adj.png" width="125%" alt="ballistic headline"/>
 ]
 
+???
+
+These failures were on every level of the justice system - county, state, federal. The FBI was implicated in some of these scandals as well. And similar things happened in Australia, New Zealand, Canada, and the UK - basically, in any common-law country (and probably others as well).
+
 ---
 class: primary
+
 
 ## Challenges to Forensic<br/>Analysis
 
@@ -107,18 +153,15 @@ class: primary
 
 ???
 
-Over the past 15 years or so, there was a bit of a revolution in forensics; starting with DNA. It became possible to revisit old cases and examine evidence from these cases using new DNA techniques, which has led to the overturning of at least 365 different verdicts. As a result of these cases, some of the errors in the forensic sciences became much more obvious; generally, the falsely accused were convicted through a combination of shoddy science, false confessions, and poor legal representation. 
+All of these failures led to a couple of major reports assessing whether forensic science as a whole could survive these issues (and how to shore it up so that analyses that were not unfounded but had some problems might still be useful). These reports make for a pretty good read as far as showing how factors in statistics, probability, and experimental design impact everyday life. The results primarily target pattern disciplines, such as fingerprint analysis, handwriting, shoeprints, and firearms and toolmark analysis, where evidence is stored in image form and is compared by an examiner.
+ 
+The reports note that the scientific foundations of these disciplines is poor - we do not know enough about the mechanisms that generate the evidence (tooling marks on a rifle barrel, how fingerprints are formed, the distribution of shoes in the population) to be able to characterize the process of leaving pattern evidence at a crime scene in a scientific way. In most cases, we do not know what the distribution of these characteristics looks like, so we cannot estimate the random match probability properly - we can't say how likely the evidence is to occur by random chance. In DNA, we can at least estimate that probability.
 
-There have been two major reports which analyzed the state of forensic science in the US: the National Academy of Science report in 2009 and the PCAST report in 2016. These reports highlight a number of problems in forensics, but primarily focus on the "pattern" disciplines - disciplines that involve the analysis of evidence that is usually stored in image form. 
-
-The reports note that the scientific foundations of these disciplines is poor - we do not know enough about the mechanisms that generate the evidence (tooling marks on a rifle barrel, how fingerprints are formed, the distribution of shoes in the population) to be able to characterize the process of leaving pattern evidence at a crime scene in a scientific way. More specifically, in most cases, we do not know what the distribution of these characteristics looks like, so we cannot estimate the random match probability properly - we can't say how likely the evidence is to occur by random chance. In DNA, we can at least estimate that probability.
-
-In addition, at the moment, most pattern evidence is evaluated subjectively. Examiners will compare the crime scene evidence to evidence generated using a test object (a recovered gun, a pair of the suspect's shoes, etc.) visually, with little or no quantitative evidence to back that up. This makes it very hard to assess the strength of any particular match - examiners will testify based on their experience as an examiner, it is extremely unlikely that a match that good would come from two different sources, but there isn't any scientific foundation there or any objective method for evaluation. 
+Pattern evidence is evaluated subjectively - the examiner's opinion, based on their training and experience, is the only metric for how useful the evidence is in a case. This means there's considerable variability in results (because examiners will have different opinions), and it also means that examiners don't have any numbers to fall back on to justify their opinions. Plus, we have a "beyond a reasonable doubt" standard, which means examiners don't like to admit to making any errors at all, ever. 
 
 Finally, the reports found that error rate quantification in the forensic sciences is poor. During training, examiners are taught that it is part of their job to contribute to the discipline's foundations by doing these error rate studies, but the design of these studies, and the conclusions that can be drawn from them, leaves a lot to be desired.
 
-Today, I'm going to talk about some of the work I'm doing in forensics, touching briefly on a couple of different projects and situating them in the wider context of the state of the field as a whole. I'm going to primarily focus on work with firearms and toolmark examination data, but the concepts are applicable across a wide range of pattern disciplines.
-
+Today I'm going to talk a bit about the ways that each of these problems is being addressed at CSAFE, but first, lets start with a bit of a primer on firearms analysis.
 
 ---
 class:inverse
@@ -130,6 +173,10 @@ class:secondary
 ![Gif of bullet firing](images/bullet_firing_short.gif)
 ]
 
+???
+
+As a bullet is fired, it makes contact with parts of the gun at high speeds and pressures. The cartridge is hit with the firing pin, which causes the powder to explode. The cartridge slams against the breech face and is then ejected from the gun. Simultaneously, the bullet is forced through the barrel, where the rifling causes it to spin; because of the pressure and heat, the bullet deforms, and the rifling and grooves leave microscopic lines along the bullet surface, called striae.
+
 --
 
 <img src="images/Cartridge.png" alt = "Image of a cartridge case after firing" width = "49%" style="vertical-align:bottom"/> 
@@ -137,18 +184,20 @@ class:secondary
 <img src="images/Bullet.png" alt = "Image of a bullet after firing" style="vertical-align:bottom"/>
 ]
 
+???
+
+A picture of a fired cartridge is shown on the left, and a picture of a fired bullet on the right. You can see that there are marks on the bullet, at least; these marks are a result of the contact between the bullet and the barrel. There are similar marks on the cartridge from the firing pin, the extractor, and the breech face; they're just somewhat harder to see with the naked eye.
+
 --
 
 **Locard's Exchange Principle**: <br/>Every contact leaves a trace
 
 ???
-Before I start talking about the research addressing the deficiencies in forensic science, however, I think it's probably worth talking a bit about firearms evidence and the comaprisons which are made. 
 
-This gif shows a bullet being fired from a rifled handgun. At the end of the clip, there are two pieces of metal left - the cartridge, which has a mark from the firing pin and has slammed into the "breech face" (which was cut away in this image so you could see the firing process) leaving an impression. The cartridge case is then pushed out of the gun (leaving another scrape mark) at the same time that the bullet is forced down the barrel. 
+Locard's exchange principle is an axiom of forensic science and states that every contact leaves a trace - when you touch something, material is exchanged so that you leave something on the surface and the surface transfers something to you - it may be small enough that it is not measurable, but it's there.
 
-At the end of the firing process, you end up with a cartridge that is marked in several ways (firing pin, breech face - the flat part, and extractor mark) and a bullet that has scrapes along it - the land engraved areas,  which are the depressions, and the groove-engraved areas, which are higher. 
+On a bullet, this principle is taken to mean that when the bullet makes contact with the lands and grooves in the rifled barrel, some of the bullet material is shaved off, and the impressions from the barrel's imperfections are engraved on the bullet surface. Lands, in particular, are of interest, as they are the result of a tooling process and therefore, the marks are believed to be unique to that barrel. 
 
-Land engraved areas are believed to have individualizing characteristics because they are the result of a tool being forced into a metal tube (the reaming process). The groove engraved areas are generally not analyzed, because the surface hasn't been tooled in quite the same way when areas are removed during the rifling process. 
 In most of the bullets we've worked with, there are 6 land engraved areas per bullet.
 
 
@@ -173,6 +222,8 @@ In higher detail, you can see a similar image created using 3D scans of two matc
 
 But we don't actually have any scientific foundation for making the claim that with substantial similarity the only reasonable explanation is that the bullets came from the same source. We have a rational explanation, but one that has not been empirically validated to a level where it can be said to be scientifically valid.
 
+Examiners evaluate the evidence and come up with one of four possible classifications for a pairwise comparison.
+
 ---
 class:primary
 ## AFTE Theory of <br/>Identification
@@ -185,9 +236,11 @@ Option 2: Elimination
 
 ???
 
-The other bit of information you need is how these comparisons are assessed in court. There are 4 options. Identification means that they came from the same source (in the examiner's opinion) due to a combination of matching caliber, rifling, number of lands, etc. -- class characteristics -- and individual characteristics, which are the fine striations.
+An identification requires that class characteristics -- things that are shared by all guns of the same make and model -- match, and then that so-called individualizing characteristics, like the striation marks, also match.
 
-Elimination means that there is disagreement between class or individual characteristics... but no guidelines as to what sufficient means.
+An elimination requires disagreement between either type of characteristics. Some labs will not allow examiners to eliminate based on mismatch of individual characteristics - the only option is to eliminate if there is a class characteristic mismatch.
+
+So far, so good. We have either a same-source comparison or a different source comparison - two real classes, two labels. What more do we need?
 
 ---
 class:primary
@@ -206,6 +259,8 @@ Under AFTE Theory of Identification, inconclusive results are not errors. An exa
 
 Examiners can also say that the match is inconclusive, for any combination of the 3 reasons. Under AFTE rules, an inconclusive isn't an error, because it doesn't mean the examiner made a mistake - there may not actually be enough information recorded on the evidence, which reflects the broader process. 
 
+The problem is that under AFTE rules, if these are not errors, what are they? Usual machine learning classification schemes use false positive and false negative rates; it is not entirely clear whether these are meaningful when the number of output classes does not match the number of input classes. We'll come back to inconclusives later, but just a preview.
+
 ---
 class:primary
 ## AFTE Theory of <br/>Identification
@@ -218,6 +273,8 @@ Unsuitable evidence should be discarded before it is compared to known samples.
 ???
 
 The final option is to say the evidence isn't suitable for comparison. This isn't the same as inconclusive - unsuitable evidence is marked as unsuitable before it is compared to another piece of evidence, where inconclusives are determined after comparison.
+
+After talking to one of the people in the forensics department here, who used to be a firearms examiner, unsuitable would generally mean the bullet is fragmented and wholly unsuitable for even weighing - anything that's intact can be weighed and the caliber estimated.
 
 So now you're an expert in firearm examination, right? :)
 
@@ -239,6 +296,10 @@ What would we need? According to Spiegelman & Tobin (2013)
 - Different break-in periods for the guns
 - Different maintenance procedures and lubrication types
 
+???
+
+The reports all say that there is insufficient scientific basis for pattern discipline analysis, but what does that mean? In theory, they mean that we don't have any idea what the distribution of these marks would look like, whether there are factors that might cause the marks to be similar, etc. We don't sufficiently understand the population characteristics. Some people advocate for a full-on factorial screening experiment to nail this down -- but that would involve a huge amount of work.
+
 --
 
 Examine multiple fired bullets/cartridges from **each combination of factors** to determine if the markings are unique. 
@@ -251,8 +312,6 @@ Compare features of the markings across caliber/material to differentiate class 
 
 ???
 
-To completely understand how the marking process works and how identifiable everything is, some people suggest that a rigorous study of all possible environmental conditions, firearm/ammunition combinations, manufacturing conditions, and other factors should be examined. 
-
 Sometimes, this type of experiment is proposed to get a database of bullets which can be compared to determine an upper bound on the random match probability (e.g. if nothing matches, then the RMP is less than 1 over the number of different-source pairwise comparisons in the database). 
 
 It's also of interest to know if multiple bullets which were fired from the same gun have different markings - if so, then we can't easily determine that a mismatch is indicative of the bullets being fired from a different source. 
@@ -261,14 +320,18 @@ This problem is one reason forensic statistics tends to focus on assembling huge
 
 However, it's also *really* hard to systematically collect all of the data you'd need to estimate the random match probability and the random mismatch probability.
 
-In any case, addressing the question of scientific validity from a head-on approach is not particularly easy. 
+In any case, addressing the question of scientific validity from a head-on approach is not particularly easy. Procrastination is a valid form of the scientific method, right? Lets put this off until we have the ability to actually deal with it head on.
 
-Instead, many times, we tend to avoid the impossible problem and try to patch the status quo. So instead of approaching the scientific foundations, we approach the other two issues - the subjectivity and the error rate quantification.
+Instead of approaching the scientific foundations, we approach the other two issues - the subjectivity and the error rate quantification.
 
 
 ---
 class:inverse
 # Issue 2: Examination is 100% Subjective
+
+???
+
+The next issue is that the comparisons are subjective. They're done inside the examiner's brain, using visual information, and there is very little quantitative or objective information to use to justify the decision. CSAFE has been working to develop a statistical model which looks at features that are similar to those used by examiners (e.g. mimicking the perceptual process) but that can be quantified and viewed objectively. This is work that happened before I started working on forensics, but it's critical to later work that I'm involved with. 
 
 ---
 class:primary
@@ -329,6 +392,12 @@ class:primary
   
 - How well does the Hare, Hofmann, and Carriquiry algorithm generalize to other (similar) firearms?
 
+???
+
+To train this algorithm, they needed data. While CSAFE now has microscopes that generate more than a TB of data each semester, back then they didn't, so they got scans from NIST that were lower resolution than their current scans. The sets they chose are derived from the same consecutively manufactured 10 guns (so as similar as you can get 10 guns), and all of the guns are of the same type. So not a lot of external validity, right? 
+
+Firearms studies often use consecutively manufactured components because it is believed that consecutively manufactured pieces are more similar to each other than nonconsecutive versions; thus, if the methods work on consecutively manufactured components, they will work on nonconsecutive components. It's logical, but it also means that in order for this random forest model to be useful in practice, we'd have to be comfortable using it on data which is well outside the training data.
+
 ---
 class:primary
 ## Subjectivity
@@ -346,15 +415,11 @@ class:primary
 
 ???
 
-The random forest model was developed before CSAFE acquired microscopes of their own and started generating data... so it used the only sets available at the time, which were scanned at 1.5625 microns. The two sets used had 35 bullets each, but all 70 bullets were fired from one of 10 consecutively manufactured Ruger P-85 barrels. 
-
-Firearms studies often use consecutively manufactured components because it is believed that consecutively manufactured pieces are more similar to each other than nonconsecutive versions; thus, if the methods work on consecutively manufactured components, they will work on nonconsecutive components. It's logical, but it also means that in order for this random forest model to be useful in practice, we'd have to be comfortable using it on data which is well outside the training data.
-
-Up until now, we've talked about work that was done before I got involved. 
-
 One of the projects I've worked on was to examine how well the algorithm works on external test sets. Random forests can generate out-of-bag predictions, but fundamentally, in order to use this algorithm, we have to see how well it generalizes to different ammunition, different firearms, different microscope settings...
 
-So we decided to test the algorithm using 3 test kits developed by firearms examiners. Each set uses Ruger firearms, but they are different models which have different surface treatments and manufacturing processes. Each set also uses different ammunition. One of the sets is a third Hamby set, so using the same 10 barrels, but a different set of 35 bullets, as the training sets. 
+So we decided to test the algorithm using 3 different test kits developed by firearms examiners. Each set uses Ruger firearms, but they are different models which have different surface treatments and manufacturing processes. Each set also uses different ammunition. One of the sets is a third Hamby set, so using the same 10 barrels, but a different set of 35 bullets, as the training sets. 
+
+All of the scans were done at CSAFE using the high-resolution microscopes, so they are different on a number of different respects from the original training data.
 
 ---
 class:primary
@@ -402,9 +467,11 @@ cat(img_modal(src = "images/hou-3.png", alt = "Houston Set 3", other=list(width=
 
 ???
 
-For each test set, we looked at both bullet-to-bullet results, like those shown here, and land-to-land results, which are a bit finer. To get bullet-to-bullet results, we looked for a sequence of matches between bullet 1 and bullet 2, and took the average of the sequence with the highest matching values.
+For each test set, we looked at both bullet-to-bullet results, like those shown here, and land-to-land results, which are a bit finer. To get bullet-to-bullet results, we looked for a sequence of matches between bullet 1 and bullet 2, and took the average of the sequence with the highest matching values. Since scans are done at the land level, we can also look at how the random forest performs there; we can expect more variability for those comparisons.
 
-The Houston study just concluded, so we're hoping to write a paper soon comparing the algorithm's performance to the FTE performance. From what we've been told, the algorithm did pretty well, and the algorithm combined with human judgement was 100% right. The human judgement is necessary because sometimes the automated decisions in the algorithm don't work, rendering downstream results invalid. If we visually examine the intermediate data, it is possible to identify the issues, flag those comparisons, and exclude them from consideration. It's important to be able to decide when you do and don't trust your model's predictions, and that's basically what we're doing in that step. Since there is some subjectivity there, we report both versions.
+The Houston study just concluded, so we're hoping to write a paper soon comparing the algorithm's performance to the FTE performance. From what we've been told, the algorithm did pretty well, and the algorithm combined with human judgement was perfect. The human judgement is necessary because sometimes the automated decisions in the algorithm don't work, rendering downstream results invalid. If we visually examine the intermediate data (using a tool we developed for that purpose), it is possible to identify the issues, flag those comparisons, and exclude them from consideration; doing this automatically is hard, but it's easy for a human. 
+
+It's important to be able to decide when you do and don't trust your model's predictions, and that's basically what we're doing in that step. Since there is some subjectivity there, we report both versions.
 
 
 ---
@@ -461,24 +528,20 @@ If we compute the area under the curve for each set, we find that CMS is consist
 
 Interestingly enough, for both the random forest and cross-correlation scores, performance is poor on the Hamby44 set... which is from the same 10 barrels used to train the algorithm! The other set that it's bad on is the Houston FSI G2 set, which has some issues with partial signature compression. We're still figuring out how to alter the processing to handle that. 
 
----
-class:inverse
-# Screw-Ups: Error Rates and Software Bugs
+<!-- --- -->
+<!-- class:primary -->
+<!-- ## Forensic Software -->
 
----
-class:primary
-## Forensic Software
+<!-- - Many forensic products are closed source -->
 
-- Many forensic products are closed source
+<!--     - TrueAllele tests for DNA mixture analysis - results can't be shown to be faulty in court without the source code -->
 
-    - TrueAllele tests for DNA mixture analysis - results can't be shown to be faulty in court without the source code
-    
-    - Breathalyzer software [found to be faulty](https://arstechnica.com/tech-policy/2009/05/buggy-breathalyzer-code-reflects-importance-of-source-review/)
-    
-    - Inability to replicate results of other proposed automated methods - insufficient details in the paper about data cleaning and preprocessing
+<!--     - Breathalyzer software [found to be faulty](https://arstechnica.com/tech-policy/2009/05/buggy-breathalyzer-code-reflects-importance-of-source-review/) -->
+
+<!--     - Inability to replicate results of other proposed automated methods - insufficient details in the paper about data cleaning and preprocessing -->
 
 
-<img src="images/buggy-breathalyzer-code.png" alt = "Headline from ArsTechnica about buggy breathalyzer software" width = "80%"/>
+<!-- <img src="images/buggy-breathalyzer-code.png" alt = "Headline from ArsTechnica about buggy breathalyzer software" width = "80%"/> -->
 
 
 ---
@@ -507,16 +570,21 @@ class:primary
 
 ???
 
-Even the hardware and software developed by the federal government is closed-source and unavailable to the average person. On a fundamental level, that creates barriers that exist for the defense but that aren't present for the prosecution in a criminal case. 
-
-NIST, who is active in forensics and also funds CSAFE, does not release source code either - they are afraid of the government endorsing any particular method, plus the liability of releasing faulty code. 
-
+Closed-source software is a real problem in the legal system - proprietary code isn't something you can examine for errors and may or may not have been developed with good software engineering practices. NIST doesn't release source code either, and the NIBIN system used by the federal government is closed hardware and software. 
 
 One of the ways CSAFE is addressing the problems with closed-source software is by releasing open-source software packages of both our algorithms and other algorithms published in the community. The software is released under MIT or GPL licenses, which prevent us from being liable for errors, but we also do our best to ensure that the algorithms work as advertised. 
 
-I was involved in the construction of both x3ptools and bulletxtrctr, refactoring the code from the bulletr package described in the original random forest paper so that it was more reliable, maintainable, and modular. I've also written validation tests for both packages to ensure that each line of the code does what it is designed to do, so that changes in the future are less likely to break the already-implemented functionality.
+I was involved in the construction of both x3ptools and bulletxtrctr, refactoring the code from the bulletr package described in the original random forest paper so that it was more reliable, maintainable, and modular. I've also written validation tests for both packages to ensure that each line of the code does what it is designed to do, so that changes in the future are less likely to break the already-implemented functionality. One of my students at Iowa state is working on a similar implementation of someone else's algorithm for cartridge cases; after implementing it, we're going to fix it so that it works properly. 
 
-So one way we're addressing errors is to make software auditable, so that if there are errors in the software, anyone can find them. It's not in the public's interest to have software bugs go unnoticed.
+So one way we're addressing errors is to make software auditable, so that if there are errors in the software, anyone can find them. It's not in the public's interest to have software bugs go unnoticed. 
+
+---
+class:inverse
+# Screw-Ups: Error Rates
+
+???
+
+Forensic evidence is also mistrusted because the error rates for such assessments are often under-estimated or minimized in court. In addition, the studies that exist have significant methodological problems. So lets talk about why this matters to the legal system first, then take a look at the problem.
 
 ---
 class:primary
@@ -536,9 +604,11 @@ Important factors for scientific methodology:
 
 ???
 
-Another way we're addressing this is to assess studies which provide error rate estimates, and testify in court about why these studies don't tell the complete picture. 
+One of the primary debates right now is whether pattern evidence can be admitted into court, and what degree of certainty the examiner is allowed to convey to the jury. Part of this issue comes from the legal standards for admissibility - because pattern evidence has a shaky scientific foundation, it is sometimes judged to be inadmissible in court. 
 
-One of the primary debates right now is whether pattern evidence can be admitted into court, and what degree of certainty the examiner is allowed to convey to the jury. Part of this issue comes from the legal standards for admissibility - because pattern evidence has a shaky scientific foundation, it is sometimes judged to be inadmissible in court. More often, examiners aren't allowed to make identifications - they can say there is similarity between two pieces that is consistent with the same source, but cannot definitively say that the two pieces of evidence were generated by the same source. There are a lot of fights as to how that language works - "to the exclusion of all others", "to a reasonable degree of scientific certainty", and "to a reasonable degree of ballistics certainty" are all ways that examiners have been instructed to testify in court. 
+Another factor is the known error rate for a technique. It's important to note here that common law courts work on precedent, so it is very hard for them to change course and say "this isn't scientifically valid, so you can't use it" when there is precedent. So change is very, very slow, but it is starting to happen.
+
+So lets take a look at these error rate studies. 
     
 ---
 class: primary
@@ -546,7 +616,7 @@ class: primary
 
 Ideal design:
 
-- Varying numbers of same-source and different-source comparisons 
+- Varying numbers of same-source and different-source comparisons  .small[to prevent examiners from guessing or getting information from colleagues about test set composition]
 
 - Tests should have single pairs of evidence from one known source, with and one unknown for comparison
   - Ensures no additional information is available to examiners
@@ -561,6 +631,10 @@ Ideal design:
 ???
 
 The PCAST report (and addendum) summarized the problems with existing error rate studies; there are possibly as many as 2 well-known studies in the entire field of firearms and toolmark analysis that meet half of the experiment design guidelines listed here.
+
+These guidelines are pretty basic experimental design/experimental control principles. Unfortunately, they're also contradictory, since examiners who are forced to use different critera than normal are going to know it is for test purposes.
+
+I'm sure this will shock you all, but it's also important to do tests that are broad - it isn't enough to just test the 8 examiners in the FBI laboratory and generalize that to all examiners in the US. Shocking, right?
 
 ---
 class:primary
@@ -616,6 +690,7 @@ Keisler et al. (2018) Isolated Pairs Research Study, AFTE Journal
 
 - Fixed proportion of same-source comparisons
 - Not blind
+- Examiners used lab rules for classification (more variability)
 
 ---
 class:primary
@@ -640,6 +715,7 @@ Baldwin et al. (2014) A Study of False-Positive and False-Negative Error Rates i
 
 - Fixed proportion of same-source comparisons
 - Not blind
+- Examiners used lab rules for classification (more variability)
 
 
 
