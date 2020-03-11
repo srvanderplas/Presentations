@@ -580,7 +580,7 @@ So one way we're addressing errors is to make software auditable, so that if the
 
 ---
 class:inverse
-# Screw-Ups: Error Rates
+# Issue 3: Screw-Ups (Error Rates)
 
 ???
 
