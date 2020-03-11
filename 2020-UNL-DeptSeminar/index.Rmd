@@ -993,3 +993,6 @@ class:primary
 - Vanderplas, S., Nally, M., Klep, T., Cadevall, C., & Hofmann, H. (2020). Comparison of three similarity scores for bullet LEA matching. Forensic Science International. https://doi.org/10.1016/j.forsciint.2020.110167
 ]
 
+---
+class:inverse
+# Questions?
