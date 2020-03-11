@@ -951,11 +951,13 @@ Our final point is that if we move away from subjective evaluation, we remove th
 class:primary
 ## Future Work
 
-- Examine random forest scores compared with examiner conclusions for the same comparisons
+- Man vs. machine: head to head comparison of algorithm and examiner for the same test sets
+
+- Improve the preprocessing and feature reduction accuracy
 
 - Refine the random forest model and refit with a more diverse set of data
 
-- Work with examiners and laboratories to get 3D microscopes into labs and start using the random forest score in case work
+- Work with examiners and laboratories to get 3D microscopes into labs - apply the model to case work
 
 - Conduct eye-tracking studies to see which features examiners use to make a conclusion; use this information to augment the feature space in the RF model
 
