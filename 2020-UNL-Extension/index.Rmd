@@ -1,0 +1,170 @@
+---
+title: "Research Overview"
+author: "Susan Vanderplas"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    includes:
+      after_body:
+        "js-addins.html"
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    css: ["default", "default-fonts", "css/this-presentation.css", "css/modal.css"]
+    lib_dir: libs
+    nature:
+      countIncrementalSlides: false
+---
+
+```{r, include = F, eval = T}
+knitr::opts_chunk$set(echo=F, dpi=300)
+library(tidyverse)
+clean_file_name <- function(x) {
+  basename(x) %>% str_remove("\\..*?$") %>% str_remove_all("[^[A-z0-9_]]")
+}
+
+img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
+  
+  other_arg <- paste0("'", as.character(other), "'") %>%
+    paste(names(other), ., sep = "=") %>%
+    paste(collapse = " ")
+  
+  js <- glue::glue("<script>
+        /* Get the modal*/
+          var modal{id} = document.getElementById('modal{id}');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img{id} = document.getElementById('img{id}');
+          var modalImg{id} = document.getElementById('imgmodal{id}');
+          var captionText{id} = document.getElementById('caption{id}');
+          img{id}.onclick = function(){{
+            modal{id}.style.display = 'block';
+            modalImg{id}.src = this.src;
+            captionText{id}.innerHTML = this.alt;
+          }}
+          /* When the user clicks on the modalImg, close it*/
+          modalImg{id}.onclick = function() {{
+            modal{id}.style.display = 'none';
+          }}
+</script>")
+  
+  html <- glue::glue(
+     " <!-- Trigger the Modal -->
+<img id='img{id}' src='{src}' alt='{alt}' {other_arg}>
+
+<!-- The Modal -->
+<div id='modal{id}' class='modal'>
+
+  <!-- Modal Content (The Image) -->
+  <img class='modal-content' id='imgmodal{id}'>
+
+  <!-- Modal Caption (Image Text) -->
+  <div id='caption{id}' class='modal-caption'></div>
+</div>
+"
+  )
+  write(js, file = "js-addins.html", append = T)
+  return(html)
+}
+
+# Clean the file out at the start of the compilation
+write("", file = "js-addins.html")
+```
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+## Graphics and Visualization
+
+- Experiments in graphical perception
+
+```{r results='asis', echo = F, include = T}
+cat(img_modal(src = "sine-illusion-app.png", alt = "Graphical Optical Illusions"))
+```
+
+---
+## Graphics and Visualization
+
+.pull-left[
+- Experiments in graphical perception
+
+- Using graphics for testing statistical hypotheses
+
+].pull-right[
+```{r results='asis', echo = F, include = T}
+cat(img_modal(src = "feature-hierarchy-color-ellipse-11-20.png", alt = "Testing hypotheses using graphs"))
+```
+]
+
+---
+## Graphics and Visualization
+
+.pull-left[
+- Experiments in graphical perception
+
+- Using graphics for testing statistical hypotheses
+
+].pull-right[
+```{r results='asis', echo = F, include = T}
+cat(img_modal(src = "feature-hierarchy-line-11-20.png", alt = "Testing hypotheses using graphs"))
+```
+]
+
+---
+## Graphics and Visualization
+
+.pull-left[
+- Experiments in graphical perception
+
+- Using graphics for testing statistical hypotheses
+
+- Historical graphics -     
+exploration, re-creation with modern methods, testing
+].pull-right[
+
+```{r results='asis', echo = F, include = T}
+cat(img_modal(src = "statistical-atlas-church-accommodation.png", alt = "Historical Graphics - 1874 Statistifcal Atlas"))
+cat(img_modal(src = "Michigan-spine_with_frame1.png", alt = "Recreating plots from the 1874 Statistifcal Atlas", other=list(width="49%")))
+cat(img_modal(src = "Michigan-spine_without_frame1.png", alt = "Recreating plots from the 1874 Statistifcal Atlas", other=list(width="49%")))
+```
+]
+---
+
+## Graphics and Visualization
+
+Designing graphics for unique data sets: large, complicated, messy...
+
+
+```{r results='asis', echo = F, include = T}
+cat(c(img_modal(src = "SNPAggregateBrowser.png", alt = "Soybean Line Genomic Study: Aggregate SNP Distribution", other = list(width = "30%")),
+img_modal(src = "SNPInheritance.png", alt = "Soybean Line Genomic Study: SNP Inheritance", other = list(width = "30%")),
+img_modal(src = "SNPKinship.png", alt = "Soybean Line Genomic Study: SNP Kinship and Phenotype", other = list(width = "30%"))))
+```
+
+---
+
+## Forensics
+
+Statistical Matching of Bullets
+
+.pull-left[
+```{r results='asis', echo = F, include = T}
+cat(img_modal(src = "HS36-Bullet-With-Crosscut.png", alt = "Bullet land scan, with crosscut"))
+cat(img_modal(src = "Combined-cross-section.png", alt = "Crosscut and profile"))
+```
+].pull-right[
+```{r results='asis', echo = F, include = T}
+cat(img_modal(src = "signature-combined.png", alt = "Bullet smooth and resulting signature"))
+cat(img_modal(src = "signature-aligned.png", alt = "Aligned bullet signatures"))
+```
+
+]
+
+---
+
+## Forensics
+
+Identification of Shoe Features
+
+```{r results='asis', echo = F, include = T}
+cat(img_modal(src = "similar-shoes.png", alt = "Geometric features on shoes", other=list(width="80%")))
+```
