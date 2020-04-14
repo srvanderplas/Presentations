@@ -131,3 +131,56 @@ class:middle,inverse,center
 <img src="https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/ee1313d9-376a-4957-ba34-efc803df3d69" width="28%"/><img src="https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/25cd34c8-f62b-4b1b-992d-f311d90f92fa" width="28%"/><img src="https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/a8585abb-9b32-4f0c-8b73-1446e5b650bf" width="28%"/>
 ]
 
+
+---
+## Image Processing (Ideally)
+
+1. Mask out white background and 10 pound bulk label
+
+2. Threshold remaining area w/ adaptive threshold - get only top area of the bean
+
+3. "Clean" thresholded image to get separate regions, each roughly corresponding to a bean
+
+4. Compute features for each bean
+
+---
+## Image Processing (Reality)
+
+1. Mask out white background and 10 pound bulk label
+
+2. Threshold using adaptive threshold
+
+  a. Discover that adaptive thresholds require tuning parameters that are different for each color bean
+  
+  b. Cry
+  
+3. Read tutorials on various image segmentation methods
+
+4. Discover these tutorials are mostly meant for images that are rectangular, not masked regions of irregular shape
+
+5. Bang head on desk...
+
+6. Resort to Python
+
+---
+## Image Processing Steps
+
+.pull-left[
+1. Watershed segmentation or Adaptive Thresholding (OpenCV)
+
+2. "Clean" image to get separate regions
+
+3. Fit ellipses to the separated regions to get better edge definition
+
+  - necessary because of speckled beans, JellyBelly label, and "shine" glare 
+  
+4. Compute features for each bean
+].pull-right[
+Watershed:<br/>
+![](Watershed_Ellipse_Result.png)
+Adaptive Thresholding:<br/>
+![](Threshold_Ellipse_Result.png)
+
+]
+
+
