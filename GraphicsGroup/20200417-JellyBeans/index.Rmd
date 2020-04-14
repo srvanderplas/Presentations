@@ -1,0 +1,133 @@
+---
+title: "Computer Vision, Machine Learning, and... Jellybeans?"
+author: "Ved Piyush and Susan Vanderplas"
+output:
+  xaringan::moon_reader:
+    seal: false
+    includes:
+      after_body:
+        "js-addins.html"
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    css: ["default", "default-fonts", "css/this-presentation.css", "css/modal.css"]
+    lib_dir: libs
+    nature:
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, dpi = 300, message = F, warning = F)
+options(htmltools.dir.version = FALSE)
+```
+
+
+```{r, include = F, eval = T}
+library(tidyverse)
+clean_file_name <- function(x) {
+  basename(x) %>% str_remove("\\..*?$") %>% str_remove_all("[^[A-z0-9_]]")
+}
+
+img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
+  
+  other_arg <- paste0("'", as.character(other), "'") %>%
+    paste(names(other), ., sep = "=") %>%
+    paste(collapse = " ")
+  
+  js <- glue::glue("<script>
+        /* Get the modal*/
+          var modal{id} = document.getElementById('modal{id}');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img{id} = document.getElementById('img{id}');
+          var modalImg{id} = document.getElementById('imgmodal{id}');
+          var captionText{id} = document.getElementById('caption{id}');
+          img{id}.onclick = function(){{
+            modal{id}.style.display = 'block';
+            modalImg{id}.src = this.src;
+            captionText{id}.innerHTML = this.alt;
+          }}
+          /* When the user clicks on the modalImg, close it*/
+          modalImg{id}.onclick = function() {{
+            modal{id}.style.display = 'none';
+          }}
+</script>")
+  
+  html <- glue::glue(
+     " <!-- Trigger the Modal -->
+<img id='img{id}' src='{src}' alt='{alt}' {other_arg}>
+
+<!-- The Modal -->
+<div id='modal{id}' class='modal'>
+
+  <!-- Modal Content (The Image) -->
+  <img class='modal-content' id='imgmodal{id}'>
+
+  <!-- Modal Caption (Image Text) -->
+  <div id='caption{id}' class='modal-caption'></div>
+</div>
+"
+  )
+  write(js, file = "js-addins.html", append = T)
+  return(html)
+}
+
+# Clean the file out at the start of the compilation
+write("", file = "js-addins.html")
+```
+
+class:inverse,middle,center
+# Computer Vision, Machine Learning, and... Jellybeans?
+## Ved Piyush and Susan Vanderplas<br/>2020-04-17
+
+---
+## Christmas Turns into Data Collection
+.pull-left[
+![Jelly Belly 40 flavors bag](jb40.jpg)
+].pull-right[
+Initial Observations
+
+There are a lot of [crazy](https://sweets.seriouseats.com/2012/03/the-serious-eats-field-guide-to-jelly-belly-identification-slideshow.html) [jellybean hobbyists](http://www.waynesthisandthat.com/How%20To%20Sort%20Jelly%20Belly%20Jelly%20Beans.html) on the internet
+
+
+Not all mistakes are equally consequential
+  - Cinnamon / Sizzling Cinnamon, Lemon Lime / Sunkist Lime, Pina Colada / Crushed Pineapple
+  - Cinnamon / Very Cherry 
+  - Watermelon / Chocolate Pudding
+
+Even people with good color vision have some issues
+]
+
+---
+## Flavor Headaches
+
+.pull-left[
+![Set 1](combined_flavors.png)
+].pull-right[
+![Set 2](combined_flavors2.png)
+]
+
+---
+class:middle,inverse,center
+# Attempt 1
+### (Timeline: Christmas Day - mid-February)
+
+---
+## How to Collect Data?
+
+.left-column[
+![Very Cherry JellyBelly Image](https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/7a075f1b-2738-4a83-a2aa-7c6550b1ad68)![French Vanilla JellyBelly Image](https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/ce88aee0-1bd3-4061-acda-3ff834493e9f)![](https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/f6a5ffcf-b771-4ed6-886a-6bd6816b1e44)
+]
+.right-column[
+- Take pictures of each bean in the 40-flavor bag
+  1. immediately taste the bean
+  2. save the picture with the proper name
+  3. hope I can differentiate between Tangerine/Orange, Very Cherry/Sour Cherry
+  4. separate bean from background
+  
+  ... too much work
+  
+- Scrape labeled images off the web
+  1. Mask non-jellybean information (automatically?)
+  2. Separate individual beans into different images
+
+<img src="https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/ee1313d9-376a-4957-ba34-efc803df3d69" width="28%"/><img src="https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/25cd34c8-f62b-4b1b-992d-f311d90f92fa" width="28%"/><img src="https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/a8585abb-9b32-4f0c-8b73-1446e5b650bf" width="28%"/>
+]
+
