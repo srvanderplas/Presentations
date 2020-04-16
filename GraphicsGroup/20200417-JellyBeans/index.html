@@ -364,7 +364,7 @@ Adaptive Thresholding:&lt;br/&gt;
 
 --
 
-- Speckle Color
+- Speckle Color(s)
 
 &lt;!-- Trigger the Modal --&gt;
 &lt;img id='imgStrawberry_Cheesecake' src='all_flavors/Strawberry_Cheesecake.png' alt='Strawberry Cheesecake' width='15%'&gt;
@@ -529,7 +529,74 @@ background-image: url("desk_photo.png")
 background-size: cover
 class:inverse,center
 ## My desk while making this presentation...
-### (I didn't eat a single one)
+### ~~(I didn't eat a single one)~~
+
+(I caved yesterday)
+
+---
+## Feature Engineering
+
+![](index_files/figure-html/rgb-demo-1.png)&lt;!-- --&gt;
+Start with RGB colorspace (not perfect, but hopefully will do)
+
+"Overall" features
+- whole-region average r, g, b channel value
+- whole-region standard deviation of r, g, b, channel value
+- average/std dev for r, g, b channel value
+- ratio of red/green, red/blue, green/blue average and std deviation
+
+---
+## Feature Engineering
+
+How to handle speckles?
+
+K-means clustering of pixel values in RGB space (for each bean) w/ 5 clusters (enough to handle base color shades + some multicolor speckles)
+
+![](index_files/figure-html/km-clustering-1.png)&lt;!-- --&gt;
+
+
+---
+## Feature Engineering
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+Features: 
+- center of each cluster (r, b, g channels)
+- cluster proportion of total within-cluster SS
+- between cluster SS/total SS
+- proportion of points in each cluster
+
+---
+## Models
+
+- 3 models: 
+  - Overall features (whole bean)
+  - K-means features
+  - Combined features
+
+---
+## Overall Features Model
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="80%" /&gt;
+
+Overall model accuracy: 94.33%
+
+---
+## Overall Features Model
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="70%" /&gt;
+
+
+---
+## Overall Features Model
+
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="80%" /&gt;
+
+K-Means model accuracy: 92.13%
+
+---
+## K-Means Features Model
+
+&lt;img src="index_files/figure-html/unnamed-chunk-11-1.png" width="70%" /&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

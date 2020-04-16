@@ -22,6 +22,8 @@ options(htmltools.dir.version = FALSE)
 
 ```{r, include = F, eval = T}
 library(tidyverse)
+library(EBImage)
+library(randomForest)
 clean_file_name <- function(x) {
   basename(x) %>% str_remove("\\..*?$") %>% str_remove_all("[^[A-z0-9_]]")
 }
@@ -334,4 +336,243 @@ background-image: url("desk_photo.png")
 background-size: cover
 class:inverse,center
 ## My desk while making this presentation...
-### (I didn't eat a single one)
+### ~~(I didn't eat a single one)~~
+
+(I caved yesterday)
+
+---
+## Feature Engineering
+
+```{r rgb-demo, fig.width = 8, fig.height = 2}
+example <- readImage("big-bean.png")
+r <- channel(example, "red") %>% rgbImage(., .==1, .==1)
+g <- channel(example, "green") %>% rgbImage(.==1, ., .==1)
+b <- channel(example, "blue") %>% rgbImage(.==1., .==1, .)
+EBImage::combine(example[,,1:3], r, g, b) %>% plot(all = T, nx = 4)
+```
+Start with RGB colorspace (not perfect, but hopefully will do)
+
+"Overall" features
+- whole-region average r, g, b channel value
+- whole-region standard deviation of r, g, b, channel value
+- average/std dev for r, g, b channel value
+- ratio of red/green, red/blue, green/blue average and std deviation
+
+---
+## Feature Engineering
+
+How to handle speckles?
+
+K-means clustering of pixel values in RGB space (for each bean) w/ 5 clusters (enough to handle base color shades + some multicolor speckles)
+```{r km-setup, include = F, cache = T}
+
+# example <- readImage("https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/7ce437b2-c431-4ce2-8a93-d2fb610b5fd0", type = "jpg")
+# example <- readImage("big-bean.png")
+# example[1,1,4]
+# 
+# 
+# m2df <- function(xx, channel_name) {
+#   as.data.frame(xx) %>%
+#     mutate(col = 1:n()) %>%
+#     pivot_longer(-col, names_to = "row", values_to = channel_name) %>%
+#     mutate(row = str_remove(row,"[^[\\d]]") %>% as.integer())
+# }
+# 
+# img_to_df <- function(img, colorspace) {
+#   channels <- str_split(colorspace, "", simplify = T) %>% as.character()
+#   res <- map2(asplit(img, 3), channels, ~m2df(.x, .y)) %>%
+#     reduce(left_join, by = c("row", "col"))
+#   res
+# }
+# 
+# example_df <- img_to_df(example, "RGBA") %>%
+#   filter(A == 1) %>%
+#   select(-A) %>%
+#   rename(red = R, green = G, blue = B) %>%
+#   nest(RGB = c(red, green, blue)) %>%
+#   mutate(rgb = map_chr(RGB, rgb)) %>%
+#   unnest(RGB)
+# 
+# example_df <- example_df %>%
+#   mutate(hsv = map(rgb, ~as.tibble(t(rgb2hsv(col2rgb(.)))))) %>%
+#   unnest(hsv)
+# 
+# save(example_df, file = "tuttifrutti_df.rda")
+load("tuttifrutti_df.rda")
+km <- kmeans(example_df[,c(3:5)], centers = 5)
+
+example_df$cluster <- km$cluster
+example_df$cluster_center <- rgb(km$centers[km$cluster,1:3])
+
+
+tmp <- select(example_df, row, col, rgb, h, s, v, cluster, cluster_center)
+
+tmp2 <- tmp %>% group_by(cluster, cluster_center) %>%
+  summarize(h = median(h), s = median(s), v = median(v)) %>%
+  arrange(h, s, v)
+
+tmp <- tmp %>%
+  mutate(cluster_block = cluster_center[order(tmp2$cluster[cluster])],
+         orig_block = rgb[order(tmp2$cluster_center[cluster])]) %>%
+  mutate(cluster_block = cluster_block[order(cluster_block)],
+         orig_block = orig_block[order(cluster_block)])
+```
+```{r km-clustering, fig.width = 8, fig.height = 3.5}
+
+
+p1 <- tmp %>%
+  rename(Original = rgb, `K-means Cluster Centers` = cluster_center,
+         `Composition by Cluster Center` = cluster_block, `Original Pixel Value by Cluster Center` = orig_block) %>%
+  select(-cluster, -h, -s, -v) %>%
+  pivot_longer(-c(row, col)) %>%
+  mutate(name = factor(name, levels = c("Original", "K-means Cluster Centers",
+                                        "Composition by Cluster Center",
+                                        "Original Pixel Value by Cluster Center"), ordered = T)) %>%
+  filter(name %in% c("Original", "K-means Cluster Centers")) %>%
+  ggplot(aes(x = row,  y = col, fill = value)) +
+  geom_tile(fill = "black", color = "black", size = 1) +
+  geom_raster() + facet_grid(~name) +
+  scale_fill_identity() + coord_fixed() + theme_void()
+
+p2 <- tmp %>% #pivot_longer(c(cluster_center, rgb)) %>%
+  #mutate(gv = ifelse(name == "cluster_center", cluster, paste0(cluster, value))) %>%
+  ggplot(aes(x = I(1))) + geom_bar(aes(fill = cluster_center), position = "fill", color = "black") + scale_fill_identity() +
+  theme_void() + coord_flip() + facet_wrap(~"Features")
+
+gridExtra::grid.arrange(p1, p2, nrow = 1, widths = c(2.5, 1))
+```
+
+
+---
+## Feature Engineering
+
+```{r, fig.width = 8, fig.height = 3.5, out.width = "70%", fig.align="center"}
+gridExtra::grid.arrange(p1, p2, nrow = 1, widths = c(2.5, 1))
+```
+Features: 
+- center of each cluster (r, b, g channels)
+- cluster proportion of total within-cluster SS
+- between cluster SS/total SS
+- proportion of points in each cluster
+
+---
+## Models
+
+- 3 models: 
+  - Overall features (whole bean)
+  - K-means features
+  - Combined features
+
+---
+## Overall Features Model
+
+```{r, fig.width = 6, fig.height = 3, out.width = "80%"}
+library(randomForest)
+
+rf_oob_accuracy <- function(rf_model) {
+  100*(rf_model$confusion[,1:49] %>% (function(x) sum(diag(x))/sum(x)))
+}
+
+plot_conf_matrix <- function(cmat) {
+  idx <- 1:nrow(cmat)
+  dendro_dist <- hclust(as.dist(1 - cmat[,idx]/rowSums(cmat[,idx])), method = "ward.D2")
+
+  f_ord <- dendro_dist$labels[dendro_dist$order]
+
+  confusion_long <- cmat %>% as_tibble() %>%
+    select(idx) %>%
+    mutate(n = rowSums(.)) %>%
+    mutate_each(~./n) %>%
+    mutate(actual = names(.)[idx]) %>%
+    select(actual, everything()) %>%
+    tidyr::pivot_longer(cols = all_of(idx + 1), names_to = "predicted") %>%
+    mutate(actual = factor(actual, levels = f_ord, ordered = T),
+           predicted = factor(predicted, levels = rev(f_ord), ordered = T))
+
+  ggplot(confusion_long, aes(x = predicted, y = actual, fill = value)) +
+    geom_tile() +
+    coord_equal() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+
+}
+
+load("rf_model_data.rda")
+overall_rf <- randomForest(data = overall_data[,-1], flavor ~ ., strata = flavor)
+overall_accuracy <- rf_oob_accuracy(overall_rf)
+importance(overall_rf) %>% 
+  as.data.frame(stringsAsFactors = F) %>%
+  rownames_to_column("var") %>%
+  arrange(desc(MeanDecreaseGini)) %>%
+  mutate(var = str_replace(var, "(o[a-z]{1,2})_(.*)", "\\2_\\1")) %>%
+  extract(var, c("color", "measure"), regex = "([rgb]{1,})_o([asdz]{1,})") %>%
+  mutate(measure = str_replace_all(measure, c("a" = "mean", "z" = "mean/sd")), 
+         vars = ifelse(nchar(color) > 1, "ratio", "single") %>% factor(levels = c("single", "ratio"), labels = c("Single Channel", "Ratio of Channels")),
+         color = factor(color, levels = c("r", "g", "b", "rg", "gb", "rb"),
+                        labels = c("red", "green", "blue", "red/green", "green/blue", "red/blue"))) %>%
+  ggplot(aes(x = measure, y = MeanDecreaseGini, fill = color)) + 
+  geom_col(position = "dodge", color = "black", width = .8) + 
+  facet_wrap(~vars, scales = "free_x") + 
+  scale_fill_manual("Channel(s)", values = c("red" = "red", "green" = "green", "blue" = "blue", 
+                                        "red/green" = "yellow", "red/blue" = "magenta", "green/blue" = "cyan")) + scale_x_discrete("Statistic")
+```
+
+Overall model accuracy: `r sprintf("%.2f%%", overall_accuracy)`
+
+---
+## Overall Features Model
+
+```{r, out.width = "70%", fig.width = 8, fig.height = 7.5}
+
+pal <- c("#FFFFFF", RColorBrewer::brewer.pal(9, "Greens"), "#000000")
+
+plot_conf_matrix(overall_rf$confusion) +
+  scale_fill_gradientn("Accuracy", colours = pal,
+                       values = c(0, .01, .025, .05, .1, .2, .4, .6, .8, .9, 1),
+                       breaks = c(.025, .1, .3, .5, .7, .9)) +
+  geom_tile(color = "grey") +
+  ggtitle("Overall Model Confusion Matrix")
+
+```
+
+
+---
+## K-Means Features Model
+
+```{r, fig.width = 6, fig.height = 3, out.width = "80%"}
+
+km_rf <- randomForest(data = km_data[,-1], flavor ~ ., strata = flavor)
+km_accuracy <- rf_oob_accuracy(km_rf)
+importance(km_rf) %>% 
+  as.data.frame(stringsAsFactors = F) %>%
+  rownames_to_column("var") %>%
+  arrange(desc(MeanDecreaseGini)) %>%
+  mutate(var = str_replace(var, "(o[a-z]{1,2})_(.*)", "\\2_\\1")) %>%
+  extract(var, c("color", "measure"), regex = "([rgb]{1,})_o([asdz]{1,})") %>%
+  mutate(measure = str_replace_all(measure, c("a" = "mean", "z" = "mean/sd")), 
+         vars = ifelse(nchar(color) > 1, "ratio", "single") %>% factor(levels = c("single", "ratio"), labels = c("Single Channel", "Ratio of Channels")),
+         color = factor(color, levels = c("r", "g", "b", "rg", "gb", "rb"),
+                        labels = c("red", "green", "blue", "red/green", "green/blue", "red/blue"))) %>%
+  ggplot(aes(x = measure, y = MeanDecreaseGini, fill = color)) + 
+  geom_col(position = "dodge", color = "black", width = .8) + 
+  facet_wrap(~vars, scales = "free_x") + 
+  scale_fill_manual("Channel(s)", values = c("red" = "red", "green" = "green", "blue" = "blue", 
+                                        "red/green" = "yellow", "red/blue" = "magenta", "green/blue" = "cyan")) + scale_x_discrete("Statistic")
+```
+
+K-Means model accuracy: `r sprintf("%.2f%%", km_accuracy)`
+
+---
+## K-Means Features Model
+
+```{r, out.width = "70%", fig.width = 8, fig.height = 7.5}
+
+pal <- c("#FFFFFF", RColorBrewer::brewer.pal(9, "Greens"), "#000000")
+
+plot_conf_matrix(km_rf$confusion) +
+  scale_fill_gradientn("Accuracy", colours = pal,
+                       values = c(0, .01, .025, .05, .1, .2, .4, .6, .8, .9, 1),
+                       breaks = c(.025, .1, .3, .5, .7, .9)) +
+  geom_tile(color = "grey") +
+  ggtitle("K-Means Model Confusion Matrix")
+
+```
