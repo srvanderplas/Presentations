@@ -447,8 +447,8 @@ gridExtra::grid.arrange(p1, p2, nrow = 1, widths = c(2.5, 1))
 ## Feature Engineering
 
 ```{r, fig.width = 8, fig.height = 3.5, out.width = "70%", fig.align="center"}
-gridExtra::grid.arrange(p1, p2, nrow = 1, widths = c(2.5, 1))
-```
+gridExtra::grid.arrange(p1, p2, nrow = 1, widths = c(2.5, 1)) 
+``` 
 Features: 
 - center of each cluster (r, b, g channels)
 - cluster proportion of total within-cluster SS
