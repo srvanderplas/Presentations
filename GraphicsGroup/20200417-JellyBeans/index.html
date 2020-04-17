@@ -587,16 +587,180 @@ Overall model accuracy: 94.33%
 
 
 ---
-## Overall Features Model
+## K-Means Features Model
 
-&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="80%" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="100%" /&gt;
 
-K-Means model accuracy: 92.13%
+K-Means model accuracy: 92.98%
 
 ---
 ## K-Means Features Model
 
 &lt;img src="index_files/figure-html/unnamed-chunk-11-1.png" width="70%" /&gt;
+
+
+
+
+---
+## Combined Features Model
+
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="100%" /&gt;
+
+Combined model accuracy: 95.74%
+
+---
+## Combined Features Model
+
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="70%" /&gt;
+
+---
+class:middle,center,inverse
+# Attempt 2
+## Timeline: Mid Feb - March
+
+---
+## Data Issues
+
+Online marketing images are nice, but they have perfect lighting conditions and have probably been heavily edited... they don't predict images of beans taken with a camera well.
+
+
+---
+## How to Collect Data?
+
+.left-column[
+![Very Cherry JellyBelly Image](https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/7a075f1b-2738-4a83-a2aa-7c6550b1ad68)![French Vanilla JellyBelly Image](https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/ce88aee0-1bd3-4061-acda-3ff834493e9f)![](https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/f6a5ffcf-b771-4ed6-886a-6bd6816b1e44)
+]
+.right-column[
+- Take pictures of each bean in the 40-flavor bag
+  1. immediately taste the bean
+  2. save the picture with the proper name
+  3. hope I can differentiate between Tangerine/Orange, Very Cherry/Sour Cherry
+  4. separate bean from background
+  
+  ... too much work
+  
+- Scrape labeled images off the web
+  1. Mask non-jellybean information (automatically?)
+  2. Separate individual beans into different images
+
+&lt;img src="https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/ee1313d9-376a-4957-ba34-efc803df3d69" width="28%"/&gt;&lt;img src="https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/25cd34c8-f62b-4b1b-992d-f311d90f92fa" width="28%"/&gt;&lt;img src="https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/a8585abb-9b32-4f0c-8b73-1446e5b650bf" width="28%"/&gt;
+]
+
+
+---
+## JellyBelly Gift Box FTW!
+
+.pull-left[
+![JB Gift Box inside](https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/6395349d-9dc7-4605-8d0e-e31e31591f33)
+]
+.pull-right[
+![JB Gift Box lid](https://cdn-tp1.mozu.com/9046-11441/cms/11441/files/50933511-8b3d-48e5-ad19-294faa86f0bc)
+]
+
+---
+## Data Collection
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img1D2XFrXO' src='1 - D2XFrXO.jpg' alt='Whole Box at once?' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgDSC_0230' src='DSC_0230.JPG' alt='Ice Cream Bucket to control lighting?' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgDSC_0012' src='DSC_0012.JPG' alt='I broke down and bought a lightbox' width='32%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal1D2XFrXO' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal1D2XFrXO'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption1D2XFrXO' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalDSC_0230' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalDSC_0230'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionDSC_0230' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalDSC_0012' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalDSC_0012'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionDSC_0012' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imglightbox' src='lightbox.jpg' alt='Lightbox - used to photograph things in even lighting' width='50%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modallightbox' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodallightbox'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionlightbox' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+.move-margin-wide[
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+Conclusion: I really need to find the time to take photography lessons
+
+- segmenting beans + shadows as a single unit works ok
+- segmenting beans without shadows... not quite so much
+
+]
+
+
+---
+## Image Processing 
+
+.pull-left[
+![Image](sour_cherry.jpg)
+].pull-right[
+![Hand-made mask](sour_cherry_mask.png)
+]
+
+I cheated and did these by hand for this presentation... we have a method for automatically removing both background and shadows, but we're still fine-tuning it.
+
+---
+## Combined Features Model
+
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.png" width="100%" /&gt;
+
+ Combined model accuracy: 82.44%
+ 
+---
+## Combined Features Model
+
+&lt;img src="index_files/figure-html/unnamed-chunk-17-1.png" width="70%" /&gt;
+
+--
+
+.move-margin[
+We need better lighting. Most of the confusion happens with similarly colored beans.
+
+Also, more data would probably help (and possibly from multiple manufacturing lots)
+
+]
+
+---
+## Conclusions and Future Work
+
+- Gifts from Santa can be *dangerous*... pretty sure I'm never getting candy in my stocking again.
+
+- Explore the use of automatic color correction scripts
+
+- Get more photographic data w/ improved lighting/photography
+
+- Explore the use of alternate color spaces
+]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -643,516 +807,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   });
 })();</script>
 
-<script>
-        /* Get the modal*/
-          var modalRed_Apple = document.getElementById('modalRed_Apple');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgRed_Apple = document.getElementById('imgRed_Apple');
-          var modalImgRed_Apple = document.getElementById('imgmodalRed_Apple');
-          var captionTextRed_Apple = document.getElementById('captionRed_Apple');
-          imgRed_Apple.onclick = function(){
-            modalRed_Apple.style.display = 'block';
-            modalImgRed_Apple.src = this.src;
-            captionTextRed_Apple.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgRed_Apple.onclick = function() {
-            modalRed_Apple.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalCantaloupe = document.getElementById('modalCantaloupe');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgCantaloupe = document.getElementById('imgCantaloupe');
-          var modalImgCantaloupe = document.getElementById('imgmodalCantaloupe');
-          var captionTextCantaloupe = document.getElementById('captionCantaloupe');
-          imgCantaloupe.onclick = function(){
-            modalCantaloupe.style.display = 'block';
-            modalImgCantaloupe.src = this.src;
-            captionTextCantaloupe.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgCantaloupe.onclick = function() {
-            modalCantaloupe.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalLemon = document.getElementById('modalLemon');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgLemon = document.getElementById('imgLemon');
-          var modalImgLemon = document.getElementById('imgmodalLemon');
-          var captionTextLemon = document.getElementById('captionLemon');
-          imgLemon.onclick = function(){
-            modalLemon.style.display = 'block';
-            modalImgLemon.src = this.src;
-            captionTextLemon.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgLemon.onclick = function() {
-            modalLemon.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalKiwi = document.getElementById('modalKiwi');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgKiwi = document.getElementById('imgKiwi');
-          var modalImgKiwi = document.getElementById('imgmodalKiwi');
-          var captionTextKiwi = document.getElementById('captionKiwi');
-          imgKiwi.onclick = function(){
-            modalKiwi.style.display = 'block';
-            modalImgKiwi.src = this.src;
-            captionTextKiwi.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgKiwi.onclick = function() {
-            modalKiwi.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalBlueberry = document.getElementById('modalBlueberry');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgBlueberry = document.getElementById('imgBlueberry');
-          var modalImgBlueberry = document.getElementById('imgmodalBlueberry');
-          var captionTextBlueberry = document.getElementById('captionBlueberry');
-          imgBlueberry.onclick = function(){
-            modalBlueberry.style.display = 'block';
-            modalImgBlueberry.src = this.src;
-            captionTextBlueberry.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgBlueberry.onclick = function() {
-            modalBlueberry.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalIsland_Punch = document.getElementById('modalIsland_Punch');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgIsland_Punch = document.getElementById('imgIsland_Punch');
-          var modalImgIsland_Punch = document.getElementById('imgmodalIsland_Punch');
-          var captionTextIsland_Punch = document.getElementById('captionIsland_Punch');
-          imgIsland_Punch.onclick = function(){
-            modalIsland_Punch.style.display = 'block';
-            modalImgIsland_Punch.src = this.src;
-            captionTextIsland_Punch.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgIsland_Punch.onclick = function() {
-            modalIsland_Punch.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalSizzling_Cinnamon = document.getElementById('modalSizzling_Cinnamon');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgSizzling_Cinnamon = document.getElementById('imgSizzling_Cinnamon');
-          var modalImgSizzling_Cinnamon = document.getElementById('imgmodalSizzling_Cinnamon');
-          var captionTextSizzling_Cinnamon = document.getElementById('captionSizzling_Cinnamon');
-          imgSizzling_Cinnamon.onclick = function(){
-            modalSizzling_Cinnamon.style.display = 'block';
-            modalImgSizzling_Cinnamon.src = this.src;
-            captionTextSizzling_Cinnamon.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgSizzling_Cinnamon.onclick = function() {
-            modalSizzling_Cinnamon.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalPomegranate = document.getElementById('modalPomegranate');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgPomegranate = document.getElementById('imgPomegranate');
-          var modalImgPomegranate = document.getElementById('imgmodalPomegranate');
-          var captionTextPomegranate = document.getElementById('captionPomegranate');
-          imgPomegranate.onclick = function(){
-            modalPomegranate.style.display = 'block';
-            modalImgPomegranate.src = this.src;
-            captionTextPomegranate.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgPomegranate.onclick = function() {
-            modalPomegranate.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalStrawberry_Jam = document.getElementById('modalStrawberry_Jam');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgStrawberry_Jam = document.getElementById('imgStrawberry_Jam');
-          var modalImgStrawberry_Jam = document.getElementById('imgmodalStrawberry_Jam');
-          var captionTextStrawberry_Jam = document.getElementById('captionStrawberry_Jam');
-          imgStrawberry_Jam.onclick = function(){
-            modalStrawberry_Jam.style.display = 'block';
-            modalImgStrawberry_Jam.src = this.src;
-            captionTextStrawberry_Jam.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgStrawberry_Jam.onclick = function() {
-            modalStrawberry_Jam.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalCinnamon = document.getElementById('modalCinnamon');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgCinnamon = document.getElementById('imgCinnamon');
-          var modalImgCinnamon = document.getElementById('imgmodalCinnamon');
-          var captionTextCinnamon = document.getElementById('captionCinnamon');
-          imgCinnamon.onclick = function(){
-            modalCinnamon.style.display = 'block';
-            modalImgCinnamon.src = this.src;
-            captionTextCinnamon.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgCinnamon.onclick = function() {
-            modalCinnamon.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalSour_Cherry = document.getElementById('modalSour_Cherry');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgSour_Cherry = document.getElementById('imgSour_Cherry');
-          var modalImgSour_Cherry = document.getElementById('imgmodalSour_Cherry');
-          var captionTextSour_Cherry = document.getElementById('captionSour_Cherry');
-          imgSour_Cherry.onclick = function(){
-            modalSour_Cherry.style.display = 'block';
-            modalImgSour_Cherry.src = this.src;
-            captionTextSour_Cherry.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgSour_Cherry.onclick = function() {
-            modalSour_Cherry.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalRaspberry = document.getElementById('modalRaspberry');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgRaspberry = document.getElementById('imgRaspberry');
-          var modalImgRaspberry = document.getElementById('imgmodalRaspberry');
-          var captionTextRaspberry = document.getElementById('captionRaspberry');
-          imgRaspberry.onclick = function(){
-            modalRaspberry.style.display = 'block';
-            modalImgRaspberry.src = this.src;
-            captionTextRaspberry.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgRaspberry.onclick = function() {
-            modalRaspberry.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalMargarita = document.getElementById('modalMargarita');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgMargarita = document.getElementById('imgMargarita');
-          var modalImgMargarita = document.getElementById('imgmodalMargarita');
-          var captionTextMargarita = document.getElementById('captionMargarita');
-          imgMargarita.onclick = function(){
-            modalMargarita.style.display = 'block';
-            modalImgMargarita.src = this.src;
-            captionTextMargarita.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgMargarita.onclick = function() {
-            modalMargarita.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalMango = document.getElementById('modalMango');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgMango = document.getElementById('imgMango');
-          var modalImgMango = document.getElementById('imgmodalMango');
-          var captionTextMango = document.getElementById('captionMango');
-          imgMango.onclick = function(){
-            modalMango.style.display = 'block';
-            modalImgMango.src = this.src;
-            captionTextMango.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgMango.onclick = function() {
-            modalMango.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalLemon_Drop = document.getElementById('modalLemon_Drop');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgLemon_Drop = document.getElementById('imgLemon_Drop');
-          var modalImgLemon_Drop = document.getElementById('imgmodalLemon_Drop');
-          var captionTextLemon_Drop = document.getElementById('captionLemon_Drop');
-          imgLemon_Drop.onclick = function(){
-            modalLemon_Drop.style.display = 'block';
-            modalImgLemon_Drop.src = this.src;
-            captionTextLemon_Drop.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgLemon_Drop.onclick = function() {
-            modalLemon_Drop.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalButtered_Popcorn = document.getElementById('modalButtered_Popcorn');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgButtered_Popcorn = document.getElementById('imgButtered_Popcorn');
-          var modalImgButtered_Popcorn = document.getElementById('imgmodalButtered_Popcorn');
-          var captionTextButtered_Popcorn = document.getElementById('captionButtered_Popcorn');
-          imgButtered_Popcorn.onclick = function(){
-            modalButtered_Popcorn.style.display = 'block';
-            modalImgButtered_Popcorn.src = this.src;
-            captionTextButtered_Popcorn.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgButtered_Popcorn.onclick = function() {
-            modalButtered_Popcorn.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalCaramel_Corn = document.getElementById('modalCaramel_Corn');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgCaramel_Corn = document.getElementById('imgCaramel_Corn');
-          var modalImgCaramel_Corn = document.getElementById('imgmodalCaramel_Corn');
-          var captionTextCaramel_Corn = document.getElementById('captionCaramel_Corn');
-          imgCaramel_Corn.onclick = function(){
-            modalCaramel_Corn.style.display = 'block';
-            modalImgCaramel_Corn.src = this.src;
-            captionTextCaramel_Corn.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgCaramel_Corn.onclick = function() {
-            modalCaramel_Corn.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalFrench_Vanilla = document.getElementById('modalFrench_Vanilla');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgFrench_Vanilla = document.getElementById('imgFrench_Vanilla');
-          var modalImgFrench_Vanilla = document.getElementById('imgmodalFrench_Vanilla');
-          var captionTextFrench_Vanilla = document.getElementById('captionFrench_Vanilla');
-          imgFrench_Vanilla.onclick = function(){
-            modalFrench_Vanilla.style.display = 'block';
-            modalImgFrench_Vanilla.src = this.src;
-            captionTextFrench_Vanilla.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgFrench_Vanilla.onclick = function() {
-            modalFrench_Vanilla.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalStrawberry_Cheesecake = document.getElementById('modalStrawberry_Cheesecake');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgStrawberry_Cheesecake = document.getElementById('imgStrawberry_Cheesecake');
-          var modalImgStrawberry_Cheesecake = document.getElementById('imgmodalStrawberry_Cheesecake');
-          var captionTextStrawberry_Cheesecake = document.getElementById('captionStrawberry_Cheesecake');
-          imgStrawberry_Cheesecake.onclick = function(){
-            modalStrawberry_Cheesecake.style.display = 'block';
-            modalImgStrawberry_Cheesecake.src = this.src;
-            captionTextStrawberry_Cheesecake.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgStrawberry_Cheesecake.onclick = function() {
-            modalStrawberry_Cheesecake.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalTutti_Fruitti = document.getElementById('modalTutti_Fruitti');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgTutti_Fruitti = document.getElementById('imgTutti_Fruitti');
-          var modalImgTutti_Fruitti = document.getElementById('imgmodalTutti_Fruitti');
-          var captionTextTutti_Fruitti = document.getElementById('captionTutti_Fruitti');
-          imgTutti_Fruitti.onclick = function(){
-            modalTutti_Fruitti.style.display = 'block';
-            modalImgTutti_Fruitti.src = this.src;
-            captionTextTutti_Fruitti.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgTutti_Fruitti.onclick = function() {
-            modalTutti_Fruitti.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalChili_Mango = document.getElementById('modalChili_Mango');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgChili_Mango = document.getElementById('imgChili_Mango');
-          var modalImgChili_Mango = document.getElementById('imgmodalChili_Mango');
-          var captionTextChili_Mango = document.getElementById('captionChili_Mango');
-          imgChili_Mango.onclick = function(){
-            modalChili_Mango.style.display = 'block';
-            modalImgChili_Mango.src = this.src;
-            captionTextChili_Mango.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgChili_Mango.onclick = function() {
-            modalChili_Mango.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalTop_Banana = document.getElementById('modalTop_Banana');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgTop_Banana = document.getElementById('imgTop_Banana');
-          var modalImgTop_Banana = document.getElementById('imgmodalTop_Banana');
-          var captionTextTop_Banana = document.getElementById('captionTop_Banana');
-          imgTop_Banana.onclick = function(){
-            modalTop_Banana.style.display = 'block';
-            modalImgTop_Banana.src = this.src;
-            captionTextTop_Banana.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgTop_Banana.onclick = function() {
-            modalTop_Banana.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalPlum = document.getElementById('modalPlum');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgPlum = document.getElementById('imgPlum');
-          var modalImgPlum = document.getElementById('imgmodalPlum');
-          var captionTextPlum = document.getElementById('captionPlum');
-          imgPlum.onclick = function(){
-            modalPlum.style.display = 'block';
-            modalImgPlum.src = this.src;
-            captionTextPlum.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgPlum.onclick = function() {
-            modalPlum.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalCappuchino = document.getElementById('modalCappuchino');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgCappuchino = document.getElementById('imgCappuchino');
-          var modalImgCappuchino = document.getElementById('imgmodalCappuchino');
-          var captionTextCappuchino = document.getElementById('captionCappuchino');
-          imgCappuchino.onclick = function(){
-            modalCappuchino.style.display = 'block';
-            modalImgCappuchino.src = this.src;
-            captionTextCappuchino.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgCappuchino.onclick = function() {
-            modalCappuchino.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalpink = document.getElementById('modalpink');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgpink = document.getElementById('imgpink');
-          var modalImgpink = document.getElementById('imgmodalpink');
-          var captionTextpink = document.getElementById('captionpink');
-          imgpink.onclick = function(){
-            modalpink.style.display = 'block';
-            modalImgpink.src = this.src;
-            captionTextpink.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgpink.onclick = function() {
-            modalpink.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalorange = document.getElementById('modalorange');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgorange = document.getElementById('imgorange');
-          var modalImgorange = document.getElementById('imgmodalorange');
-          var captionTextorange = document.getElementById('captionorange');
-          imgorange.onclick = function(){
-            modalorange.style.display = 'block';
-            modalImgorange.src = this.src;
-            captionTextorange.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgorange.onclick = function() {
-            modalorange.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalyellow = document.getElementById('modalyellow');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgyellow = document.getElementById('imgyellow');
-          var modalImgyellow = document.getElementById('imgmodalyellow');
-          var captionTextyellow = document.getElementById('captionyellow');
-          imgyellow.onclick = function(){
-            modalyellow.style.display = 'block';
-            modalImgyellow.src = this.src;
-            captionTextyellow.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgyellow.onclick = function() {
-            modalyellow.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalgreen = document.getElementById('modalgreen');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imggreen = document.getElementById('imggreen');
-          var modalImggreen = document.getElementById('imgmodalgreen');
-          var captionTextgreen = document.getElementById('captiongreen');
-          imggreen.onclick = function(){
-            modalgreen.style.display = 'block';
-            modalImggreen.src = this.src;
-            captionTextgreen.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImggreen.onclick = function() {
-            modalgreen.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalwhite = document.getElementById('modalwhite');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgwhite = document.getElementById('imgwhite');
-          var modalImgwhite = document.getElementById('imgmodalwhite');
-          var captionTextwhite = document.getElementById('captionwhite');
-          imgwhite.onclick = function(){
-            modalwhite.style.display = 'block';
-            modalImgwhite.src = this.src;
-            captionTextwhite.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgwhite.onclick = function() {
-            modalwhite.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalblack = document.getElementById('modalblack');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgblack = document.getElementById('imgblack');
-          var modalImgblack = document.getElementById('imgmodalblack');
-          var captionTextblack = document.getElementById('captionblack');
-          imgblack.onclick = function(){
-            modalblack.style.display = 'block';
-            modalImgblack.src = this.src;
-            captionTextblack.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgblack.onclick = function() {
-            modalblack.style.display = 'none';
-          }
-</script>
 
 <script>
 (function() {
