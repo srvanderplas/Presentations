@@ -1,0 +1,34 @@
+---
+title: "Title"
+subtitle: "helloworld"
+author: "Author"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "unl.css"]
+    lib_dir: libs
+    includes:
+      in_header: header.html
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+## Testing, testing
+
+- a
+- b
+- c
+
+---
+class: inverse
+## I'm an inverse slide!
+
+- a
+- b
+- c
