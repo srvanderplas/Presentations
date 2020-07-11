@@ -1,21 +1,29 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Perception and Visual Communication in a Global Pandemic</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Susan Vanderplas" />
+    <meta name="date" content="2020-07-29" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="libs/twitter-widget/twitter-widgets-loader.js"></script>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&family=Roboto:ital,wght@0,500;1,500&display=swap');
+    </style>
+    <link rel="stylesheet" href="libs/unl.css" type="text/css" />
+    <link rel="stylesheet" href="libs/modal.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Perception and Visual Communication in a Global Pandemic
+### Susan Vanderplas
+### July 29, 2020
+
 ---
-title: "Perception and Visual Communication in a Global Pandemic"
-author: "Susan Vanderplas"
-coauthor: "Emily Robinson, Heike Hofmann"
-date: "July 29, 2020"
-output:
-  xaringan::moon_reader:
-    css: ["default", "libs/unl.css", "libs/modal.css"]
-    lib_dir: libs
-    includes:
-      in_header: libs/header.html
-      after_body: libs/js-addins.html
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
----
-```{css, echo = F}
+
+&lt;style type="text/css"&gt;
 .wrap
 {
     width: 1100px;
@@ -50,83 +58,22 @@ output:
     -webkit-transform-origin: 0 0;
     transform-origin: 0 0;
 }
-```
-
-```{r setup, include=FALSE}
-options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(echo = F, dpi = 300)
-```
-```{r modals, include = F, eval = T}
-knitr::opts_chunk$set(echo=F, dpi=300)
-library(tidyverse)
-clean_file_name <- function(x) {
-  basename(x) %>% str_remove("\\..*?$") %>% str_remove_all("[^[A-z0-9_]]")
-}
-
-img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
-  
-  other_arg <- paste0("'", as.character(other), "'") %>%
-    paste(names(other), ., sep = "=") %>%
-    paste(collapse = " ")
-  
-  js <- glue::glue("<script>
-        /* Get the modal*/
-          var modal{id} = document.getElementById('modal{id}');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var img{id} = document.getElementById('img{id}');
-          var modalImg{id} = document.getElementById('imgmodal{id}');
-          var captionText{id} = document.getElementById('caption{id}');
-          img{id}.onclick = function(){{
-            modal{id}.style.display = 'block';
-            modalImg{id}.src = this.src;
-            captionText{id}.innerHTML = this.alt;
-          }}
-          /* When the user clicks on the modalImg, close it*/
-          modalImg{id}.onclick = function() {{
-            modal{id}.style.display = 'none';
-          }}
-</script>")
-  
-  html <- glue::glue(
-     " <!-- Trigger the Modal -->
-<img id='img{id}' src='{src}' alt='{alt}' {other_arg}>
-
-<!-- The Modal -->
-<div id='modal{id}' class='modal'>
-
-  <!-- Modal Content (The Image) -->
-  <img class='modal-content' id='imgmodal{id}'>
-
-  <!-- Modal Caption (Image Text) -->
-  <div id='caption{id}' class='modal-caption'></div>
-</div>
-"
-  )
-  write(js, file = "libs/js-addins.html", append = T)
-  return(html)
-}
-
-# Clean the file out at the start of the compilation
-write("", file = "libs/js-addins.html")
-```
+&lt;/style&gt;
 
 
-```{r dl-nyt, include = F, eval = F}
-dates <- seq.Date(as.Date("2020-03-01"), as.Date("2020-03-31"), by = "day")
-dates <- seq.Date(as.Date("2020-01-01"), as.Date("2020-02-28"), by = "day")
-urls <- format.Date(dates, "https://static01.nyt.com/images/%Y/%m/%d/nytfrontpage/scan.pdf")
-paths <- file.path("NYT_PDF", format.Date(dates, "NYT%Y%m%d.pdf"))
-download.file(urls, paths, quiet = T, mode = "wb", cacheOK = T)
-```
+
+
+
+
 
 .left-column[
-<img src="image/NYT_Front_page.gif" class = "move-left" width="100%"/>
+&lt;img src="image/NYT_Front_page.gif" class = "move-left" width="100%"/&gt;
 
-.bottom[NYT Front page graphic from [@joshbegley](https://twitter.com/joshbegley/status/1243520269307838465). <br/>
+.bottom[NYT Front page graphic from [@joshbegley](https://twitter.com/joshbegley/status/1243520269307838465). &lt;br/&gt;
 Jan 21 - March 27.]
 ]
 .right-column[
-<h3 class='emph cerulean'>General Timeline</h3>
+&lt;h3 class='emph cerulean'&gt;General Timeline&lt;/h3&gt;
 
 - Dec 31, 2019 - China reports cluster of pneumonia cases
 - Jan 13 - First case outside of China (Thailand)
@@ -170,10 +117,10 @@ With all of the creativity that these charts exhibited, though, it's undeniable 
 ---
 ## Counting Cases over Time
 
-<div class = "wrap" style="position: absolute; left: 10px; top: 100px;">
-<iframe class = "scale-frame" width="800px" height = "500px" src = "http://91-divoc.com/pages/covid-visualization/?chart=countries&highlight=United%20States&show=10&y=both&scale=linear&data=cases-daily-7&data-source=jhu&xaxis=right-all#countries"></iframe>
-</iframe>
-</div>
+&lt;div class = "wrap" style="position: absolute; left: 10px; top: 100px;"&gt;
+&lt;iframe class = "scale-frame" width="800px" height = "500px" src = "http://91-divoc.com/pages/covid-visualization/?chart=countries&amp;highlight=United%20States&amp;show=10&amp;y=both&amp;scale=linear&amp;data=cases-daily-7&amp;data-source=jhu&amp;xaxis=right-all#countries"&gt;&lt;/iframe&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
 
 ???
 
@@ -191,10 +138,10 @@ As far as I know (and I've been looking for 2 months) there are not any empirica
 ---
 ## Counting Deaths over Time
 
-<div class = "wrap" style="position: absolute; left: 10px; top: 100px;">
-<iframe class = "scale-frame" width="800px" height = "500px" src = "http://91-divoc.com/pages/covid-visualization/?chart=countries&highlight=United%20States&show=10&y=highlight&scale=linear&data=deaths-daily-7&data-source=jhu&xaxis=right-all&extra=New%20Jersey#countries
-"></iframe>
-</div>
+&lt;div class = "wrap" style="position: absolute; left: 10px; top: 100px;"&gt;
+&lt;iframe class = "scale-frame" width="800px" height = "500px" src = "http://91-divoc.com/pages/covid-visualization/?chart=countries&amp;highlight=United%20States&amp;show=10&amp;y=highlight&amp;scale=linear&amp;data=deaths-daily-7&amp;data-source=jhu&amp;xaxis=right-all&amp;extra=New%20Jersey#countries
+"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
 
 ???
 
@@ -217,11 +164,11 @@ Annotations can be useful when calling out weird stuff in the data, like spikes 
 ---
 ## Reference lines and Starting points
 
-<div class = "wrap" style="position: absolute; left: 10px; top: 100px;">
-<iframe class = "scale-frame" width="800px" height = "500px" src = "http://91-divoc.com/pages/covid-visualization/?chart=countries&highlight=United%20States&show=10&y=both&scale=linear&data=cases-daily-7&data-source=jhu&xaxis=left#countries"></iframe>
-</div>
+&lt;div class = "wrap" style="position: absolute; left: 10px; top: 100px;"&gt;
+&lt;iframe class = "scale-frame" width="800px" height = "500px" src = "http://91-divoc.com/pages/covid-visualization/?chart=countries&amp;highlight=United%20States&amp;show=10&amp;y=both&amp;scale=linear&amp;data=cases-daily-7&amp;data-source=jhu&amp;xaxis=left#countries"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
 
-<!-- ![](image/divoc-91-log-reference.png) -->
+&lt;!-- ![](image/divoc-91-log-reference.png) --&gt;
 
 ???
 
@@ -241,12 +188,8 @@ The annotations showing lockdowns are helpful, but we know that any intervention
 ---
 ## Foresight and Hindsight
 
-```{r, out.extra = "center"}
-library(tweetrmd)
+<blockquote class="twitter-tweet" data-width="550" data-lang="en" data-dnt="true" data-theme="light"><p lang="en" dir="ltr">We not only can’t see the future, we not only can’t see the present, but we can’t even see 2 weeks in the past very well. 22/</p>&mdash; Andy Slavitt @ 🏡 (@ASlavitt) <a href="https://twitter.com/ASlavitt/status/1281710612352045057?ref_src=twsrc%5Etfw">July 10, 2020</a></blockquote>
 
-tweet_embed("ASlavitt" %tweet% "1281710612352045057")
-
-```
 
 ---
 ## Why are COVID counts so hard to visualize? Blame the...
@@ -291,7 +234,7 @@ Exponential growth of cases also makes it hard to visualize the spread of COVID.
 Then, the pandemic reached each country at a different time. So do you compare based on the pandemic start dates? Based on the actual date? What do you do when there are flare-ups later -- how do you effectively compare to previous situations, potentially across states or countries? If, as been hypothesized, this virus will flare up in waves that will move geographically, then we may need to compare the reaction of e.g. Texas in March to New York in May. 
 
 ---
-## Other Variables: <h3>Test Positivity Rate</h3>
+## Other Variables: &lt;h3&gt;Test Positivity Rate&lt;/h3&gt;
 
 
 ![](image/Covid_Tracking_Test_Pct_Pos_20200711.png)
@@ -308,15 +251,131 @@ Then, the pandemic reached each country at a different time. So do you compare b
 ---
 ## The Advantages of Less Data
 
-<div class = "wrap2" style="position: absolute; left: 5px; top: 100px;">
-<iframe class = "scale-frame" src = "https://projects.propublica.org/reopening-america/"></iframe>
-</div>
+&lt;div class = "wrap2" style="position: absolute; left: 5px; top: 100px;"&gt;
+&lt;iframe class = "scale-frame" src = "https://projects.propublica.org/reopening-america/"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
 
 
 
 ---
 ### .emph[We're going to need a new color]
 
-<img src="image/COVID_Exit_New_Color_20200711_151435.png" width="90%"/>
+&lt;img src="image/COVID_Exit_New_Color_20200711_151435.png" width="90%"/&gt;
 
 ---
+
+
+- Case count graphics
+    - Annotations
+    - Graphical forms
+
+-
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
