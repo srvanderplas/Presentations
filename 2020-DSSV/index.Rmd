@@ -66,13 +66,12 @@ myBib <- ReadBib("./refs.bib", check = FALSE)
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(echo = F, dpi = 300, fig.retina = 3, fig.width = 6, fig.height = 15/4, message = F, warning = F)
+knitr::opts_chunk$set(echo = F, dpi = 300, fig.retina = 3, fig.width = 6, fig.height = 15/4, message = F, warning = F, dev.args=list(bg="transparent"))
+library(tidyverse)
 ```
 
 ```{r modals, include = F, eval = T}
-knitr::opts_chunk$set(echo=F, dpi=300)
-knitr::opts_chunk$set(dev.args=list(bg="transparent"))
-library(tidyverse)
+
 clean_file_name <- function(x) {
   basename(x) %>% str_remove("\\..*?$") %>% str_remove_all("[^[A-z0-9_]]")
 }
@@ -508,7 +507,7 @@ One problem I have is that the difference between these two graphs is *very* sub
 ---
 ## Other Interesting Variations
 
-```{r, fig.show='animate', ffmpeg.format='webm', dpi = 500}
+```{r, fig.show='animate', ffmpeg.format='gif', fig.width = 8, fig.height = 4, dev = "jpeg", dpi = 300, interval = 0.5}
 show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
 
 cvstate <- cvstate %>%
@@ -535,8 +534,29 @@ plot_to_date <- function(dt) {
     ggtitle(format(dt, format = "%B %d, %Y"))
   print(p)
 }
-dates <- seq.Date(ymd("2020-03-11"), today(), by = "3 days")
+dates <- seq.Date(ymd("2020-03-11"), today(), by = "1 day")
 
 purrr::walk(dates, plot_to_date)
 
 ```
+
+.bottom[[Interpreting graphs with log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/) has examples of what log scales on each axis do to the spacing of the data.]
+???
+
+One of the other very interesting variations in plots I've seen takes time out of the equation entirely (for the static version) or animates the chart like the one I've included here. This chart shows the total progress of the epidemic over time; regions which suppress cases show steep declines in y, and resurgences look like bounces. It's an interesting paradigm, but I'm not convinced that it's that useful for a couple of reasons: First, it's probably the least useful when the epidemic isn't being controlled, because surges in cases take up less room on the chart in both dimensions - that is, the amount of space dedicated to an increase of 100 cases in the first portion of the epidemic is pretty large, but later in the epidemic, it isn't at all. 
+
+On the bright side, though, there's really no need to scale this chart by per captia population, as what matters here is the trajectory of the epidemic over time. 
+
+Another issue is that log-log charts don't show change very well - because both x and y are on log scale, many things that aren't linear will look linear. So while it's easy to make imprecise comparisons with this chart, it's much harder to see what exactly it means.
+
+---
+class:middle,center,inverse
+# Low Detail
+
+### Just tell us what to do
+
+???
+
+I love graphics, and data, but I'll confess that by about May, I was done. I just couldn't look at another one of these charts. I still wanted to know how bad things were in the areas of the country I care about - places where friends and family live, but I was so done 
+
+---
