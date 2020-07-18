@@ -37,7 +37,10 @@ body{
   font-weight:400;
   font-family: 'Montserrat', sans-serif; 
 }
-
+a{
+  link-color:#001226;
+  color:#001226;
+}
 
 .title-slide.inverse {
 	background-color: #fefdfa;

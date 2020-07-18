@@ -30,8 +30,8 @@ myBib <- ReadBib("./refs.bib", check = FALSE)
 ```{css, echo = F}
 .wrap
 {
-  width: 1100px;
-  height: 650px;
+  width: 1050px;
+  height: 550px;
   padding: 0;
   overflow: hidden;
 }
@@ -46,7 +46,7 @@ myBib <- ReadBib("./refs.bib", check = FALSE)
 
 .scale-frame
 {
-  width: 1200px;
+  width: 1100px;
   height: 760px;
   border: 0;
   
@@ -67,7 +67,34 @@ myBib <- ReadBib("./refs.bib", check = FALSE)
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(echo = F, dpi = 300, fig.retina = 3, fig.width = 6, fig.height = 15/4, message = F, warning = F, dev.args=list(bg="transparent"))
+# Read in the data from NYT
 library(tidyverse)
+library(lubridate)
+library(zoo)
+library(ggrepel)
+library(gridExtra)
+cvstate <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+
+cvstate <- cvstate %>%
+  group_by(state, fips) %>%
+  mutate(date_100th_case = min(date[cases >= 100]),
+         days_100th_case = date - date_100th_case,
+         daily_cases = cases - lag(cases, 1, default = 0),
+         week_avg_cases = rollmean(cases, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T),
+         daily_avg_cases = rollmean(daily_cases, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T),
+         daily_deaths = deaths - lag(deaths, 1, default = 0),
+         week_avg_deaths = rollmean(deaths, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T),
+         daily_avg_deaths = rollmean(daily_deaths, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T))
+
+download.file("https://www2.census.gov/programs-surveys/popest/tables/2010-2019/state/totals/nst-est2019-01.xlsx", destfile = "census_pop_state.xlsx", quiet = T, mode = "wb")
+pop_data <- readxl::read_xlsx("census_pop_state.xlsx", col_names = c("state", "pop2019"), col_types = c("text", rep("skip", 11), "numeric"), skip = 9) %>%
+  mutate(state = str_remove(state, "[[:punct:]]"))
+
+cvstate <- left_join(cvstate, pop_data, by = "state")
+
+my_theme <- theme_bw() + 
+  theme(axis.title = element_blank(), plot.background = element_rect(fill = "transparent", color = NA), panel.background = element_rect(fill = "transparent", color = NA), legend.background = element_rect(fill = "transparent", color = NA)) 
+theme_set(my_theme)
 ```
 
 ```{r modals, include = F, eval = T}
@@ -167,14 +194,14 @@ Because (for me, at least) the beginning of the pandemic seems like it was a dec
 
 During that time, almost everyone I knew was constantly checking out this map or this chart of cases in the states or in countries across the world. Data bears this out - searches for news-related graphs spike at the end of February and slowly decrease back to near-normal levels in June. 
 
-It wasn't just that we were all paying attention to charts more during this period - there was also an impressive array of different ways of showing the available data. Today, I'm going to look at two broad classes of charts with different goals and (ideally) different audiences, and discuss the advantages and disadvantages of each. 
+It wasn't just that we were all paying attention to charts more during this period - there was also an impressive array of different ways of showing the available data. Today, I'm going to look at a couple of broad classes of charts with different goals and (ideally) different audiences, and discuss the advantages and disadvantages of each. 
 
 
 ---
 class: middle,center,inverse
 # High Detail
 
-### (Paleo Data)
+### Show me all of the data
 
 ???
 
@@ -183,33 +210,6 @@ The first class of charts I'm going to discuss is what I've started thinking of 
 For most of these charts, I'm going to focus on the form of the chart, rather than the specific implementations in the media, both because I think the interesting part is what is plotted, rather than the specific aesthetics, and because I think it will make it easier to compare different charts. Throughout this presentation, I'll be using the data from the NY Times. 
 
 In the interests of showing only enough information to make the point, I'll be showing this data based on US states, and in most cases, I'll be picking a handful of states from different regions to showcase the important pieces of each chart.
-
-```{r, include = F}
-# Read in the data from NYT
-library(tidyverse)
-library(lubridate)
-library(zoo)
-library(ggrepel)
-library(gridExtra)
-cvstate <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
-
-cvstate <- cvstate %>%
-  group_by(state, fips) %>%
-  mutate(date_100th_case = min(date[cases >= 100]),
-         days_100th_case = date - date_100th_case,
-         daily_cases = cases - lag(cases, 1, default = 0),
-         week_avg_cases = rollmean(cases, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T),
-         daily_avg_cases = rollmean(daily_cases, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T),
-         daily_deaths = deaths - lag(deaths, 1, default = 0),
-         week_avg_deaths = rollmean(deaths, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T),
-         daily_avg_deaths = rollmean(daily_deaths, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T))
-
-download.file("https://www2.census.gov/programs-surveys/popest/tables/2010-2019/state/totals/nst-est2019-01.xlsx", destfile = "census_pop_state.xlsx", quiet = T, mode = "wb")
-pop_data <- readxl::read_xlsx("census_pop_state.xlsx", col_names = c("state", "pop2019"), col_types = c("text", rep("skip", 11), "numeric"), skip = 9) %>%
-  mutate(state = str_remove(state, "[[:punct:]]"))
-
-cvstate <- left_join(cvstate, pop_data, by = "state")
-```
 
 
 ---
@@ -249,8 +249,6 @@ The simplest plots show the date compared to the number of deaths or cases. Idea
 When the y axis scale is linear, we can more easily read counts off (and understand what's going on), but there is the compression factor: the only state we can clearly read from the chart is New York, and while it is dramatic, that doesn't help us compare very well. 
 
 But there are a couple of other factors at play here that are 1) persistent across many types of covid charts, and 2) much more important in affecting our ability to read the charts. We can, using various interactive graphs, mitigate the scale issues. But, fundamentally, we have bigger problems. 
-
-
 ---
 ## Exponential Growth
 
@@ -431,6 +429,80 @@ When the goal is to communicate with the general public, though, you have to be 
 I wish I had data, or guidelines, or any real information on the use of log scales and how we perceive them, but I've been looking for papers for two months, and haven't found any experiment which examines how people read and perceive graphics that use log scales, compared with linear scales. If you know of one, please message me by email, twitter, smoke signals... Either way, hopefully there will be such a paper within the next year. 
 
 ---
+## Log scales, COVID-19, and Time
+
+.pull-left[
+- It's estimated that [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
+  - Most people infect 0-1 others
+  - Super spreading events make up the difference
+  
+- Under these conditions, most transmission chains die out on their own
+
+- Log scales can make it harder to detect exponential increases due to superspreading or changes in policy later in the epidemic
+]
+```{r, out.extra='class="pull-right"', fig.height = 5.5, fig.width = 4, dev = "png"}
+growth <- rpois(30, 15*exp((1:30 - 20)/5))
+
+tmp <- tibble(baseline = 15,
+       x = 1:30,
+       y = rpois(30, 15),
+       y1 = growth) %>%
+  bind_rows(
+    tibble(baseline = 50,
+       x = 1:30,
+       y = rpois(30, 50),
+       y1 = growth) 
+  ) %>%
+  bind_rows(
+    tibble(baseline = 200,
+       x = 1:30,
+       y = rpois(30, 200),
+       y1 = growth) 
+  ) %>%
+  pivot_longer(matches("y")) %>%
+  mutate(name = str_replace_all(name, c("y$" = "Background", "y1" = "Exponential")))  %>%
+  group_by(baseline, x) %>%
+  mutate(Total = sum(value)) %>%
+  pivot_wider(names_from = "name", values_from = "value") %>%
+  pivot_longer(matches("Background|Exponential|Total")) %>%
+  mutate(name = factor(name, levels = c("Total", "Exponential", "Background")))
+
+p1 <- tmp %>%
+ggplot(aes(x = x, y = value, color = name, size = name)) + 
+  geom_line(alpha = .9) + 
+  scale_size_manual(values = c(1.75, 1, 1)) + 
+  scale_color_manual(values = c("#249ab5", "#d00000", "#001226")) + 
+  scale_y_log10() + 
+  scale_fill_discrete(name = "") + 
+  facet_wrap(~baseline, labeller = label_both) + 
+  theme(legend.position = "bottom", axis.title = element_blank(), 
+        legend.title = element_blank())
+
+
+p2 <- tmp %>%
+ggplot(aes(x = x, y = value, color = name, size = name)) + 
+  geom_line(alpha = 0.9) + 
+  scale_size_manual(values = c(1.75, 1, 1)) + 
+  scale_color_manual(values = c("#249ab5", "#d00000", "#001226")) + 
+  # scale_y_log10() + 
+  scale_fill_discrete(name = "") + 
+  facet_wrap(~baseline, labeller = label_both) + 
+  guides(color = F, size = F) + 
+  theme(legend.position = "bottom", axis.title = element_blank(), legend.title = element_blank())
+
+
+gridExtra::grid.arrange(p1, p2, nrow = 2, heights = c(.54, .46))
+```
+
+???
+
+One other problem with log scales has been increasingly important over time. What we generally care about is the recent change in cases/deaths over time. Unfortunately, log scales show a percent change that is based on the total number of cases. This is usually a good thing, but COVID is interesting. 
+
+Once cases die off in an area to a baseline level of spread that might represent sustained, continuing, constant levels of transmission within e.g. family or work (but not sustained community spread), we end up with what appears to be constant-ish new cases over time. 
+
+If exponential spread then starts up again, it's hard to recognize that increase on a log scale. The picture on the right shows 3 baseline levels of sustained transmission, with the same amount of exponential spread. It's clear 
+
+---
 ## Virus time or Human time?
 
 
@@ -507,7 +579,7 @@ One problem I have is that the difference between these two graphs is *very* sub
 ---
 ## Other Interesting Variations
 
-```{r, fig.show='animate', ffmpeg.format='gif', fig.width = 8, fig.height = 4, dev = "jpeg", dpi = 300, interval = 0.5}
+```{r, fig.show='animate', ffmpeg.format='gif', fig.width = 8, fig.height = 4, dev = "jpeg", dpi = 300, interval = 0.5, cache = T}
 show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
 
 cvstate <- cvstate %>%
@@ -551,12 +623,139 @@ Another issue is that log-log charts don't show change very well - because both 
 
 ---
 class:middle,center,inverse
+# Creative Circumvention of Scale Issues
+
+---
+## From Exponential to Frequency
+
+```{r, fig.width = 8, fig.height = 5}
+show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
+
+n <- 10000
+tmp <- cvstate %>%
+  filter(state %in% show_states2) %>%
+  select(state, date, cases) %>%
+  mutate(mod_num = cases %% n,
+         whole_num = floor(cases/n)) %>%
+  group_by(state, whole_num) %>%
+  mutate(whole_num_days = n()) %>%
+  group_by(state) %>%
+  arrange(date) 
+
+tmp2 <- bind_rows(
+  # Day before first case detected:
+  filter(tmp, whole_num == 0) %>%
+    group_by(state) %>%
+    summarize(date = min(date) - lubridate::days(1), y = 0, whole_num = 0, 
+              whole_num_days = unique(whole_num_days), mod_num = 0) %>%
+    unique() %>%
+    ungroup(),
+  # Date before the count rolls over
+  tmp %>%
+    group_by(state, whole_num) %>%
+    filter(date == max(date)) %>%
+    group_by(state) %>%
+    mutate(y = ifelse(whole_num == max(whole_num), mod_num, n),
+           whole_num_days = ifelse(whole_num == max(whole_num), whole_num_days/(y/10000), whole_num_days)),
+  # Date after the count rolls over
+  tmp %>%
+    group_by(state, whole_num) %>%
+    filter(date == min(date)) %>%
+    mutate(y = 0, date = date - lubridate::days(1))
+  ) %>%
+  group_by(state, whole_num) %>%
+  mutate(whole_num_days = max(whole_num_days))
+  
+
+ggplot(data = tmp2, aes(x = date, ymin = 0, ymax = y, 
+                        color = whole_num_days, 
+                        fill = whole_num_days, 
+                        group = whole_num)) + 
+  geom_ribbon() + 
+  facet_grid(state~.) + 
+  scale_color_gradientn(guide = F,
+    paste0("Days to\n", n, "\nmore\ncases"), 
+    colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
+    trans = "log10") + 
+  scale_fill_gradientn(
+    paste0("Days to\n", n, "\nmore\ncases"), 
+    colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
+    trans = "log10") + 
+  theme(axis.title = element_blank(), plot.background = element_rect(fill = "transparent", color = NA), panel.background = element_rect(fill = "transparent", color = NA), legend.background = element_rect(fill = "transparent", color = NA)) 
+
+```
+
+---
+## The Slow March to Herd Immunity
+
+```{r, fig.width = 8, fig.height = 5}
+show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
+
+tmp <- cvstate %>%
+  filter(state %in% show_states2) %>%
+  select(state, date, cases, pop2019) %>%
+  mutate(n = round(pop2019/1000)) %>%
+  mutate(mod_num = cases %% n,
+         whole_num = floor(cases/n)) %>%
+  group_by(state, whole_num) %>%
+  mutate(whole_num_days = n()) %>%
+  group_by(state) %>%
+  arrange(date) 
+
+tmp2 <- bind_rows(
+  # Day before first case detected:
+  filter(tmp, whole_num == 0) %>%
+    group_by(state) %>%
+    summarize(date = min(date) - lubridate::days(1), y = 0, whole_num = 0, 
+              whole_num_days = unique(whole_num_days), mod_num = 0) %>%
+    unique() %>%
+    ungroup(),
+  # Date before the count rolls over
+  tmp %>%
+    group_by(state, whole_num) %>%
+    filter(date == max(date)) %>%
+    group_by(state) %>%
+    mutate(y = ifelse(whole_num == max(whole_num), mod_num, n),
+           whole_num_days = ifelse(whole_num == max(whole_num), whole_num_days/(y/n), whole_num_days)),
+  # Date after the count rolls over
+  tmp %>%
+    group_by(state, whole_num) %>%
+    filter(date == min(date)) %>%
+    mutate(y = 0, date = date - lubridate::days(1))
+  ) %>%
+  group_by(state, whole_num) %>%
+  mutate(whole_num_days = max(whole_num_days))
+  
+
+ggplot(data = tmp2, aes(x = date, ymin = 0, ymax = y, 
+                        color = whole_num_days, 
+                        fill = whole_num_days, 
+                        group = whole_num)) + 
+  geom_ribbon() + 
+  facet_grid(state~., scales = "free_y") + 
+  scale_color_gradientn(guide = F,
+    paste0("Days to\n0.1% of\npop'n"), 
+    colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
+    trans = "log10") + 
+  scale_fill_gradientn(
+    paste0("Days to\n0.1% of\npop'n"), 
+    colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
+    trans = "log10")
+
+```
+
+---
+class:middle,center,inverse
 # Low Detail
 
 ### Just tell us what to do
 
 ???
 
-I love graphics, and data, but I'll confess that by about May, I was done. I just couldn't look at another one of these charts. I still wanted to know how bad things were in the areas of the country I care about - places where friends and family live, but I was so done 
+I love graphics, and data, but I'll confess that by about May, I was done. I just couldn't look at another one of these charts. I still wanted to know how bad things were in the areas of the country I care about - places where friends and family live, but I was so done with the case count graphics. Luckily for me, many outlets came up with very simple summary graphics, often using small multiple plots laid out geographically in a fairly clear repurposing of graphics which were used to show election data. Because the spread of coronavirus is pretty similar to the spread of a candidate's popularity, right?   
 
 ---
+## State-Level Progress
+
+<div class="wrap">
+<iframe class="scale-frame" src = "https://www.covidexitstrategy.org/#hero-chart" width = "100%" height = "500px"/></div>

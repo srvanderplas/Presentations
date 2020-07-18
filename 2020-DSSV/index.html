@@ -28,8 +28,8 @@ class: center, middle, inverse, title-slide
 &lt;style type="text/css"&gt;
 .wrap
 {
-  width: 1100px;
-  height: 650px;
+  width: 1050px;
+  height: 550px;
   padding: 0;
   overflow: hidden;
 }
@@ -44,7 +44,7 @@ class: center, middle, inverse, title-slide
 
 .scale-frame
 {
-  width: 1200px;
+  width: 1100px;
   height: 760px;
   border: 0;
   
@@ -104,14 +104,14 @@ Because (for me, at least) the beginning of the pandemic seems like it was a dec
 
 During that time, almost everyone I knew was constantly checking out this map or this chart of cases in the states or in countries across the world. Data bears this out - searches for news-related graphs spike at the end of February and slowly decrease back to near-normal levels in June. 
 
-It wasn't just that we were all paying attention to charts more during this period - there was also an impressive array of different ways of showing the available data. Today, I'm going to look at two broad classes of charts with different goals and (ideally) different audiences, and discuss the advantages and disadvantages of each. 
+It wasn't just that we were all paying attention to charts more during this period - there was also an impressive array of different ways of showing the available data. Today, I'm going to look at a couple of broad classes of charts with different goals and (ideally) different audiences, and discuss the advantages and disadvantages of each. 
 
 
 ---
 class: middle,center,inverse
 # High Detail
 
-### (Paleo Data)
+### Show me all of the data
 
 ???
 
@@ -122,12 +122,10 @@ For most of these charts, I'm going to focus on the form of the chart, rather th
 In the interests of showing only enough information to make the point, I'll be showing this data based on US states, and in most cases, I'll be picking a handful of states from different regions to showcase the important pieces of each chart.
 
 
-
-
 ---
 ## Changes over Time
 
-&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="1800" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="1800" /&gt;
 
 .bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
 
@@ -138,8 +136,6 @@ The simplest plots show the date compared to the number of deaths or cases. Idea
 When the y axis scale is linear, we can more easily read counts off (and understand what's going on), but there is the compression factor: the only state we can clearly read from the chart is New York, and while it is dramatic, that doesn't help us compare very well. 
 
 But there are a couple of other factors at play here that are 1) persistent across many types of covid charts, and 2) much more important in affecting our ability to read the charts. We can, using various interactive graphs, mitigate the scale issues. But, fundamentally, we have bigger problems. 
-
-
 ---
 ## Exponential Growth
 
@@ -170,7 +166,7 @@ The natural way to correct for graphs showing exponential growth is to use a log
 ---
 ## Exponential Growth
 
-&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="1200" class="pull-left" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="1200" class="pull-left" /&gt;
 
 .pull-right[
 - People are consistently awful at forecasting exponential growth
@@ -198,7 +194,7 @@ The natural way to correct for graphs showing exponential growth is to use a log
 ## Log Scales
 
 
-&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="1800" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="1800" /&gt;
 .bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
 
 ???
@@ -210,7 +206,7 @@ We're again reading the slope off of the chart as the "useful information" here 
 
 ---
 ## Comparisons 
-&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="1800" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="1800" /&gt;
 
 .bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
 
@@ -242,6 +238,28 @@ When the goal is to communicate with the general public, though, you have to be 
 I wish I had data, or guidelines, or any real information on the use of log scales and how we perceive them, but I've been looking for papers for two months, and haven't found any experiment which examines how people read and perceive graphics that use log scales, compared with linear scales. If you know of one, please message me by email, twitter, smoke signals... Either way, hopefully there will be such a paper within the next year. 
 
 ---
+## Log scales, COVID-19, and Time
+
+.pull-left[
+- It's estimated that [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
+  - Most people infect 0-1 others
+  - Super spreading events make up the difference
+  
+- Under these conditions, most transmission chains die out on their own
+
+- Log scales can make it harder to detect exponential increases due to superspreading or changes in policy later in the epidemic
+]
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="1200" class="pull-right" /&gt;
+
+???
+
+One other problem with log scales has been increasingly important over time. What we generally care about is the recent change in cases/deaths over time. Unfortunately, log scales show a percent change that is based on the total number of cases. This is usually a good thing, but COVID is interesting. 
+
+Once cases die off in an area to a baseline level of spread that might represent sustained, continuing, constant levels of transmission within e.g. family or work (but not sustained community spread), we end up with what appears to be constant-ish new cases over time. 
+
+If exponential spread then starts up again, it's hard to recognize that increase on a log scale. The picture on the right shows 3 baseline levels of sustained transmission, with the same amount of exponential spread. It's clear 
+
+---
 ## Virus time or Human time?
 
 
@@ -270,7 +288,39 @@ One problem I have is that the difference between these two graphs is *very* sub
 
 One of the other very interesting variations in plots I've seen takes time out of the equation entirely (for the static version) or animates the chart like the one I've included here. This chart shows the total progress of the epidemic over time; regions which suppress cases show steep declines in y, and resurgences look like bounces. It's an interesting paradigm, but I'm not convinced that it's that useful for a couple of reasons: First, it's probably the least useful when the epidemic isn't being controlled, because surges in cases take up less room on the chart in both dimensions - that is, the amount of space dedicated to an increase of 100 cases in the first portion of the epidemic is pretty large, but later in the epidemic, it isn't at all. 
 
-Another issue is that log-log charts don't show change very well - because both x and y are on log scale, many things that aren't linear will look linear.
+On the bright side, though, there's really no need to scale this chart by per captia population, as what matters here is the trajectory of the epidemic over time. 
+
+Another issue is that log-log charts don't show change very well - because both x and y are on log scale, many things that aren't linear will look linear. So while it's easy to make imprecise comparisons with this chart, it's much harder to see what exactly it means.
+
+---
+class:middle,center,inverse
+# Creative Circumvention of Scale Issues
+
+---
+## From Exponential to Frequency
+
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="2400" /&gt;
+
+---
+## The Slow March to Herd Immunity
+
+&lt;img src="index_files/figure-html/unnamed-chunk-11-1.png" width="2400" /&gt;
+
+---
+class:middle,center,inverse
+# Low Detail
+
+### Just tell us what to do
+
+???
+
+I love graphics, and data, but I'll confess that by about May, I was done. I just couldn't look at another one of these charts. I still wanted to know how bad things were in the areas of the country I care about - places where friends and family live, but I was so done with the case count graphics. Luckily for me, many outlets came up with very simple summary graphics, often using small multiple plots laid out geographically in a fairly clear repurposing of graphics which were used to show election data. Because the spread of coronavirus is pretty similar to the spread of a candidate's popularity, right?   
+
+---
+## State-Level Progress
+
+&lt;div class="wrap"&gt;
+&lt;iframe class="scale-frame" src = "https://www.covidexitstrategy.org/#hero-chart" width = "100%" height = "500px"/&gt;&lt;/div&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
