@@ -685,6 +685,13 @@ ggplot(data = tmp2, aes(x = date, ymin = 0, ymax = y,
 
 ```
 
+???
+
+One of the more interesting graphics I've seen on twitter was one which encoded covid deaths as time intervals to N cases. So if it takes 50 days to get to the first 10000 cases, and then 20,and then 5, and so on, the acceleration of pandemic progress is clear. I really, really like this idea, if only because it is one of the best ways I've seen to get around the exponential vs. log scale issue. The "pace" of the pandemic is perfectly clear while the number of spikes makes it obvious how many cumulative cases or deaths there have been. Shading in the triangles using deeper shades of a univariate color allows you to assess "total" subjectively by "amount of color".
+
+I recreated the chart using a blue color scheme because the use of red and black in coloring is really problematic - it can cause panic, the connection to blood and death has an emotional impact, and while the emotional impact isn't bad, it's not necessary to communicate what we need to communicate here. 
+
+
 ---
 ## The Slow March to Herd Immunity
 
@@ -744,6 +751,17 @@ ggplot(data = tmp2, aes(x = date, ymin = 0, ymax = y,
 
 ```
 
+???
+
+As with all of the graphics so far, though, we have this battle between comparing raw numbers/counts in a geographic region and comparing the population prevalence. So if we redo this graph as a % population, it's much more effective at showing the progress of the pandemic moving through the population, and it's much easier to compare e.g. the success of control measures in NY and CA with Arizona and Nebraska. I'd say that when the graph is arranged this way, it's more like we're showing the progress toward some sort of herd immunity - by the time we get to 1000 spikes, we're "done". God forbid.
+
+---
+## A More Poignant Take
+
+<video autosize controls>
+  <source src="NYT-100000-compress-crop.mp4" type="video/mp4">
+</video>
+
 ---
 class:middle,center,inverse
 # Low Detail
@@ -767,12 +785,9 @@ Perceptually, this map is a mess for colorblind individuals, because I can't dif
 ---
 ## State-Level Progress
 
-
 ```{r, out.extra = "center"}
 library(tweetrmd)
-
 tweet_embed("ASlavitt" %tweet% "1282024016254042112?s=20")
-
 ```
 
 ???
@@ -780,4 +795,8 @@ tweet_embed("ASlavitt" %tweet% "1282024016254042112?s=20")
 On July 10 the calculations that contributed to the map changed -- they addded a darker shade of red. There's something bigger communicated when you have to add a new color to the map to describe how bad things have gotten, and that broader theme is why this map is first in the low-detail category.
 
 
+---
+## Case Doubling Rate
+
+![](image/NYT-heatmap.png)
 

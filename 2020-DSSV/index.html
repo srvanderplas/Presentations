@@ -6,6 +6,7 @@
     <meta name="author" content="Susan Vanderplas" />
     <meta name="date" content="2020-07-29" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="libs/twitter-widget/widgets.js"></script>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&family=Roboto:ital,wght@0,500;1,500&display=swap');
     </style>
@@ -301,10 +302,28 @@ class:middle,center,inverse
 
 &lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="2400" /&gt;
 
+???
+
+One of the more interesting graphics I've seen on twitter was one which encoded covid deaths as time intervals to N cases. So if it takes 50 days to get to the first 10000 cases, and then 20,and then 5, and so on, the acceleration of pandemic progress is clear. I really, really like this idea, if only because it is one of the best ways I've seen to get around the exponential vs. log scale issue. The "pace" of the pandemic is perfectly clear while the number of spikes makes it obvious how many cumulative cases or deaths there have been. Shading in the triangles using deeper shades of a univariate color allows you to assess "total" subjectively by "amount of color".
+
+I recreated the chart using a blue color scheme because the use of red and black in coloring is really problematic - it can cause panic, the connection to blood and death has an emotional impact, and while the emotional impact isn't bad, it's not necessary to communicate what we need to communicate here. 
+
+
 ---
 ## The Slow March to Herd Immunity
 
 &lt;img src="index_files/figure-html/unnamed-chunk-11-1.png" width="2400" /&gt;
+
+???
+
+As with all of the graphics so far, though, we have this battle between comparing raw numbers/counts in a geographic region and comparing the population prevalence. So if we redo this graph as a % population, it's much more effective at showing the progress of the pandemic moving through the population, and it's much easier to compare e.g. the success of control measures in NY and CA with Arizona and Nebraska. I'd say that when the graph is arranged this way, it's more like we're showing the progress toward some sort of herd immunity - by the time we get to 1000 spikes, we're "done". God forbid.
+
+---
+## A More Poignant Take
+
+&lt;video autosize controls&gt;
+  &lt;source src="NYT-100000-compress-crop.mp4" type="video/mp4"&gt;
+&lt;/video&gt;
 
 ---
 class:middle,center,inverse
@@ -321,6 +340,26 @@ I love graphics, and data, but I'll confess that by about May, I was done. I jus
 
 &lt;div class="wrap"&gt;
 &lt;iframe class="scale-frame" src = "https://www.covidexitstrategy.org/#hero-chart" width = "100%" height = "500px"/&gt;&lt;/div&gt;
+
+???
+
+Perceptually, this map is a mess for colorblind individuals, because I can't differentiate the green from the light and dark red shades. Statistically, it's not 100% clear what metrics are being used to decide which states are in which category - the site mentions broad themes but doesn't provide any sort of formula that we might use to recreate the graph. So while it loses points for accessibility and transparency, it is a nice map that was very effective at communicating one thing.
+
+---
+## State-Level Progress
+
+<blockquote class="twitter-tweet" data-width="550" data-lang="en" data-dnt="true" data-theme="light"><p lang="en" dir="ltr">We invented a new color. Great. <a href="https://t.co/oELH0oOrz4">https://t.co/oELH0oOrz4</a></p>&mdash; Andy Slavitt @ 🏡 (@ASlavitt) <a href="https://twitter.com/ASlavitt/status/1282024016254042112?ref_src=twsrc%5Etfw">July 11, 2020</a></blockquote>
+
+
+???
+
+On July 10 the calculations that contributed to the map changed -- they addded a darker shade of red. There's something bigger communicated when you have to add a new color to the map to describe how bad things have gotten, and that broader theme is why this map is first in the low-detail category.
+
+
+---
+## Case Doubling Rate
+
+![](image/NYT-heatmap.png)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -368,6 +407,32 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -386,17 +451,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
 
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
 
 <script>
 slideshow._releaseMath = function(el) {
