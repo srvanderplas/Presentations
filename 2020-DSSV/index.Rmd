@@ -759,3 +759,25 @@ I love graphics, and data, but I'll confess that by about May, I was done. I jus
 
 <div class="wrap">
 <iframe class="scale-frame" src = "https://www.covidexitstrategy.org/#hero-chart" width = "100%" height = "500px"/></div>
+
+???
+
+Perceptually, this map is a mess for colorblind individuals, because I can't differentiate the green from the light and dark red shades. Statistically, it's not 100% clear what metrics are being used to decide which states are in which category - the site mentions broad themes but doesn't provide any sort of formula that we might use to recreate the graph. So while it loses points for accessibility and transparency, it is a nice map that was very effective at communicating one thing.
+
+---
+## State-Level Progress
+
+
+```{r, out.extra = "center"}
+library(tweetrmd)
+
+tweet_embed("ASlavitt" %tweet% "1282024016254042112?s=20")
+
+```
+
+???
+
+On July 10 the calculations that contributed to the map changed -- they addded a darker shade of red. There's something bigger communicated when you have to add a new color to the map to describe how bad things have gotten, and that broader theme is why this map is first in the low-detail category.
+
+
+
