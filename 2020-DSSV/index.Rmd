@@ -196,6 +196,12 @@ During that time, almost everyone I knew was constantly checking out this map or
 
 It wasn't just that we were all paying attention to charts more during this period - there was also an impressive array of different ways of showing the available data. Today, I'm going to look at a couple of broad classes of charts with different goals and (ideally) different audiences, and discuss the advantages and disadvantages of each. 
 
+---
+class: middle
+## Data
+.center[
+Throughout this talk, I'll be using data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), which is based on reports from state and local health agencies.
+]
 
 ---
 class: middle,center,inverse
@@ -500,7 +506,9 @@ One other problem with log scales has been increasingly important over time. Wha
 
 Once cases die off in an area to a baseline level of spread that might represent sustained, continuing, constant levels of transmission within e.g. family or work (but not sustained community spread), we end up with what appears to be constant-ish new cases over time. 
 
-If exponential spread then starts up again, it's hard to recognize that increase on a log scale. The picture on the right shows 3 baseline levels of sustained transmission, with the same amount of exponential spread. It's clear 
+If exponential spread then starts up again, it's hard to recognize that increase on a log scale. The picture on the right shows 3 baseline levels of sustained transmission, with the same amount of exponential spread. It's clear from the bottom that the magnitude of the change is similar, but it has so much less visual impact on the log scale.
+
+I think initially, log scales were an excellent idea, but now that the epidemic is firmly established in the US, we're better off sticking with linear scales or some sort of log - with- baseline type scale. Otherwise, we risk misleading the public and de-emphasizing the warning signs of increasing spread.
 
 ---
 ## Virus time or Human time?
@@ -691,6 +699,26 @@ One of the more interesting graphics I've seen on twitter was one which encoded 
 
 I recreated the chart using a blue color scheme because the use of red and black in coloring is really problematic - it can cause panic, the connection to blood and death has an emotional impact, and while the emotional impact isn't bad, it's not necessary to communicate what we need to communicate here. 
 
+This is somewhat similar to a horizon chart, but in some ways it works better because it's not trying to represent the whole distribution. As a result, you get a visual indication of frequency as well as the color indication. 
+
+```{r, fig.width = 8, fig.height = 5, eval = F}
+# remotes::install_github("hrbrmstr/ggalt")
+library(ggalt)
+show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
+
+n <- 10000
+tmp <- cvstate %>%
+  filter(state %in% show_states2)
+  
+
+ggplot(data = tmp, aes(x = date, y = cases)) + 
+  geom_horizon(bandwidth = n) + 
+  facet_grid(state~.) + 
+  scale_fill_manual("x10k\nTotal\nCases",
+                    values = colorRampPalette(colors = c("white", "yellow", "orange", "red"), bias = .5, space = "Lab")(50)) + 
+  theme(axis.title = element_blank(), plot.background = element_rect(fill = "transparent", color = NA), panel.background = element_rect(fill = "transparent", color = NA), legend.background = element_rect(fill = "transparent", color = NA)) 
+
+```
 
 ---
 ## The Slow March to Herd Immunity
@@ -775,16 +803,6 @@ I love graphics, and data, but I'll confess that by about May, I was done. I jus
 ---
 ## State-Level Progress
 
-<div class="wrap">
-<iframe class="scale-frame" src = "https://www.covidexitstrategy.org/#hero-chart" width = "100%" height = "500px"/></div>
-
-???
-
-Perceptually, this map is a mess for colorblind individuals, because I can't differentiate the green from the light and dark red shades. Statistically, it's not 100% clear what metrics are being used to decide which states are in which category - the site mentions broad themes but doesn't provide any sort of formula that we might use to recreate the graph. So while it loses points for accessibility and transparency, it is a nice map that was very effective at communicating one thing.
-
----
-## State-Level Progress
-
 ```{r, out.extra = "center"}
 library(tweetrmd)
 tweet_embed("ASlavitt" %tweet% "1282024016254042112?s=20")
@@ -792,11 +810,112 @@ tweet_embed("ASlavitt" %tweet% "1282024016254042112?s=20")
 
 ???
 
-On July 10 the calculations that contributed to the map changed -- they addded a darker shade of red. There's something bigger communicated when you have to add a new color to the map to describe how bad things have gotten, and that broader theme is why this map is first in the low-detail category.
+A couple of weeks ago, I was browsing Twitter and came across this Tweet. If you don't follow Andy Slavitt, you should - he's hilarious, and he knows his stuff. But of course, I had to see what the new color was for... so I followed the links, and found... 
 
 
 ---
-## Case Doubling Rate
+## State-Level Progress
+
+<div class="wrap">
+<iframe class="scale-frame" src = "https://www.covidexitstrategy.org/#hero-chart" width = "100%" height = "500px"/></div>
+
+???
+
+Perceptually, this map is a mess for colorblind individuals, because I can't differentiate the green from the light and dark red shades. Statistically, it's not 100% clear what metrics are being used to decide which states are in which category - the site mentions broad themes but doesn't provide any sort of formula that we might use to recreate the graph. So while it loses points for accessibility and transparency, it is a nice map that was very effective at communicating one thing.
+
+On July 10 the calculations that contributed to the map changed -- they added a darker shade of red. There's something bigger communicated when you have to add a new color to the map to describe how bad things have gotten, and that broader theme is why this map is first in the low-detail category.
+
+
+---
+## Case Doubling
 
 ![](image/NYT-heatmap.png)
+
+???
+
+The advantage to the shaded graphs that I've shown thus far is that they're very low-effort to read. You don't have to necessarily think too much about reading the chart, what you're interpreting, etc. That's really a good thing when you're communicating information that is stressful, and when there are a lot of other things going on that are demanding cognitive resources. 
+
+The disadvantage to the NYT heatmaps is that it uses the case doubling rate. What that means is that early in the pandemic, things will look really bad, but similar case growth rates (on a linear scale) won't actually look as bad (because this is a log scale). Thus, subsequent outbreaks end up looking like not as much of an emergency, while going from one to two cases does look like an emergency. 
+
+---
+## Case Doubling
+
+```{r}
+show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
+
+cvstate %>%
+  # filter(wday(date) == 1) %>%
+  select(state, cases, date, pop2019) %>%
+  group_by(state) %>%
+  arrange(date) %>%
+  mutate(last_week = lag(cases, 7, default = 1),
+         doubling = log(cases/last_week, 2), 
+         doubling_cat = case_when(doubling<7/30 ~ "Slower",
+                                  doubling<1 ~ "Moderate",
+                                  doubling<2 ~ "Fast",
+                                  doubling>=2 ~ "Faster") %>%
+           factor(levels = c("Slower", "Moderate", "Fast", "Faster"))) %>%
+  filter(state %in% show_states2) %>%
+  # filter(wday(date) == 1) %>%
+  ggplot(aes(x = date, y = state, fill = doubling_cat)) + 
+  geom_tile(color = "white") + 
+  scale_fill_manual(values = c("#ffffb2", "#fecc5c", "#fd8d3c", "#e31a1c")) + 
+  # scale_fill_gradient("# Case\nDoublings\nper week", low = "#c7e9c0", high = "#00441b") + 
+  my_theme + theme(legend.title = element_blank())
+```
+
+???
+
+For the sake of comparison, I managed to replicate the NYT graphic (at least approximately). Iowa recently experienced a surge in cases, but it's totally invisible on the chart Florida, Texas, Arizona, and California have all had surges recently as well, but compared to the early days of the epidemic, they look very tame. This graph de-emphasizes the outbreaks later in the pandemic.
+
+---
+## Cases
+
+```{r}
+show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York", "Iowa", "Florida")
+
+cvstate %>%
+  # filter(wday(date) == 1) %>%
+  select(state, cases, date, pop2019) %>%
+  group_by(state) %>%
+  arrange(date) %>%
+  mutate(last_week = lag(cases, 7, default = 1),
+         week_cases = (cases - last_week + 1)/pop2019*100,
+         doubling = log(cases/last_week, 2)) %>%
+  filter(state %in% show_states2) %>%
+  # filter(wday(date) == 1) %>%
+  ggplot(aes(x = date, y = state, fill = week_cases)) + 
+  geom_tile(color = "white") + 
+  scale_fill_gradientn("% population\ndiagnosed\n(by week)", 
+                       colors = c("#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", 
+                                  "#41b6c4", "#1d91c0", "#225ea8", "#0c2c84"),
+                       space = "Lab")
+```
+
+???
+
+
+Thinking through how to do this in a way that doesn't de-emphasize later data, I decided that a continuous linear scale made sense here and scaled everything by % of the population. Since I'm using graphs like this to see "how bad is it", and many of the consequences of "bad" also scale with population (like hospital capacity), that seemed like a reasonable compromise. 
+
+I've also used a different color scheme because the red scheme sets off alarm bells; while alarm is called for in e.g. Florida, that should be a conscious data-driven decision and not a gut reaction. Transitioning from yellow to blue through green (slightly) also makes use of much of the area of the color spectrum we're good at discriminating, while working for colorblind individuals as well.
+
+---
+class:middle,center,inverse
+# Conclusions
+
+---
+## Conclusions
+
+1. Exponential growth data is very difficult to work with
+    - What we know says we're bad at making predictions
+    
+2. We don't know much about how log scales are perceived, but we're using them anyways
+
+3. It is often better to use carefully thought-out summaries of the data
+    - Map values to color rather than position to cut down on the visual chaos
+    - Summaries that initially worked don't always work out later
+
+4. We have a lot of research to do on how emotion plays into graphical perception
+
+
 
