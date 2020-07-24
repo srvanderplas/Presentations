@@ -6,7 +6,7 @@
     <meta name="author" content="Susan Vanderplas" />
     <meta name="date" content="2020-07-29" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
-    <script src="libs/twitter-widget/widgets.js"></script>
+    <script src="libs/twitter-widget/twitter-widgets-loader.js"></script>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&family=Roboto:ital,wght@0,500;1,500&display=swap');
     </style>
@@ -108,9 +108,8 @@ During that time, almost everyone I knew was constantly checking out this map or
 It wasn't just that we were all paying attention to charts more during this period - there was also an impressive array of different ways of showing the available data. Today, I'm going to look at a couple of broad classes of charts with different goals and (ideally) different audiences, and discuss the advantages and disadvantages of each. 
 
 ---
-class: middle
 ## Data
-.center[
+.middle.center[
 Throughout this talk, I'll be using data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), which is based on reports from state and local health agencies.
 ]
 
@@ -130,100 +129,123 @@ In the interests of showing only enough information to make the point, I'll be s
 
 
 ---
-## Changes over Time
+## Changes over Time (March 15)
 
-&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="1800" /&gt;
-
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
+![](index_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
 
 ???
 
 The simplest plots show the date compared to the number of deaths or cases. Ideally, since there is some effect of weekday on case count and death count reporting, these plots are smoothed by averaging or summation over a multiple of 7 days.
 
-When the y axis scale is linear, we can more easily read counts off (and understand what's going on), but there is the compression factor: the only state we can clearly read from the chart is New York, and while it is dramatic, that doesn't help us compare very well. 
+When the y axis scale is linear, we can more easily read counts off (and understand what's going on)
 
-But there are a couple of other factors at play here that are 1) persistent across many types of covid charts, and 2) much more important in affecting our ability to read the charts. We can, using various interactive graphs, mitigate the scale issues. But, fundamentally, we have bigger problems. 
+
+
+
 ---
-## Exponential Growth
+## Changes over Time (April 15)
 
-&lt;img src="index_files/figure-html/exp-growth-1.png" width="1200" class='pull-left' /&gt;
-
-.pull-right[
-- People are consistently awful at forecasting exponential growth
-
-- Forecasts always underestimate the next point
-
-
-.tiny[(Goodwin and Wright, 1994; Timmers and Wagenaar, 1977)]
-
-]
-
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
+![](index_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
 
 ???
 
-This graph shows daily reported cases of COVID. Sadly, thanks to recent events, I have a whole host of different states which make it easy to demonstrate what exponential growth looks like. 
+But there is the compression factor once the epidemic gets going: the only state we can clearly read from the chart is New York, and while it is dramatic, that doesn't help us compare very well. 
 
-When we look at these types of plots, it seems pretty clear that there is exponential (ish) growth occurring. It's relatively natural to extend the line in a linear way (and for Florida and Texas, that's nearly a vertical line.) The problem is, this vastly underestimates the exponential growth, and while we can attempt to counter the effect by adjusting our predictions upward, we never actually manage to forecast exponential growth accurately when we're using charts and visually extending the line. 
+---
+## Changes over Time (Now)
 
-The two papers I've cited here discuss this phenomenon - it likely occurs because we anchor our predictions based on the previous two or 3 data points. In a plot like this, those data points are enough to give us an estimate of a linear trend, but they're wholly insufficient to estimate exponential growth. This seems to be a mental shortcut taken because we can't quite wrap our head around exponential growth rates. It's not an intuitive thing.
+![](index_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+.center[Play with many variations of this type of chart at    
+http://91-divoc.com/pages/covid-visualization/]
+
+???
+
+By the time you get to today, we end up with a clear separation between low population and higher population states, but it's very difficult to compare the magnitude of "how bad" it is in NY in April vs. Texas in July using this chart -- the two states have different populations, and the population dynamics are different as well. 
+
+There have been a number of interesting arguments online about the virtues of scaling these graphs by population; early on in the epidemic, that may not have been useful (because the limit is in personal contact, not population); at this stage in the epidemic, it might be more reasonable. 
+
+But there are a couple of other factors at play here that are 1) persistent across many types of covid charts, and 2) much more important in affecting our ability to read the charts. With interactive graphics we can 'zoom in' to  mitigate the scale issues. But, fundamentally, we have bigger problems. 
+
+---
+## Exponential Growth
+
+![](index_files/figure-html/exp-growth-1.png)&lt;!-- --&gt;
+
+- People are consistently awful at forecasting exponential growth
+
+- Forecasts always underestimate the next point    
+**anchor** + **adjust** 
+
+
+.center[(Goodwin and Wright, 1994; Timmers and Wagenaar, 1977)]
+
+
+???
+
+The fundamental problem we have is that people are horrible at forecasting exponential growth.
+
+Let's look at the first instance of exponential (or nearly exponential) growth in the US: New York. 
+The reason we're awful at exponential growth is because even though we know that the curve is likely to be exponential, our brains are lazy and decide to take shortcuts. 
+
+Instead of trying to wrap our heads around what exponential growth looks like, we pick the two most recent data points and just extend that line segment outwards. So we predict linearly, even when we know the growth is exponential-ish.
+
+---
+## Exponential Growth
+
+![](index_files/figure-html/exp-growth2-1.png)&lt;!-- --&gt;
+
+### .emph.center[What is the purpose of this chart?]
+
+--
+
+.center[To help people predict what is likely to happen?]
+
+--
+
+.center[(It doesn't do that very well)]
+
+???
+
+Note that even if the growth is polynomial, we would still end up underestimating the number of cases. 
+So if our goal is to help people make good decisions (like, hey, cases are increasing exponentially, I should stay home), then a graph like this may not be the best way to go about it, because we know for a fact that people don't make effective forecasts from these types of plots.
 
 The natural way to correct for graphs showing exponential growth is to use a log y-axis scale, which solves some problems and creates a whole host of new problems. 
 
----
-## Exponential Growth
-
-&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="1200" class="pull-left" /&gt;
-
-.pull-right[
-- People are consistently awful at forecasting exponential growth
-
-- Forecasts always underestimate the next point
-
-
-.tiny[(Goodwin and Wright, 1994; Timmers and Wagenaar, 1977)]
-
-
-&lt;br/&gt;
-.center.cerulean.large.emph[What are we making this chart for?]
-
-- To help people predict what is likely to happen?     
-(It doesn't do that very well)
-
-]
-
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
-
-???
 
 
 ---
 ## Log Scales
 
 
-&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="1800" /&gt;
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
+![](index_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
 
 ???
 
-It's much easier to compare the trajectory of the different states outbreaks when we look at the log-scale information, and, as a bonus, because we devote more vertical space to lower values, we can easily separate the lines from Texas, Florida, Washington, Iowa, and Utah.
+It's much easier to compare the trajectory of the different states outbreaks when we look at the log-scale information, and, as a bonus, because we devote more vertical space to lower values, we can easily separate the lines from smaller states, compared to the lines from bigger states. 
 
-We're again reading the slope off of the chart as the "useful information" here -- the slope indicates the change in the number of people dying (or being diagnosed covid) over time. 
+We're again reading the slope off of the chart as the "useful information" here -- the slope indicates the change in the number of people dying (or being diagnosed with covid) over time. But, hopefully, this time, our instincts are slightly more accurate -- using the anchor and adjust phenomenon, we might actually be a bit more likely to get close to the next value.
 
 
 ---
 ## Comparisons 
-&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="1800" /&gt;
+![](index_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
 
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
+
+.center[Sine Illusion: (VanderPlas and Hofmann, 2015)    
+Log perception: (Varshney and Sun, 2013)]
 
 ???
 
-This comes at a cost, though - our intuition for what is being shown is compromised. The number of deaths in Texas and Washington in mid-March look very similar, but in fact, there is a factor of 10 difference between them. Similarly, in mid June, a similar size gap between Washington and Texas counts occur (in the other direction), and while the ratio is the same, I'm not convinced everyone reads that correctly. 
+This comes at a cost, though - our intuition for what is being shown is compromised. The number of deaths in Texas and Washington in mid-March look very similar, but in fact, there is a factor of 10 difference between them. 
+
+Similarly, in mid June, a similar size gap between Washington and Texas counts occur (in the other direction), and while the ratio is the same, we have to do a fair bit of cognitive work to interpret it correctly. 
 
 There are two factors at play here - the not-so-intuitive log scale = multiplicative effect, and also the sine illusion, which makes it very difficult to assess the vertical distance between curves. 
 
-In the reduced-clutter version, you can also get a sense for the amount of mental effort it takes to decode a graph with many, many lines on it and get meaningful information out of it. The default in most of the online versions I've seen is to show 10+ curves for different states or countries, which is a *lot* of information. On top of that, most of the online versions provide additional information via mouseover and allow filtering based on state(s) of interest, which helps in some ways but adds cognitive load. 
+While log perception is natural in some instances, when we have to translate things on a log scale back into raw numbers, we tend to have trouble - think of explaining that a 7.0 earthquake is 10 times stronger than a 6.0 earthquake. It's in the transition back to real-world consequences that we have trouble.
+
+&lt;!-- In the reduced-clutter version, you can also get a sense for the amount of mental effort it takes to decode a graph with many, many lines on it and get meaningful information out of it. The default in most of the online versions I've seen is to show 10+ curves for different states or countries, which is a *lot* of information. On top of that, most of the online versions provide additional information via mouseover and allow filtering based on state(s) of interest, which helps in some ways but adds cognitive load.  --&gt;
 
 ---
 ## Log scales and Explanations
@@ -245,18 +267,20 @@ When the goal is to communicate with the general public, though, you have to be 
 I wish I had data, or guidelines, or any real information on the use of log scales and how we perceive them, but I've been looking for papers for two months, and haven't found any experiment which examines how people read and perceive graphics that use log scales, compared with linear scales. If you know of one, please message me by email, twitter, smoke signals... Either way, hopefully there will be such a paper within the next year. 
 
 ---
-## Log scales, COVID-19, and Time
+## Log scales are less useful over time
 
 .pull-left[
-- It's estimated that [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
+
+- About [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
   - Most people infect 0-1 others
   - Super spreading events make up the difference
   
 - Under these conditions, most transmission chains die out on their own
+  - baseline spread
 
-- Log scales can make it harder to detect exponential increases due to superspreading or changes in policy later in the epidemic
+- Log scales can make it harder to detect later changes in case rate
 ]
-&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="1200" class="pull-right" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" class="pull-right" /&gt;
 
 ???
 
@@ -268,29 +292,84 @@ If exponential spread then starts up again, it's hard to recognize that increase
 
 I think initially, log scales were an excellent idea, but now that the epidemic is firmly established in the US, we're better off sticking with linear scales or some sort of log - with- baseline type scale. Otherwise, we risk misleading the public and de-emphasizing the warning signs of increasing spread.
 
+&lt;!-- --- --&gt;
+&lt;!-- ## Virus time or Human time? --&gt;
+
+
+&lt;!-- ```{r out.extra = "class='pull-left'", fig.height = 5.5, fig.width = 4, dev = "png"} --&gt;
+&lt;!-- show_states2 &lt;- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York") --&gt;
+&lt;!-- tmp2 &lt;- cvstate %&gt;% --&gt;
+&lt;!--   filter(state %in% show_states2) %&gt;% --&gt;
+&lt;!--   mutate(state = factor(state))  --&gt;
+&lt;!-- tmpsum2 &lt;- tmp2 %&gt;% group_by(state) %&gt;%  --&gt;
+&lt;!--   # filter(daily_avg_cases == max(daily_avg_cases)) %&gt;% --&gt;
+&lt;!--   filter(days_100th_case == max(days_100th_case)) --&gt;
+
+&lt;!-- ggplot() +  --&gt;
+&lt;!--   geom_line(data = tmp2,  --&gt;
+&lt;!--             aes(x = days_100th_case, y = daily_avg_cases, color = state)) +  --&gt;
+&lt;!--   geom_text_repel(data = tmpsum2,  --&gt;
+&lt;!--             aes(x = days_100th_case, y = daily_avg_cases,  --&gt;
+&lt;!--                 label = state, color = state),  --&gt;
+&lt;!--             hjust = -.1) +  --&gt;
+&lt;!--   guides(color = F) +  --&gt;
+&lt;!--   scale_x_continuous("Days since 100th case", limits = c(0, NA),  --&gt;
+&lt;!--                      expand = expand_scale(mult = c(0, .4))) +  --&gt;
+&lt;!--   scale_y_log10("Daily cases (7 day rolling average)") +  --&gt;
+&lt;!--   theme_bw() +  --&gt;
+&lt;!--   theme(panel.background = element_rect(fill = "transparent", color = NA),  --&gt;
+&lt;!--         plot.background = element_rect(fill = "transparent", color = NA)) --&gt;
+
+&lt;!-- ``` --&gt;
+&lt;!-- ```{r out.extra = "class='pull-right'", fig.height = 5.5, fig.width = 4, dev = "png"} --&gt;
+&lt;!-- show_states2 &lt;- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York") --&gt;
+&lt;!-- tmp2 &lt;- cvstate %&gt;% --&gt;
+&lt;!--   filter(state %in% show_states2) %&gt;% --&gt;
+&lt;!--   mutate(state = factor(state)) --&gt;
+
+&lt;!-- tmpsum2 &lt;- tmp2 %&gt;% group_by(state) %&gt;%  --&gt;
+&lt;!--   # filter(daily_avg_cases == max(daily_avg_cases)) %&gt;% --&gt;
+&lt;!--   filter(date == max(date)) --&gt;
+
+
+&lt;!-- ggplot() + --&gt;
+&lt;!--   geom_vline(aes(xintercept = ymd(c("2020-05-25", "2020-04-12", "2020-07-04"))), --&gt;
+&lt;!--              color = "grey") +  --&gt;
+&lt;!--   geom_label(aes(x = ymd(c("2020-05-25", "2020-04-12", "2020-07-04")), y = 1,  --&gt;
+&lt;!--                  label = c("Memorial\nDay", "Easter", "July 4"))) +  --&gt;
+&lt;!--   geom_line(data = tmp2,  --&gt;
+&lt;!--             aes(x = date, y = daily_avg_cases, color = state)) +  --&gt;
+&lt;!--   geom_text_repel(data = tmpsum2,  --&gt;
+&lt;!--             aes(x = date, y = daily_avg_cases,  --&gt;
+&lt;!--                 label = state, color = state),  --&gt;
+&lt;!--             hjust = -.1) +  --&gt;
+&lt;!--   guides(color = F) +  --&gt;
+&lt;!--   scale_x_date(name = "", expand = expansion(mult = c(.05, .4)),  --&gt;
+&lt;!--                date_breaks = "month", date_labels = "%B", --&gt;
+&lt;!--                limits = c(ymd("2020-03-15", NA))) +  --&gt;
+&lt;!--   scale_y_log10("Daily cases (7 day rolling average)",position = "right") +  --&gt;
+&lt;!--   theme_bw() +  --&gt;
+&lt;!--   theme(panel.background = element_rect(fill = "transparent", color = NA),  --&gt;
+&lt;!--         plot.background = element_rect(fill = "transparent", color = NA)) --&gt;
+
+&lt;!-- ``` --&gt;
+
+&lt;!-- .bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.] --&gt;
+
+&lt;!-- ??? --&gt;
+
+&lt;!-- I'm not sure if you noticed, but I played a bit of a trick in the previous slides: I've been switching back and forth between an x-axis that tracks "days since 100 cases" in each state, and the actual calendar date.  --&gt;
+
+&lt;!-- I like to think of these two axes as showing virus time and human time. They both have advantages - graphs that show days since N cases allow you to compare outbreaks that started at different times, which can be useful in assessing e.g. which measures at the government level are useful to contain the virus, and how different containment methods have been applied. Personally, I find this to be much more useful at the country level than the state level, because outbreaks in e.g. China, Italy, and Spain followed the same initial course as the outbreak in NYC, and as later outbreaks in Texas, Florida, and Arizona.  --&gt;
+
+&lt;!-- But, it's also very important to be able to trace increases in cases across multiple states back to single calendar events - easter, Memorial Day, 4th of July. This is complicated by a 1 or 2-week lag in case increases, but it's fairly easy to see that cases in Nebraska increased not long after Easter, and again after July 4th. Not that there's causation there, but I can confirm that people were out and about more than usual in my part of the state, at least.  --&gt;
+
+&lt;!-- One problem I have is that the difference between these two graphs is *very* subtle, and I've gone out of my way to try to pick states where the epidemic has followed a different course. The other thing that I'm not fond of is that it's arguable that the 100 cases threshold is affected by population and population density - 100 people in Nebraska is a lot more signifcant than 100 people in New York or California. I've seen some people arguing that e.g. a forest fire will burn at the same rate regardless of the size of the forest initially, but these graphs are being used long after that initial part is relevant. So while the 100 cases threshold may have been useful early in the pandemic, it's perhaps less useful now.  --&gt;
+
 ---
-## Virus time or Human time?
+## Other Interesting Approaches
 
-
-&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="1200" class='pull-left' /&gt;
-&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="1200" class='pull-right' /&gt;
-
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
-
-???
-
-I'm not sure if you noticed, but I played a bit of a trick in the previous slides: I've been switching back and forth between an x-axis that tracks "days since 100 cases" in each state, and the actual calendar date. 
-
-I like to think of these two axes as showing virus time and human time. They both have advantages - graphs that show days since N cases allow you to compare outbreaks that started at different times, which can be useful in assessing e.g. which measures at the government level are useful to contain the virus, and how different containment methods have been applied. Personally, I find this to be much more useful at the country level than the state level, because outbreaks in e.g. China, Italy, and Spain followed the same initial course as the outbreak in NYC, and as later outbreaks in Texas, Florida, and Arizona. 
-
-But, it's also very important to be able to trace increases in cases across multiple states back to single calendar events - easter, Memorial Day, 4th of July. This is complicated by a 1 or 2-week lag in case increases, but it's fairly easy to see that cases in Nebraska increased not long after Easter, and again after July 4th. Not that there's causation there, but I can confirm that people were out and about more than usual in my part of the state, at least. 
-
-One problem I have is that the difference between these two graphs is *very* subtle, and I've gone out of my way to try to pick states where the epidemic has followed a different course. The other thing that I'm not fond of is that it's arguable that the 100 cases threshold is affected by population and population density - 100 people in Nebraska is a lot more signifcant than 100 people in New York or California. I've seen some people arguing that e.g. a forest fire will burn at the same rate regardless of the size of the forest initially, but these graphs are being used long after that initial part is relevant. So while the 100 cases threshold may have been useful early in the pandemic, it's perhaps less useful now. 
-
----
-## Other Interesting Variations
-
-&lt;img src="index_files/figure-html/unnamed-chunk-9.gif" width="2400" /&gt;
+![](index_files/figure-html/unnamed-chunk-8.gif)
 
 .bottom[[Interpreting graphs with log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/) has examples of what log scales on each axis do to the spacing of the data.]
 ???
@@ -308,7 +387,9 @@ class:middle,center,inverse
 ---
 ## From Exponential to Frequency
 
-&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="2400" /&gt;
+![](index_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+Recreated based on a chart in a [tweet](https://twitter.com/romsson/status/1244316295094505472) by Romain Vuillemot, who originally showed deaths by country. 
 
 ???
 
@@ -318,12 +399,20 @@ I recreated the chart using a blue color scheme because the use of red and black
 
 This is somewhat similar to a horizon chart, but in some ways it works better because it's not trying to represent the whole distribution. As a result, you get a visual indication of frequency as well as the color indication. 
 
+---
+## Horizon Charts
 
+
+![](index_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+???
+
+This is very similar to a horizon chart, but unlike a horizon chart, it doesn't attempt to show layers or fine grain detail; instead, it shows only the start and stop points. That helps to take our focus off of the y scale and put it back onto the actual meaning of the data - the lack of detail in the triangle version allows us to stop and think.
 
 ---
-## The Slow March to Herd Immunity
+## Population Scaling - The March to Herd Immunity
 
-&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="2400" /&gt;
+![](index_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -384,7 +473,7 @@ The disadvantage to the NYT heatmaps is that it uses the case doubling rate. Wha
 ---
 ## Case Doubling
 
-&lt;img src="index_files/figure-html/unnamed-chunk-14-1.png" width="1800" /&gt;
+![](index_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -393,7 +482,7 @@ For the sake of comparison, I managed to replicate the NYT graphic (at least app
 ---
 ## Cases
 
-&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" width="1800" /&gt;
+![](index_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -466,32 +555,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
-(function() {
-  "use strict"
-  // Replace <script> tags in slides area to make them executable
-  var scripts = document.querySelectorAll(
-    '.remark-slides-area .remark-slide-container script'
-  );
-  if (!scripts.length) return;
-  for (var i = 0; i < scripts.length; i++) {
-    var s = document.createElement('script');
-    var code = document.createTextNode(scripts[i].textContent);
-    s.appendChild(code);
-    var scriptAttrs = scripts[i].attributes;
-    for (var j = 0; j < scriptAttrs.length; j++) {
-      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
-    }
-    scripts[i].parentElement.replaceChild(s, scripts[i]);
-  }
-})();
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -510,6 +573,17 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
 
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
 
 <script>
 slideshow._releaseMath = function(el) {

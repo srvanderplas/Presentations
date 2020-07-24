@@ -66,7 +66,11 @@ myBib <- ReadBib("./refs.bib", check = FALSE)
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(echo = F, dpi = 300, fig.retina = 3, fig.width = 6, fig.height = 15/4, message = F, warning = F, dev.args=list(bg="transparent"))
+knitr::opts_chunk$set(echo = F, cache = T, 
+                      dpi = 300, fig.width = 6, fig.height = 15/4, 
+                      message = F, warning = F, 
+                      dev.args=list(bg="transparent"))
+
 # Read in the data from NYT
 library(tidyverse)
 library(lubridate)
@@ -84,7 +88,9 @@ cvstate <- cvstate %>%
          daily_avg_cases = rollmean(daily_cases, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T),
          daily_deaths = deaths - lag(deaths, 1, default = 0),
          week_avg_deaths = rollmean(deaths, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T),
-         daily_avg_deaths = rollmean(daily_deaths, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T))
+         daily_avg_deaths = rollmean(daily_deaths, 7, align = "right", fill = c(0, NA, NA), na.pad = T, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(state = factor(state))
 
 download.file("https://www2.census.gov/programs-surveys/popest/tables/2010-2019/state/totals/nst-est2019-01.xlsx", destfile = "census_pop_state.xlsx", quiet = T, mode = "wb")
 pop_data <- readxl::read_xlsx("census_pop_state.xlsx", col_names = c("state", "pop2019"), col_types = c("text", rep("skip", 11), "numeric"), skip = 9) %>%
@@ -93,8 +99,21 @@ pop_data <- readxl::read_xlsx("census_pop_state.xlsx", col_names = c("state", "p
 cvstate <- left_join(cvstate, pop_data, by = "state")
 
 my_theme <- theme_bw() + 
-  theme(axis.title = element_blank(), plot.background = element_rect(fill = "transparent", color = NA), panel.background = element_rect(fill = "transparent", color = NA), legend.background = element_rect(fill = "transparent", color = NA)) 
+  theme(plot.background = element_rect(fill = "transparent", color = NA), 
+        panel.background = element_rect(fill = "transparent", color = NA), 
+        legend.background = element_rect(fill = "transparent", color = NA),
+        axis.text.y = element_text(angle = 90, hjust = 0.5)) 
 theme_set(my_theme)
+
+main_colors <- c("#d00000", "#f5f1e7", "#c7c8ca")
+
+# use as accents
+secondary_colors <- c("#001226", "#249ab5")
+
+# These are only to be used for infographics/charts
+tertiary_colors <- c("#bccb2a", "#f58a1f", "#005d84", "#ffd74f", "#a5228d")
+
+color_palette <- c("#d00000", "#249ab5",  "#1B8500", "#f58a1f", "#a5228d", "#001226", "#B1EB66", "#005d84", "#c25700")
 ```
 
 ```{r modals, include = F, eval = T}
@@ -156,7 +175,8 @@ dates <- seq.Date(as.Date("2020-03-01"), as.Date("2020-03-31"), by = "day")
 dates <- seq.Date(as.Date("2020-01-01"), as.Date("2020-02-28"), by = "day")
 urls <- format.Date(dates, "https://static01.nyt.com/images/%Y/%m/%d/nytfrontpage/scan.pdf")
 paths <- file.path("NYT_PDF", format.Date(dates, "NYT%Y%m%d.pdf"))
-download.file(urls, paths, quiet = T, mode = "wb", cacheOK = T)
+idx <- !file.exists(paths)
+if (sum(idx) > 0) download.file(urls[idx], paths[idx], quiet = T, mode = "wb", cacheOK = T)
 ```
 
 .left-column[
@@ -197,9 +217,8 @@ During that time, almost everyone I knew was constantly checking out this map or
 It wasn't just that we were all paying attention to charts more during this period - there was also an impressive array of different ways of showing the available data. Today, I'm going to look at a couple of broad classes of charts with different goals and (ideally) different audiences, and discuss the advantages and disadvantages of each. 
 
 ---
-class: middle
 ## Data
-.center[
+.middle.center[
 Throughout this talk, I'll be using data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), which is based on reports from state and local health agencies.
 ]
 
@@ -219,50 +238,140 @@ In the interests of showing only enough information to make the point, I'll be s
 
 
 ---
-## Changes over Time
+## Changes over Time (March 15)
 
 ```{r}
-show_states <- c("Washington", "Texas", "New York", "Utah", "Iowa", "Georgia")
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
 tmp <- cvstate %>%
   filter(state %in% show_states) %>%
-  mutate(state = factor(state))
+  filter(date <= ymd("2020-03-15"))
 
 tmpsum <- tmp %>% group_by(state) %>% 
-  filter(daily_avg_deaths == max(daily_avg_deaths)) %>%
+  filter(daily_avg_cases == max(daily_avg_cases)) %>%
   filter(date == min(date))
 
 ggplot() + 
   geom_line(data = tmp, 
-            aes(x = date, y = daily_avg_deaths, color = state)) + 
+            aes(x = date, y = daily_avg_cases, color = state)) + 
   geom_text_repel(data = tmpsum, 
-                  aes(x = date, y = daily_avg_deaths, 
+                  aes(x = date, y = daily_avg_cases, 
                       label = state, color = state), 
                   hjust = 0, nudge_x = 1) + 
+  scale_color_manual(values = color_palette) + 
   guides(color = F) + 
   scale_x_date(expand = expansion(mult = c(.05, .2)), 
                date_breaks = "month", date_labels = "%B") + 
-  scale_y_continuous("Daily deaths (7 day rolling average)") + 
-  theme_bw() + theme(axis.title.x = element_blank())
-
+  scale_y_continuous("Daily cases (7 day rolling average)") + 
+  my_theme + theme(axis.title.x = element_blank())
 ```
-
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
 
 ???
 
 The simplest plots show the date compared to the number of deaths or cases. Ideally, since there is some effect of weekday on case count and death count reporting, these plots are smoothed by averaging or summation over a multiple of 7 days.
 
-When the y axis scale is linear, we can more easily read counts off (and understand what's going on), but there is the compression factor: the only state we can clearly read from the chart is New York, and while it is dramatic, that doesn't help us compare very well. 
+When the y axis scale is linear, we can more easily read counts off (and understand what's going on)
 
-But there are a couple of other factors at play here that are 1) persistent across many types of covid charts, and 2) much more important in affecting our ability to read the charts. We can, using various interactive graphs, mitigate the scale issues. But, fundamentally, we have bigger problems. 
+
+
+
+---
+## Changes over Time (April 15)
+
+```{r}
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
+tmp <- cvstate %>%
+  filter(state %in% show_states) %>%
+  filter(date <= ymd("2020-04-15"))
+
+tmpsum <- tmp %>% group_by(state) %>% 
+  filter(daily_avg_cases == max(daily_avg_cases)) %>%
+  filter(date == min(date))
+
+ggplot() + 
+  geom_line(data = tmp, 
+            aes(x = date, y = daily_avg_cases, color = state)) + 
+  geom_text_repel(data = tmpsum, 
+                  aes(x = date, y = daily_avg_cases, 
+                      label = state, color = state), 
+                  hjust = 0, nudge_x = 1) + 
+  scale_color_manual(values = color_palette) + 
+  guides(color = F) + 
+  scale_x_date(expand = expansion(mult = c(.05, .1)), 
+               date_breaks = "month", date_labels = "%B") + 
+  scale_y_continuous("Daily cases (7 day rolling average)") + 
+  my_theme + theme(axis.title.x = element_blank())
+```
+
+???
+
+But there is the compression factor once the epidemic gets going: the only state we can clearly read from the chart is New York, and while it is dramatic, that doesn't help us compare very well. 
+
+---
+## Changes over Time (Now)
+
+```{r}
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
+tmp <- cvstate %>%
+  filter(state %in% show_states) %>%
+  mutate(state = factor(state))
+
+tmpsum <- tmp %>% group_by(state) %>% 
+  filter(daily_avg_cases == max(daily_avg_cases)) %>%
+  filter(date == min(date))
+
+ggplot() + 
+  geom_line(data = tmp, 
+            aes(x = date, y = daily_avg_cases, color = state)) + 
+  geom_text_repel(data = tmpsum, 
+                  aes(x = date, y = daily_avg_cases, 
+                      label = state, color = state), 
+                  hjust = 0, nudge_x = 1) + 
+  guides(color = F) + 
+  scale_color_manual(values = color_palette) + 
+  scale_x_date(expand = expansion(mult = c(.05, .2)), 
+               date_breaks = "month", date_labels = "%B") + 
+  scale_y_continuous("Daily cases (7 day rolling average)") + 
+  my_theme + theme(axis.title.x = element_blank())
+```
+
+.center[Play with many variations of this type of chart at    
+http://91-divoc.com/pages/covid-visualization/]
+
+???
+
+By the time you get to today, we end up with a clear separation between low population and higher population states, but it's very difficult to compare the magnitude of "how bad" it is in NY in April vs. Texas in July using this chart -- the two states have different populations, and the population dynamics are different as well. 
+
+There have been a number of interesting arguments online about the virtues of scaling these graphs by population; early on in the epidemic, that may not have been useful (because the limit is in personal contact, not population); at this stage in the epidemic, it might be more reasonable. 
+
+But there are a couple of other factors at play here that are 1) persistent across many types of covid charts, and 2) much more important in affecting our ability to read the charts. With interactive graphics we can 'zoom in' to  mitigate the scale issues. But, fundamentally, we have bigger problems. 
+
 ---
 ## Exponential Growth
 
-```{r exp-growth, out.extra = "class='pull-left'", fig.height = 5.5, fig.width = 4, dev = "png"}
-show_states2 <- c("Washington", "Texas", "Florida", "Arizona", "South Carolina")
+```{r exp-growth, fig.height = 3.5, fig.width = 8, cache = T}
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
+
 tmp2 <- cvstate %>%
-  filter(state %in% show_states2) %>%
-  mutate(state = factor(state))
+  filter(state %in% show_states) %>%
+  filter(date <= (ymd("2020-03-20"))) %>%
+  mutate(state = factor(state)) %>%
+  filter(state == "New York")
+
+# Days used to anchor
+tmp2.5 <- filter(tmp2, max(date) - date <= 1) %>%
+  select(date, state, daily_avg_cases)
+
+# Adjustment
+tmp3 <- bind_rows(
+  tmp2.5 %>%
+    filter(date == max(date)),
+  tmp2.5 %>% 
+    group_by(state) %>% 
+    mutate(daily_case_increase = daily_avg_cases[2] - daily_avg_cases[1]) %>%
+    filter(date == max(date)) %>%
+    mutate(date = date + days(5), 
+           daily_avg_cases = daily_avg_cases + 5*daily_case_increase)
+)
 
 tmpsum2 <- tmp2 %>% group_by(state) %>% 
   filter(daily_avg_cases == max(daily_avg_cases)) %>%
@@ -271,75 +380,108 @@ tmpsum2 <- tmp2 %>% group_by(state) %>%
 ggplot() + 
   geom_line(data = tmp2, 
             aes(x = date, y = daily_avg_cases, color = state)) + 
+  geom_point(data = tmp2.5, 
+            aes(x = date, y = daily_avg_cases, color = state)) + 
+  geom_line(data = tmp3, 
+            aes(x = date, y = daily_avg_cases, color = state), linetype = "dotted") + 
   geom_text_repel(data = tmpsum2, 
                   aes(x = date, y = daily_avg_cases, 
                       label = state, color = state), 
-                  hjust = 1, nudge_x = 1) + 
+                  hjust = 1, nudge_x = 1, segment.alpha = .2) + 
   guides(color = F) + 
+  scale_color_manual(values = color_palette, drop = F) + 
   scale_x_date(expand = expansion(mult = c(.05, .2)), 
-               date_breaks = "month", date_labels = "%B",
-               limits = c(ymd("2020-03-15", NA))) + 
-  scale_y_continuous("Daily cases (7 day rolling average)") + 
-  theme_bw() + theme(axis.title.x = element_blank(), panel.background = element_rect(fill = "transparent", color = NA), plot.background = element_rect(fill = "transparent", color = NA))
+               date_breaks = "1 week", date_labels = "%B %d") + 
+  scale_y_continuous("Daily cases (7 day rolling average)") +
+  coord_cartesian(ylim = c(0, 5000)) + 
+  my_theme + 
+  theme(axis.title.x = element_blank())
+
 
 ```
 
-.pull-right[
 - People are consistently awful at forecasting exponential growth
 
-- Forecasts always underestimate the next point
+- Forecasts always underestimate the next point    
+**anchor** + **adjust** 
 
 
-.tiny[`r Citep(myBib, c("goodwinHeuristicsBiasesImprovement1994", "timmersInverseStatisticsMisperception1977a"))`]
+.center[`r Citep(myBib, c("goodwinHeuristicsBiasesImprovement1994", "timmersInverseStatisticsMisperception1977a"))`]
 
-]
-
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
 
 ???
 
-This graph shows daily reported cases of COVID. Sadly, thanks to recent events, I have a whole host of different states which make it easy to demonstrate what exponential growth looks like. 
+The fundamental problem we have is that people are horrible at forecasting exponential growth.
 
-When we look at these types of plots, it seems pretty clear that there is exponential (ish) growth occurring. It's relatively natural to extend the line in a linear way (and for Florida and Texas, that's nearly a vertical line.) The problem is, this vastly underestimates the exponential growth, and while we can attempt to counter the effect by adjusting our predictions upward, we never actually manage to forecast exponential growth accurately when we're using charts and visually extending the line. 
+Let's look at the first instance of exponential (or nearly exponential) growth in the US: New York. 
+The reason we're awful at exponential growth is because even though we know that the curve is likely to be exponential, our brains are lazy and decide to take shortcuts. 
 
-The two papers I've cited here discuss this phenomenon - it likely occurs because we anchor our predictions based on the previous two or 3 data points. In a plot like this, those data points are enough to give us an estimate of a linear trend, but they're wholly insufficient to estimate exponential growth. This seems to be a mental shortcut taken because we can't quite wrap our head around exponential growth rates. It's not an intuitive thing.
-
-The natural way to correct for graphs showing exponential growth is to use a log y-axis scale, which solves some problems and creates a whole host of new problems. 
+Instead of trying to wrap our heads around what exponential growth looks like, we pick the two most recent data points and just extend that line segment outwards. So we predict linearly, even when we know the growth is exponential-ish.
 
 ---
 ## Exponential Growth
 
-```{r, ref.label = 'exp-growth',  fig.height = 5.5, fig.width = 4, dev = "png", out.extra = 'class="pull-left"', echo = F}
+```{r exp-growth2, fig.height = 3.5, fig.width = 8, cache = T}
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
+
+tmp2 <- cvstate %>%
+  filter(state %in% show_states) %>%
+  filter(date <= (ymd("2020-03-25"))) %>%
+  mutate(state = factor(state)) %>%
+  filter(state == "New York")
+
+tmpsum2 <- tmp2 %>% group_by(state) %>% 
+  filter(daily_avg_cases == max(daily_avg_cases)) %>%
+  filter(date == min(date))
+
+ggplot() + 
+  geom_line(data = tmp2, 
+            aes(x = date, y = daily_avg_cases, color = state)) + 
+  geom_point(data = tmp2.5, 
+            aes(x = date, y = daily_avg_cases, color = state)) + 
+  geom_line(data = tmp3, 
+            aes(x = date, y = daily_avg_cases, color = state), linetype = "dotted") + 
+  geom_text_repel(data = tmpsum2, 
+                  aes(x = date, y = daily_avg_cases, 
+                      label = state, color = state), 
+                  hjust = 1, nudge_x = 1, segment.alpha = .2) + 
+  guides(color = F) + 
+  scale_color_manual(values = color_palette, drop = F) + 
+  scale_x_date(expand = expansion(mult = c(.05, .2)), 
+               date_breaks = "1 week", date_labels = "%B %d") + 
+  scale_y_continuous("Daily cases (7 day rolling average)") +
+  coord_cartesian(ylim = c(0, 5000)) + 
+  my_theme + 
+  theme(axis.title.x = element_blank())
+
+
 ```
 
-.pull-right[
-- People are consistently awful at forecasting exponential growth
+### .emph.center[What is the purpose of this chart?]
 
-- Forecasts always underestimate the next point
+--
 
+.center[To help people predict what is likely to happen?]
 
-.tiny[`r Citep(myBib, c("goodwinHeuristicsBiasesImprovement1994", "timmersInverseStatisticsMisperception1977a"))`]
+--
 
-
-<br/>
-.center.cerulean.large.emph[What are we making this chart for?]
-
-- To help people predict what is likely to happen?     
-(It doesn't do that very well)
-
-]
-
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
+.center[(It doesn't do that very well)]
 
 ???
+
+Note that even if the growth is polynomial, we would still end up underestimating the number of cases. 
+So if our goal is to help people make good decisions (like, hey, cases are increasing exponentially, I should stay home), then a graph like this may not be the best way to go about it, because we know for a fact that people don't make effective forecasts from these types of plots.
+
+The natural way to correct for graphs showing exponential growth is to use a log y-axis scale, which solves some problems and creates a whole host of new problems. 
+
 
 
 ---
 ## Log Scales
 
 
-```{r}
-show_states <- c("Washington", "Texas", "New York", "Utah", "Iowa", "Georgia")
+```{r, fig.height = 5, fig.width = 8, cache = T}
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
 tmp <-  cvstate %>%
   filter(state %in% show_states) %>%
   mutate(state = factor(state))
@@ -358,34 +500,35 @@ ggplot() +
                   aes(x = date, y = daily_avg_cases, 
                       label = state, color = state), 
                   hjust = 0, nudge_x = 1) + 
+  scale_color_manual(values = color_palette, drop = F) + 
   guides(color = F) + 
   scale_x_date(expand = expansion(mult = c(.05, .2)), 
                date_breaks = "month", date_labels = "%B") + 
   scale_y_continuous("Daily cases (7 day rolling average)", trans = "log10", breaks = c(1, 10, 100, 1000, 10000), labels = c(1, 10, 100, 1000, 10000), minor_breaks = c(2.5, 5, 7.5, 25, 50, 75, 250,  500, 750, 2500, 5000, 7500)) + 
-  theme_bw() + theme(axis.title.x = element_blank())
+  my_theme + theme(axis.title.x = element_blank())
 
 ```
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
 
 ???
 
-It's much easier to compare the trajectory of the different states outbreaks when we look at the log-scale information, and, as a bonus, because we devote more vertical space to lower values, we can easily separate the lines from Texas, Florida, Washington, Iowa, and Utah.
+It's much easier to compare the trajectory of the different states outbreaks when we look at the log-scale information, and, as a bonus, because we devote more vertical space to lower values, we can easily separate the lines from smaller states, compared to the lines from bigger states. 
 
-We're again reading the slope off of the chart as the "useful information" here -- the slope indicates the change in the number of people dying (or being diagnosed covid) over time. 
+We're again reading the slope off of the chart as the "useful information" here -- the slope indicates the change in the number of people dying (or being diagnosed with covid) over time. But, hopefully, this time, our instincts are slightly more accurate -- using the anchor and adjust phenomenon, we might actually be a bit more likely to get close to the next value.
 
 
 ---
 ## Comparisons 
-```{r}
-show_states <- c("Washington", "Texas", "New York", "Utah", "Iowa", "Georgia")
-tmpsum2 <- cvstate %>%
-  filter(state %in% show_states) %>%
-  mutate(state = factor(state)) %>%
-  filter(date%in% c(ymd("2020-03-15"), ymd("2020-06-15")), state %in% c("Washington", "Texas"))
+```{r, fig.height = 5, fig.width = 8, cache = T}
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
 tmp2 <- cvstate %>%
   filter(state %in% show_states) %>%
   mutate(state = factor(state)) %>%
   filter(state %in% c("Washington", "Texas"))
+tmpsum2 <- cvstate %>%
+  filter(state %in% show_states) %>%
+  mutate(state = factor(state)) %>%
+  filter(date%in% c(ymd("2020-03-15"), ymd("2020-06-15")), state %in% c("Washington", "Texas"))
+tmpsum3 <- filter(tmp2, date == max(date))
 
 ggplot() + 
   geom_line(data = tmp2, 
@@ -393,7 +536,11 @@ ggplot() +
   geom_path(data = tmpsum2, aes(x = date, y = daily_avg_cases, group = date)) + 
   geom_point(data = tmpsum2, aes(x = date, y = daily_avg_cases, color = state)) + 
   geom_text(data = tmpsum2, aes(x = date, y = daily_avg_cases, label = sprintf("%.1f", daily_avg_cases), hjust = -0.25, color = state)) + 
-  scale_color_discrete(drop = F) + 
+  scale_color_manual(values = color_palette, drop = F) + 
+  geom_text(data = tmpsum3, 
+                  aes(x = date, y = daily_avg_cases, 
+                      label = state, color = state), 
+                  hjust = 0, nudge_x = 1) + 
   guides(color = F) + 
   scale_x_date(expand = expansion(mult = c(.05, .2)), 
                date_breaks = "month", date_labels = "%B") + 
@@ -405,15 +552,21 @@ ggplot() +
   theme_bw() + theme(axis.title.x = element_blank())
 ```
 
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
+
+.center[Sine Illusion: `r Citep(myBib, "vanderplasSignsSineIllusion2015")`    
+Log perception: `r Citep(myBib, "varshneyWhyWePerceive2013")`]
 
 ???
 
-This comes at a cost, though - our intuition for what is being shown is compromised. The number of deaths in Texas and Washington in mid-March look very similar, but in fact, there is a factor of 10 difference between them. Similarly, in mid June, a similar size gap between Washington and Texas counts occur (in the other direction), and while the ratio is the same, I'm not convinced everyone reads that correctly. 
+This comes at a cost, though - our intuition for what is being shown is compromised. The number of deaths in Texas and Washington in mid-March look very similar, but in fact, there is a factor of 10 difference between them. 
+
+Similarly, in mid June, a similar size gap between Washington and Texas counts occur (in the other direction), and while the ratio is the same, we have to do a fair bit of cognitive work to interpret it correctly. 
 
 There are two factors at play here - the not-so-intuitive log scale = multiplicative effect, and also the sine illusion, which makes it very difficult to assess the vertical distance between curves. 
 
-In the reduced-clutter version, you can also get a sense for the amount of mental effort it takes to decode a graph with many, many lines on it and get meaningful information out of it. The default in most of the online versions I've seen is to show 10+ curves for different states or countries, which is a *lot* of information. On top of that, most of the online versions provide additional information via mouseover and allow filtering based on state(s) of interest, which helps in some ways but adds cognitive load. 
+While log perception is natural in some instances, when we have to translate things on a log scale back into raw numbers, we tend to have trouble - think of explaining that a 7.0 earthquake is 10 times stronger than a 6.0 earthquake. It's in the transition back to real-world consequences that we have trouble.
+
+<!-- In the reduced-clutter version, you can also get a sense for the amount of mental effort it takes to decode a graph with many, many lines on it and get meaningful information out of it. The default in most of the online versions I've seen is to show 10+ curves for different states or countries, which is a *lot* of information. On top of that, most of the online versions provide additional information via mouseover and allow filtering based on state(s) of interest, which helps in some ways but adds cognitive load.  -->
 
 ---
 ## Log scales and Explanations
@@ -435,18 +588,41 @@ When the goal is to communicate with the general public, though, you have to be 
 I wish I had data, or guidelines, or any real information on the use of log scales and how we perceive them, but I've been looking for papers for two months, and haven't found any experiment which examines how people read and perceive graphics that use log scales, compared with linear scales. If you know of one, please message me by email, twitter, smoke signals... Either way, hopefully there will be such a paper within the next year. 
 
 ---
-## Log scales, COVID-19, and Time
+## Log scales are less useful over time
 
 .pull-left[
-- It's estimated that [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
+
+- About [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
   - Most people infect 0-1 others
   - Super spreading events make up the difference
   
 - Under these conditions, most transmission chains die out on their own
+  - baseline spread
 
-- Log scales can make it harder to detect exponential increases due to superspreading or changes in policy later in the epidemic
+- Log scales can make it harder to detect later changes in case rate
 ]
 ```{r, out.extra='class="pull-right"', fig.height = 5.5, fig.width = 4, dev = "png"}
+# ----- Set up labeller to tweak things ----------------------------------------
+rlistmap <- function(x, myfun) {
+  if ("list" %in% class(x)) return(purrr::map(x, ~rlistmap(., myfun)))
+  
+  return(myfun(x))
+}
+fix_labels <- function(x) {
+  x  %>%
+    str_replace('scale: (.*)', "\\1 scale") %>%
+    str_replace("baseline: (\\d{1,})", "Baseline:\n\\1 cases")
+}
+label_custom <- function(labels, multi_line = T, sep = ": ") {
+  out <- label_both(labels, multi_line = multi_line, sep = sep)
+  
+  out <- rlistmap(out, fix_labels)
+
+  out
+}
+class(label_custom) <- "labeller"
+
+# ----- Set up data ------------------------------------------------------------
 growth <- rpois(30, 15*exp((1:30 - 20)/5))
 
 tmp <- tibble(baseline = 15,
@@ -473,31 +649,27 @@ tmp <- tibble(baseline = 15,
   pivot_longer(matches("Background|Exponential|Total")) %>%
   mutate(name = factor(name, levels = c("Total", "Exponential", "Background")))
 
-p1 <- tmp %>%
+tmp <- bind_rows(mutate(tmp, scale = "Log"), mutate(tmp, scale = "Linear")) %>%
+  mutate(Baseline = reorder(paste0("Baseline:\n", baseline, " cases"), baseline)) %>%
+  mutate(scale = factor(scale, levels = c("Log", "Linear")))
+
+# ----- Set up scales ----------------------------------------------------------
+library(facetscales)
+scales_y <- list(
+  Log = scale_y_log10(),
+  Linear = scale_y_continuous()
+)
+
+tmp %>%
 ggplot(aes(x = x, y = value, color = name, size = name)) + 
-  geom_line(alpha = .9) + 
-  scale_size_manual(values = c(1.75, 1, 1)) + 
-  scale_color_manual(values = c("#249ab5", "#d00000", "#001226")) + 
-  scale_y_log10() + 
+  geom_line(alpha = .9) +
+  facet_grid_sc(rows = vars(scale), cols = vars(Baseline), 
+                scales = list(x = "fixed", y = scales_y)) +
+  scale_size_manual(values = c(1.75, 1, 1)) +
+  scale_color_manual(values = c("#249ab5", "#d00000", "#001226")) +
   scale_fill_discrete(name = "") + 
-  facet_wrap(~baseline, labeller = label_both) + 
-  theme(legend.position = "bottom", axis.title = element_blank(), 
+  theme(legend.position = "bottom", axis.title = element_blank(),
         legend.title = element_blank())
-
-
-p2 <- tmp %>%
-ggplot(aes(x = x, y = value, color = name, size = name)) + 
-  geom_line(alpha = 0.9) + 
-  scale_size_manual(values = c(1.75, 1, 1)) + 
-  scale_color_manual(values = c("#249ab5", "#d00000", "#001226")) + 
-  # scale_y_log10() + 
-  scale_fill_discrete(name = "") + 
-  facet_wrap(~baseline, labeller = label_both) + 
-  guides(color = F, size = F) + 
-  theme(legend.position = "bottom", axis.title = element_blank(), legend.title = element_blank())
-
-
-gridExtra::grid.arrange(p1, p2, nrow = 2, heights = c(.54, .46))
 ```
 
 ???
@@ -510,117 +682,120 @@ If exponential spread then starts up again, it's hard to recognize that increase
 
 I think initially, log scales were an excellent idea, but now that the epidemic is firmly established in the US, we're better off sticking with linear scales or some sort of log - with- baseline type scale. Otherwise, we risk misleading the public and de-emphasizing the warning signs of increasing spread.
 
+<!-- --- -->
+<!-- ## Virus time or Human time? -->
+
+
+<!-- ```{r out.extra = "class='pull-left'", fig.height = 5.5, fig.width = 4, dev = "png"} -->
+<!-- show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York") -->
+<!-- tmp2 <- cvstate %>% -->
+<!--   filter(state %in% show_states2) %>% -->
+<!--   mutate(state = factor(state))  -->
+<!-- tmpsum2 <- tmp2 %>% group_by(state) %>%  -->
+<!--   # filter(daily_avg_cases == max(daily_avg_cases)) %>% -->
+<!--   filter(days_100th_case == max(days_100th_case)) -->
+
+<!-- ggplot() +  -->
+<!--   geom_line(data = tmp2,  -->
+<!--             aes(x = days_100th_case, y = daily_avg_cases, color = state)) +  -->
+<!--   geom_text_repel(data = tmpsum2,  -->
+<!--             aes(x = days_100th_case, y = daily_avg_cases,  -->
+<!--                 label = state, color = state),  -->
+<!--             hjust = -.1) +  -->
+<!--   guides(color = F) +  -->
+<!--   scale_x_continuous("Days since 100th case", limits = c(0, NA),  -->
+<!--                      expand = expand_scale(mult = c(0, .4))) +  -->
+<!--   scale_y_log10("Daily cases (7 day rolling average)") +  -->
+<!--   theme_bw() +  -->
+<!--   theme(panel.background = element_rect(fill = "transparent", color = NA),  -->
+<!--         plot.background = element_rect(fill = "transparent", color = NA)) -->
+
+<!-- ``` -->
+<!-- ```{r out.extra = "class='pull-right'", fig.height = 5.5, fig.width = 4, dev = "png"} -->
+<!-- show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York") -->
+<!-- tmp2 <- cvstate %>% -->
+<!--   filter(state %in% show_states2) %>% -->
+<!--   mutate(state = factor(state)) -->
+
+<!-- tmpsum2 <- tmp2 %>% group_by(state) %>%  -->
+<!--   # filter(daily_avg_cases == max(daily_avg_cases)) %>% -->
+<!--   filter(date == max(date)) -->
+
+
+<!-- ggplot() + -->
+<!--   geom_vline(aes(xintercept = ymd(c("2020-05-25", "2020-04-12", "2020-07-04"))), -->
+<!--              color = "grey") +  -->
+<!--   geom_label(aes(x = ymd(c("2020-05-25", "2020-04-12", "2020-07-04")), y = 1,  -->
+<!--                  label = c("Memorial\nDay", "Easter", "July 4"))) +  -->
+<!--   geom_line(data = tmp2,  -->
+<!--             aes(x = date, y = daily_avg_cases, color = state)) +  -->
+<!--   geom_text_repel(data = tmpsum2,  -->
+<!--             aes(x = date, y = daily_avg_cases,  -->
+<!--                 label = state, color = state),  -->
+<!--             hjust = -.1) +  -->
+<!--   guides(color = F) +  -->
+<!--   scale_x_date(name = "", expand = expansion(mult = c(.05, .4)),  -->
+<!--                date_breaks = "month", date_labels = "%B", -->
+<!--                limits = c(ymd("2020-03-15", NA))) +  -->
+<!--   scale_y_log10("Daily cases (7 day rolling average)",position = "right") +  -->
+<!--   theme_bw() +  -->
+<!--   theme(panel.background = element_rect(fill = "transparent", color = NA),  -->
+<!--         plot.background = element_rect(fill = "transparent", color = NA)) -->
+
+<!-- ``` -->
+
+<!-- .bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.] -->
+
+<!-- ??? -->
+
+<!-- I'm not sure if you noticed, but I played a bit of a trick in the previous slides: I've been switching back and forth between an x-axis that tracks "days since 100 cases" in each state, and the actual calendar date.  -->
+
+<!-- I like to think of these two axes as showing virus time and human time. They both have advantages - graphs that show days since N cases allow you to compare outbreaks that started at different times, which can be useful in assessing e.g. which measures at the government level are useful to contain the virus, and how different containment methods have been applied. Personally, I find this to be much more useful at the country level than the state level, because outbreaks in e.g. China, Italy, and Spain followed the same initial course as the outbreak in NYC, and as later outbreaks in Texas, Florida, and Arizona.  -->
+
+<!-- But, it's also very important to be able to trace increases in cases across multiple states back to single calendar events - easter, Memorial Day, 4th of July. This is complicated by a 1 or 2-week lag in case increases, but it's fairly easy to see that cases in Nebraska increased not long after Easter, and again after July 4th. Not that there's causation there, but I can confirm that people were out and about more than usual in my part of the state, at least.  -->
+
+<!-- One problem I have is that the difference between these two graphs is *very* subtle, and I've gone out of my way to try to pick states where the epidemic has followed a different course. The other thing that I'm not fond of is that it's arguable that the 100 cases threshold is affected by population and population density - 100 people in Nebraska is a lot more signifcant than 100 people in New York or California. I've seen some people arguing that e.g. a forest fire will burn at the same rate regardless of the size of the forest initially, but these graphs are being used long after that initial part is relevant. So while the 100 cases threshold may have been useful early in the pandemic, it's perhaps less useful now.  -->
+
 ---
-## Virus time or Human time?
+## Other Interesting Approaches
 
-
-```{r out.extra = "class='pull-left'", fig.height = 5.5, fig.width = 4, dev = "png"}
-show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
-tmp2 <- cvstate %>%
-  filter(state %in% show_states2) %>%
-  mutate(state = factor(state)) 
-tmpsum2 <- tmp2 %>% group_by(state) %>% 
-  # filter(daily_avg_cases == max(daily_avg_cases)) %>%
-  filter(days_100th_case == max(days_100th_case))
-
-ggplot() + 
-  geom_line(data = tmp2, 
-            aes(x = days_100th_case, y = daily_avg_cases, color = state)) + 
-  geom_text_repel(data = tmpsum2, 
-            aes(x = days_100th_case, y = daily_avg_cases, 
-                label = state, color = state), 
-            hjust = -.1) + 
-  guides(color = F) + 
-  scale_x_continuous("Days since 100th case", limits = c(0, NA), 
-                     expand = expand_scale(mult = c(0, .4))) + 
-  scale_y_log10("Daily cases (7 day rolling average)") + 
-  theme_bw() + 
-  theme(panel.background = element_rect(fill = "transparent", color = NA), 
-        plot.background = element_rect(fill = "transparent", color = NA))
-
-```
-```{r out.extra = "class='pull-right'", fig.height = 5.5, fig.width = 4, dev = "png"}
-show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
-tmp2 <- cvstate %>%
-  filter(state %in% show_states2) %>%
-  mutate(state = factor(state))
-
-tmpsum2 <- tmp2 %>% group_by(state) %>% 
-  # filter(daily_avg_cases == max(daily_avg_cases)) %>%
-  filter(date == max(date))
-
-
-ggplot() +
-  geom_vline(aes(xintercept = ymd(c("2020-05-25", "2020-04-12", "2020-07-04"))),
-             color = "grey") + 
-  geom_label(aes(x = ymd(c("2020-05-25", "2020-04-12", "2020-07-04")), y = 1, 
-                 label = c("Memorial\nDay", "Easter", "July 4"))) + 
-  geom_line(data = tmp2, 
-            aes(x = date, y = daily_avg_cases, color = state)) + 
-  geom_text_repel(data = tmpsum2, 
-            aes(x = date, y = daily_avg_cases, 
-                label = state, color = state), 
-            hjust = -.1) + 
-  guides(color = F) + 
-  scale_x_date(name = "", expand = expansion(mult = c(.05, .4)), 
-               date_breaks = "month", date_labels = "%B",
-               limits = c(ymd("2020-03-15", NA))) + 
-  scale_y_log10("Daily cases (7 day rolling average)",position = "right") + 
-  theme_bw() + 
-  theme(panel.background = element_rect(fill = "transparent", color = NA), 
-        plot.background = element_rect(fill = "transparent", color = NA))
-
-```
-
-.bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.]
-
-???
-
-I'm not sure if you noticed, but I played a bit of a trick in the previous slides: I've been switching back and forth between an x-axis that tracks "days since 100 cases" in each state, and the actual calendar date. 
-
-I like to think of these two axes as showing virus time and human time. They both have advantages - graphs that show days since N cases allow you to compare outbreaks that started at different times, which can be useful in assessing e.g. which measures at the government level are useful to contain the virus, and how different containment methods have been applied. Personally, I find this to be much more useful at the country level than the state level, because outbreaks in e.g. China, Italy, and Spain followed the same initial course as the outbreak in NYC, and as later outbreaks in Texas, Florida, and Arizona. 
-
-But, it's also very important to be able to trace increases in cases across multiple states back to single calendar events - easter, Memorial Day, 4th of July. This is complicated by a 1 or 2-week lag in case increases, but it's fairly easy to see that cases in Nebraska increased not long after Easter, and again after July 4th. Not that there's causation there, but I can confirm that people were out and about more than usual in my part of the state, at least. 
-
-One problem I have is that the difference between these two graphs is *very* subtle, and I've gone out of my way to try to pick states where the epidemic has followed a different course. The other thing that I'm not fond of is that it's arguable that the 100 cases threshold is affected by population and population density - 100 people in Nebraska is a lot more signifcant than 100 people in New York or California. I've seen some people arguing that e.g. a forest fire will burn at the same rate regardless of the size of the forest initially, but these graphs are being used long after that initial part is relevant. So while the 100 cases threshold may have been useful early in the pandemic, it's perhaps less useful now. 
-
----
-## Other Interesting Variations
-
-```{r, fig.show='animate', ffmpeg.format='gif', fig.width = 8, fig.height = 4, dev = "jpeg", dpi = 300, interval = 0.5, cache = T}
-show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
+```{r, fig.show='animate', ffmpeg.format='gif', fig.width = 8, fig.height = 5, dev = "jpeg", dpi = 300, interval = 1, cache = T}
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
 
 cvstate <- cvstate %>%
   left_join(tibble(state = state.name, abb = state.abb))
 
 plot_to_date <- function(dt) {
   data <- cvstate %>%
-    filter(state %in% show_states2,
+    filter(state %in% show_states,
            date <= dt, 
            cases >= 50) %>%
+    mutate(state = factor(state, levels = sort(show_states))) %>%
     group_by(state) %>%
     filter(n() >= 2)
   p <- ggplot(data, aes(x = cases, y = daily_avg_cases, color = state)) + 
     geom_line() + 
-    geom_label(data = filter(data, date == max(date)), aes(label = abb), hjust = -0.1, 
-               # segment.alpha = .25
-               ) + 
-    scale_x_log10(limits = c(50, max(cvstate$cases)),
+    geom_label_repel(data = filter(data, date == max(date)), aes(label = abb), segment.alpha = .5) + 
+    scale_x_log10("Total Cases",
+                  limits = c(50, max(filter(cvstate, state %in% show_states)$cases)),
                   expand = expansion(mult = c(.05, .4)), 
                   breaks = 10^(1:8), labels = 10^(1:8)) + 
-    scale_y_log10(limits = c(1, max(cvstate$daily_avg_cases))) + 
+    scale_y_log10("Daily Cases (7 day average)", 
+                  limits = c(1, max(cvstate$daily_avg_cases))) + 
+    scale_color_manual(values = color_palette, drop = F) + 
     guides(color = F) + 
     theme_bw() + 
     ggtitle(format(dt, format = "%B %d, %Y"))
   print(p)
 }
-dates <- seq.Date(ymd("2020-03-11"), today(), by = "1 day")
+dates <- seq.Date(ymd("2020-03-11"), today(), by = "2 days")
 
 purrr::walk(dates, plot_to_date)
 
 ```
 
-.bottom[[Interpreting graphs with log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/) has examples of what log scales on each axis do to the spacing of the data.]
+.center[[Interpreting graphs with log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/) has examples of what log scales on each axis do to the spacing of the data.]
+
 ???
 
 One of the other very interesting variations in plots I've seen takes time out of the equation entirely (for the static version) or animates the chart like the one I've included here. This chart shows the total progress of the epidemic over time; regions which suppress cases show steep declines in y, and resurgences look like bounces. It's an interesting paradigm, but I'm not convinced that it's that useful for a couple of reasons: First, it's probably the least useful when the epidemic isn't being controlled, because surges in cases take up less room on the chart in both dimensions - that is, the amount of space dedicated to an increase of 100 cases in the first portion of the epidemic is pretty large, but later in the epidemic, it isn't at all. 
@@ -637,11 +812,11 @@ class:middle,center,inverse
 ## From Exponential to Frequency
 
 ```{r, fig.width = 8, fig.height = 5}
-show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
 
 n <- 10000
 tmp <- cvstate %>%
-  filter(state %in% show_states2) %>%
+  filter(state %in% show_states) %>%
   select(state, date, cases) %>%
   mutate(mod_num = cases %% n,
          whole_num = floor(cases/n)) %>%
@@ -681,17 +856,21 @@ ggplot(data = tmp2, aes(x = date, ymin = 0, ymax = y,
                         group = whole_num)) + 
   geom_ribbon() + 
   facet_grid(state~.) + 
-  scale_color_gradientn(guide = F,
-    paste0("Days to\n", n, "\nmore\ncases"), 
+  scale_x_date(date_breaks = "month", date_labels = "%B") +
+  scale_y_continuous(breaks = c(n/2, n), labels = paste0(c(n/2000, n/1000), "k"))  + 
+  scale_color_gradientn(guide = F, paste0("Days to ", n/1000, "k\nmore cases"), space = "Lab",
     colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
     trans = "log10") + 
-  scale_fill_gradientn(
-    paste0("Days to\n", n, "\nmore\ncases"), 
+  scale_fill_gradientn(paste0("Days to ", n/1000, "k\nmore cases"), space = "Lab",
     colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
     trans = "log10") + 
-  theme(axis.title = element_blank(), plot.background = element_rect(fill = "transparent", color = NA), panel.background = element_rect(fill = "transparent", color = NA), legend.background = element_rect(fill = "transparent", color = NA)) 
+  theme(axis.title = element_blank(), plot.background = element_rect(fill = "transparent", color = NA), panel.background = element_rect(fill = "transparent", color = NA), 
+        legend.background = element_rect(fill = "transparent", color = NA), 
+        legend.position = c(0, .66), legend.justification = c(0, 1), legend.direction = "horizontal")
 
 ```
+
+Recreated based on a chart in a [tweet](https://twitter.com/romsson/status/1244316295094505472) by Romain Vuillemot, who originally showed deaths by country. 
 
 ???
 
@@ -701,33 +880,47 @@ I recreated the chart using a blue color scheme because the use of red and black
 
 This is somewhat similar to a horizon chart, but in some ways it works better because it's not trying to represent the whole distribution. As a result, you get a visual indication of frequency as well as the color indication. 
 
-```{r, fig.width = 8, fig.height = 5, eval = F}
+---
+## Horizon Charts
+
+
+```{r, fig.width = 8, fig.height = 5, eval = T}
 # remotes::install_github("hrbrmstr/ggalt")
 library(ggalt)
-show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
 
 n <- 10000
 tmp <- cvstate %>%
-  filter(state %in% show_states2)
+  filter(state %in% show_states)
   
 
 ggplot(data = tmp, aes(x = date, y = cases)) + 
   geom_horizon(bandwidth = n) + 
   facet_grid(state~.) + 
+  scale_x_date(date_breaks = "month", date_labels = "%B") + 
+  scale_y_continuous(breaks = c(n/2, n), labels = paste0(c(n/2000, n/1000), "k")) + 
   scale_fill_manual("x10k\nTotal\nCases",
-                    values = colorRampPalette(colors = c("white", "yellow", "orange", "red"), bias = .5, space = "Lab")(50)) + 
-  theme(axis.title = element_blank(), plot.background = element_rect(fill = "transparent", color = NA), panel.background = element_rect(fill = "transparent", color = NA), legend.background = element_rect(fill = "transparent", color = NA)) 
+                    values = colorRampPalette(colors = c("white", "yellow", "orange", "red"), 
+                                              bias = .5, space = "Lab")(45),
+                    breaks = c(10, 20, 30, 40, 50), ) + 
+  theme(axis.title = element_blank(), 
+        legend.background = element_rect(fill = "transparent", color = NA), 
+        legend.position = c(0, 1), legend.justification = c(0, 1), legend.direction = "horizontal") 
 
 ```
 
+???
+
+This is very similar to a horizon chart, but unlike a horizon chart, it doesn't attempt to show layers or fine grain detail; instead, it shows only the start and stop points. That helps to take our focus off of the y scale and put it back onto the actual meaning of the data - the lack of detail in the triangle version allows us to stop and think.
+
 ---
-## The Slow March to Herd Immunity
+## Population Scaling - The March to Herd Immunity
 
 ```{r, fig.width = 8, fig.height = 5}
-show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
 
 tmp <- cvstate %>%
-  filter(state %in% show_states2) %>%
+  filter(state %in% show_states) %>%
   select(state, date, cases, pop2019) %>%
   mutate(n = round(pop2019/1000)) %>%
   mutate(mod_num = cases %% n,
@@ -768,15 +961,17 @@ ggplot(data = tmp2, aes(x = date, ymin = 0, ymax = y,
                         group = whole_num)) + 
   geom_ribbon() + 
   facet_grid(state~., scales = "free_y") + 
-  scale_color_gradientn(guide = F,
-    paste0("Days to\n0.1% of\npop'n"), 
+  scale_x_date(date_breaks = "month", date_labels = "%B") +
+  scale_color_gradientn(guide = F, paste0("Days to 0.1%\nof state pop"), space = "Lab",
     colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
     trans = "log10") + 
-  scale_fill_gradientn(
-    paste0("Days to\n0.1% of\npop'n"), 
+  scale_fill_gradientn(paste0("Days to 0.1%\nof state pop"), space = "Lab",
     colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
-    trans = "log10")
-
+    trans = "log10") + 
+  my_theme + 
+  theme(axis.title = element_blank(), axis.text.y = element_blank(),
+        legend.background = element_rect(fill = "transparent", color = NA), 
+        legend.position = c(0, .66), legend.justification = c(0, 1), legend.direction = "horizontal") 
 ```
 
 ???
@@ -786,9 +981,7 @@ As with all of the graphics so far, though, we have this battle between comparin
 ---
 ## A More Poignant Take
 
-<video autosize controls>
-  <source src="NYT-100000-compress-crop.mp4" type="video/mp4">
-</video>
+![NYT 100,000 US Deaths Issue](image/NYT-100000.gif)
 
 ---
 class:middle,center,inverse
@@ -841,7 +1034,7 @@ The disadvantage to the NYT heatmaps is that it uses the case doubling rate. Wha
 ## Case Doubling
 
 ```{r}
-show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
+# show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
 
 cvstate %>%
   # filter(wday(date) == 1) %>%
@@ -855,7 +1048,7 @@ cvstate %>%
                                   doubling<2 ~ "Fast",
                                   doubling>=2 ~ "Faster") %>%
            factor(levels = c("Slower", "Moderate", "Fast", "Faster"))) %>%
-  filter(state %in% show_states2) %>%
+  filter(state %in% show_states) %>%
   # filter(wday(date) == 1) %>%
   ggplot(aes(x = date, y = state, fill = doubling_cat)) + 
   geom_tile(color = "white") + 
@@ -872,7 +1065,7 @@ For the sake of comparison, I managed to replicate the NYT graphic (at least app
 ## Cases
 
 ```{r}
-show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York", "Iowa", "Florida")
+# show_states <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York", "Iowa", "Florida")
 
 cvstate %>%
   # filter(wday(date) == 1) %>%
@@ -882,7 +1075,7 @@ cvstate %>%
   mutate(last_week = lag(cases, 7, default = 1),
          week_cases = (cases - last_week + 1)/pop2019*100,
          doubling = log(cases/last_week, 2)) %>%
-  filter(state %in% show_states2) %>%
+  filter(state %in% show_states) %>%
   # filter(wday(date) == 1) %>%
   ggplot(aes(x = date, y = state, fill = week_cases)) + 
   geom_tile(color = "white") + 
