@@ -37,10 +37,16 @@ body{
   font-weight:400;
   font-family: 'Montserrat', sans-serif; 
 }
+
 a{
-  link-color:#001226;
   color:#001226;
+  /*text-decoration: underline;*/
+  text-color:#249ab5;
 }
+a:hover{
+  color:#249ab5;
+}
+
 
 .title-slide.inverse {
 	background-color: #fefdfa;
@@ -118,8 +124,10 @@ div.remark-slide {
   width: 50%;
 }
 
+.large{font-size:125%;}
 .largish{font-size:110%;}
 .reg{font-size:100%;}
+.small{font-size:80%;}
 .tiny{font-size:65%;}
 
 .remark-slide table.blank, .remark-slide table.blank tr, .remark-slide table tr.blank {
@@ -133,7 +141,7 @@ div.remark-slide {
   margin-left: 10%;
   bottom: 5px;
   width: 100%;
-  font-size: 50%;
+  clear: both;
 }
 
 .underline {
@@ -142,4 +150,26 @@ div.remark-slide {
 
 .hidden{
   visibility:hidden;
+}
+
+.fullwidth {
+  margin-left: -80px;
+  margin-right: -80px;
+  overflow: auto;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+
+.width75{
+  width:75%;
+  display:inline-block;
+}
+.width60{
+  width:60%;
+  display:inline-block;
 }

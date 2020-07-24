@@ -34,6 +34,7 @@ myBib <- ReadBib("./refs.bib", check = FALSE)
   height: 550px;
   padding: 0;
   overflow: hidden;
+  position: absolute;
 }
 .wrap2
 {
@@ -66,7 +67,7 @@ myBib <- ReadBib("./refs.bib", check = FALSE)
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(echo = F, cache = T, 
+knitr::opts_chunk$set(echo = F, cache = F, 
                       dpi = 300, fig.width = 6, fig.height = 15/4, 
                       message = F, warning = F, 
                       dev.args=list(bg="transparent"))
@@ -105,6 +106,9 @@ my_theme <- theme_bw() +
         axis.text.y = element_text(angle = 90, hjust = 0.5)) 
 theme_set(my_theme)
 
+```
+
+```{r colorpals, include = F}
 main_colors <- c("#d00000", "#f5f1e7", "#c7c8ca")
 
 # use as accents
@@ -114,6 +118,18 @@ secondary_colors <- c("#001226", "#249ab5")
 tertiary_colors <- c("#bccb2a", "#f58a1f", "#005d84", "#ffd74f", "#a5228d")
 
 color_palette <- c("#d00000", "#249ab5",  "#1B8500", "#f58a1f", "#a5228d", "#001226", "#B1EB66", "#005d84", "#c25700")
+
+heat_color_palette <- c("#ffd74f", "#f58a1f", "#c25700", "#d00000", "#9D0000", "#6A0000")
+
+blueseqpal <- c("001226", "06293E", "0C3F56", "12566E", "186D85", "1E839D", 
+                "249AB5", 
+                "39ABC1", "4EBCCE", "64CDDA", "79DDE6", "8EEEF3", "A3FFFF") %>% 
+  paste0("#", .) %>% rev()
+
+blueseqpal_lt <- rev(c("#B2FFFF", "#C2FFFF", "#D1FFFF", "#E0FFFF", "#F0FFFF"))
+
+darkblueseqpal <- colorspace::darken(blueseqpal, .2)
+lightblueseqpal <- colorspace::lighten(blueseqpal, .2)
 ```
 
 ```{r modals, include = F, eval = T}
@@ -402,11 +418,8 @@ ggplot() +
 
 - People are consistently awful at forecasting exponential growth
 
-- Forecasts always underestimate the next point    
-**anchor** + **adjust** 
-
-
-.center[`r Citep(myBib, c("goodwinHeuristicsBiasesImprovement1994", "timmersInverseStatisticsMisperception1977a"))`]
+- Forecasts always underestimate the next point (**anchor** + **adjust**)    
+.small[`r Citep(myBib, c("goodwinHeuristicsBiasesImprovement1994", "timmersInverseStatisticsMisperception1977a"))`]
 
 
 ???
@@ -590,18 +603,13 @@ I wish I had data, or guidelines, or any real information on the use of log scal
 ---
 ## Log scales are less useful over time
 
-.pull-left[
-
 - About [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
-  - Most people infect 0-1 others
+  - Most people infect at most 1 other person
   - Super spreading events make up the difference
-  
-- Under these conditions, most transmission chains die out on their own
-  - baseline spread
 
-- Log scales can make it harder to detect later changes in case rate
-]
-```{r, out.extra='class="pull-right"', fig.height = 5.5, fig.width = 4, dev = "png"}
+- Log scales may obscure increases in cases above a baseline
+
+```{r, fig.height = 4, fig.width = 8, dev = "png"}
 # ----- Set up labeller to tweak things ----------------------------------------
 rlistmap <- function(x, myfun) {
   if ("list" %in% class(x)) return(purrr::map(x, ~rlistmap(., myfun)))
@@ -650,7 +658,7 @@ tmp <- tibble(baseline = 15,
   mutate(name = factor(name, levels = c("Total", "Exponential", "Background")))
 
 tmp <- bind_rows(mutate(tmp, scale = "Log"), mutate(tmp, scale = "Linear")) %>%
-  mutate(Baseline = reorder(paste0("Baseline:\n", baseline, " cases"), baseline)) %>%
+  mutate(Baseline = reorder(paste0("Baseline: ", baseline, " cases"), baseline)) %>%
   mutate(scale = factor(scale, levels = c("Log", "Linear")))
 
 # ----- Set up scales ----------------------------------------------------------
@@ -794,7 +802,8 @@ purrr::walk(dates, plot_to_date)
 
 ```
 
-.center[[Interpreting graphs with log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/) has examples of what log scales on each axis do to the spacing of the data.]
+.center[`r Citet(myBib, "logscalegraphs2014")` describes 
+[some of the issues with log/log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/).]
 
 ???
 
@@ -858,27 +867,29 @@ ggplot(data = tmp2, aes(x = date, ymin = 0, ymax = y,
   facet_grid(state~.) + 
   scale_x_date(date_breaks = "month", date_labels = "%B") +
   scale_y_continuous(breaks = c(n/2, n), labels = paste0(c(n/2000, n/1000), "k"))  + 
-  scale_color_gradientn(guide = F, paste0("Days to ", n/1000, "k\nmore cases"), space = "Lab",
-    colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
-    trans = "log10") + 
-  scale_fill_gradientn(paste0("Days to ", n/1000, "k\nmore cases"), space = "Lab",
-    colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
-    trans = "log10") + 
-  theme(axis.title = element_blank(), plot.background = element_rect(fill = "transparent", color = NA), panel.background = element_rect(fill = "transparent", color = NA), 
+  scale_color_gradientn(guide = 'none', paste0("Days to ", n/1000, "k\nmore cases"), space = "Lab", 
+    trans = "log10",
+    colours = darkblueseqpal
+    ) + 
+  scale_fill_gradientn(paste0("Days to ", n/1000, "k\nmore cases"), space = "Lab", 
+    trans = "log10",
+    colours = blueseqpal) + 
+  my_theme + 
+  theme(axis.title = element_blank(), 
         legend.background = element_rect(fill = "transparent", color = NA), 
         legend.position = c(0, .66), legend.justification = c(0, 1), legend.direction = "horizontal")
 
 ```
 
-Recreated based on a chart in a [tweet](https://twitter.com/romsson/status/1244316295094505472) by Romain Vuillemot, who originally showed deaths by country. 
+.center[Recreated from a chart in a 
+[tweet by Romain Vuillemot](https://twitter.com/romsson/status/1244316295094505472),     
+who originally showed deaths by country. ]
 
 ???
 
 One of the more interesting graphics I've seen on twitter was one which encoded covid deaths as time intervals to N cases. So if it takes 50 days to get to the first 10000 cases, and then 20,and then 5, and so on, the acceleration of pandemic progress is clear. I really, really like this idea, if only because it is one of the best ways I've seen to get around the exponential vs. log scale issue. The "pace" of the pandemic is perfectly clear while the number of spikes makes it obvious how many cumulative cases or deaths there have been. Shading in the triangles using deeper shades of a univariate color allows you to assess "total" subjectively by "amount of color".
 
 I recreated the chart using a blue color scheme because the use of red and black in coloring is really problematic - it can cause panic, the connection to blood and death has an emotional impact, and while the emotional impact isn't bad, it's not necessary to communicate what we need to communicate here. 
-
-This is somewhat similar to a horizon chart, but in some ways it works better because it's not trying to represent the whole distribution. As a result, you get a visual indication of frequency as well as the color indication. 
 
 ---
 ## Horizon Charts
@@ -891,18 +902,25 @@ show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washingt
 
 n <- 10000
 tmp <- cvstate %>%
-  filter(state %in% show_states)
-  
+  filter(state %in% show_states) %>%
+  mutate(state = factor(state, levels = sort(show_states)))
+
+nm <- max(ceiling(tmp$cases/n))
+
+bks <- (1:floor(nm/10))*10
+
+# heatpal <- colorRampPalette(colors = c("white", "yellow", "orange", "red"), bias = .5)(50)
+heatpal <- scales::gradient_n_pal(heat_color_palette, values = sqrt(seq(0, 1, length.out = length(heat_color_palette))), space = "Lab")((1:nm)/nm)
 
 ggplot(data = tmp, aes(x = date, y = cases)) + 
-  geom_horizon(bandwidth = n) + 
+  geom_horizon(aes(alpha = as.numeric(..band..)/nm + .1), bandwidth = n) + 
   facet_grid(state~.) + 
   scale_x_date(date_breaks = "month", date_labels = "%B") + 
   scale_y_continuous(breaks = c(n/2, n), labels = paste0(c(n/2000, n/1000), "k")) + 
-  scale_fill_manual("x10k\nTotal\nCases",
-                    values = colorRampPalette(colors = c("white", "yellow", "orange", "red"), 
-                                              bias = .5, space = "Lab")(45),
-                    breaks = c(10, 20, 30, 40, 50), ) + 
+  scale_alpha_identity() +
+  scale_fill_discrete("Total\nCases", type = heatpal,
+                       breaks = (1:5)*10, labels = c("10k", "20k", "30k", "40k", "50k")) + 
+  guides(fill = guide_legend(override.aes = list(alpha = bks/nm + .1))) + 
   theme(axis.title = element_blank(), 
         legend.background = element_rect(fill = "transparent", color = NA), 
         legend.position = c(0, 1), legend.justification = c(0, 1), legend.direction = "horizontal") 
@@ -911,10 +929,14 @@ ggplot(data = tmp, aes(x = date, y = cases)) +
 
 ???
 
-This is very similar to a horizon chart, but unlike a horizon chart, it doesn't attempt to show layers or fine grain detail; instead, it shows only the start and stop points. That helps to take our focus off of the y scale and put it back onto the actual meaning of the data - the lack of detail in the triangle version allows us to stop and think.
+The triangle-frequency chart is very similar to a horizon chart, but unlike a horizon chart, it doesn't attempt to show layers or fine grain detail; instead, it shows only the start and stop points. That helps to take our focus off of the y scale and put it back onto the actual meaning of the data.
+
+In the corresponding horizon chart, shown here, there is almost too much detail. In addition, because there is not a sharp drop back to baseline, there is less visual emphasis on the
+
+The lack of detail in the triangle version allows us to stop and think -- that is, it's better to have less detail, because we can actually think enough to make use of the information.
 
 ---
-## Population Scaling - The March to Herd Immunity
+## Population .small.cerulean.emph[(The March to Herd Immunity)]
 
 ```{r, fig.width = 8, fig.height = 5}
 show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
@@ -961,13 +983,14 @@ ggplot(data = tmp2, aes(x = date, ymin = 0, ymax = y,
                         group = whole_num)) + 
   geom_ribbon() + 
   facet_grid(state~., scales = "free_y") + 
-  scale_x_date(date_breaks = "month", date_labels = "%B") +
-  scale_color_gradientn(guide = F, paste0("Days to 0.1%\nof state pop"), space = "Lab",
-    colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
-    trans = "log10") + 
-  scale_fill_gradientn(paste0("Days to 0.1%\nof state pop"), space = "Lab",
-    colours = rev(c('#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858')), 
-    trans = "log10") + 
+  scale_x_date(date_breaks = "month", date_labels = "%B") +  
+  scale_color_gradientn(guide = 'none', paste0("Days to 0.1%\nof state pop"), space = "Lab", 
+    trans = "log10",
+    colours = darkblueseqpal
+    ) + 
+  scale_fill_gradientn(paste0("Days to 0.1%\nof state pop"), space = "Lab", 
+    trans = "log10",
+    colours = blueseqpal) + 
   my_theme + 
   theme(axis.title = element_blank(), axis.text.y = element_blank(),
         legend.background = element_rect(fill = "transparent", color = NA), 
@@ -976,12 +999,14 @@ ggplot(data = tmp2, aes(x = date, ymin = 0, ymax = y,
 
 ???
 
-As with all of the graphics so far, though, we have this battle between comparing raw numbers/counts in a geographic region and comparing the population prevalence. So if we redo this graph as a % population, it's much more effective at showing the progress of the pandemic moving through the population, and it's much easier to compare e.g. the success of control measures in NY and CA with Arizona and Nebraska. I'd say that when the graph is arranged this way, it's more like we're showing the progress toward some sort of herd immunity - by the time we get to 1000 spikes, we're "done". God forbid.
+As with all of the graphics so far, though, we have this battle between comparing raw numbers/counts in a geographic region and comparing the population prevalence. So if we redo this graph as a % population, it's much more effective at showing the progress of the pandemic moving through the population, and it's much easier to compare e.g. the success of control measures in NY and CA with Arizona and Iowa.
+
+I'd say that when the graph is arranged this way, it's more like we're showing the progress toward some sort of herd immunity - by the time we get to 1000 spikes, we're "done". God forbid.
 
 ---
-## A More Poignant Take
+## A More Emotional Approach
 
-![NYT 100,000 US Deaths Issue](image/NYT-100000.gif)
+<img alt="NYT 100,000 US Deaths Online Version" src="image/NYT-100000.gif" width = "100%"/>
 
 ---
 class:middle,center,inverse
@@ -996,10 +1021,11 @@ I love graphics, and data, but I'll confess that by about May, I was done. I jus
 ---
 ## State-Level Progress
 
-```{r, out.extra = "center"}
+```{r}
 library(tweetrmd)
-tweet_embed("ASlavitt" %tweet% "1282024016254042112?s=20")
+tweet_embed("ASlavitt" %tweet% "1282024016254042112")
 ```
+
 
 ???
 
@@ -1007,8 +1033,6 @@ A couple of weeks ago, I was browsing Twitter and came across this Tweet. If you
 
 
 ---
-## State-Level Progress
-
 <div class="wrap">
 <iframe class="scale-frame" src = "https://www.covidexitstrategy.org/#hero-chart" width = "100%" height = "500px"/></div>
 
@@ -1022,8 +1046,12 @@ On July 10 the calculations that contributed to the map changed -- they added a 
 ---
 ## Case Doubling
 
-![](image/NYT-heatmap.png)
-
+.center[
+.width60[
+![](image/NYT-heatmap-crop.png)
+]
+]
+.small.bottom[Source: https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html]
 ???
 
 The advantage to the shaded graphs that I've shown thus far is that they're very low-effort to read. You don't have to necessarily think too much about reading the chart, what you're interpreting, etc. That's really a good thing when you're communicating information that is stressful, and when there are a lot of other things going on that are demanding cognitive resources. 
@@ -1033,7 +1061,7 @@ The disadvantage to the NYT heatmaps is that it uses the case doubling rate. Wha
 ---
 ## Case Doubling
 
-```{r}
+```{r, fig.width = 8, fig.height = 5.5}
 # show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York")
 
 cvstate %>%
@@ -1050,21 +1078,31 @@ cvstate %>%
            factor(levels = c("Slower", "Moderate", "Fast", "Faster"))) %>%
   filter(state %in% show_states) %>%
   # filter(wday(date) == 1) %>%
-  ggplot(aes(x = date, y = state, fill = doubling_cat)) + 
+  ggplot(aes(x = date, y = 1, fill = doubling_cat)) + 
+  facet_grid(state~.) + 
   geom_tile(color = "white") + 
   scale_fill_manual(values = c("#ffffb2", "#fecc5c", "#fd8d3c", "#e31a1c")) + 
   # scale_fill_gradient("# Case\nDoublings\nper week", low = "#c7e9c0", high = "#00441b") + 
-  my_theme + theme(legend.title = element_blank())
+  scale_x_date(date_breaks = "month", date_labels = "%B") + 
+  scale_y_continuous(breaks = NULL) + 
+  my_theme + 
+  theme(legend.title = element_blank(),
+        axis.text.y = element_blank(), axis.title = element_blank(),
+        legend.position = "bottom", legend.direction = "horizontal")
 ```
 
 ???
 
 For the sake of comparison, I managed to replicate the NYT graphic (at least approximately). Iowa recently experienced a surge in cases, but it's totally invisible on the chart Florida, Texas, Arizona, and California have all had surges recently as well, but compared to the early days of the epidemic, they look very tame. This graph de-emphasizes the outbreaks later in the pandemic.
 
----
-## Cases
+The problems with using case doubling rate had been bugging me since mid-May, and while I was preparing for this presentation, I discovered that they'd changed the formula (on July 17 or thereabouts), presumably to address this issue. It turns out that they've tweaked the formula several times, and it's not always clear exactly what numerical formula they're using. 
 
-```{r}
+Interestingly, the current formula (as of early this week, at least) uses the percentage of the population, and no longer has this problem. 
+
+---
+## Cases by Population
+
+```{r, dependson='colorpals', fig.width = 8, fig.height = 5}
 # show_states <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York", "Iowa", "Florida")
 
 cvstate %>%
@@ -1077,12 +1115,17 @@ cvstate %>%
          doubling = log(cases/last_week, 2)) %>%
   filter(state %in% show_states) %>%
   # filter(wday(date) == 1) %>%
-  ggplot(aes(x = date, y = state, fill = week_cases)) + 
-  geom_tile(color = "white") + 
-  scale_fill_gradientn("% population\ndiagnosed\n(by week)", 
-                       colors = c("#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", 
-                                  "#41b6c4", "#1d91c0", "#225ea8", "#0c2c84"),
-                       space = "Lab")
+  ggplot(aes(x = date, y = 1, fill = week_cases)) + 
+  facet_grid(state~.) + 
+  geom_tile() + 
+  scale_fill_gradientn("Weekly\ncases\n(% pop)", 
+                       colors =  c("#ffffb2", "#fecc5c", "#fd8d3c", "#e31a1c"), #c(blueseqpal_lt[-1], blueseqpal),
+                       space = "Lab", trans = "sqrt", breaks = c(.04, .16, .36), limits = c(0, .4)) + 
+  scale_x_date(date_breaks = "month", date_labels = "%B") + 
+  scale_y_continuous(breaks = NULL) + 
+  theme(axis.text.y = element_blank(), axis.title = element_blank(), 
+        legend.position = c(0, .66), legend.justification = c(0, 1), 
+        legend.direction = "horizontal") 
 ```
 
 ???
@@ -1103,12 +1146,16 @@ class:middle,center,inverse
     - What we know says we're bad at making predictions
     
 2. We don't know much about how log scales are perceived, but we're using them anyways
+    - Log scales are probably useful early on
+    - They mask information as the pandemic evolves
 
 3. It is often better to use carefully thought-out summaries of the data
     - Map values to color rather than position to cut down on the visual chaos
-    - Summaries that initially worked don't always work out later
 
-4. We have a lot of research to do on how emotion plays into graphical perception
+4. We need more research on how to effectively present data that is
+    - quasi-exponentially increasing
+    - has high emotional content
+    - is intended to provoke action
 
 
 

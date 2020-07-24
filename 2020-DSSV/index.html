@@ -33,6 +33,7 @@ class: center, middle, inverse, title-slide
   height: 550px;
   padding: 0;
   overflow: hidden;
+  position: absolute;
 }
 .wrap2
 {
@@ -62,6 +63,8 @@ class: center, middle, inverse, title-slide
   transform-origin: 0 0;
 }
 &lt;/style&gt;
+
+
 
 
 
@@ -174,11 +177,8 @@ But there are a couple of other factors at play here that are 1) persistent acro
 
 - People are consistently awful at forecasting exponential growth
 
-- Forecasts always underestimate the next point    
-**anchor** + **adjust** 
-
-
-.center[(Goodwin and Wright, 1994; Timmers and Wagenaar, 1977)]
+- Forecasts always underestimate the next point (**anchor** + **adjust**)    
+.small[(Goodwin and Wright, 1994; Timmers and Wagenaar, 1977)]
 
 
 ???
@@ -269,18 +269,13 @@ I wish I had data, or guidelines, or any real information on the use of log scal
 ---
 ## Log scales are less useful over time
 
-.pull-left[
-
 - About [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
-  - Most people infect 0-1 others
+  - Most people infect at most 1 other person
   - Super spreading events make up the difference
-  
-- Under these conditions, most transmission chains die out on their own
-  - baseline spread
 
-- Log scales can make it harder to detect later changes in case rate
-]
-&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" class="pull-right" /&gt;
+- Log scales may obscure increases in cases above a baseline
+
+![](index_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -371,7 +366,8 @@ I think initially, log scales were an excellent idea, but now that the epidemic 
 
 ![](index_files/figure-html/unnamed-chunk-8.gif)
 
-.center[[Interpreting graphs with log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/) has examples of what log scales on each axis do to the spacing of the data.]
+.center[Bouldin (2014) describes 
+[some of the issues with log/log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/).]
 
 ???
 
@@ -390,15 +386,15 @@ class:middle,center,inverse
 
 ![](index_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
 
-Recreated based on a chart in a [tweet](https://twitter.com/romsson/status/1244316295094505472) by Romain Vuillemot, who originally showed deaths by country. 
+.center[Recreated from a chart in a 
+[tweet by Romain Vuillemot](https://twitter.com/romsson/status/1244316295094505472),     
+who originally showed deaths by country. ]
 
 ???
 
 One of the more interesting graphics I've seen on twitter was one which encoded covid deaths as time intervals to N cases. So if it takes 50 days to get to the first 10000 cases, and then 20,and then 5, and so on, the acceleration of pandemic progress is clear. I really, really like this idea, if only because it is one of the best ways I've seen to get around the exponential vs. log scale issue. The "pace" of the pandemic is perfectly clear while the number of spikes makes it obvious how many cumulative cases or deaths there have been. Shading in the triangles using deeper shades of a univariate color allows you to assess "total" subjectively by "amount of color".
 
 I recreated the chart using a blue color scheme because the use of red and black in coloring is really problematic - it can cause panic, the connection to blood and death has an emotional impact, and while the emotional impact isn't bad, it's not necessary to communicate what we need to communicate here. 
-
-This is somewhat similar to a horizon chart, but in some ways it works better because it's not trying to represent the whole distribution. As a result, you get a visual indication of frequency as well as the color indication. 
 
 ---
 ## Horizon Charts
@@ -408,21 +404,27 @@ This is somewhat similar to a horizon chart, but in some ways it works better be
 
 ???
 
-This is very similar to a horizon chart, but unlike a horizon chart, it doesn't attempt to show layers or fine grain detail; instead, it shows only the start and stop points. That helps to take our focus off of the y scale and put it back onto the actual meaning of the data - the lack of detail in the triangle version allows us to stop and think.
+The triangle-frequency chart is very similar to a horizon chart, but unlike a horizon chart, it doesn't attempt to show layers or fine grain detail; instead, it shows only the start and stop points. That helps to take our focus off of the y scale and put it back onto the actual meaning of the data.
+
+In the corresponding horizon chart, shown here, there is almost too much detail. In addition, because there is not a sharp drop back to baseline, there is less visual emphasis on the
+
+The lack of detail in the triangle version allows us to stop and think -- that is, it's better to have less detail, because we can actually think enough to make use of the information.
 
 ---
-## Population Scaling - The March to Herd Immunity
+## Population .small.cerulean.emph[(The March to Herd Immunity)]
 
 ![](index_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
 
 ???
 
-As with all of the graphics so far, though, we have this battle between comparing raw numbers/counts in a geographic region and comparing the population prevalence. So if we redo this graph as a % population, it's much more effective at showing the progress of the pandemic moving through the population, and it's much easier to compare e.g. the success of control measures in NY and CA with Arizona and Nebraska. I'd say that when the graph is arranged this way, it's more like we're showing the progress toward some sort of herd immunity - by the time we get to 1000 spikes, we're "done". God forbid.
+As with all of the graphics so far, though, we have this battle between comparing raw numbers/counts in a geographic region and comparing the population prevalence. So if we redo this graph as a % population, it's much more effective at showing the progress of the pandemic moving through the population, and it's much easier to compare e.g. the success of control measures in NY and CA with Arizona and Iowa.
+
+I'd say that when the graph is arranged this way, it's more like we're showing the progress toward some sort of herd immunity - by the time we get to 1000 spikes, we're "done". God forbid.
 
 ---
-## A More Poignant Take
+## A More Emotional Take
 
-![NYT 100,000 US Deaths Issue](image/NYT-100000.gif)
+&lt;img alt="NYT 100,000 US Deaths Online Version" src="image/NYT-100000.gif" width = "100%"/&gt;
 
 ---
 class:middle,center,inverse
@@ -440,14 +442,13 @@ I love graphics, and data, but I'll confess that by about May, I was done. I jus
 <blockquote class="twitter-tweet" data-width="550" data-lang="en" data-dnt="true" data-theme="light"><p lang="en" dir="ltr">We invented a new color. Great. <a href="https://t.co/oELH0oOrz4">https://t.co/oELH0oOrz4</a></p>&mdash; Andy Slavitt @ 🏡 (@ASlavitt) <a href="https://twitter.com/ASlavitt/status/1282024016254042112?ref_src=twsrc%5Etfw">July 11, 2020</a></blockquote>
 
 
+
 ???
 
 A couple of weeks ago, I was browsing Twitter and came across this Tweet. If you don't follow Andy Slavitt, you should - he's hilarious, and he knows his stuff. But of course, I had to see what the new color was for... so I followed the links, and found... 
 
 
 ---
-## State-Level Progress
-
 &lt;div class="wrap"&gt;
 &lt;iframe class="scale-frame" src = "https://www.covidexitstrategy.org/#hero-chart" width = "100%" height = "500px"/&gt;&lt;/div&gt;
 
@@ -461,8 +462,12 @@ On July 10 the calculations that contributed to the map changed -- they added a 
 ---
 ## Case Doubling
 
-![](image/NYT-heatmap.png)
-
+.center[
+.width60[
+![](image/NYT-heatmap-crop.png)
+]
+]
+.small.bottom[Source: https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html]
 ???
 
 The advantage to the shaded graphs that I've shown thus far is that they're very low-effort to read. You don't have to necessarily think too much about reading the chart, what you're interpreting, etc. That's really a good thing when you're communicating information that is stressful, and when there are a lot of other things going on that are demanding cognitive resources. 
@@ -478,8 +483,12 @@ The disadvantage to the NYT heatmaps is that it uses the case doubling rate. Wha
 
 For the sake of comparison, I managed to replicate the NYT graphic (at least approximately). Iowa recently experienced a surge in cases, but it's totally invisible on the chart Florida, Texas, Arizona, and California have all had surges recently as well, but compared to the early days of the epidemic, they look very tame. This graph de-emphasizes the outbreaks later in the pandemic.
 
+The problems with using case doubling rate had been bugging me since mid-May, and while I was preparing for this presentation, I discovered that they'd changed the formula (on July 17 or thereabouts), presumably to address this issue. It turns out that they've tweaked the formula several times, and it's not always clear exactly what numerical formula they're using. 
+
+Interestingly, the current formula (as of early this week, at least) uses the percentage of the population, and no longer has this problem. 
+
 ---
-## Cases
+## Cases by Population
 
 ![](index_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
 
@@ -501,12 +510,16 @@ class:middle,center,inverse
     - What we know says we're bad at making predictions
     
 2. We don't know much about how log scales are perceived, but we're using them anyways
+    - Log scales are probably useful early on
+    - They mask information as the pandemic evolves
 
 3. It is often better to use carefully thought-out summaries of the data
     - Map values to color rather than position to cut down on the visual chaos
-    - Summaries that initially worked don't always work out later
 
-4. We have a lot of research to do on how emotion plays into graphical perception
+4. We need more research on how to effectively present data that is
+    - quasi-exponentially increasing
+    - has high emotional content
+    - is intended to provoke action
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
