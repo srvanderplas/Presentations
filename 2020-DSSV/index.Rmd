@@ -196,10 +196,10 @@ if (sum(idx) > 0) download.file(urls[idx], paths[idx], quiet = T, mode = "wb", c
 ```
 
 .left-column[
-<img src="image/NYT_Front_page.gif" class = "move-left" width="100%"/>
+<img src="image/nyt.gif" class = "move-left" width="100%"/>
 
-.bottom[NYT Front page graphic from [@joshbegley](https://twitter.com/joshbegley/status/1243520269307838465). <br/>
-Jan 21 - March 27.]
+.bottom[NYT Front page graphic inspired by [@joshbegley](https://twitter.com/joshbegley/status/1243520269307838465). <br/>
+Jan 21 - April 30]
 ]
 .right-column[
 <h3 class='emph cerulean'>General Timeline</h3>
