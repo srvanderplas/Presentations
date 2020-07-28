@@ -18,7 +18,129 @@ output: html_document
 <!-- With all of the creativity that these charts exhibited, though, it's undeniable that there were some charts which were far more effective than others. So today, I'm hoping to show you a sampling of some of the charts which demonstrate various characteristics of effective graphics, and to discuss what we still don't know about creating effective charts.  -->
 
 
+<!-- --- -->
+<!-- ## Virus time or Human time? -->
 
+
+<!-- ```{r out.extra = "class='pull-left'", fig.height = 5.5, fig.width = 4, dev = "png"} -->
+<!-- show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York") -->
+<!-- tmp2 <- cvstate %>% -->
+<!--   filter(state %in% show_states2) %>% -->
+<!--   mutate(state = factor(state))  -->
+<!-- tmpsum2 <- tmp2 %>% group_by(state) %>%  -->
+<!--   # filter(daily_avg_cases == max(daily_avg_cases)) %>% -->
+<!--   filter(days_100th_case == max(days_100th_case)) -->
+
+<!-- ggplot() +  -->
+<!--   geom_line(data = tmp2,  -->
+<!--             aes(x = days_100th_case, y = daily_avg_cases, color = state)) +  -->
+<!--   geom_text_repel(data = tmpsum2,  -->
+<!--             aes(x = days_100th_case, y = daily_avg_cases,  -->
+<!--                 label = state, color = state),  -->
+<!--             hjust = -.1) +  -->
+<!--   guides(color = F) +  -->
+<!--   scale_x_continuous("Days since 100th case", limits = c(0, NA),  -->
+<!--                      expand = expand_scale(mult = c(0, .4))) +  -->
+<!--   scale_y_log10("Daily cases (7 day rolling average)") +  -->
+<!--   theme_bw() +  -->
+<!--   theme(panel.background = element_rect(fill = "transparent", color = NA),  -->
+<!--         plot.background = element_rect(fill = "transparent", color = NA)) -->
+
+<!-- ``` -->
+<!-- ```{r out.extra = "class='pull-right'", fig.height = 5.5, fig.width = 4, dev = "png"} -->
+<!-- show_states2 <- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York") -->
+<!-- tmp2 <- cvstate %>% -->
+<!--   filter(state %in% show_states2) %>% -->
+<!--   mutate(state = factor(state)) -->
+
+<!-- tmpsum2 <- tmp2 %>% group_by(state) %>%  -->
+<!--   # filter(daily_avg_cases == max(daily_avg_cases)) %>% -->
+<!--   filter(date == max(date)) -->
+
+
+<!-- ggplot() + -->
+<!--   geom_vline(aes(xintercept = ymd(c("2020-05-25", "2020-04-12", "2020-07-04"))), -->
+<!--              color = "grey") +  -->
+<!--   geom_label(aes(x = ymd(c("2020-05-25", "2020-04-12", "2020-07-04")), y = 1,  -->
+<!--                  label = c("Memorial\nDay", "Easter", "July 4"))) +  -->
+<!--   geom_line(data = tmp2,  -->
+<!--             aes(x = date, y = daily_avg_cases, color = state)) +  -->
+<!--   geom_text_repel(data = tmpsum2,  -->
+<!--             aes(x = date, y = daily_avg_cases,  -->
+<!--                 label = state, color = state),  -->
+<!--             hjust = -.1) +  -->
+<!--   guides(color = F) +  -->
+<!--   scale_x_date(name = "", expand = expansion(mult = c(.05, .4)),  -->
+<!--                date_breaks = "month", date_labels = "%B", -->
+<!--                limits = c(ymd("2020-03-15", NA))) +  -->
+<!--   scale_y_log10("Daily cases (7 day rolling average)",position = "right") +  -->
+<!--   theme_bw() +  -->
+<!--   theme(panel.background = element_rect(fill = "transparent", color = NA),  -->
+<!--         plot.background = element_rect(fill = "transparent", color = NA)) -->
+
+<!-- ``` -->
+
+<!-- .bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.] -->
+
+<!-- ??? -->
+
+<!-- I'm not sure if you noticed, but I played a bit of a trick in the previous slides: I've been switching back and forth between an x-axis that tracks "days since 100 cases" in each state, and the actual calendar date.  -->
+
+<!-- I like to think of these two axes as showing virus time and human time. They both have advantages - graphs that show days since N cases allow you to compare outbreaks that started at different times, which can be useful in assessing e.g. which measures at the government level are useful to contain the virus, and how different containment methods have been applied. Personally, I find this to be much more useful at the country level than the state level, because outbreaks in e.g. China, Italy, and Spain followed the same initial course as the outbreak in NYC, and as later outbreaks in Texas, Florida, and Arizona.  -->
+
+<!-- But, it's also very important to be able to trace increases in cases across multiple states back to single calendar events - easter, Memorial Day, 4th of July. This is complicated by a 1 or 2-week lag in case increases, but it's fairly easy to see that cases in Nebraska increased not long after Easter, and again after July 4th. Not that there's causation there, but I can confirm that people were out and about more than usual in my part of the state, at least.  -->
+
+<!-- One problem I have is that the difference between these two graphs is *very* subtle, and I've gone out of my way to try to pick states where the epidemic has followed a different course. The other thing that I'm not fond of is that it's arguable that the 100 cases threshold is affected by population and population density - 100 people in Nebraska is a lot more signifcant than 100 people in New York or California. I've seen some people arguing that e.g. a forest fire will burn at the same rate regardless of the size of the forest initially, but these graphs are being used long after that initial part is relevant. So while the 100 cases threshold may have been useful early in the pandemic, it's perhaps less useful now.  -->
+
+<!---
+## Other Interesting Approaches
+
+```{r, fig.show='animate', ffmpeg.format='gif', fig.width = 8, fig.height = 5, dev = "jpeg", dpi = 300, interval = 1, cache = T}
+show_states <- c("California", "Texas", "New York", "Arizona", "Iowa", "Washington")
+
+cvstate <- cvstate %>%
+  left_join(tibble(state = state.name, abb = state.abb))
+
+plot_to_date <- function(dt) {
+  data <- cvstate %>%
+    filter(state %in% show_states,
+           date <= dt, 
+           cases >= 50) %>%
+    mutate(state = factor(state, levels = sort(show_states))) %>%
+    group_by(state) %>%
+    filter(n() >= 2)
+  p <- ggplot(data, aes(x = cases, y = daily_avg_cases, color = state)) + 
+    geom_line() + 
+    geom_label_repel(data = filter(data, date == max(date)), aes(label = abb), segment.alpha = .5) + 
+    scale_x_log10("Total Cases",
+                  limits = c(50, max(filter(cvstate, state %in% show_states)$cases)),
+                  expand = expansion(mult = c(.05, .4)), 
+                  breaks = 10^(1:8), labels = 10^(1:8)) + 
+    scale_y_log10("Daily Cases (7 day average)", 
+                  limits = c(1, max(cvstate$daily_avg_cases))) + 
+    scale_color_manual(values = color_palette, drop = F) + 
+    guides(color = F) + 
+    theme_bw() + 
+    ggtitle(format(dt, format = "%B %d, %Y"))
+  print(p)
+}
+dates <- seq.Date(ymd("2020-03-11"), today(), by = "2 days")
+
+purrr::walk(dates, plot_to_date)
+
+```
+
+.center[`r Citet(myBib, "logscalegraphs2014")` describes 
+[some of the issues with log/log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/).]
+
+???
+
+One of the other very interesting variations in plots I've seen takes time out of the equation entirely (for the static version) or animates the chart like the one I've included here. This chart shows the total progress of the epidemic over time; regions which suppress cases show steep declines in y, and resurgences look like bounces. It's an interesting paradigm, but I'm not convinced that it's that useful for a couple of reasons: First, it's probably the least useful when the epidemic isn't being controlled, because surges in cases take up less room on the chart in both dimensions - that is, the amount of space dedicated to an increase of 100 cases in the first portion of the epidemic is pretty large, but later in the epidemic, it isn't at all. 
+
+On the bright side, though, there's really no need to scale this chart by per captia population, as what matters here is the trajectory of the epidemic over time. 
+
+Another issue is that log-log charts don't show change very well - because both x and y are on log scale, many things that aren't linear will look linear. So while it's easy to make imprecise comparisons with this chart, it's much harder to see what exactly it means.
+-->
 
 ---
 ## Counting Cases over Time

@@ -113,8 +113,12 @@ It wasn't just that we were all paying attention to charts more during this peri
 ---
 ## Data
 .middle.center[
-Throughout this talk, I'll be using data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), which is based on reports from state and local health agencies.
+[![NYT COVID github repo](image/nyt-covid-github.png)](https://github.com/nytimes/covid-19-data)
 ]
+
+???
+
+Throughout this talk, I'll be using data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), which is based on reports from state and local health agencies.
 
 ---
 class: middle,center,inverse
@@ -241,13 +245,17 @@ This comes at a cost, though - our intuition for what is being shown is compromi
 
 Similarly, in mid June, a similar size gap between Washington and Texas counts occur (in the other direction), and while the ratio is the same, we have to do a fair bit of cognitive work to interpret it correctly. 
 
-There are two factors at play here - the not-so-intuitive log scale = multiplicative effect, and also the sine illusion, which makes it very difficult to assess the vertical distance between curves. 
+This is in spite of the fact that in many circumstances, our brains do work on log scales -- many perceptual things are log-scale based. 
 
-While log perception is natural in some instances, when we have to translate things on a log scale back into raw numbers, we tend to have trouble - think of explaining that a 7.0 earthquake is 10 times stronger than a 6.0 earthquake. It's in the transition back to real-world consequences that we have trouble.
+Another factor at play here is that we're also somewhat terrible at assessing the difference between two curves due to the sine illusion - basically, we like to look at the distance perpendicular to the curve, rather than the vertical distance. 
+
+I wish I had data, or guidelines, or any real information on the use of log scales and how we perceive them, but I've been looking for papers for two months, and haven't found any experiment which examines how people read and perceive graphics that use log scales, compared with linear scales. If you know of one, please message me by email, twitter, smoke signals... Either way, hopefully there will be such a paper within the next year. 
+
+What we do know is that log scales seem to increase the amount of mental work necessary to assess the real-world implications of a situation. 
 
 &lt;!-- In the reduced-clutter version, you can also get a sense for the amount of mental effort it takes to decode a graph with many, many lines on it and get meaningful information out of it. The default in most of the online versions I've seen is to show 10+ curves for different states or countries, which is a *lot* of information. On top of that, most of the online versions provide additional information via mouseover and allow filtering based on state(s) of interest, which helps in some ways but adds cognitive load.  --&gt;
 
----
+&lt;!---
 ## Log scales and Explanations
 
 &gt; This chart uses a logarithmic scale, which is meant to emphasize rate of change and allows for the display of a wide range of numbers. **Every axis line is 10 times greater than the previous one.** In the new daily cases chart, the x-axis uses total confirmed cases on a logarithmic scale rather than date to underscore the overall size of a state's outbreak relative to its daily growth. 
@@ -264,7 +272,7 @@ While log perception is natural in some instances, when we have to translate thi
 
 When the goal is to communicate with the general public, though, you have to be somewhat cautious about how you display information and what scaffolding you provide. I've pulled the two descriptions I could find from sites which are using log scales -- most sites didn't really have an explanation or scaffolding to show. 
 
-I wish I had data, or guidelines, or any real information on the use of log scales and how we perceive them, but I've been looking for papers for two months, and haven't found any experiment which examines how people read and perceive graphics that use log scales, compared with linear scales. If you know of one, please message me by email, twitter, smoke signals... Either way, hopefully there will be such a paper within the next year. 
+--&gt;
 
 ---
 ## Log scales are less useful over time
@@ -272,6 +280,7 @@ I wish I had data, or guidelines, or any real information on the use of log scal
 - About [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
   - Most people infect at most 1 other person
   - Super spreading events make up the difference
+  - Small increases in the number of cases may signal a huge problem
 
 - Log scales may obscure increases in cases above a baseline
 
@@ -279,103 +288,15 @@ I wish I had data, or guidelines, or any real information on the use of log scal
 
 ???
 
-One other problem with log scales has been increasingly important over time. What we generally care about is the recent change in cases/deaths over time. Unfortunately, log scales show a percent change that is based on the total number of cases. This is usually a good thing, but COVID is interesting. 
+One other problem with log scales has been increasingly important over time. What we generally care about is the recent change in cases/deaths over time. Unfortunately, log scales show a percent change that is based on the total number of cases. This is usually a good thing, but doesn't work well for disease tracking.
 
-Once cases die off in an area to a baseline level of spread that might represent sustained, continuing, constant levels of transmission within e.g. family or work (but not sustained community spread), we end up with what appears to be constant-ish new cases over time. 
+With covid, cases tend to spread exponentially, and then "smoulder" once the exponential super-spread events are contained. Once we reach that baseline level of spread, where cases aren't increasing, people start to relax a bit.
 
-If exponential spread then starts up again, it's hard to recognize that increase on a log scale. The picture on the right shows 3 baseline levels of sustained transmission, with the same amount of exponential spread. It's clear from the bottom that the magnitude of the change is similar, but it has so much less visual impact on the log scale.
+If exponential spread then starts up again, it's hard to recognize that increase on a log scale. Here you can see 3 different levels of baseline case spread, combined with the same exponential spread. 
 
-I think initially, log scales were an excellent idea, but now that the epidemic is firmly established in the US, we're better off sticking with linear scales or some sort of log - with- baseline type scale. Otherwise, we risk misleading the public and de-emphasizing the warning signs of increasing spread.
+It's clear from the bottom that the magnitude of the change is similar, but it has so much less visual impact on the log scale.
 
-&lt;!-- --- --&gt;
-&lt;!-- ## Virus time or Human time? --&gt;
-
-
-&lt;!-- ```{r out.extra = "class='pull-left'", fig.height = 5.5, fig.width = 4, dev = "png"} --&gt;
-&lt;!-- show_states2 &lt;- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York") --&gt;
-&lt;!-- tmp2 &lt;- cvstate %&gt;% --&gt;
-&lt;!--   filter(state %in% show_states2) %&gt;% --&gt;
-&lt;!--   mutate(state = factor(state))  --&gt;
-&lt;!-- tmpsum2 &lt;- tmp2 %&gt;% group_by(state) %&gt;%  --&gt;
-&lt;!--   # filter(daily_avg_cases == max(daily_avg_cases)) %&gt;% --&gt;
-&lt;!--   filter(days_100th_case == max(days_100th_case)) --&gt;
-
-&lt;!-- ggplot() +  --&gt;
-&lt;!--   geom_line(data = tmp2,  --&gt;
-&lt;!--             aes(x = days_100th_case, y = daily_avg_cases, color = state)) +  --&gt;
-&lt;!--   geom_text_repel(data = tmpsum2,  --&gt;
-&lt;!--             aes(x = days_100th_case, y = daily_avg_cases,  --&gt;
-&lt;!--                 label = state, color = state),  --&gt;
-&lt;!--             hjust = -.1) +  --&gt;
-&lt;!--   guides(color = F) +  --&gt;
-&lt;!--   scale_x_continuous("Days since 100th case", limits = c(0, NA),  --&gt;
-&lt;!--                      expand = expand_scale(mult = c(0, .4))) +  --&gt;
-&lt;!--   scale_y_log10("Daily cases (7 day rolling average)") +  --&gt;
-&lt;!--   theme_bw() +  --&gt;
-&lt;!--   theme(panel.background = element_rect(fill = "transparent", color = NA),  --&gt;
-&lt;!--         plot.background = element_rect(fill = "transparent", color = NA)) --&gt;
-
-&lt;!-- ``` --&gt;
-&lt;!-- ```{r out.extra = "class='pull-right'", fig.height = 5.5, fig.width = 4, dev = "png"} --&gt;
-&lt;!-- show_states2 &lt;- c("Washington", "Texas", "California", "Arizona", "Nebraska", "New York") --&gt;
-&lt;!-- tmp2 &lt;- cvstate %&gt;% --&gt;
-&lt;!--   filter(state %in% show_states2) %&gt;% --&gt;
-&lt;!--   mutate(state = factor(state)) --&gt;
-
-&lt;!-- tmpsum2 &lt;- tmp2 %&gt;% group_by(state) %&gt;%  --&gt;
-&lt;!--   # filter(daily_avg_cases == max(daily_avg_cases)) %&gt;% --&gt;
-&lt;!--   filter(date == max(date)) --&gt;
-
-
-&lt;!-- ggplot() + --&gt;
-&lt;!--   geom_vline(aes(xintercept = ymd(c("2020-05-25", "2020-04-12", "2020-07-04"))), --&gt;
-&lt;!--              color = "grey") +  --&gt;
-&lt;!--   geom_label(aes(x = ymd(c("2020-05-25", "2020-04-12", "2020-07-04")), y = 1,  --&gt;
-&lt;!--                  label = c("Memorial\nDay", "Easter", "July 4"))) +  --&gt;
-&lt;!--   geom_line(data = tmp2,  --&gt;
-&lt;!--             aes(x = date, y = daily_avg_cases, color = state)) +  --&gt;
-&lt;!--   geom_text_repel(data = tmpsum2,  --&gt;
-&lt;!--             aes(x = date, y = daily_avg_cases,  --&gt;
-&lt;!--                 label = state, color = state),  --&gt;
-&lt;!--             hjust = -.1) +  --&gt;
-&lt;!--   guides(color = F) +  --&gt;
-&lt;!--   scale_x_date(name = "", expand = expansion(mult = c(.05, .4)),  --&gt;
-&lt;!--                date_breaks = "month", date_labels = "%B", --&gt;
-&lt;!--                limits = c(ymd("2020-03-15", NA))) +  --&gt;
-&lt;!--   scale_y_log10("Daily cases (7 day rolling average)",position = "right") +  --&gt;
-&lt;!--   theme_bw() +  --&gt;
-&lt;!--   theme(panel.background = element_rect(fill = "transparent", color = NA),  --&gt;
-&lt;!--         plot.background = element_rect(fill = "transparent", color = NA)) --&gt;
-
-&lt;!-- ``` --&gt;
-
-&lt;!-- .bottom[Data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.] --&gt;
-
-&lt;!-- ??? --&gt;
-
-&lt;!-- I'm not sure if you noticed, but I played a bit of a trick in the previous slides: I've been switching back and forth between an x-axis that tracks "days since 100 cases" in each state, and the actual calendar date.  --&gt;
-
-&lt;!-- I like to think of these two axes as showing virus time and human time. They both have advantages - graphs that show days since N cases allow you to compare outbreaks that started at different times, which can be useful in assessing e.g. which measures at the government level are useful to contain the virus, and how different containment methods have been applied. Personally, I find this to be much more useful at the country level than the state level, because outbreaks in e.g. China, Italy, and Spain followed the same initial course as the outbreak in NYC, and as later outbreaks in Texas, Florida, and Arizona.  --&gt;
-
-&lt;!-- But, it's also very important to be able to trace increases in cases across multiple states back to single calendar events - easter, Memorial Day, 4th of July. This is complicated by a 1 or 2-week lag in case increases, but it's fairly easy to see that cases in Nebraska increased not long after Easter, and again after July 4th. Not that there's causation there, but I can confirm that people were out and about more than usual in my part of the state, at least.  --&gt;
-
-&lt;!-- One problem I have is that the difference between these two graphs is *very* subtle, and I've gone out of my way to try to pick states where the epidemic has followed a different course. The other thing that I'm not fond of is that it's arguable that the 100 cases threshold is affected by population and population density - 100 people in Nebraska is a lot more signifcant than 100 people in New York or California. I've seen some people arguing that e.g. a forest fire will burn at the same rate regardless of the size of the forest initially, but these graphs are being used long after that initial part is relevant. So while the 100 cases threshold may have been useful early in the pandemic, it's perhaps less useful now.  --&gt;
-
----
-## Other Interesting Approaches
-
-![](index_files/figure-html/unnamed-chunk-8.gif)
-
-.center[Bouldin (2014) describes 
-[some of the issues with log/log scales](https://ecologicallyoriented.wordpress.com/2014/03/20/interpreting-graphs-with-logarithmic-scales/).]
-
-???
-
-One of the other very interesting variations in plots I've seen takes time out of the equation entirely (for the static version) or animates the chart like the one I've included here. This chart shows the total progress of the epidemic over time; regions which suppress cases show steep declines in y, and resurgences look like bounces. It's an interesting paradigm, but I'm not convinced that it's that useful for a couple of reasons: First, it's probably the least useful when the epidemic isn't being controlled, because surges in cases take up less room on the chart in both dimensions - that is, the amount of space dedicated to an increase of 100 cases in the first portion of the epidemic is pretty large, but later in the epidemic, it isn't at all. 
-
-On the bright side, though, there's really no need to scale this chart by per captia population, as what matters here is the trajectory of the epidemic over time. 
-
-Another issue is that log-log charts don't show change very well - because both x and y are on log scale, many things that aren't linear will look linear. So while it's easy to make imprecise comparisons with this chart, it's much harder to see what exactly it means.
+I think initially, log scales were an excellent idea, but now that the epidemic is firmly established in the US, we're better off sticking with linear scales. Otherwise, we risk misleading the public and de-emphasizing the warning signs of increasing spread.
 
 ---
 class:middle,center,inverse
@@ -384,7 +305,7 @@ class:middle,center,inverse
 ---
 ## From Exponential to Frequency
 
-![](index_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
 
 .center[Recreated from a chart in a 
 [tweet by Romain Vuillemot](https://twitter.com/romsson/status/1244316295094505472),     
@@ -396,11 +317,11 @@ One of the more interesting graphics I've seen on twitter was one which encoded 
 
 I recreated the chart using a blue color scheme because the use of red and black in coloring is really problematic - it can cause panic, the connection to blood and death has an emotional impact, and while the emotional impact isn't bad, it's not necessary to communicate what we need to communicate here. 
 
----
+&lt;!---
 ## Horizon Charts
 
 
-![](index_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -409,11 +330,12 @@ The triangle-frequency chart is very similar to a horizon chart, but unlike a ho
 In the corresponding horizon chart, shown here, there is almost too much detail. In addition, because there is not a sharp drop back to baseline, there is less visual emphasis on the
 
 The lack of detail in the triangle version allows us to stop and think -- that is, it's better to have less detail, because we can actually think enough to make use of the information.
+--&gt;
 
 ---
 ## Population .small.cerulean.emph[(The March to Herd Immunity)]
 
-![](index_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -422,7 +344,7 @@ As with all of the graphics so far, though, we have this battle between comparin
 I'd say that when the graph is arranged this way, it's more like we're showing the progress toward some sort of herd immunity - by the time we get to 1000 spikes, we're "done". God forbid.
 
 ---
-## A More Emotional Take
+## A More Emotional Approach
 
 &lt;img alt="NYT 100,000 US Deaths Online Version" src="image/NYT-100000.gif" width = "100%"/&gt;
 
@@ -434,7 +356,9 @@ class:middle,center,inverse
 
 ???
 
-I love graphics, and data, but I'll confess that by about May, I was done. I just couldn't look at another one of these charts. I still wanted to know how bad things were in the areas of the country I care about - places where friends and family live, but I was so done with the case count graphics. Luckily for me, many outlets came up with very simple summary graphics, often using small multiple plots laid out geographically in a fairly clear repurposing of graphics which were used to show election data. Because the spread of coronavirus is pretty similar to the spread of a candidate's popularity, right?   
+As we've all discovered since March, pandemics tax you in unexpected ways. By May or so, I was personally just done with charts, graphs and visualizations. I wanted to know how bad it was -- I wasn't completely tuning out -- but I couldn't process the details.
+
+Many places came up with summary charts that used shading to convey "how bad" but didn't provide much in the way of numerical detail. So I thought I'd show you a couple of my favorites as we wrap up. 
 
 ---
 ## State-Level Progress
@@ -458,6 +382,8 @@ Perceptually, this map is a mess for colorblind individuals, because I can't dif
 
 On July 10 the calculations that contributed to the map changed -- they added a darker shade of red. There's something bigger communicated when you have to add a new color to the map to describe how bad things have gotten, and that broader theme is why this map is first in the low-detail category.
 
+There are many other maps and spatial visualizations, but one of my absolute favorite charts doesn't actually have any spatial context. 
+
 
 ---
 ## Case Doubling
@@ -477,7 +403,7 @@ The disadvantage to the NYT heatmaps is that it uses the case doubling rate. Wha
 ---
 ## Case Doubling
 
-![](index_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -490,7 +416,7 @@ Interestingly, the current formula (as of early this week, at least) uses the pe
 ---
 ## Cases by Population
 
-![](index_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -520,6 +446,43 @@ class:middle,center,inverse
     - quasi-exponentially increasing
     - has high emotional content
     - is intended to provoke action
+
+---
+## References
+
+
+```
+## Goodwin, P. and G. Wright (1994). "Heuristics, biases and improvement
+## strategies in judgmental time series forecasting". En. In: _Omega_
+## 22.6, pp. 553-568. ISSN: 03050483. DOI:
+## [10.1016/0305-0483(94)90047-7](https://doi.org/10.1016%2F0305-0483%2894%2990047-7).
+## URL:
+## [https://linkinghub.elsevier.com/retrieve/pii/0305048394900477](https://linkinghub.elsevier.com/retrieve/pii/0305048394900477)
+## (visited on Jul. 02, 2020).
+## 
+## Timmers, H. and W. A. Wagenaar (1977). "Inverse statistics and
+## misperception of exponential growth". En. In: _Perception &amp;
+## Psychophysics_ 21.6, pp. 558-562. ISSN: 1532-5962. DOI:
+## [10.3758/BF03198737](https://doi.org/10.3758%2FBF03198737). URL:
+## [https://doi.org/10.3758/BF03198737](https://doi.org/10.3758/BF03198737)
+## (visited on Jul. 02, 2020).
+## 
+## VanderPlas, S. and H. Hofmann (2015). "Signs of the Sine Illusion???Why
+## We Need to Care". In: _Journal of Computational and Graphical
+## Statistics_ 24.4. 00004, pp. 1170-1190. ISSN: 1061-8600. DOI:
+## [10.1080/10618600.2014.951547](https://doi.org/10.1080%2F10618600.2014.951547).
+## URL:
+## [https://doi.org/10.1080/10618600.2014.951547](https://doi.org/10.1080/10618600.2014.951547)
+## (visited on Dec. 12, 2018).
+## 
+## Varshney, L. R. and J. Z. Sun (2013). "Why do we perceive
+## logarithmically?" En. In: _Significance_ 10.1, pp. 28-31. ISSN:
+## 17409705. DOI:
+## [10.1111/j.1740-9713.2013.00636.x](https://doi.org/10.1111%2Fj.1740-9713.2013.00636.x).
+## URL:
+## [http://doi.wiley.com/10.1111/j.1740-9713.2013.00636.x](http://doi.wiley.com/10.1111/j.1740-9713.2013.00636.x)
+## (visited on Aug. 14, 2018).
+```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
