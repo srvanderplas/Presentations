@@ -1,7 +1,6 @@
 ---
 title: "Perception and Visual Communication in a Global Pandemic"
-author: "Susan Vanderplas"
-coauthor: "Emily Robinson, Heike Hofmann"
+author: "Susan Vanderplas, Emily Robinson<br/>Heike Hofmann, Reka Howard"
 date: "July 29, 2020"
 output:
   xaringan::moon_reader:
@@ -984,7 +983,7 @@ cvstate %>%
 ???
 
 For the sake of comparison, I managed to replicate the NYT graphic (at least approximately). Iowa recently experienced a surge in cases, but it's totally invisible on the chart Florida, Texas, Arizona, and California have all had surges recently as well, but compared to the early days of the epidemic, they look very tame. This graph de-emphasizes the outbreaks later in the pandemic.
-
+  
 The problems with using case doubling rate had been bugging me since mid-May, and while I was preparing for this presentation, I discovered that they'd changed the formula (on July 17 or thereabouts), presumably to address this issue. It turns out that they've tweaked the formula several times, and it's not always clear exactly what numerical formula they're using. 
 
 Interestingly, the current formula (as of early this week, at least) uses the percentage of the population, and no longer has this problem. 
