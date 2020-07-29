@@ -15,8 +15,8 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
-<!-- https://docs.google.com/spreadsheets/d/1eRgR4ZambJPLhyAMaclb6a1kVEl43OwokaFSiiofnm8/edit?usp=sharing -->
-```{r, load_refs, include=FALSE, cache=FALSE}
+
+```{r load_refs, include=FALSE, cache=FALSE}
 library(RefManageR)
 BibOptions(check.entries = FALSE,
            bib.style = "authoryear",
@@ -197,9 +197,8 @@ if (sum(idx) > 0) download.file(urls[idx], paths[idx], quiet = T, mode = "wb", c
 
 .left-column[
 <img src="image/nyt.gif" class = "move-left" width="100%"/>
-
-.bottom[NYT Front page graphic inspired by [@joshbegley](https://twitter.com/joshbegley/status/1243520269307838465). <br/>
-Jan 21 - April 30]
+<br/>
+Jan 21 - April 30
 ]
 .right-column[
 <h3 class='emph cerulean'>General Timeline</h3>
@@ -216,6 +215,8 @@ Jan 21 - April 30]
 - Mid-March - Most US universities move online
 - April 2 - WHO suggests evidence of asymptomatic/presymptomatic transmission
 ]
+
+.bottom.small[NYT Front page graphic inspired by [@joshbegley](https://twitter.com/joshbegley/status/1243520269307838465).]
 
 ???
 
@@ -892,10 +893,6 @@ As with all of the graphics so far, though, we have this battle between comparin
 
 I'd say that when the graph is arranged this way, it's more like we're showing the progress toward some sort of herd immunity - by the time we get to 1000 spikes, we're "done". God forbid.
 
----
-## A More Emotional Approach
-
-<img alt="NYT 100,000 US Deaths Online Version" src="image/NYT-100000.gif" width = "100%"/>
 
 ---
 class:middle,center,inverse
@@ -1053,7 +1050,9 @@ class:middle,center,inverse
 ---
 ## References
 
-```{r}
-RefManageR::PrintBibliography(myBib)
+Packages used: ggplot2, curl, lubridate, tweetrmd, gridExtra, ggrepel, facetscales, zoo, xaringan, rmarkdown
 
+```{r, results='asis'}
+RefManageR::PrintBibliography(myBib, .opts = list(style = "html", no.print.fields = c("issn", "language", "urldate",  "url", "extra", "location", "note")))
 ```
+
