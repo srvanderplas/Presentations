@@ -1,7 +1,7 @@
 ---
 title: "Perception and Visual Communication in a Global Pandemic"
 author: "Susan Vanderplas, Emily Robinson<br/>Heike Hofmann, Reka Howard"
-date: "July 29, 2020"
+date: "July 31, 2020"
 output:
   xaringan::moon_reader:
     css: ["default", "libs/unl.css", "libs/modal.css"]
