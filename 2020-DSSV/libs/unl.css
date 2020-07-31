@@ -123,6 +123,10 @@ div.remark-slide {
   float: right;
   width: 50%;
 }
+.pull-right-more{
+  float: right;
+  width: 60%;
+}
 
 .large{font-size:125%;}
 .largish{font-size:110%;}

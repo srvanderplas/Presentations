@@ -194,10 +194,9 @@ idx <- !file.exists(paths)
 if (sum(idx) > 0) download.file(urls[idx], paths[idx], quiet = T, mode = "wb", cacheOK = T)
 ```
 
-.pull-left[
 <img src="image/nyt.gif" class = "topleftfig" width="95%"/>
-]
-.pull-right[
+
+.pull-right-more[
 <h3 class='emph cerulean'>General Timeline</h3>
 
 - Dec 31, 2019 - China report to WHO
