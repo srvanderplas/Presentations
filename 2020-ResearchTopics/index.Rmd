@@ -1,5 +1,5 @@
 ---
-title: "Research Topics"
+title: "Current Research Topics"
 date: "`r format(Sys.time(), '%B %d')`"
 output:
   xaringan::moon_reader:
@@ -17,6 +17,15 @@ output:
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 ```
+
+class:middle,center
+# Current Research Projects
+
+<h3 class="emph"> Susan Vanderplas</h3>
+
+#### 2020-2021
+
+---
 
 ## Perception of Log Scales
 
@@ -44,7 +53,7 @@ options(htmltools.dir.version = FALSE)
 ].pull-right[
 ![](km2_cmc.PNG)
 
-![](20190328_152239.jpg)
+<img src="20190328_152239.jpg" width="80%"/>
 ]
 
 ---
