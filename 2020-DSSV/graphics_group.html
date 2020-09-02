@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Perception and Visual Communication in a Global Pandemic</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Susan Vanderplas, Emily Robinson Heike Hofmann, Reka Howard" />
+    <meta name="date" content="2020-07-31" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="libs/twitter-widget/twitter-widgets-loader.js"></script>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&family=Roboto:ital,wght@0,500;1,500&display=swap');
+    </style>
+    <link rel="stylesheet" href="libs/unl.css" type="text/css" />
+    <link rel="stylesheet" href="libs/modal.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Perception and Visual Communication in a Global Pandemic
+### Susan Vanderplas, Emily Robinson<br/>Heike Hofmann, Reka Howard
+### July 31, 2020
+
+---
+
+
+
+
+&lt;style type="text/css"&gt;
+.wrap
+{
+  width: 1050px;
+  height: 550px;
+  padding: 0;
+  overflow: hidden;
+  position: absolute;
+}
+.wrap2
+{
+  width: 1200px;
+  height: 650px;
+  padding: 0;
+  overflow: hidden;
+}
+
+
+.scale-frame
+{
+  width: 1100px;
+  height: 760px;
+  border: 0;
+  
+  -ms-transform: scale(0.75);
+  -moz-transform: scale(0.75);
+  -o-transform: scale(0.75);
+  -webkit-transform: scale(0.75);
+  transform: scale(0.75);
+  
+  -ms-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+&lt;/style&gt;
+
+
+
+
+
+
+
+
+
+
+&lt;img src="image/nyt.gif" class = "topleftfig" width="95%"/&gt;
+
+.pull-right-more[
+&lt;h3 class='emph cerulean'&gt;General Timeline&lt;/h3&gt;
+
+- Dec 31, 2019 - China report to WHO
+- Jan 14 - WHO suggests human-to-human transmission
+- Jan 21 - US announces first case
+- Jan 23 - Hubei province is locked down
+- Feb 4 - Diamond Princess quarantined
+- Feb 26 - California community transmission
+- March 7 - 100k global cases
+- March 11 - WHO declares pandemic
+- April 2 - WHO suggests asymptomatic/presymptomatic transmission
+
+&lt;br/&gt;
+.small[NYT Front page graphic inspired by [@joshbegley](https://twitter.com/joshbegley/status/1243520269307838465).]
+
+Jan 21 - April 30
+]
+
+???
+
+Because (for me, at least) the beginning of the pandemic seems like it was a decade ago, I thought I'd refresh your memory of the approximate timeline of major events. In attempting to nail these events down, I came across an animation of the New York Times front page articles which are covid-related. You can see that from the end of January to the end of March, the story slowly takes over almost the entire front page.
+
+---
+## Interest in news-related graphs
+
+![](image/google_trends_News_graph.png)
+
+???
+
+During that time, almost everyone I knew was constantly checking out this map or this chart of cases in the states or in countries across the world. Data bears this out - searches for news-related graphs spike at the end of February and slowly decrease back to near-normal levels in June. 
+
+It wasn't just that we were all paying attention to charts more during this period - there was also an impressive array of different ways of showing the available data. Today, I'm going to look at a couple of broad classes of charts with different goals and (ideally) different audiences, and discuss the advantages and disadvantages of each. 
+
+---
+## Data
+.middle.center[
+[![NYT COVID github repo](image/nyt-covid-github.png)](https://github.com/nytimes/covid-19-data)
+]
+
+???
+
+Throughout this talk, I'll be using data from [The New York Times github repository](https://github.com/nytimes/covid-19-data), which is based on reports from state and local health agencies.
+
+---
+class: middle,center,inverse
+# High Detail
+
+### Show me all of the data
+
+???
+
+The first class of charts I'm going to discuss is what I've started thinking of as "paleo" data - the chart generally shows the data in more-or-less whole, unprocessed form, in the same way that a health department might track the data. Like paleo recipes, these charts show the data in a form that has only enough processing to make it edible. 
+
+For most of these charts, I'm going to focus on the form of the chart, rather than the specific implementations in the media, both because I think the interesting part is what is plotted, rather than the specific aesthetics, and because I think it will make it easier to compare different charts. Throughout this presentation, I'll be using the data from the NY Times. 
+
+In the interests of showing only enough information to make the point, I'll be showing this data based on US states, and in most cases, I'll be picking a handful of states from different regions to showcase the important pieces of each chart.
+
+
+---
+## Changes over Time (March 15)
+
+![](graphics_group_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+???
+
+The simplest plots show the date compared to the number of deaths or cases. Ideally, since there is some effect of weekday on case count and death count reporting, these plots are smoothed by averaging or summation over a multiple of 7 days.
+
+When the y axis scale is linear, we can more easily read counts off (and understand what's going on)
+
+
+
+
+---
+## Changes over Time (April 15)
+
+![](graphics_group_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+???
+
+But there is the compression factor once the epidemic gets going: the only state we can clearly read from the chart is New York, and while it is dramatic, that doesn't help us compare very well. 
+
+---
+## Changes over Time (Now)
+
+![](graphics_group_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+.center[Play with many variations of this type of chart at    
+http://91-divoc.com/pages/covid-visualization/]
+
+???
+
+By the time you get to today, we end up with a clear separation between low population and higher population states, but it's very difficult to compare the magnitude of "how bad" it is in NY in April vs. Texas in July using this chart -- the two states have different populations, and the population dynamics are different as well. 
+
+There have been a number of interesting arguments online about the virtues of scaling these graphs by population; early on in the epidemic, that may not have been useful (because the limit is in personal contact, not population); at this stage in the epidemic, it might be more reasonable. 
+
+But there are a couple of other factors at play here that are 1) persistent across many types of covid charts, and 2) much more important in affecting our ability to read the charts. With interactive graphics we can 'zoom in' to  mitigate the scale issues. But, fundamentally, we have bigger problems. 
+
+---
+## Exponential Growth
+
+![](graphics_group_files/figure-html/exp-growth-1.png)&lt;!-- --&gt;
+
+- People are consistently awful at forecasting exponential growth
+
+- Forecasts always underestimate the next point (**anchor** + **adjust**)    
+.small[(Goodwin and Wright, 1994; Timmers and Wagenaar, 1977)]
+
+
+???
+
+The fundamental problem we have is that people are horrible at forecasting exponential growth.
+
+Let's look at the first instance of exponential (or nearly exponential) growth in the US: New York. 
+The reason we're awful at exponential growth is because even though we know that the curve is likely to be exponential, our brains are lazy and decide to take shortcuts. 
+
+Instead of trying to wrap our heads around what exponential growth looks like, we pick the two most recent data points and just extend that line segment outwards. So we predict linearly, even when we know the growth is exponential-ish.
+
+---
+## Exponential Growth
+
+![](graphics_group_files/figure-html/exp-growth2-1.png)&lt;!-- --&gt;
+
+### .emph.center[What is the purpose of this chart?]
+
+--
+
+.center[To help people predict what is likely to happen?]
+
+--
+
+.center[(It doesn't do that very well)]
+
+???
+
+Note that even if the growth is polynomial, we would still end up underestimating the number of cases. 
+So if our goal is to help people make good decisions (like, hey, cases are increasing exponentially, I should stay home), then a graph like this may not be the best way to go about it, because we know for a fact that people don't make effective forecasts from these types of plots.
+
+The natural way to correct for graphs showing exponential growth is to use a log y-axis scale, which solves some problems and creates a whole host of new problems. 
+
+
+
+---
+## Log Scales
+
+
+![](graphics_group_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+???
+
+It's much easier to compare the trajectory of the different states outbreaks when we look at the log-scale information, and, as a bonus, because we devote more vertical space to lower values, we can easily separate the lines from smaller states, compared to the lines from bigger states. 
+
+We're again reading the slope off of the chart as the "useful information" here -- the slope indicates the change in the number of people dying (or being diagnosed with covid) over time. But, hopefully, this time, our instincts are slightly more accurate -- using the anchor and adjust phenomenon, we might actually be a bit more likely to get close to the next value.
+
+
+---
+## Comparisons 
+![](graphics_group_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+
+
+.center[Sine Illusion: (VanderPlas and Hofmann, 2015)    
+Log perception: (Varshney and Sun, 2013)]
+
+???
+
+This comes at a cost, though - our intuition for what is being shown is compromised. The number of deaths in Texas and Washington in mid-March look very similar, but in fact, there is a factor of 10 difference between them. 
+
+Similarly, in mid June, a similar size gap between Washington and Texas counts occur (in the other direction), and while the ratio is the same, we have to do a fair bit of cognitive work to interpret it correctly. 
+
+This is in spite of the fact that in many circumstances, our brains do work on log scales -- many perceptual things are log-scale based. 
+
+Another factor at play here is that we're also somewhat terrible at assessing the difference between two curves due to the sine illusion - basically, we like to look at the distance perpendicular to the curve, rather than the vertical distance. 
+
+I wish I had data, or guidelines, or any real information on the use of log scales and how we perceive them, but I've been looking for papers for two months, and haven't found any experiment which examines how people read and perceive graphics that use log scales, compared with linear scales. If you know of one, please message me by email, twitter, smoke signals... Either way, hopefully there will be such a paper within the next year. 
+
+What we do know is that log scales seem to increase the amount of mental work necessary to assess the real-world implications of a situation. 
+
+&lt;!-- In the reduced-clutter version, you can also get a sense for the amount of mental effort it takes to decode a graph with many, many lines on it and get meaningful information out of it. The default in most of the online versions I've seen is to show 10+ curves for different states or countries, which is a *lot* of information. On top of that, most of the online versions provide additional information via mouseover and allow filtering based on state(s) of interest, which helps in some ways but adds cognitive load.  --&gt;
+
+&lt;!---
+## Log scales and Explanations
+
+&gt; This chart uses a logarithmic scale, which is meant to emphasize rate of change and allows for the display of a wide range of numbers. **Every axis line is 10 times greater than the previous one.** In the new daily cases chart, the x-axis uses total confirmed cases on a logarithmic scale rather than date to underscore the overall size of a state's outbreak relative to its daily growth. 
+
+- [NPR Explanation](https://www.npr.org/sections/health-shots/2020/03/16/816707182/map-tracking-the-spread-of-the-coronavirus-in-the-u-s)
+
+
+&gt; The vertical axis of our charts are shown using a logarithmic scale, where **the same distance on the scale represents multiplying or dividing by the same amount, instead of adding or subtracting the same amount as is the case with a linear scale.** Log scales are particularly suited to displaying trends in relative rates of change, like a virus spreading. 
+
+- [Financial Times](https://ig.ft.com/coronavirus-chart/?areas=usa&amp;areas=gbr&amp;areasRegional=usny&amp;areasRegional=usca&amp;areasRegional=usfl&amp;areasRegional=ustx&amp;cumulative=0&amp;logScale=1&amp;perMillion=0&amp;values=deaths)
+
+
+???
+
+When the goal is to communicate with the general public, though, you have to be somewhat cautious about how you display information and what scaffolding you provide. I've pulled the two descriptions I could find from sites which are using log scales -- most sites didn't really have an explanation or scaffolding to show. 
+
+--&gt;
+
+---
+## Log scales are less useful over time
+
+- About [10% of COVID-19 cases lead to 80% of the spread](https://www.sciencemag.org/news/2020/05/why-do-some-covid-19-patients-infect-many-others-whereas-most-don-t-spread-virus-all)
+  - .small[Super spreading events make up the difference]
+  - .small[Small increases in the number of cases may signal a huge problem]
+- Log scales may obscure increases in cases above a baseline
+
+![](graphics_group_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+???
+
+One other problem with log scales has been increasingly important over time. What we generally care about is the recent change in cases/deaths over time. Unfortunately, log scales show a percent change that is based on the total number of cases. This is usually a good thing, but doesn't work well for disease tracking.
+
+With covid, cases tend to spread exponentially, and then "smoulder" once the exponential super-spread events are contained. Once we reach that baseline level of spread, where cases aren't increasing, people start to relax a bit.
+
+If exponential spread then starts up again, it's hard to recognize that increase on a log scale. Here you can see 3 different levels of baseline case spread, combined with the same exponential spread. 
+
+It's clear from the bottom that the magnitude of the change is similar, but it has so much less visual impact on the log scale.
+
+I think initially, log scales were an excellent idea, but now that the epidemic is firmly established in the US, we're better off sticking with linear scales. Otherwise, we risk misleading the public and de-emphasizing the warning signs of increasing spread.
+
+---
+class:middle,center,inverse
+# Creative Circumvention of Scale Issues
+
+---
+## From Exponential to Frequency
+
+![](graphics_group_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+.small.center[Recreated from a chart in a 
+[tweet by Romain Vuillemot](https://twitter.com/romsson/status/1244316295094505472),     
+who originally showed deaths by country. ]
+
+???
+
+One of the more interesting graphics I've seen on twitter was one which encoded covid deaths as time intervals to N cases. So if it takes 50 days to get to the first 10000 cases, and then 20,and then 5, and so on, the acceleration of pandemic progress is clear. I really, really like this idea, if only because it is one of the best ways I've seen to get around the exponential vs. log scale issue. The "pace" of the pandemic is perfectly clear while the number of spikes makes it obvious how many cumulative cases or deaths there have been. Shading in the triangles using deeper shades of a univariate color allows you to assess "total" subjectively by "amount of color".
+
+I recreated the chart using a blue color scheme because the use of red and black in coloring is really problematic - it can cause panic, the connection to blood and death has an emotional impact, and while the emotional impact isn't bad, it's not necessary to communicate what we need to communicate here. 
+
+&lt;!---
+## Horizon Charts
+
+
+![](graphics_group_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+???
+
+The triangle-frequency chart is very similar to a horizon chart, but unlike a horizon chart, it doesn't attempt to show layers or fine grain detail; instead, it shows only the start and stop points. That helps to take our focus off of the y scale and put it back onto the actual meaning of the data.
+
+In the corresponding horizon chart, shown here, there is almost too much detail. In addition, because there is not a sharp drop back to baseline, there is less visual emphasis on the
+
+The lack of detail in the triangle version allows us to stop and think -- that is, it's better to have less detail, because we can actually think enough to make use of the information.
+--&gt;
+
+---
+## Population .small.cerulean.emph[(The March to Herd Immunity)]
+
+![](graphics_group_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+???
+
+As with all of the graphics so far, though, we have this battle between comparing raw numbers/counts in a geographic region and comparing the population prevalence. So if we redo this graph as a % population, it's much more effective at showing the progress of the pandemic moving through the population, and it's much easier to compare e.g. the success of control measures in NY and CA with Arizona and Iowa.
+
+I'd say that when the graph is arranged this way, it's more like we're showing the progress toward some sort of herd immunity - by the time we get to 1000 spikes, we're "done". God forbid.
+
+
+---
+class:middle,center,inverse
+# Low Detail
+
+### Just tell us what to do
+
+???
+
+As we've all discovered since March, pandemics tax you in unexpected ways. By May or so, I was personally just done with charts, graphs and visualizations. I wanted to know how bad it was -- I wasn't completely tuning out -- but I couldn't process the details.
+
+Many places came up with summary charts that used shading to convey "how bad" but didn't provide much in the way of numerical detail. So I thought I'd show you a couple of my favorites as we wrap up. 
+
+---
+## State-Level Progress
+
+<blockquote class="twitter-tweet" data-width="550" data-lang="en" data-dnt="true" data-theme="light"><p lang="en" dir="ltr">We invented a new color. Great. <a href="https://t.co/oELH0oOrz4">https://t.co/oELH0oOrz4</a></p>&mdash; Andy Slavitt @ 🏡 (@ASlavitt) <a href="https://twitter.com/ASlavitt/status/1282024016254042112?ref_src=twsrc%5Etfw">July 11, 2020</a></blockquote>
+
+
+
+???
+
+A couple of weeks ago, I was browsing Twitter and came across this Tweet. If you don't follow Andy Slavitt, you should - he's hilarious, and he knows his stuff. But of course, I had to see what the new color was for... so I followed the links, and found... 
+
+
+---
+&lt;div class="wrap"&gt;
+&lt;iframe class="scale-frame" src = "https://www.covidexitstrategy.org/#hero-chart" width = "100%" height = "500px"/&gt;&lt;/div&gt;
+
+???
+
+Perceptually, this map is a mess for colorblind individuals, because I can't differentiate the green from the light and dark red shades. Statistically, it's not 100% clear what metrics are being used to decide which states are in which category - the site mentions broad themes but doesn't provide any sort of formula that we might use to recreate the graph. So while it loses points for accessibility and transparency, it is a nice map that was very effective at communicating one thing.
+
+On July 10 the calculations that contributed to the map changed -- they added a darker shade of red. There's something bigger communicated when you have to add a new color to the map to describe how bad things have gotten, and that broader theme is why this map is first in the low-detail category.
+
+There are many other maps and spatial visualizations, but one of my absolute favorite charts doesn't actually have any spatial context. 
+
+
+---
+## Case Doubling
+
+.center[
+.width60[
+![](image/NYT-heatmap-crop.png)
+]
+]
+.small.bottom[Source: https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html]
+???
+
+The advantage to the shaded graphs that I've shown thus far is that they're very low-effort to read. You don't have to necessarily think too much about reading the chart, what you're interpreting, etc. That's really a good thing when you're communicating information that is stressful, and when there are a lot of other things going on that are demanding cognitive resources. 
+
+The disadvantage to the NYT heatmaps is that it uses the case doubling rate. What that means is that early in the pandemic, things will look really bad, but similar case growth rates (on a linear scale) won't actually look as bad (because this is a log scale). Thus, subsequent outbreaks end up looking like not as much of an emergency, while going from one to two cases does look like an emergency. 
+
+---
+## Case Doubling
+
+![](graphics_group_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+???
+
+For the sake of comparison, I managed to replicate the NYT graphic (at least approximately). Iowa recently experienced a surge in cases, but it's totally invisible on the chart Florida, Texas, Arizona, and California have all had surges recently as well, but compared to the early days of the epidemic, they look very tame. This graph de-emphasizes the outbreaks later in the pandemic.
+  
+The problems with using case doubling rate had been bugging me since mid-May, and while I was preparing for this presentation, I discovered that they'd changed the formula (on July 17 or thereabouts), presumably to address this issue. It turns out that they've tweaked the formula several times, and it's not always clear exactly what numerical formula they're using. 
+
+Interestingly, the current formula (as of early this week, at least) uses the percentage of the population, and no longer has this problem. 
+
+---
+## Cases by Population
+
+![](graphics_group_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+
+???
+
+
+Thinking through how to do this in a way that doesn't de-emphasize later data, I decided that a continuous linear scale made sense here and scaled everything by % of the population. Since I'm using graphs like this to see "how bad is it", and many of the consequences of "bad" also scale with population (like hospital capacity), that seemed like a reasonable compromise. 
+
+I've also used a different color scheme because the red scheme sets off alarm bells; while alarm is called for in e.g. Florida, that should be a conscious data-driven decision and not a gut reaction. Transitioning from yellow to blue through green (slightly) also makes use of much of the area of the color spectrum we're good at discriminating, while working for colorblind individuals as well.
+
+---
+class:middle,center,inverse
+# Conclusions
+
+---
+## Conclusions
+
+1. Exponential growth data is very difficult to work with
+    - What we know says we're bad at making predictions
+    
+2. We don't know much about how log scales are perceived, but we're using them anyways
+    - Log scales are probably useful early on
+    - They mask information as the pandemic evolves
+
+3. It is often better to use carefully thought-out summaries of the data
+    - Map values to color rather than position to cut down on the visual chaos
+
+4. We need more research on how to effectively present data that is
+    - quasi-exponentially increasing
+    - has high emotional content
+    - is intended to provoke action
+
+---
+## References
+
+Packages used: ggplot2, curl, lubridate, tweetrmd, gridExtra, ggrepel, facetscales, zoo, xaringan, rmarkdown
+
+&lt;p&gt;&lt;cite&gt;Goodwin, P. and G. Wright
+(1994).
+&amp;ldquo;Heuristics, biases and improvement strategies in judgmental time series forecasting&amp;rdquo;.
+In: &lt;em&gt;Omega&lt;/em&gt; 22.6, pp. 553&amp;ndash;568.
+DOI: &lt;a href="https://doi.org/10.1016/0305-0483(94)90047-7"&gt;10.1016/0305-0483(94)90047-7&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;Timmers, H. and W. A. Wagenaar
+(1977).
+&amp;ldquo;Inverse statistics and misperception of exponential growth&amp;rdquo;.
+In: &lt;em&gt;Perception &amp;amp; Psychophysics&lt;/em&gt; 21.6, pp. 558&amp;ndash;562.
+DOI: &lt;a href="https://doi.org/10.3758/BF03198737"&gt;10.3758/BF03198737&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;VanderPlas, S. and H. Hofmann
+(2015).
+&amp;ldquo;Signs of the Sine Illusion???Why We Need to Care&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; 24.4, pp. 1170&amp;ndash;1190.
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2014.951547"&gt;10.1080/10618600.2014.951547&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;Varshney, L. R. and J. Z. Sun
+(2013).
+&amp;ldquo;Why do we perceive logarithmically?&amp;rdquo;
+In: &lt;em&gt;Significance&lt;/em&gt; 10.1, pp. 28&amp;ndash;31.
+DOI: &lt;a href="https://doi.org/10.1111/j.1740-9713.2013.00636.x"&gt;10.1111/j.1740-9713.2013.00636.x&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
