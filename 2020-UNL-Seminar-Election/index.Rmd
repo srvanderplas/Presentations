@@ -1,0 +1,232 @@
+---
+title: "Election Graphics"
+author: "Susan Vanderplas<br>.small[(joint work with Kiegan Rice, Heike Hofmann)]"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "unl.css", "modal.css"]
+    lib_dir: libs
+    includes:
+      in_header: header.html
+      after_body:
+        "js-addins.html"
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, dpi = 300, message = F, warning = F, cache = T)
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+```
+
+
+```{r, include = F, eval = T, cache = F}
+clean_file_name <- function(x) {
+  basename(x) %>% str_remove("\\..*?$") %>% str_remove_all("[^[A-z0-9_]]")
+}
+
+img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
+  
+  other_arg <- paste0("'", as.character(other), "'") %>%
+    paste(names(other), ., sep = "=") %>%
+    paste(collapse = " ")
+  
+  js <- glue::glue("<script>
+        /* Get the modal*/
+          var modal{id} = document.getElementById('modal{id}');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img{id} = document.getElementById('img{id}');
+          var modalImg{id} = document.getElementById('imgmodal{id}');
+          var captionText{id} = document.getElementById('caption{id}');
+          img{id}.onclick = function(){{
+            modal{id}.style.display = 'block';
+            modalImg{id}.src = this.src;
+            captionText{id}.innerHTML = this.alt;
+          }}
+          /* When the user clicks on the modalImg, close it*/
+          modalImg{id}.onclick = function() {{
+            modal{id}.style.display = 'none';
+          }}
+</script>")
+  
+  html <- glue::glue(
+     " <!-- Trigger the Modal -->
+<img id='img{id}' src='{src}' alt='{alt}' {other_arg}>
+
+<!-- The Modal -->
+<div id='modal{id}' class='modal'>
+
+  <!-- Modal Content (The Image) -->
+  <img class='modal-content' id='imgmodal{id}'>
+
+  <!-- Modal Caption (Image Text) -->
+  <div id='caption{id}' class='modal-caption'></div>
+</div>
+"
+  )
+  write(js, file = "js-addins.html", append = T)
+  return(html)
+}
+
+# Clean the file out at the start of the compilation
+write("", file = "js-addins.html")
+```
+
+```{css, echo = F}
+.wrap
+{
+  width: 1050px;
+  height: 550px;
+  padding: 0;
+  overflow: hidden;
+  position: absolute;
+}
+.wrap2
+{
+  width: 1200px;
+  height: 650px;
+  padding: 0;
+  overflow: hidden;
+}
+
+
+.scale-frame
+{
+  width: 1100px;
+  height: 760px;
+  border: 0;
+  
+  -ms-transform: scale(0.75);
+  -moz-transform: scale(0.75);
+  -o-transform: scale(0.75);
+  -webkit-transform: scale(0.75);
+  transform: scale(0.75);
+  
+  -ms-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+```
+
+
+## Outline
+
+- Why are election graphics complicated?
+
+- A Brief Tour of (In)famous Election Graphics
+
+- `ElectionViz` package
+
+
+## Factors affecting Election Graphics
+
+- Political Structure
+- Political parties    
+  .small[[How We Visualized an Election with No Political Parties](https://source.opennews.org/articles/how-we-visualized-election-no-political-parties/) - Visualizing Afghan Elections]
+  
+- Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
+
+- Parliamentary system (UK, Canada, Aus, NZ), Proportional Representation (e.g. Germany), Electoral College
+    
+- Data availability
+    - Laws restricting polling (e.g. exit polling, polls X days before the election)
+    - Polling not available in all areas
+    - Not all areas are electing all offices each election
+
+---
+## Other Problems
+
+- Population density vs. Visual area
+
+- Population density vs. Electoral weight
+
+
+---
+class:middle,center,inverse
+# .emph[A Tour of (In)famous US Election Charts]
+
+---
+## The Original
+
+```{r results='asis', echo = F, include = T, cache=F}
+i1 <- img_modal(src = "figure/1883-stat-atlas-county-map.jpg", alt = "1880 Election Results by County from the Statistical Atlas", other=list(width="90%", class ="center"))
+i2 <- img_modal(src = "figure/1883-key.png", alt = "Key", other=list(height="50px"))
+i3 <- img_modal(src = "figure/1883-by-state.png", alt = "1880 Election Results by State from the Statistical Atlas", other=list(height="50px"))
+i4 <- img_modal(src = "figure/1883-popular-vote-sub2.png", alt = "1880 Election Results (Popular Vote)", other=list(height="50px"))
+i5 <- img_modal(src = "figure/1883-electoral-vote-sub.png", alt = "1880 Election Results (Electoral Vote)", other=list(height="50px"))
+i6 <- img_modal(src = "figure/1883-vote-ratio-sub.png", alt = "1880 Election Results (Vote Ratio)", other=list(height="50px"))
+i7 <- img_modal(src = "figure/1883-presidential-vote.png", alt = "1880 Election Results (Presidential Vote)", other=list(height="50px"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:12],
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i3, "\\n", simplify = T)[1:2],
+  str_split(i4, "\\n", simplify = T)[1:2],
+  str_split(i5, "\\n", simplify = T)[1:2],
+  str_split(i6, "\\n", simplify = T)[1:2],
+  str_split(i7, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[3:12],
+  str_split(i3, "\\n", simplify = T)[3:12],
+  str_split(i4, "\\n", simplify = T)[3:12],
+  str_split(i5, "\\n", simplify = T)[3:12],
+  str_split(i6, "\\n", simplify = T)[3:12],
+  str_split(i7, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
+```
+![]()
+
+[Source](https://www.loc.gov/resource/g3701gm.gct00009/?sp=40)
+
+
+---
+## The Electoral Snake (538)
+
+.center[
+![From Sept 22, 2016](figure/2016-09-22-Electoral-snake-538.png)
+]
+
+---
+## The Electoral Snake (538)
+
+<div class="wrap">
+<iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/2020-election-forecast/#ec-margins" width = "100%" height = "500px"/></div>
+
+
+
+---
+## Paths to the White House
+
+[![2012 NYT Path to the White House](figure/2012-NYT-path-white-house.png)](https://www.nytimes.com/elections/2012/results/president/scenarios.html#app)
+
+
+---
+## Paths to the White House
+
+[![2020 NYT Battleground Bubble chart](figure/2020-NYT-path-white-house-bubble.png)](https://www.nytimes.com/interactive/2020/us/elections/election-states-biden-trump.html)
+
+---
+## Explore the Ways to Win
+
+
+<div class="wrap">
+<iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/trump-biden-election-map/#ui" width = "100%" height = "500px"/></div>
+
+
+
+---
+## The Needle (NYT)
+
+.center[
+![NYTimes Election Needle, image from https://fair.org/home/the-needle-and-the-damage-done/](figure/2016-NYT-Needle.png)
+]
+
+- "jitter" motion to show simulation uncertainty
+- motion sometimes falsely interpreted as new data coming in
+
+---
+## "Wave" Graphics
+

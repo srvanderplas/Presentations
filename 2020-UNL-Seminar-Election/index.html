@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Election Graphics</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Susan Vanderplas .small[(joint work with Kiegan Rice, Heike Hofmann)]" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&family=Roboto:ital,wght@0,500;1,500&display=swap');
+    </style>
+    <link rel="stylesheet" href="unl.css" type="text/css" />
+    <link rel="stylesheet" href="modal.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Election Graphics
+### Susan Vanderplas<br>.small[(joint work with Kiegan Rice, Heike Hofmann)]
+### 29 October, 2020
+
+---
+
+
+
+
+
+
+
+&lt;style type="text/css"&gt;
+.wrap
+{
+  width: 1050px;
+  height: 550px;
+  padding: 0;
+  overflow: hidden;
+  position: absolute;
+}
+.wrap2
+{
+  width: 1200px;
+  height: 650px;
+  padding: 0;
+  overflow: hidden;
+}
+
+
+.scale-frame
+{
+  width: 1100px;
+  height: 760px;
+  border: 0;
+  
+  -ms-transform: scale(0.75);
+  -moz-transform: scale(0.75);
+  -o-transform: scale(0.75);
+  -webkit-transform: scale(0.75);
+  transform: scale(0.75);
+  
+  -ms-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+&lt;/style&gt;
+
+
+## Outline
+
+- Why are election graphics complicated?
+
+- A Brief Tour of (In)famous Election Graphics
+
+- `ElectionViz` package
+
+
+## Factors affecting Election Graphics
+
+- Political Structure
+- Political parties    
+  .small[[How We Visualized an Election with No Political Parties](https://source.opennews.org/articles/how-we-visualized-election-no-political-parties/) - Visualizing Afghan Elections]
+  
+- Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
+
+- Parliamentary system (UK, Canada, Aus, NZ), Proportional Representation (e.g. Germany), Electoral College
+    
+- Data availability
+    - Laws restricting polling (e.g. exit polling, polls X days before the election)
+    - Polling not available in all areas
+    - Not all areas are electing all offices each election
+
+---
+## Other Problems
+
+- Population density vs. Visual area
+
+- Population density vs. Electoral weight
+
+
+---
+class:middle,center,inverse
+# .emph[A Tour of (In)famous US Election Charts]
+
+---
+## The Original
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img1883statatlascountymap' src='figure/1883-stat-atlas-county-map.jpg' alt='1880 Election Results by County from the Statistical Atlas' width='90%' class='center'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal1883statatlascountymap' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal1883statatlascountymap'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption1883statatlascountymap' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img1883key' src='figure/1883-key.png' alt='Key' height='50px'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img1883bystate' src='figure/1883-by-state.png' alt='1880 Election Results by State from the Statistical Atlas' height='50px'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img1883popularvotesub2' src='figure/1883-popular-vote-sub2.png' alt='1880 Election Results (Popular Vote)' height='50px'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img1883electoralvotesub' src='figure/1883-electoral-vote-sub.png' alt='1880 Election Results (Electoral Vote)' height='50px'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img1883voteratiosub' src='figure/1883-vote-ratio-sub.png' alt='1880 Election Results (Vote Ratio)' height='50px'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img1883presidentialvote' src='figure/1883-presidential-vote.png' alt='1880 Election Results (Presidential Vote)' height='50px'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal1883key' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal1883key'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption1883key' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal1883bystate' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal1883bystate'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption1883bystate' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal1883popularvotesub2' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal1883popularvotesub2'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption1883popularvotesub2' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal1883electoralvotesub' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal1883electoralvotesub'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption1883electoralvotesub' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal1883voteratiosub' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal1883voteratiosub'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption1883voteratiosub' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal1883presidentialvote' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal1883presidentialvote'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption1883presidentialvote' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+![]()
+
+[Source](https://www.loc.gov/resource/g3701gm.gct00009/?sp=40)
+
+
+---
+## The Electoral Snake (538)
+
+.center[
+![From Sept 22, 2016](figure/2016-09-22-Electoral-snake-538.png)
+]
+
+---
+## The Electoral Snake (538)
+
+&lt;div class="wrap"&gt;
+&lt;iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/2020-election-forecast/#ec-margins" width = "100%" height = "500px"/&gt;&lt;/div&gt;
+
+
+
+---
+## Paths to the White House
+
+[![2012 NYT Path to the White House](figure/2012-NYT-path-white-house.png)](https://www.nytimes.com/elections/2012/results/president/scenarios.html#app)
+
+
+---
+## Paths to the White House
+
+[![2020 NYT Battleground Bubble chart](figure/2020-NYT-path-white-house-bubble.png)](https://www.nytimes.com/interactive/2020/us/elections/election-states-biden-trump.html)
+
+---
+## Explore the Ways to Win
+
+
+&lt;div class="wrap"&gt;
+&lt;iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/trump-biden-election-map/#ui" width = "100%" height = "500px"/&gt;&lt;/div&gt;
+
+
+
+---
+## The Needle (NYT)
+
+.center[
+![NYTimes Election Needle, image from https://fair.org/home/the-needle-and-the-damage-done/](figure/2016-NYT-Needle.png)
+]
+
+- "jitter" motion to show simulation uncertainty
+- motion sometimes falsely interpreted as new data coming in
+
+---
+## "Wave" Graphics
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+        /* Get the modal*/
+          var modal1883statatlascountymap = document.getElementById('modal1883statatlascountymap');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img1883statatlascountymap = document.getElementById('img1883statatlascountymap');
+          var modalImg1883statatlascountymap = document.getElementById('imgmodal1883statatlascountymap');
+          var captionText1883statatlascountymap = document.getElementById('caption1883statatlascountymap');
+          img1883statatlascountymap.onclick = function(){
+            modal1883statatlascountymap.style.display = 'block';
+            modalImg1883statatlascountymap.src = this.src;
+            captionText1883statatlascountymap.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg1883statatlascountymap.onclick = function() {
+            modal1883statatlascountymap.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal1883key = document.getElementById('modal1883key');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img1883key = document.getElementById('img1883key');
+          var modalImg1883key = document.getElementById('imgmodal1883key');
+          var captionText1883key = document.getElementById('caption1883key');
+          img1883key.onclick = function(){
+            modal1883key.style.display = 'block';
+            modalImg1883key.src = this.src;
+            captionText1883key.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg1883key.onclick = function() {
+            modal1883key.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal1883bystate = document.getElementById('modal1883bystate');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img1883bystate = document.getElementById('img1883bystate');
+          var modalImg1883bystate = document.getElementById('imgmodal1883bystate');
+          var captionText1883bystate = document.getElementById('caption1883bystate');
+          img1883bystate.onclick = function(){
+            modal1883bystate.style.display = 'block';
+            modalImg1883bystate.src = this.src;
+            captionText1883bystate.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg1883bystate.onclick = function() {
+            modal1883bystate.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal1883popularvotesub2 = document.getElementById('modal1883popularvotesub2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img1883popularvotesub2 = document.getElementById('img1883popularvotesub2');
+          var modalImg1883popularvotesub2 = document.getElementById('imgmodal1883popularvotesub2');
+          var captionText1883popularvotesub2 = document.getElementById('caption1883popularvotesub2');
+          img1883popularvotesub2.onclick = function(){
+            modal1883popularvotesub2.style.display = 'block';
+            modalImg1883popularvotesub2.src = this.src;
+            captionText1883popularvotesub2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg1883popularvotesub2.onclick = function() {
+            modal1883popularvotesub2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal1883electoralvotesub = document.getElementById('modal1883electoralvotesub');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img1883electoralvotesub = document.getElementById('img1883electoralvotesub');
+          var modalImg1883electoralvotesub = document.getElementById('imgmodal1883electoralvotesub');
+          var captionText1883electoralvotesub = document.getElementById('caption1883electoralvotesub');
+          img1883electoralvotesub.onclick = function(){
+            modal1883electoralvotesub.style.display = 'block';
+            modalImg1883electoralvotesub.src = this.src;
+            captionText1883electoralvotesub.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg1883electoralvotesub.onclick = function() {
+            modal1883electoralvotesub.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal1883voteratiosub = document.getElementById('modal1883voteratiosub');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img1883voteratiosub = document.getElementById('img1883voteratiosub');
+          var modalImg1883voteratiosub = document.getElementById('imgmodal1883voteratiosub');
+          var captionText1883voteratiosub = document.getElementById('caption1883voteratiosub');
+          img1883voteratiosub.onclick = function(){
+            modal1883voteratiosub.style.display = 'block';
+            modalImg1883voteratiosub.src = this.src;
+            captionText1883voteratiosub.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg1883voteratiosub.onclick = function() {
+            modal1883voteratiosub.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal1883presidentialvote = document.getElementById('modal1883presidentialvote');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img1883presidentialvote = document.getElementById('img1883presidentialvote');
+          var modalImg1883presidentialvote = document.getElementById('imgmodal1883presidentialvote');
+          var captionText1883presidentialvote = document.getElementById('caption1883presidentialvote');
+          img1883presidentialvote.onclick = function(){
+            modal1883presidentialvote.style.display = 'block';
+            modalImg1883presidentialvote.src = this.src;
+            captionText1883presidentialvote.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg1883presidentialvote.onclick = function() {
+            modal1883presidentialvote.style.display = 'none';
+          }
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
