@@ -116,43 +116,95 @@ write("", file = "js-addins.html")
 
 ## Outline
 
-- Why are election graphics complicated?
+- `ElectionViz` package
 
 - A Brief Tour of (In)famous Election Graphics
 
-- `ElectionViz` package
-
-
-## Factors affecting Election Graphics
-
-- Political Structure
-- Political parties    
-  .small[[How We Visualized an Election with No Political Parties](https://source.opennews.org/articles/how-we-visualized-election-no-political-parties/) - Visualizing Afghan Elections]
-  
-- Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
-
-- Parliamentary system (UK, Canada, Aus, NZ), Proportional Representation (e.g. Germany), Electoral College
-    
-- Data availability
-    - Laws restricting polling (e.g. exit polling, polls X days before the election)
-    - Polling not available in all areas
-    - Not all areas are electing all offices each election
+- Why are election graphics complicated?
 
 ---
-## Other Problems
 
-- Population density vs. Visual area
+.pull-left[
+## `electionViz` 
 
-- Population density vs. Electoral weight
+[https://github.com/heike/electionViz](https://github.com/heike/electionViz)
 
+```{r, eval = F, include = T}
+devtools::install_github("heike/electionViz")
+```
+
+```{r, echo = T, out.extra="class: tiny"}
+library(electionViz)
+state_polls <- 
+fivethirtyeight_update(
+  polls="president_polls") %>% 
+  filter(
+    !is.na(state), 
+    population %in% c("lv", "rv")) %>%
+  
+  # Last 5 polls
+  polls_filter(
+    method="last_k", k = 5) 
+
+state_poll_df <- state_polls %>%
+  # Estimate from past
+  polls_plus(electoral_votes_2016) 
+
+```
+].pull-right[
+```{r, echo = F, fig.width = 6, fig.height = 8, out.width = "100%"}
+state_poll_df <- state_poll_df %>%
+  mutate(state = reorder(state, pct_diff, mean))
+
+state_1 <- state_polls %>%
+  mutate(
+    state = reorder(factor(state), pct_diff, mean)
+  ) 
+state_3 <- state_1 %>%
+  polls_plus(electoral_votes_2016) %>%
+  mutate(
+    state = reorder(state, pct_diff, mean)
+  )
+
+state_1 <- state_1 %>%
+  mutate(state = factor(state, levels = levels(state_3$state)))
+
+gg_states <- state_1 %>%
+  filter(!(state %in% c("Maine CD-1", "Maine CD-2", "Nebraska"))) %>%
+  ggplot(aes(x = pct_diff, y = state)) + 
+  geom_rect(xmin=-5, xmax=+5, ymin=-Inf, ymax = +Inf, 
+            fill="#fcfcc5", size=0) + 
+  geom_vline(xintercept = 0, colour = "grey10") + 
+  geom_point(colour = "grey50", alpha = 0.35) +
+  geom_text(aes(label=rank), colour = "grey30", size = 2) +
+  theme_bw() +
+  ylab("") +
+  scale_y_discrete(drop=FALSE) 
+
+gg_states +
+  geom_point(aes(x = pct_diff, colour = pct_diff>0, shape=source),
+             size = 2, data = state_3) +
+  scale_colour_party("Party", labels=c("Democrat", "Republican")) +
+  scale_x_continuous("Percent Difference", breaks=c(-60,-40,-20,0,20,40,60), 
+                     limits=c(-60,60),
+                     labels = c("←\nMore Dem", "40","20",0,20, 40, "→\nMore Rep")) +
+  theme(legend.position="bottom") +
+  scale_shape_manual("Source", values = c(1, 19)) +
+  ggtitle(sprintf("Polls of likely or registered voters,\n%s to %s", min(state_1$end_date), max(state_1$end_date))) + 
+  theme(legend.position = c(1, 0), legend.direction = "vertical", legend.justification = c(1.1, -.1))
+```
+]
+
+???
+
+
+Includes functions to get latest polls from RealClearPolitics or FiveThirtyEight.com and to estimate unpolled states from past elections.c
 
 ---
 class:middle,center,inverse
 # .emph[A Tour of (In)famous US Election Charts]
 
 ---
-## The Original
-
 ```{r results='asis', echo = F, include = T, cache=F}
 i1 <- img_modal(src = "figure/1883-stat-atlas-county-map.jpg", alt = "1880 Election Results by County from the Statistical Atlas", other=list(width="90%", class ="center"))
 i2 <- img_modal(src = "figure/1883-key.png", alt = "Key", other=list(height="50px"))
@@ -177,23 +229,248 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
   str_split(i6, "\\n", simplify = T)[3:12],
   str_split(i7, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
 ```
-![]()
 
 [Source](https://www.loc.gov/resource/g3701gm.gct00009/?sp=40)
 
+---
+## A few definitions
+
+- **cartogram** - a map which distorts the geometry of the regions to convey information about another variable (e.g. electoral vote or population rather than area)
+    <!-- - [How cartograms are created](http://www.geog.ucsb.edu/~kclarke/G232/ToblerCartograms.pdf) -->
+
+- **chloropleth** - a map which is shaded according to a numeric variable
+
+[![](figure/cartogram-demo.png)](https://www.washingtonpost.com/graphics/politics/2016-election/how-election-maps-lie/)
+
+```{r results='asis', echo = F, include = F, cache=F}
+i1 <- img_modal(src = "figure/2016_countywinner_map.png", alt = "2016 Election Results by County", other=list(width="32%"))
+i2 <- img_modal(src = "figure/2016-population-county-election-map.jpg", alt = "2016 Election Results by County (Population Area)", other=list(width="32%"))
+i3 <- img_modal(src = "figure/2016-election-map-margin-white-balance.png", alt = "2016 Election Results by # votes and margin", other=list(width="32%"))
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i3, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:12],
+  str_split(i2, "\\n", simplify = T)[3:12],
+  str_split(i3, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
+```
+
+<!-- .small[.bottom[Maps from https://stemlounge.com/muddy-america-color-balancing-trumps-election-map-infographic/]] -->
+
+???
+
+So the 1880 election map is a chloropleth map but isn't a cartogram. Cartograms have become more popular since the advent of computer graphics meant that we didn't have to painstakingly apply layers of wax to soapstone by hand in order to create graphical forms.
+
+
 
 ---
-## The Electoral Snake (538)
+[![NYT headline: There are many ways to map election results. We've tried most of them](figure/nyt-maps-headline-upshot.png)](https://www.nytimes.com/interactive/2016/11/01/upshot/many-ways-to-map-election-results.html)
+
+```{r results='asis', echo = F, include = T, cache=F}
+i1 <- img_modal(src = "figure/nyt-map-1896.png", alt = "1896 Election Results", other=list(width="32%"))
+i3 <- img_modal(src = "figure/nyt-map-2004.png", alt = "2004 Election Results", other=list(width="32%"))
+i4 <- img_modal(src = "figure/nyt-map-2004-popdens.png", alt = "2004 Election Results", other=list(width="32%"))
+i2 <- img_modal(src = "figure/nyt-map-1992.png", alt = "1992 Election Results", other=list(width="32%"))
+i5 <- img_modal(src = "figure/nyt-map-2012.png", alt = "2012 Election Results", other=list(width="32%"))
+i6 <- img_modal(src = "figure/nyt-map-2012-popcirc.png", alt = "2012 Election Results", other=list(width="32%"))
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i3, "\\n", simplify = T)[1:2],
+  str_split(i4, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i5, "\\n", simplify = T)[1:2],
+  str_split(i6, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:12],
+  str_split(i3, "\\n", simplify = T)[3:12],
+  str_split(i4, "\\n", simplify = T)[3:12],
+  str_split(i2, "\\n", simplify = T)[3:12],
+  str_split(i5, "\\n", simplify = T)[3:12],
+  str_split(i6, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
+```
+<!-- [![](figure/2020-nyt-battlegrounds.png)](https://www.nytimes.com/interactive/2020/us/politics/battleground-states-trump-biden.html) -->
+
+???
+
+
+---
+## Election Maps - Washington Post
+
+[![](figure/2016-square-cartogram.png)](https://www.washingtonpost.com/graphics/politics/2016-election/50-state-poll/)
+
+<!-- --- -->
+<!-- ## Election Maps - Mapbox -->
+
+<!-- ```{r results='asis', echo = F, include = T, cache=F} -->
+<!-- i1 <- img_modal(src = "figure/2018-mapbox-map.png", alt = "Mapbox map (Used by Washington Post, 2018)", other=list(width="48%")) -->
+<!-- i2 <- img_modal(src = "figure/2018-mapbox-cartogram.png", alt = "Mapbox cartogram (Used by Washington Post, 2018)", other=list(width="48%")) -->
+<!-- c(str_split(i1, "\\n", simplify = T)[1:2], -->
+<!--   str_split(i2, "\\n", simplify = T)[1:2], -->
+<!--   str_split(i1, "\\n", simplify = T)[3:12], -->
+<!--   str_split(i2, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat() -->
+<!-- ``` -->
+
+<!-- .bottom[https://blog.mapbox.com/washington-posts-electoral-maps-how-we-built-it-b311ccecfa75] -->
+
+---
+## Election Maps - FiveThirtyEight
+
+[![](figure/2020-house-forecast-20201101-538.png)](https://projects.fivethirtyeight.com/2020-election-forecast/house/)
+
+<!-- --- -->
+<!-- <iframe src="https://s3.us-east-2.amazonaws.com/wiscontext-viz/cartograms/election_gov_2018.html" width="100%" height="600px"></iframe> -->
+
+<!-- .small[.bottom[https://urbanmilwaukee.com/2019/01/17/cartogram-makes-last-election-look-different/]] -->
+
+---
+## Maps in ElectionViz
+
+```{r, fig.width = 6, fig.height = 4, out.width = c("45%", "55%")}
+states <- state_1 %>%
+  polls_plus(electoral_votes_2016) %>%
+  mutate(
+    state = reorder(state, pct_diff, mean)
+  ) %>%
+  filter(!str_detect(state, "CD-")) 
+
+data(ushex_plus, package = "electionViz")
+
+hexplot(states$state, states$pct_diff, labelcolor = "black") + 
+  scale_fill_party_binned("") + 
+  theme(legend.title = element_blank()) + 
+  ggtitle("Hexbin Cartogram by State (2020 polls)") + 
+  geom_path(aes(x = long, y = lat, group = group), color = "grey20")
+
+state_mapping <- unique(select(elections, state_name = state, state_po)) %>%
+  left_join(unique(select(electoral_hex, state_po = state, group))) %>%
+  mutate(ev = abs(parse_number(group))) %>%
+  mutate(state_name = ifelse(group %in% c("NE-1", "NE-2", "NE-3", "ME-1", "ME-2"),
+                             paste0(state_name, " CD-", ev), state_name))
+
+state_names <- unique(electoral_state_outline_hex[,c("centerX", "centerY", "state", "group")]) %>%
+  left_join(select(state_mapping, -group), by = c("state" = "state_po")) %>%
+  left_join(state_3, by = c("state_name" = "state")) %>%
+  mutate(color = ifelse(abs(pct_diff) < 10, "grey40", "grey90"))
+
+state_mapping %>% left_join(state_3, by = c("state_name" = "state")) %>%
+  left_join(electoral_hex, by = "group") %>%
+  ggplot(aes(x = long, y = lat, group = group)) +
+  geom_polygon(aes(fill =  pct_diff), 
+               colour = "grey60", size = 0.1, alpha = 0.9) +
+  geom_text(aes(x = centerX, y = centerY, label = state, color = color), 
+            size = 3, 
+            data = state_names) +
+  scale_color_identity() + 
+  geom_path(colour = "grey70", size = 0.35, 
+            data = electoral_state_outline_hex) +
+  theme_void() +
+  scale_fill_party_binned() +
+#  coord_map() +
+  theme(legend.position = "none") +
+  ggtitle("Hexbin Cartogram by Electoral Votes (2020 polls+)")
+```
+
+
+---
+## The Electoral Snake (538 - 2016)
 
 .center[
 ![From Sept 22, 2016](figure/2016-09-22-Electoral-snake-538.png)
 ]
 
 ---
-## The Electoral Snake (538)
+## The Electoral Snake (538 - 2020)
 
 <div class="wrap">
 <iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/2020-election-forecast/#ec-margins" width = "100%" height = "500px"/></div>
+
+---
+
+## The Electoral Snake (electionViz)
+
+```{r, fig.width = 8, fig.height = 6}
+label_fix <- c("District of Columbia" = "DC", "Maine CD" = "ME", "Nebraska CD" = "NE",
+               "Rhode Island" = "RI", "New Hampshire" = "NH", "Wyoming" = "WY", "New York" = "NY",
+               "Vermont" = "VT", "West Virginia" = "WV", "Kansas"="KS", "Montana" = "MT",
+               "New Mexico" = "NM", "Hawaii" = "HI", "Connecticut" = "CT",
+               "Delaware" = "DE", "Colorado" = "CO", "Maine" = "ME", "Alaska" = "AK", 
+               "South Dakota" = "SD", "North Dakota" = "ND", "Mississippi" = "MI", "Nebraska" = "NE")
+
+state_3 %>%
+  mutate(diff = perc_rep - perc_dem, 
+         party = ifelse(perc_dem > perc_rep, "Dem", "Rep"),
+         label = state) %>%
+  mutate(label = str_replace_all(label, label_fix)) %>%
+  ggsnake(order = diff, fill = diff, label = label, 
+          color = party, size = electoral_votes) +
+  scale_fill_party_binned(name = "") + 
+  scale_color_party(guide = "none") +
+  theme_void(base_size = 8) + 
+  theme(legend.title = element_blank(), 
+        legend.position = c(.5325, 0.45), 
+        legend.justification = c(.5325, 0.45)) +
+  ggtitle(sprintf("Based on polls from %s to %s",
+                  min(state_polls$end_date), 
+                  max(state_polls$end_date)))
+
+```
+
+---
+## The Electoral Tower
+
+```{r results='asis', echo = F, include = T, cache=F}
+i1 <- img_modal(src = "figure/2000-NYT-tower.png", alt = "2000 NYT Electoral Tower", other=list(height = "400px", style = "margin:auto;padding:5%")) 
+i2 <- img_modal(src = "figure/2016-FT-election-tower.jpg", alt = "2012/2016 Financial Times Electoral Tower Comparison", other=list(height = "400px", style = "margin:auto;padding:5%"))
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:12],
+  str_split(i2, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
+
+```
+
+.bottom[Images from [12 notable election visualization techniques](https://www.visualisingdata.com/2016/11/12-notable-election-visualisation-techniques/) post]
+
+```{r, fig.width = 6, fig.height = 4, echo = F}
+label_fix2 <- c("District of Columbia" = "DC", "Maine CD" = "ME", "Nebraska CD" = "NE")
+
+state_3 <- state_3 %>% #filter(!(state %in% c("Maine", "Nebraska"))) %>% 
+  mutate(label = str_replace_all(state, label_fix2))
+```
+
+---
+## The Electoral Tower
+
+.pull-left[
+```{r elec-building1, echo = T, eval = F}
+state_3 %>% with(
+electoral_building(
+    state_district = label, 
+    electoral_votes = 
+      electoral_votes, 
+    perc_dem = perc_dem, 
+    perc_rep = perc_rep,
+    source = source)
+) +
+  scale_color_party("Party") +
+  scale_fill_party("Party")
+
+```
+]
+.pull-right[
+```{r elec-building, echo = F, eval = T, fig.width = 6, fig.height = 8}
+state_3 %>% with(
+electoral_building(
+    state_district = label, 
+    electoral_votes = electoral_votes, 
+    perc_dem = perc_dem, 
+    perc_rep = perc_rep,
+    source = source)
+) +
+  scale_color_party("Party") +
+  scale_fill_party("Party") +
+  theme_void() + 
+  theme(legend.position = "none") +
+  ggtitle("Electoral building, based on polls")
+
+```
+]
 
 
 
@@ -216,17 +493,61 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 <iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/trump-biden-election-map/#ui" width = "100%" height = "500px"/></div>
 
 
-
 ---
-## The Needle (NYT)
+## Uncertainty - The Needle (NYT)
 
 .center[
 ![NYTimes Election Needle, image from https://fair.org/home/the-needle-and-the-damage-done/](figure/2016-NYT-Needle.png)
 ]
 
 - "jitter" motion to show simulation uncertainty
+
 - motion sometimes falsely interpreted as new data coming in
+
+- [The Needle and the Damage Done](https://fair.org/home/the-needle-and-the-damage-done/) (FAIR.org, from 2018)
+
+- [The NYT Needle and the Damage Done](https://www.rollingstone.com/politics/politics-news/iowa-caucus-new-york-times-election-needle-donald-trump-947101/) (Rolling Stone)
+
+- [Beyond the Needle: Probability Experts Assess 2020 race](https://apnews.com/article/election-2020-donald-trump-hillary-clinton-elections-nate-silver-a5b62d04f8747702c0ab3ae61423219b)
+
+- ['The Needle' Won't Be Used on Election Night](https://politicalwire.com/2020/10/24/the-needle-wont-be-used-on-election-night/)
+
+---
+<iframe src="http://presidential-plinko.com/" width = "100%" height = "600px"></iframe>
+
+
+---
+## Outcome Uncertainty - 538
+
+<iframe src="https://projects.fivethirtyeight.com/2020-election-forecast/#topline" width = "100%" height = "500px"></iframe>
+
+
 
 ---
 ## "Wave" Graphics
+
+![](figure/2018-guardian-blue-wave.png)
+
+???
+
+- Arrow size shows direction of the swing (but it's not clear whether that's percentage points or population shift)
+
+---
+## Other Factors affecting Election Graphics
+
+- Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
+
+- Parliamentary system (UK, Canada, Aus, NZ), Proportional Representation (e.g. Germany), Electoral College
+    
+- Data availability
+    - Laws restricting polling (e.g. exit polling, polls X days before the election)
+    - Polling not available in all areas
+    - Not all areas are electing all offices each election
+
+---
+## Fun Reading
+
+- [Reasons to consider a cartogram](https://medium.com/civic-tech-thoughts-from-joshdata/how-that-map-you-saw-on-538-under-represents-minorities-by-half-and-other-reasons-to-consider-a-4a98f89cbbb1)
+
+- [How We Visualized an Election with No Political Parties](https://source.opennews.org/articles/how-we-visualized-election-no-political-parties/) - Visualizing Afghan Elections
 

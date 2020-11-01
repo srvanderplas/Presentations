@@ -1,0 +1,17 @@
+<script>
+        /* Get the modal*/
+          var modal2000NYTtower = document.getElementById('modal2000NYTtower');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2000NYTtower = document.getElementById('img2000NYTtower');
+          var modalImg2000NYTtower = document.getElementById('imgmodal2000NYTtower');
+          var captionText2000NYTtower = document.getElementById('caption2000NYTtower');
+          img2000NYTtower.onclick = function(){
+            modal2000NYTtower.style.display = 'block';
+            modalImg2000NYTtower.src = this.src;
+            captionText2000NYTtower.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2000NYTtower.onclick = function() {
+            modal2000NYTtower.style.display = 'none';
+          }
+</script>

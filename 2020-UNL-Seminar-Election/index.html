@@ -18,7 +18,7 @@ class: center, middle, inverse, title-slide
 
 # Election Graphics
 ### Susan Vanderplas<br>.small[(joint work with Kiegan Rice, Heike Hofmann)]
-### 29 October, 2020
+### 01 November, 2020
 
 ---
 
@@ -69,43 +69,53 @@ class: center, middle, inverse, title-slide
 
 ## Outline
 
-- Why are election graphics complicated?
+- `ElectionViz` package
 
 - A Brief Tour of (In)famous Election Graphics
 
-- `ElectionViz` package
-
-
-## Factors affecting Election Graphics
-
-- Political Structure
-- Political parties    
-  .small[[How We Visualized an Election with No Political Parties](https://source.opennews.org/articles/how-we-visualized-election-no-political-parties/) - Visualizing Afghan Elections]
-  
-- Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
-
-- Parliamentary system (UK, Canada, Aus, NZ), Proportional Representation (e.g. Germany), Electoral College
-    
-- Data availability
-    - Laws restricting polling (e.g. exit polling, polls X days before the election)
-    - Polling not available in all areas
-    - Not all areas are electing all offices each election
+- Why are election graphics complicated?
 
 ---
-## Other Problems
 
-- Population density vs. Visual area
+.pull-left[
+## `electionViz` 
 
-- Population density vs. Electoral weight
+[https://github.com/heike/electionViz](https://github.com/heike/electionViz)
 
+
+
+
+```r
+library(electionViz)
+state_polls &lt;- 
+fivethirtyeight_update(
+  polls="president_polls") %&gt;% 
+  filter(
+    !is.na(state), 
+    population %in% c("lv", "rv")) %&gt;%
+  
+  # Last 5 polls
+  polls_filter(
+    method="last_k", k = 5) 
+
+state_poll_df &lt;- state_polls %&gt;%
+  # Estimate from past
+  polls_plus(electoral_votes_2016) 
+```
+].pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="100%" /&gt;
+]
+
+???
+
+
+Includes functions to get latest polls from RealClearPolitics or FiveThirtyEight.com and to estimate unpolled states from past elections.c
 
 ---
 class:middle,center,inverse
 # .emph[A Tour of (In)famous US Election Charts]
 
 ---
-## The Original
-
 &lt;!-- Trigger the Modal --&gt;
 &lt;img id='img1883statatlascountymap' src='figure/1883-stat-atlas-county-map.jpg' alt='1880 Election Results by County from the Statistical Atlas' width='90%' class='center'&gt;
 
@@ -190,23 +200,217 @@ class:middle,center,inverse
   &lt;!-- Modal Caption (Image Text) --&gt;
   &lt;div id='caption1883presidentialvote' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
-![]()
 
 [Source](https://www.loc.gov/resource/g3701gm.gct00009/?sp=40)
 
+---
+## A few definitions
+
+- **cartogram** - a map which distorts the geometry of the regions to convey information about another variable (e.g. electoral vote or population rather than area)
+    &lt;!-- - [How cartograms are created](http://www.geog.ucsb.edu/~kclarke/G232/ToblerCartograms.pdf) --&gt;
+
+- **chloropleth** - a map which is shaded according to a numeric variable
+
+[![](figure/cartogram-demo.png)](https://www.washingtonpost.com/graphics/politics/2016-election/how-election-maps-lie/)
+
+
+
+&lt;!-- .small[.bottom[Maps from https://stemlounge.com/muddy-america-color-balancing-trumps-election-map-infographic/]] --&gt;
+
+???
+
+So the 1880 election map is a chloropleth map but isn't a cartogram. Cartograms have become more popular since the advent of computer graphics meant that we didn't have to painstakingly apply layers of wax to soapstone by hand in order to create graphical forms.
+
+
 
 ---
-## The Electoral Snake (538)
+[![NYT headline: There are many ways to map election results. We've tried most of them](figure/nyt-maps-headline-upshot.png)](https://www.nytimes.com/interactive/2016/11/01/upshot/many-ways-to-map-election-results.html)
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgnytmap1896' src='figure/nyt-map-1896.png' alt='1896 Election Results' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgnytmap2004' src='figure/nyt-map-2004.png' alt='2004 Election Results' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgnytmap2004popdens' src='figure/nyt-map-2004-popdens.png' alt='2004 Election Results' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgnytmap1992' src='figure/nyt-map-1992.png' alt='1992 Election Results' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgnytmap2012' src='figure/nyt-map-2012.png' alt='2012 Election Results' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgnytmap2012popcirc' src='figure/nyt-map-2012-popcirc.png' alt='2012 Election Results' width='32%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalnytmap1896' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalnytmap1896'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionnytmap1896' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalnytmap2004' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalnytmap2004'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionnytmap2004' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalnytmap2004popdens' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalnytmap2004popdens'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionnytmap2004popdens' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalnytmap1992' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalnytmap1992'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionnytmap1992' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalnytmap2012' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalnytmap2012'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionnytmap2012' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalnytmap2012popcirc' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalnytmap2012popcirc'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionnytmap2012popcirc' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- [![](figure/2020-nyt-battlegrounds.png)](https://www.nytimes.com/interactive/2020/us/politics/battleground-states-trump-biden.html) --&gt;
+
+???
+
+
+---
+## Election Maps - Washington Post
+
+[![](figure/2016-square-cartogram.png)](https://www.washingtonpost.com/graphics/politics/2016-election/50-state-poll/)
+
+&lt;!-- --- --&gt;
+&lt;!-- ## Election Maps - Mapbox --&gt;
+
+&lt;!-- ```{r results='asis', echo = F, include = T, cache=F} --&gt;
+&lt;!-- i1 &lt;- img_modal(src = "figure/2018-mapbox-map.png", alt = "Mapbox map (Used by Washington Post, 2018)", other=list(width="48%")) --&gt;
+&lt;!-- i2 &lt;- img_modal(src = "figure/2018-mapbox-cartogram.png", alt = "Mapbox cartogram (Used by Washington Post, 2018)", other=list(width="48%")) --&gt;
+&lt;!-- c(str_split(i1, "\\n", simplify = T)[1:2], --&gt;
+&lt;!--   str_split(i2, "\\n", simplify = T)[1:2], --&gt;
+&lt;!--   str_split(i1, "\\n", simplify = T)[3:12], --&gt;
+&lt;!--   str_split(i2, "\\n", simplify = T)[3:12]) %&gt;% paste(collapse = "\n") %&gt;% cat() --&gt;
+&lt;!-- ``` --&gt;
+
+&lt;!-- .bottom[https://blog.mapbox.com/washington-posts-electoral-maps-how-we-built-it-b311ccecfa75] --&gt;
+
+---
+## Election Maps - FiveThirtyEight
+
+[![](figure/2020-house-forecast-20201101-538.png)](https://projects.fivethirtyeight.com/2020-election-forecast/house/)
+
+&lt;!-- --- --&gt;
+&lt;!-- &lt;iframe src="https://s3.us-east-2.amazonaws.com/wiscontext-viz/cartograms/election_gov_2018.html" width="100%" height="600px"&gt;&lt;/iframe&gt; --&gt;
+
+&lt;!-- .small[.bottom[https://urbanmilwaukee.com/2019/01/17/cartogram-makes-last-election-look-different/]] --&gt;
+
+---
+## Maps in ElectionViz
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="45%" /&gt;&lt;img src="index_files/figure-html/unnamed-chunk-9-2.png" width="55%" /&gt;
+
+
+---
+## The Electoral Snake (538 - 2016)
 
 .center[
 ![From Sept 22, 2016](figure/2016-09-22-Electoral-snake-538.png)
 ]
 
 ---
-## The Electoral Snake (538)
+## The Electoral Snake (538 - 2020)
 
 &lt;div class="wrap"&gt;
 &lt;iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/2020-election-forecast/#ec-margins" width = "100%" height = "500px"/&gt;&lt;/div&gt;
+
+---
+
+## The Electoral Snake (electionViz)
+
+![](index_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+---
+## The Electoral Tower
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img2000NYTtower' src='figure/2000-NYT-tower.png' alt='2000 NYT Electoral Tower' height='400px' style='margin:auto;padding:5%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img2016FTelectiontower' src='figure/2016-FT-election-tower.jpg' alt='2012/2016 Financial Times Electoral Tower Comparison' height='400px' style='margin:auto;padding:5%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal2000NYTtower' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal2000NYTtower'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption2000NYTtower' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal2016FTelectiontower' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal2016FTelectiontower'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption2016FTelectiontower' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+.bottom[Images from [12 notable election visualization techniques](https://www.visualisingdata.com/2016/11/12-notable-election-visualisation-techniques/) post]
+
+
+
+---
+## The Electoral Tower
+
+.pull-left[
+
+```r
+state_3 %&gt;% with(
+electoral_building(
+    state_district = label, 
+    electoral_votes = 
+      electoral_votes, 
+    perc_dem = perc_dem, 
+    perc_rep = perc_rep,
+    source = source)
+) +
+  scale_color_party("Party") +
+  scale_fill_party("Party")
+```
+]
+.pull-right[
+![](index_files/figure-html/elec-building-1.png)&lt;!-- --&gt;
+]
 
 
 
@@ -229,19 +433,63 @@ class:middle,center,inverse
 &lt;iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/trump-biden-election-map/#ui" width = "100%" height = "500px"/&gt;&lt;/div&gt;
 
 
-
 ---
-## The Needle (NYT)
+## Uncertainty - The Needle (NYT)
 
 .center[
 ![NYTimes Election Needle, image from https://fair.org/home/the-needle-and-the-damage-done/](figure/2016-NYT-Needle.png)
 ]
 
 - "jitter" motion to show simulation uncertainty
+
 - motion sometimes falsely interpreted as new data coming in
+
+- [The Needle and the Damage Done](https://fair.org/home/the-needle-and-the-damage-done/) (FAIR.org, from 2018)
+
+- [The NYT Needle and the Damage Done](https://www.rollingstone.com/politics/politics-news/iowa-caucus-new-york-times-election-needle-donald-trump-947101/) (Rolling Stone)
+
+- [Beyond the Needle: Probability Experts Assess 2020 race](https://apnews.com/article/election-2020-donald-trump-hillary-clinton-elections-nate-silver-a5b62d04f8747702c0ab3ae61423219b)
+
+- ['The Needle' Won't Be Used on Election Night](https://politicalwire.com/2020/10/24/the-needle-wont-be-used-on-election-night/)
+
+---
+&lt;iframe src="http://presidential-plinko.com/" width = "100%" height = "600px"&gt;&lt;/iframe&gt;
+
+
+---
+## Outcome Uncertainty - 538
+
+&lt;iframe src="https://projects.fivethirtyeight.com/2020-election-forecast/#topline" width = "100%" height = "500px"&gt;&lt;/iframe&gt;
+
+
 
 ---
 ## "Wave" Graphics
+
+![](figure/2018-guardian-blue-wave.png)
+
+???
+
+- Arrow size shows direction of the swing (but it's not clear whether that's percentage points or population shift)
+
+---
+## Other Factors affecting Election Graphics
+
+- Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
+
+- Parliamentary system (UK, Canada, Aus, NZ), Proportional Representation (e.g. Germany), Electoral College
+    
+- Data availability
+    - Laws restricting polling (e.g. exit polling, polls X days before the election)
+    - Polling not available in all areas
+    - Not all areas are electing all offices each election
+
+---
+## Fun Reading
+
+- [Reasons to consider a cartogram](https://medium.com/civic-tech-thoughts-from-joshdata/how-that-map-you-saw-on-538-under-represents-minorities-by-half-and-other-reasons-to-consider-a-4a98f89cbbb1)
+
+- [How We Visualized an Election with No Political Parties](https://source.opennews.org/articles/how-we-visualized-election-no-political-parties/) - Visualizing Afghan Elections
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
@@ -451,6 +699,193 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
           /* When the user clicks on the modalImg, close it*/
           modalImg1883presidentialvote.onclick = function() {
             modal1883presidentialvote.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2016_countywinner_map = document.getElementById('modal2016_countywinner_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2016_countywinner_map = document.getElementById('img2016_countywinner_map');
+          var modalImg2016_countywinner_map = document.getElementById('imgmodal2016_countywinner_map');
+          var captionText2016_countywinner_map = document.getElementById('caption2016_countywinner_map');
+          img2016_countywinner_map.onclick = function(){
+            modal2016_countywinner_map.style.display = 'block';
+            modalImg2016_countywinner_map.src = this.src;
+            captionText2016_countywinner_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2016_countywinner_map.onclick = function() {
+            modal2016_countywinner_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2016populationcountyelectionmap = document.getElementById('modal2016populationcountyelectionmap');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2016populationcountyelectionmap = document.getElementById('img2016populationcountyelectionmap');
+          var modalImg2016populationcountyelectionmap = document.getElementById('imgmodal2016populationcountyelectionmap');
+          var captionText2016populationcountyelectionmap = document.getElementById('caption2016populationcountyelectionmap');
+          img2016populationcountyelectionmap.onclick = function(){
+            modal2016populationcountyelectionmap.style.display = 'block';
+            modalImg2016populationcountyelectionmap.src = this.src;
+            captionText2016populationcountyelectionmap.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2016populationcountyelectionmap.onclick = function() {
+            modal2016populationcountyelectionmap.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2016electionmapmarginwhitebalance = document.getElementById('modal2016electionmapmarginwhitebalance');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2016electionmapmarginwhitebalance = document.getElementById('img2016electionmapmarginwhitebalance');
+          var modalImg2016electionmapmarginwhitebalance = document.getElementById('imgmodal2016electionmapmarginwhitebalance');
+          var captionText2016electionmapmarginwhitebalance = document.getElementById('caption2016electionmapmarginwhitebalance');
+          img2016electionmapmarginwhitebalance.onclick = function(){
+            modal2016electionmapmarginwhitebalance.style.display = 'block';
+            modalImg2016electionmapmarginwhitebalance.src = this.src;
+            captionText2016electionmapmarginwhitebalance.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2016electionmapmarginwhitebalance.onclick = function() {
+            modal2016electionmapmarginwhitebalance.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalnytmap1896 = document.getElementById('modalnytmap1896');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgnytmap1896 = document.getElementById('imgnytmap1896');
+          var modalImgnytmap1896 = document.getElementById('imgmodalnytmap1896');
+          var captionTextnytmap1896 = document.getElementById('captionnytmap1896');
+          imgnytmap1896.onclick = function(){
+            modalnytmap1896.style.display = 'block';
+            modalImgnytmap1896.src = this.src;
+            captionTextnytmap1896.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgnytmap1896.onclick = function() {
+            modalnytmap1896.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalnytmap2004 = document.getElementById('modalnytmap2004');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgnytmap2004 = document.getElementById('imgnytmap2004');
+          var modalImgnytmap2004 = document.getElementById('imgmodalnytmap2004');
+          var captionTextnytmap2004 = document.getElementById('captionnytmap2004');
+          imgnytmap2004.onclick = function(){
+            modalnytmap2004.style.display = 'block';
+            modalImgnytmap2004.src = this.src;
+            captionTextnytmap2004.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgnytmap2004.onclick = function() {
+            modalnytmap2004.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalnytmap2004popdens = document.getElementById('modalnytmap2004popdens');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgnytmap2004popdens = document.getElementById('imgnytmap2004popdens');
+          var modalImgnytmap2004popdens = document.getElementById('imgmodalnytmap2004popdens');
+          var captionTextnytmap2004popdens = document.getElementById('captionnytmap2004popdens');
+          imgnytmap2004popdens.onclick = function(){
+            modalnytmap2004popdens.style.display = 'block';
+            modalImgnytmap2004popdens.src = this.src;
+            captionTextnytmap2004popdens.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgnytmap2004popdens.onclick = function() {
+            modalnytmap2004popdens.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalnytmap1992 = document.getElementById('modalnytmap1992');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgnytmap1992 = document.getElementById('imgnytmap1992');
+          var modalImgnytmap1992 = document.getElementById('imgmodalnytmap1992');
+          var captionTextnytmap1992 = document.getElementById('captionnytmap1992');
+          imgnytmap1992.onclick = function(){
+            modalnytmap1992.style.display = 'block';
+            modalImgnytmap1992.src = this.src;
+            captionTextnytmap1992.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgnytmap1992.onclick = function() {
+            modalnytmap1992.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalnytmap2012 = document.getElementById('modalnytmap2012');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgnytmap2012 = document.getElementById('imgnytmap2012');
+          var modalImgnytmap2012 = document.getElementById('imgmodalnytmap2012');
+          var captionTextnytmap2012 = document.getElementById('captionnytmap2012');
+          imgnytmap2012.onclick = function(){
+            modalnytmap2012.style.display = 'block';
+            modalImgnytmap2012.src = this.src;
+            captionTextnytmap2012.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgnytmap2012.onclick = function() {
+            modalnytmap2012.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalnytmap2012popcirc = document.getElementById('modalnytmap2012popcirc');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgnytmap2012popcirc = document.getElementById('imgnytmap2012popcirc');
+          var modalImgnytmap2012popcirc = document.getElementById('imgmodalnytmap2012popcirc');
+          var captionTextnytmap2012popcirc = document.getElementById('captionnytmap2012popcirc');
+          imgnytmap2012popcirc.onclick = function(){
+            modalnytmap2012popcirc.style.display = 'block';
+            modalImgnytmap2012popcirc.src = this.src;
+            captionTextnytmap2012popcirc.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgnytmap2012popcirc.onclick = function() {
+            modalnytmap2012popcirc.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2000NYTtower = document.getElementById('modal2000NYTtower');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2000NYTtower = document.getElementById('img2000NYTtower');
+          var modalImg2000NYTtower = document.getElementById('imgmodal2000NYTtower');
+          var captionText2000NYTtower = document.getElementById('caption2000NYTtower');
+          img2000NYTtower.onclick = function(){
+            modal2000NYTtower.style.display = 'block';
+            modalImg2000NYTtower.src = this.src;
+            captionText2000NYTtower.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2000NYTtower.onclick = function() {
+            modal2000NYTtower.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2016FTelectiontower = document.getElementById('modal2016FTelectiontower');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2016FTelectiontower = document.getElementById('img2016FTelectiontower');
+          var modalImg2016FTelectiontower = document.getElementById('imgmodal2016FTelectiontower');
+          var captionText2016FTelectiontower = document.getElementById('caption2016FTelectiontower');
+          img2016FTelectiontower.onclick = function(){
+            modal2016FTelectiontower.style.display = 'block';
+            modalImg2016FTelectiontower.src = this.src;
+            captionText2016FTelectiontower.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2016FTelectiontower.onclick = function() {
+            modal2016FTelectiontower.style.display = 'none';
           }
 </script>
 
