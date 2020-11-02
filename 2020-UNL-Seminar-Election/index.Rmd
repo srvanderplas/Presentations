@@ -438,6 +438,10 @@ This is from September 22, 2016. It's easy to see what the predicted swing state
 <div class="wrap">
 <iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/2020-election-forecast/#ec-margins" width = "100%" height = "500px"/></div>
 
+???
+
+Here's the 2020 version, which has mostly changed so that it's tilted diagonally.
+
 ---
 
 ## The Electoral Snake (electionViz)
