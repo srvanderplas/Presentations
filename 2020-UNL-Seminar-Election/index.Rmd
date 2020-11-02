@@ -122,6 +122,17 @@ write("", file = "js-addins.html")
 
 - Why are election graphics complicated?
 
+???
+
+Today, I'll be talking a bit about election graphics, and showing off a package that I've been slowly building with Heike Hofmann and Kiegan Rice to provide a way to generate some of the most interesting election graphics in R. 
+
+I'll start by showing you the basic functionality of ElectionViz, and then I'll do a general tour of different types of election related charts, showing you the ones we've added to electionViz as we go along.
+
+Feel free to interrupt, ask questions, and make comments as we go. I'm pretty awful at paying attention to the chat, so just interrupt.
+
+I will also say I'm doing my best to keep the discussion on the graphics instead of the political situation. Should any snark creep in unnecessarily, please remember that snark is my own opinion and not that of the university. 
+
+
 ---
 
 .pull-left[
@@ -197,8 +208,7 @@ gg_states +
 
 ???
 
-
-Includes functions to get latest polls from RealClearPolitics or FiveThirtyEight.com and to estimate unpolled states from past elections.c
+The ElectionViz package is at the moment available only on github and still under active development. We wanted to make it easy to include the most up-to-date data, so we have functions to get the latest polls from several different sources, as well as functions that will substitute data from the last election for areas that haven't been polled (which seems to at this point only include the third district in Nebraska.)
 
 ---
 class:middle,center,inverse
@@ -232,6 +242,29 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 
 [Source](https://www.loc.gov/resource/g3701gm.gct00009/?sp=40)
 
+???
+
+The first chart I want to show you is, as best as I can tell, the first US election chart ever generated. It is part of the Statistical Atlas of 1880, which was published in 1883, showing the results of the 10th census. 
+
+The main part of the spread is this map, which isn't so different from our election maps today (except for e.g. the gaping hole in the middle of Oklahoma, Texas, Kansas, and Nebraska, where there weren't any votes for various resasons.) The map shows the popular vote as a proportion of the total vote, using a bivariate color scale for the two parties.
+
+When we zoom in to see the key, though, we can see that the two parties are assigned colors that are exactly the opposite of what we use today (though the two parties in 1880 were very different from the parties of the same name today). Increasing amount/density of color is used to show an increasingly partisan vote. These maps were made with lithography, which meant that someone had to apply wax to soapstone very precisely to remove areas of color from the chart; for each color ink used, this process had to be repeated *precisely* in order to generate a color chart. It was a ton of work. You can see a little bit of misalignment in the greenback vote rectangle that shows how the process worked. 
+
+Personally, I'll take a moment to be very grateful for ggplot2. I don't have the patience for lithography.
+
+The spread also includes a state-level summnary map, which is again not so different from how we'd show things today.
+
+There's also an analysis of the popular vote (with vote totals plotted, and the breakdown by candidate shown in the table.) I've cut this off so that it fit on the slide, but you can see that there's an index between the alphabetical state name and the rank, plus exact counts in the tables. It's a pretty cool display, really - the only thing I wish they'd included was the state population in addition to the rest of it so that we could see what the voter participation rate was. 
+
+Even in 1880, though, there was a recognition that the total vote and the electoral vote weren't the same thing. So the electoral vote is shown as well; it looks like Garfield won handily. So even as far back as 1880, people were wrestling with this question of how to represent both the vote of the people and the vote of the electoral college, and even wrestling a bit with the visualization of people's votes vs. land votes.
+
+The next piece of the chart that I want to highlight (and yes, there is a ton of information packed into this display) is this ratio of predominant to total vote. So earlier, we showed the black bar chart showing the total vote, and this is filling in the rest of the story - who won the state and by how much did they win? In 1880, Vermont was the safest state, followed by Louisiana, Georgia, South Carolina, Mississippi, and Texas... sounds like some things just don't change that much!
+
+The last feature of this chart I'd like to highlight is one that I had to alter a bit to fit on the slide. Across the bottom of this spread is a chart showing the total vote, with all of the minor candidates as well. So you can very effectively see that Scattering and Weaver had very little support relative to Hancock and Garfield, but that either minor candidate could have thrown the popular vote!
+
+We don't use scales like this very often anymore, which is something of a shame - it really makes the point effectively, even though I did have to chop the graph up into several pieces in order to get it to fit. 
+
+
 ---
 ## A few definitions
 
@@ -258,8 +291,11 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 
 ???
 
-So the 1880 election map is a chloropleth map but isn't a cartogram. Cartograms have become more popular since the advent of computer graphics meant that we didn't have to painstakingly apply layers of wax to soapstone by hand in order to create graphical forms.
+A few definitions are in order here, since I decided to start in with maps. A cartogram is a map which distorts the geometry fo the regions to show information about another variable. A chloropleth map is a map with shading corresponding to another (non spatial) variable.
 
+So the 1880 election map is a chloropleth map but isn't a cartogram. Cartograms have become more popular since the advent of computer graphics meant that we didn't have to painstakingly apply layers of wax to soapstone by hand in order to create graphical forms. It's much easier to let a computer make a cartogram than to draw one by hand.
+
+In the image shown here, which I have taken from the Washington post (if you are looking at these slides online, you can click on the picture to get the original source), shows several different ways to show the same data, summarized differently. You can shade the map differently to show the proportion of the vote instead of the winner, and you can shift the geography to show different levels of population density distribution. These types of continuous cartograms are sometimes very hard to read - so hard that they destroy the original point, which is to represent the individual voters instead of the geographic land where they reside.
 
 
 ---
@@ -289,30 +325,39 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 
 ???
 
+This battle between fidelity to the geography and fidelity to the individual voter is one that is very well recognized as a hard, hard problem. The NYT published an article in 2016 showing several different ways they've historically tried to show election results. Again, if you click on the headline, you'll get to the original article, which is a great read.
+
+The first map is from 1896, where William Jennings Bryan lost to William McKinley; it shows the print version of the election results, with Bryan's states in black.
+
+By the advent of computer graphics, in 1992, the shapes were somewhat more precise, but things hadn't changed that much (other than representing some undecided states; I'm not sure if this is from just after the election or just before the election where there are only a couple of swing states). This is obviously computer generated, but still in the age of black-and-white newsprint.
+
+The next two attempts are both from 2004; one is a square cartogram showing the electoral votes of each state; with shading that shows the percentage of the vote. I find this cartogram a bit odd in that somehow Kansas is east of and north of Nebraska (and North/south dakota?) - but cartograms are hard to make because it's not easy to compromise on area and still maintain the approximate shape. 
+
+Another 2004 map shows the results by population density, which is I believe a relatively good attempt to show the popular vote as a result of "total amount of color" - what isn't clear is how easily we aggregate over color intensity. 
+
+In 2012, they also show two different attempts at displaying the results: county-level chloropleth maps first, and with county-level dots showing the size of the vote margin. In both cases, they're using county as a proxy for voting unit, but votes are aggregated at the precinct level and at the state level (or in the case of Nebraska and Maine, at the precinct, district, and state level). So county isn't a great approximation of anything, really; it's not totally clear whether either map actually achieves the objective. 
+
+The point is that if there were one perfect way to show election results, NYT probably would have found it by now...
 
 ---
 ## Election Maps - Washington Post
 
 [![](figure/2016-square-cartogram.png)](https://www.washingtonpost.com/graphics/politics/2016-election/50-state-poll/)
 
-<!-- --- -->
-<!-- ## Election Maps - Mapbox -->
+???
 
-<!-- ```{r results='asis', echo = F, include = T, cache=F} -->
-<!-- i1 <- img_modal(src = "figure/2018-mapbox-map.png", alt = "Mapbox map (Used by Washington Post, 2018)", other=list(width="48%")) -->
-<!-- i2 <- img_modal(src = "figure/2018-mapbox-cartogram.png", alt = "Mapbox cartogram (Used by Washington Post, 2018)", other=list(width="48%")) -->
-<!-- c(str_split(i1, "\\n", simplify = T)[1:2], -->
-<!--   str_split(i2, "\\n", simplify = T)[1:2], -->
-<!--   str_split(i1, "\\n", simplify = T)[3:12], -->
-<!--   str_split(i2, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat() -->
-<!-- ``` -->
-
-<!-- .bottom[https://blog.mapbox.com/washington-posts-electoral-maps-how-we-built-it-b311ccecfa75] -->
+Here's another cartogram, this time from the washington post in 2016. It uses diamonds, which are an interesting choice; it's also showing polling instead of actual returns. 
 
 ---
 ## Election Maps - FiveThirtyEight
 
 [![](figure/2020-house-forecast-20201101-538.png)](https://projects.fivethirtyeight.com/2020-election-forecast/house/)
+
+???
+
+The last cartogram I decided to show you from the media is actually for the House seats and not the presidential race. I put this presentation together over the weekend; and I've updated it somewhat to show the newest graphics, but I didn't have infinite time over the last day or so. I like the hexagonal cartogram too, and especially like the fact that each state is broken up - it makes it easier to maintain some sort of spatial similarity (though IL bordering NE is ... irritating). 
+
+I also like the solid/likely/lean color scale - it preserves the important parts while reducing the visual complexity of the situation. The other part of this graphic I really like is the summary at the bottom comparing the forecast to the status quo, with the uncertainty shown as well - it's clear that there is a chance for an increased majority, but not a huge chance. So the aggregated summary really helps me with integrating the map information into a "what does this mean in reality" situation.
 
 <!-- --- -->
 <!-- <iframe src="https://s3.us-east-2.amazonaws.com/wiscontext-viz/cartograms/election_gov_2018.html" width="100%" height="600px"></iframe> -->
@@ -322,7 +367,7 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 ---
 ## Maps in ElectionViz
 
-```{r, fig.width = 6, fig.height = 4, out.width = c("45%", "55%")}
+```{r, fig.width = 6, fig.height = 4, out.width = c("45%", "55%"), echo = F}
 states <- state_1 %>%
   polls_plus(electoral_votes_2016) %>%
   mutate(
@@ -367,6 +412,12 @@ state_mapping %>% left_join(state_3, by = c("state_name" = "state")) %>%
   ggtitle("Hexbin Cartogram by Electoral Votes (2020 polls+)")
 ```
 
+???
+
+At the moment, ElectionViz has the ability to make two different hex cartograms, utilizing maps borrowed from other packages. Part of our reasoning here was that you can get so many different shapefiles that we just wanted to make it easy to make a couple of simple charts; the other reason is that creating these cartograms isn't easy and I had limited time to mess with svgs in Illustrator or Inkscape. 
+
+I spent that time in Inkscape on other things, like the graphics which I'll show you next.
+
 
 ---
 ## The Electoral Snake (538 - 2016)
@@ -374,6 +425,12 @@ state_mapping %>% left_join(state_3, by = c("state_name" = "state")) %>%
 .center[
 ![From Sept 22, 2016](figure/2016-09-22-Electoral-snake-538.png)
 ]
+
+???
+
+One of the most effective electoral visualizations out there is the 538 electoral snake. It orders each electoral unit by vote margin, from left to right (so DC is always on the left and the nebraska 3rd district is most always on the right.) Each electoral vote has the same area, and it is easy to see where the "threshold" is crossed.
+
+This is from September 22, 2016. It's easy to see what the predicted swing states would be, and that Michigan, Pennsylvania, and Wisconsin were close but not a complete tossup at this point in the election cycle. How things change.
 
 ---
 ## The Electoral Snake (538 - 2020)
