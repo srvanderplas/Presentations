@@ -340,6 +340,15 @@ In 2012, they also show two different attempts at displaying the results: county
 The point is that if there were one perfect way to show election results, NYT probably would have found it by now...
 
 ---
+## Election Maps - NYT
+
+[![When polls close](figure/2020-nyt-when-polls-close.png)](https://www.nytimes.com/interactive/2020/us/politics/poll-closing-times.html)
+
+???
+
+Here is a chart from yesterday's NYT showing when polls close - they're using an exploded cartogram, which at least allows for a bit better spatial positioning. 
+
+---
 ## Election Maps - Washington Post
 
 [![](figure/2016-square-cartogram.png)](https://www.washingtonpost.com/graphics/politics/2016-election/50-state-poll/)
