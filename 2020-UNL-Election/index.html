@@ -389,9 +389,76 @@ I also like the solid/likely/lean color scale - it preserves the important parts
 &lt;!-- .small[.bottom[https://urbanmilwaukee.com/2019/01/17/cartogram-makes-last-election-look-different/]] --&gt;
 
 ---
+## 2020 Roundup
+
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img2020nrkresults' src='figure/2020-nrk-results.png' alt='2020 NRK (Norwegian) https://www.nrk.no/spesial/presidentvalget---resultater-1.15226425' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img2020newyorkerresultsdashboard' src='figure/2020-new-yorker-results-dashboard.png' alt='New Yorker Cartogram https://www.newyorker.com/news/election-2020/live-2020-presidential-election-results' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img2020zeitdedashboard' src='figure/2020-zeitde-dashboard.png' alt='Zeit Online dashboard https://www.zeit.de/politik/ausland/2020-11/us-wahl-ergebnisse-donald-trump-joe-biden-auszaehlung-hochrechnung-live' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img2020bloomberg' src='figure/2020-bloomberg.png' alt='Bloomberg Dashboard https://www.bloomberg.com/graphics/2020-us-election-results' width='32%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img2020wsjdashboard' src='figure/2020-wsj-dashboard.png' alt='Wall Street Journal dashboard https://www.wsj.com/election-results-2020/' width='32%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal2020nrkresults' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal2020nrkresults'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption2020nrkresults' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal2020newyorkerresultsdashboard' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal2020newyorkerresultsdashboard'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption2020newyorkerresultsdashboard' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal2020zeitdedashboard' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal2020zeitdedashboard'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption2020zeitdedashboard' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal2020bloomberg' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal2020bloomberg'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption2020bloomberg' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal2020wsjdashboard' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal2020wsjdashboard'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption2020wsjdashboard' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+[NYT options](https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html)
+
+---
 ## Maps in ElectionViz
 
-&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="45%" /&gt;&lt;img src="index_files/figure-html/unnamed-chunk-9-2.png" width="55%" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="45%" /&gt;&lt;img src="index_files/figure-html/unnamed-chunk-10-2.png" width="55%" /&gt;
 
 ???
 
@@ -429,7 +496,7 @@ Here's the 2020 version, which has mostly changed so that it's tilted diagonally
 
 ## The Electoral Snake (electionViz)
 
-![](index_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -602,6 +669,15 @@ McKay differentiates between anxiety due to uncertainty (which the needle succes
 538 uses balls to show the same sort of uncertainty, with a corresponding summary plot showing all of the 40k simulations they used to make their predictions. I Like the extra information you get from the ball summary plot with the mouseovers showing which states contributed to each simulation. I am less fond of the mirrored density plot - it would be just as easy to split the two pieces up and show the left half of the axis as red Trump win simulations. But I can see where that would be confusing as well. 
 
 ---
+## Outcome Uncertainty
+
+[![](figure/Screenshot_20201103-new_statesman-forecast.png)](https://www.newstatesman.com/international/2020/11/us-2020-presidential-election-forecast-model-will-donald-trump-or-joe-biden)
+
+???
+
+This is an interesting way to show the distribution symmetry. I'm not completely sure that I like it, but I do think the result is at least visually appealing, and I think it does at least as good of a job as 538 at showing what the likely result is relative to the unlikely results.
+
+---
 ## "Wave" Graphics
 
 ![](figure/2018-guardian-blue-wave.png)
@@ -640,6 +716,8 @@ The other thing that is very interesting is that the data you'd want to make the
 
 - Visualizing Afghan Elections    
 [How We Visualized an Election with No Political Parties](https://source.opennews.org/articles/how-we-visualized-election-no-political-parties/)
+
+- [Muddy America: Color Balancing the Election Map](https://t.co/DpAodXAc0r?amp=1)
 
 ???
 
@@ -1006,6 +1084,91 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
           /* When the user clicks on the modalImg, close it*/
           modalImgnytmap2012popcirc.onclick = function() {
             modalnytmap2012popcirc.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2020nrkresults = document.getElementById('modal2020nrkresults');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2020nrkresults = document.getElementById('img2020nrkresults');
+          var modalImg2020nrkresults = document.getElementById('imgmodal2020nrkresults');
+          var captionText2020nrkresults = document.getElementById('caption2020nrkresults');
+          img2020nrkresults.onclick = function(){
+            modal2020nrkresults.style.display = 'block';
+            modalImg2020nrkresults.src = this.src;
+            captionText2020nrkresults.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2020nrkresults.onclick = function() {
+            modal2020nrkresults.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2020newyorkerresultsdashboard = document.getElementById('modal2020newyorkerresultsdashboard');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2020newyorkerresultsdashboard = document.getElementById('img2020newyorkerresultsdashboard');
+          var modalImg2020newyorkerresultsdashboard = document.getElementById('imgmodal2020newyorkerresultsdashboard');
+          var captionText2020newyorkerresultsdashboard = document.getElementById('caption2020newyorkerresultsdashboard');
+          img2020newyorkerresultsdashboard.onclick = function(){
+            modal2020newyorkerresultsdashboard.style.display = 'block';
+            modalImg2020newyorkerresultsdashboard.src = this.src;
+            captionText2020newyorkerresultsdashboard.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2020newyorkerresultsdashboard.onclick = function() {
+            modal2020newyorkerresultsdashboard.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2020zeitdedashboard = document.getElementById('modal2020zeitdedashboard');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2020zeitdedashboard = document.getElementById('img2020zeitdedashboard');
+          var modalImg2020zeitdedashboard = document.getElementById('imgmodal2020zeitdedashboard');
+          var captionText2020zeitdedashboard = document.getElementById('caption2020zeitdedashboard');
+          img2020zeitdedashboard.onclick = function(){
+            modal2020zeitdedashboard.style.display = 'block';
+            modalImg2020zeitdedashboard.src = this.src;
+            captionText2020zeitdedashboard.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2020zeitdedashboard.onclick = function() {
+            modal2020zeitdedashboard.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2020bloomberg = document.getElementById('modal2020bloomberg');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2020bloomberg = document.getElementById('img2020bloomberg');
+          var modalImg2020bloomberg = document.getElementById('imgmodal2020bloomberg');
+          var captionText2020bloomberg = document.getElementById('caption2020bloomberg');
+          img2020bloomberg.onclick = function(){
+            modal2020bloomberg.style.display = 'block';
+            modalImg2020bloomberg.src = this.src;
+            captionText2020bloomberg.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2020bloomberg.onclick = function() {
+            modal2020bloomberg.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2020wsjdashboard = document.getElementById('modal2020wsjdashboard');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2020wsjdashboard = document.getElementById('img2020wsjdashboard');
+          var modalImg2020wsjdashboard = document.getElementById('imgmodal2020wsjdashboard');
+          var captionText2020wsjdashboard = document.getElementById('caption2020wsjdashboard');
+          img2020wsjdashboard.onclick = function(){
+            modal2020wsjdashboard.style.display = 'block';
+            modalImg2020wsjdashboard.src = this.src;
+            captionText2020wsjdashboard.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2020wsjdashboard.onclick = function() {
+            modal2020wsjdashboard.style.display = 'none';
           }
 </script>
 <script>
