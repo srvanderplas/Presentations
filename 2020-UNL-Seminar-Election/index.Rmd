@@ -437,7 +437,9 @@ I spent that time in Inkscape on other things, like the graphics which I'll show
 
 ???
 
-One of the most effective electoral visualizations out there is the 538 electoral snake. It orders each electoral unit by vote margin, from left to right (so DC is always on the left and the nebraska 3rd district is most always on the right.) Each electoral vote has the same area, and it is easy to see where the "threshold" is crossed.
+One of the most effective electoral visualizations out there is the 538 electoral snake. It orders each electoral unit by vote margin, from left to right (so DC is always on the left and the Nebraska 3rd district is most always on the right.) Each electoral vote has the same area, and it is easy to see where the "threshold" is crossed.
+
+Typically, the snake is shaded either in a discrete scale showing "safe", "moderate", "lean", and "tossup" for each party, or it's shaded continuously by the margin of vote for each candidate. 
 
 This is from September 22, 2016. It's easy to see what the predicted swing states would be, and that Michigan, Pennsylvania, and Wisconsin were close but not a complete tossup at this point in the election cycle. How things change.
 
@@ -449,7 +451,7 @@ This is from September 22, 2016. It's easy to see what the predicted swing state
 
 ???
 
-Here's the 2020 version, which has mostly changed so that it's tilted diagonally.
+Here's the 2020 version, which has mostly changed so that it's tilted diagonally. There also seem to be slightly more variations in coloration (but it is hard to tell).
 
 ---
 
@@ -482,6 +484,14 @@ state_3 %>%
 
 ```
 
+???
+
+Creating this in ElectionViz was actually really interesting. The underlying form is an SVG with 538 individual pieces; then, we just have to group the pieces together, take the union of the enclosed regions, and label them appropriately.
+
+We're a bit hampered by a couple of things: 1, in order to keep the aspect ratio, it's difficult to resize this chart, and 2, R doesn't have a way to curve text around a path. We could output to svg if we were detail-oriented enough but for now, this is the ggplot2 version, and it's not half bad. I'm calculating the approximate angle to place the text when it goes around a curve, which is about as much as I can do...
+
+It's also a bit hard to get the color scale on the text right so that it's readable, but again, I've basically decided not to mess too much with that for the moment. The perfect is the enemy of the good, and it's only a problem because in this election there are a lot of safe blue states.
+
 ---
 ## The Electoral Tower
 
@@ -503,6 +513,13 @@ label_fix2 <- c("District of Columbia" = "DC", "Maine CD" = "ME", "Nebraska CD" 
 state_3 <- state_3 %>% #filter(!(state %in% c("Maine", "Nebraska"))) %>% 
   mutate(label = str_replace_all(state, label_fix2))
 ```
+
+???
+
+A slightly less complicated-to-draw option is the Electoral Tower. It has essentially the same idea as the snake, but instead of displaying the margin of victory as the fill of the object, instead, here, we plot it out explicitly: the x-axis tells us the margin of victory in each direction, and the y-axis tells us the number of electoral votes. 
+
+This was first introduced by the NYTimes in 2000, and has since then been emulated by other outlets, including this version created by the Financial times in 2016. 
+
 
 ---
 ## The Electoral Tower
@@ -542,18 +559,29 @@ electoral_building(
 ```
 ]
 
+???
 
+We've also implemented the electoral building in electionViz. This version is the 2020 polling edition. You can't tell, but NE-3 is not filled in because it's the only jurisdiction that didn't have any polls this election. 
+
+The only thing I'm not wild about here is that it doesn't quite give you a sense of the uncertainty that is inherent in the states with much less margin.
 
 ---
 ## Paths to the White House
 
 [![2012 NYT Path to the White House](figure/2012-NYT-path-white-house.png)](https://www.nytimes.com/elections/2012/results/president/scenarios.html#app)
 
+???
+
+Another type of chart that has been relatively common historically is the "choose your own adventure" chart. This version, from 2012, used an actual tree to allow visitors to select which state would go to which candidate, and then to see the possible paths to victory for each candidate based on those choices.
 
 ---
 ## Paths to the White House
 
 [![2020 NYT Battleground Bubble chart](figure/2020-NYT-path-white-house-bubble.png)](https://www.nytimes.com/interactive/2020/us/elections/election-states-biden-trump.html)
+
+???
+
+This option doesn't quite have the same organizational appeal, but allows you to interact all the same. The one thing I don't like here is that we're bad at area and particularly bad with circles, so the "270 to win" threshold lines are not the most intuitive or easy-to-read and compare mechanisms to show getting past a threshold.
 
 ---
 ## Explore the Ways to Win
@@ -562,6 +590,9 @@ electoral_building(
 <div class="wrap">
 <iframe class="scale-frame" src = "https://projects.fivethirtyeight.com/trump-biden-election-map/#ui" width = "100%" height = "500px"/></div>
 
+???
+
+I'm a bit more fond of 538's version, which lets you click either on the map or on the faces above the map to select which state will go to which person. The results update based on "wave" probability, so selecting e.g. Texas for Biden means that a lot of other states turn blue as well. The count at the bottom shows the "score" based on that updated information. 
 
 ---
 ## Uncertainty - The Needle (NYT)
@@ -570,9 +601,27 @@ electoral_building(
 ![NYTimes Election Needle, image from https://fair.org/home/the-needle-and-the-damage-done/](figure/2016-NYT-Needle.png)
 ]
 
+???
+
+How many of you know what this refers to? 
+
+--
+
 - "jitter" motion to show simulation uncertainty
 
+???
+
+The needle used this jitter/twitching motion to show uncertainty in the predicted outcome - so as the night went on, the uncertainty was reduced.
+
+--
+
 - motion sometimes falsely interpreted as new data coming in
+
+???
+
+The problem is that not everyone really understood what they were showing - a lot of people saw it as "new data coming in" which really ramped up people's anxiety quite a bit.
+
+--
 
 - [The Needle and the Damage Done](https://fair.org/home/the-needle-and-the-damage-done/) (FAIR.org, from 2018)
 
@@ -582,16 +631,33 @@ electoral_building(
 
 - ['The Needle' Won't Be Used on Election Night](https://politicalwire.com/2020/10/24/the-needle-wont-be-used-on-election-night/)
 
+???
+
+As a result, this is maybe one of the most hated election graphics ever; I've provided a few different assessments of the needle's problems if you're interested. But the NYT used the needle throughout the 2020 primaries; it was announced a bit before this year's general election that the needle wouldn't be making an appearance.
+
 ---
 <iframe src="http://presidential-plinko.com/" width = "100%" height = "600px"></iframe>
 
+???
+
+Another attempt to show the same type of uncertainty was done by Matthew McKay, who's a professor at Northwestern studying uncertainty visualization. He decided to use a plinko board so that it was clear that the uncertainty was "random" instead of a result of new information.
+
+McKay differentiates between anxiety due to uncertainty (which the needle successfully conveyed) and uncertainty due to temporal changes compared with existential uncertainty - this is where he says the needle failed.
 
 ---
 ## Outcome Uncertainty - 538
+.pull-left[
+![538 final forecast - density](figure/2020-538-forecast-final-density.png)
+].pull-right[
+[![538 final forecast - balls](figure/2020-538-forecast-final.png)](https://projects.fivethirtyeight.com/2020-election-forecast/#topline)
+]
 
-<iframe src="https://projects.fivethirtyeight.com/2020-election-forecast/#topline" width = "100%" height = "500px"></iframe>
+.bottom[This is also the only chart I've ever seen inspire a [halloween costume](https://twitter.com/thesarahkaym/status/1322747883544858625)]
 
 
+???
+
+538 uses balls to show the same sort of uncertainty, with a corresponding summary plot showing all of the 40k simulations they used to make their predictions. I Like the extra information you get from the ball summary plot with the mouseovers showing which states contributed to each simulation. I am less fond of the mirrored density plot - it would be just as easy to split the two pieces up and show the left half of the axis as red Trump win simulations. But I can see where that would be confusing as well. 
 
 ---
 ## "Wave" Graphics
@@ -600,7 +666,9 @@ electoral_building(
 
 ???
 
-- Arrow size shows direction of the swing (but it's not clear whether that's percentage points or population shift)
+The last chart I want to show is from 2018's "blue wave" election showing the size and direction of the swing in each location. It's not clear whether the swing shown is percentage or population shift, but the overall spatial clustering of the shifts is a very interesting way to do things - I really like what this chart shows.
+
+I expect in the next few days or weeks we'll see a similar chart for 2020.
 
 ---
 ## Other Factors affecting Election Graphics
@@ -614,10 +682,24 @@ electoral_building(
     - Polling not available in all areas
     - Not all areas are electing all offices each election
 
+???
+
+In compiling these pictures for you, I came across a few other factors I didn't have time to talk about but I'd like to bring up now - election graphics are complicated because the electoral system is complicated. I've mostly focused on the US Presidential election here, but even that isn't so straightforward anymore - in Maine, they're using ranked choice voting now, and it will be interesting to see whether that is adopted elsewhere - it could change how we're representing this data. 
+
+The electoral system we use also impacts how these graphics are shown - with electionViz, we made the conscious choice not to bother with generalizing some variables to allow for other electoral systems, because these graphics don't really work for those systems anyways. You need different types of graphics for parliamentary systems, proportional representation, etc., and things that work for the electoral college are pretty much specific to the US.
+
+The other thing that is very interesting is that the data you'd want to make these graphics isn't always available. For instance, this year, exit poll data is basically not worth looking at, for the first time in a long time. Senate elections, too, are tricky - we don't elect all senators each 2 year election, so you have to find a way to show "not up for re-election".
+
+
 ---
 ## Fun Reading
 
 - [Reasons to consider a cartogram](https://medium.com/civic-tech-thoughts-from-joshdata/how-that-map-you-saw-on-538-under-represents-minorities-by-half-and-other-reasons-to-consider-a-4a98f89cbbb1)
 
-- [How We Visualized an Election with No Political Parties](https://source.opennews.org/articles/how-we-visualized-election-no-political-parties/) - Visualizing Afghan Elections
+- Visualizing Afghan Elections    
+[How We Visualized an Election with No Political Parties](https://source.opennews.org/articles/how-we-visualized-election-no-political-parties/)
+
+???
+
+Here are a couple of interesting links that I came across while creating these slides that cover topics like why cartograms are better for showing minorities, and what to do when there aren't any parties to show (which is a problem we won't have in the US, but an interesting problem nonetheless.)
 
