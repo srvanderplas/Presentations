@@ -72,11 +72,13 @@ class: center, middle, inverse, title-slide
 
 ## Outline
 
-- `ElectionViz` package
+- [`electionViz` package](#electionviz)
 
-- A Brief Tour of (In)famous Election Graphics
+- [A Brief Tour of (In)famous Election Graphics](#tour)
 
-- Why are election graphics complicated?
+- [Why are election graphics complicated?](#complicated)
+
+- [Group Participation](#participation)
 
 
 .small[.bottom[Find these slides at https://srvanderplas.github.io/Presentations/2020-UNL-Election/]]
@@ -92,6 +94,7 @@ I will also say I'm doing my best to keep the discussion on the graphics instead
 
 
 ---
+name:electionviz
 .pull-left[
 ## electionViz
 
@@ -127,6 +130,7 @@ state_poll_df &lt;- state_polls %&gt;%
 The ElectionViz package is at the moment available only on github and still under active development. We wanted to make it easy to include the most up-to-date data, so we have functions to get the latest polls from several different sources, as well as functions that will substitute data from the last election for areas that haven't been polled (which seems to at this point only include the third district in Nebraska.) Once election results are in and validated from 2020 we'll add that data to the package as well - currently, it contains data from past presidential elections and very detailed data on 2016's election. 
 
 ---
+name:tour
 class:middle,center,inverse
 # .emph[A Tour of (In)famous US Election Charts]
 
@@ -810,6 +814,7 @@ The NYT seems to have liked this graphic enough to make it part of their standar
 This graphic shows a similar idea - the width is the vote margin, the height is the total votes cast. Stroke size indicates a landslide (50%+) county. This is from 2016 - I haven't yet seen a similar one for 2020.
 
 ---
+name:complicated
 ## Other Factors affecting Election Graphics
 
 - Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
@@ -833,6 +838,7 @@ The other thing that is very interesting is that the data you'd want to make the
 
 
 ---
+name:participation
 class:middle,inverse
 # .emph[Group Participation]
 
