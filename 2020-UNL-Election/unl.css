@@ -40,6 +40,9 @@ body{
   font-family: 'Montserrat', sans-serif; 
 }
 
+a body{
+  color: 000;
+}
 
 .title-slide.inverse {
 	background-color: #fefdfa;
@@ -192,4 +195,8 @@ div.remark-slide {
   position: absolute;
   bottom: 5px;
   width: 100%;
+}
+
+.hasAnchor ::after {
+  content: "";
 }

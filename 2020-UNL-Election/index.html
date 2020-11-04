@@ -3,11 +3,11 @@
   <head>
     <title>Election Graphics</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Susan Vanderplas.small.bottom[joint work with Kiegan Rice, Heike Hofmann]" />
+    <meta name="author" content="Susan Vanderplas" />
+    <meta name="author" content=".emph.cerulean.smaller[joint work with Kiegan Rice, Heike Hofmann]" />
+    <meta name="date" content="2020-11-04" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
-    <link href="libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-    <script src="libs/anchor-sections/anchor-sections.js"></script>
     <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&family=Roboto:ital,wght@0,500;1,500&display=swap');
@@ -20,8 +20,9 @@
 class: center, middle, inverse, title-slide
 
 # Election Graphics
-### Susan Vanderplas.small.bottom[joint work with Kiegan Rice, Heike Hofmann]
-### 04 November, 2020
+### Susan Vanderplas
+### .emph.cerulean.smaller[joint work with Kiegan Rice, Heike Hofmann]
+### November 04, 2020
 
 ---
 
@@ -30,58 +31,19 @@ class: center, middle, inverse, title-slide
 
 
 
-
-&lt;style type="text/css"&gt;
-.wrap
-{
-  width: 1050px;
-  height: 550px;
-  padding: 0;
-  overflow: hidden;
-  position: absolute;
-}
-.wrap2
-{
-  width: 1200px;
-  height: 650px;
-  padding: 0;
-  overflow: hidden;
-}
-
-
-.scale-frame
-{
-  width: 1100px;
-  height: 760px;
-  border: 0;
-  
-  -ms-transform: scale(0.75);
-  -moz-transform: scale(0.75);
-  -o-transform: scale(0.75);
-  -webkit-transform: scale(0.75);
-  transform: scale(0.75);
-  
-  -ms-transform-origin: 0 0;
-  -moz-transform-origin: 0 0;
-  -o-transform-origin: 0 0;
-  -webkit-transform-origin: 0 0;
-  transform-origin: 0 0;
-}
-&lt;/style&gt;
-
-
 ## Outline
 
-- [`electionViz` package](#electionviz)
+- `electionViz` package
 
-- [A Brief Tour of (In)famous Election Graphics](#tour)
+- A Brief Tour of (In)famous Election Graphics
 
-- [Why are election graphics complicated?](#complicated)
+- Why are election graphics complicated?
 
-- [Group Participation](#participation)
+- Group Participation
 
 
 .small[.bottom[Find these slides at https://srvanderplas.github.io/Presentations/2020-UNL-Election/]]
+
 ???
 
 Today, I'll be talking a bit about election graphics, and showing off a package that I've been slowly building with Heike Hofmann and Kiegan Rice to provide a way to generate some of the most interesting election graphics in R. The package is still under active development (to be honest, we were waiting for some election results that weren't 2016 in the hopes that we could show some cool differences between 2016 and 2020 - the jury is still out on that one). 
@@ -94,11 +56,10 @@ I will also say I'm doing my best to keep the discussion on the graphics instead
 
 
 ---
-name:electionviz
 .pull-left[
 ## electionViz
 
-[<i class="fab  fa-github "></i> heike/electionViz](https://github.com/heike/electionViz)
+[<i class="fab  fa-github "></i>heike/electionViz](https://github.com/heike/electionViz)
 
 
 
@@ -122,7 +83,7 @@ state_poll_df &lt;- state_polls %&gt;%
   polls_plus(electoral_votes_2016) 
 ```
 ].pull-right[
-&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="100%" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="100%" /&gt;
 ]
 
 ???
@@ -130,7 +91,6 @@ state_poll_df &lt;- state_polls %&gt;%
 The ElectionViz package is at the moment available only on github and still under active development. We wanted to make it easy to include the most up-to-date data, so we have functions to get the latest polls from several different sources, as well as functions that will substitute data from the last election for areas that haven't been polled (which seems to at this point only include the third district in Nebraska.) Once election results are in and validated from 2020 we'll add that data to the package as well - currently, it contains data from past presidential elections and very detailed data on 2016's election. 
 
 ---
-name:tour
 class:middle,center,inverse
 # .emph[A Tour of (In)famous US Election Charts]
 
@@ -609,7 +569,7 @@ Here's the 2020 version, which has mostly changed so that it's tilted diagonally
 
 ## The Electoral Snake (electionViz)
 
-![](index_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -814,7 +774,6 @@ The NYT seems to have liked this graphic enough to make it part of their standar
 This graphic shows a similar idea - the width is the vote margin, the height is the total votes cast. Stroke size indicates a landslide (50%+) county. This is from 2016 - I haven't yet seen a similar one for 2020.
 
 ---
-name:complicated
 ## Other Factors affecting Election Graphics
 
 - Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
@@ -838,7 +797,6 @@ The other thing that is very interesting is that the data you'd want to make the
 
 
 ---
-name:participation
 class:middle,inverse
 # .emph[Group Participation]
 
