@@ -28,7 +28,7 @@ clean_file_name <- function(x) {
   basename(x) %>% str_remove("\\..*?$") %>% str_remove_all("[^[A-z0-9_]]")
 }
 
-img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
+img_modal <- function(src, alt = "", id = clean_file_name(src), other = "", link = "") {
   
   other_arg <- paste0("'", as.character(other), "'") %>%
     paste(names(other), ., sep = "=") %>%
@@ -51,8 +51,24 @@ img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
             modal{id}.style.display = 'none';
           }}
 </script>")
-  
-  html <- glue::glue(
+  if (link != "") {
+      html <- glue::glue(
+     " <!-- Trigger the Modal -->
+<img id='img{id}' src='{src}' alt='{alt}' {other_arg}>
+
+<!-- The Modal -->
+<div id='modal{id}' class='modal'>
+
+  <!-- Modal Content (The Image) -->
+  <img class='modal-content' id='imgmodal{id}'>
+  <a href='{link}'>Link</a>
+  <!-- Modal Caption (Image Text) -->
+  <div id='caption{id}' class='modal-caption'></div>
+</div>
+"
+  )
+  } else {
+      html <- glue::glue(
      " <!-- Trigger the Modal -->
 <img id='img{id}' src='{src}' alt='{alt}' {other_arg}>
 
@@ -67,6 +83,8 @@ img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
 </div>
 "
   )
+  }
+
   write(js, file = "js-addins.html", append = T)
   return(html)
 }
@@ -126,21 +144,20 @@ write("", file = "js-addins.html")
 .small[.bottom[Find these slides at https://srvanderplas.github.io/Presentations/2020-UNL-Election/]]
 ???
 
-Today, I'll be talking a bit about election graphics, and showing off a package that I've been slowly building with Heike Hofmann and Kiegan Rice to provide a way to generate some of the most interesting election graphics in R. 
+Today, I'll be talking a bit about election graphics, and showing off a package that I've been slowly building with Heike Hofmann and Kiegan Rice to provide a way to generate some of the most interesting election graphics in R. The package is still under active development (to be honest, we were waiting for some election results that weren't 2016 in the hopes that we could show some cool differences between 2016 and 2020 - the jury is still out on that one). 
 
-I'll start by showing you the basic functionality of ElectionViz, and then I'll do a general tour of different types of election related charts, showing you the ones we've added to electionViz as we go along.
+I'll start by showing you the basic functionality of electionViz, and then I'll do a general tour of different types of election related charts, showing you the ones we've added to electionViz as we go along. With the election currently undecided (at least as of this morning) I'm sure we've all spent more time than expected staring at graphics like this. 
 
-Feel free to interrupt, ask questions, and make comments as we go. I'm pretty awful at paying attention to the chat, so just interrupt.
+Feel free to interrupt, ask questions, and make comments as we go. I'm pretty awful at paying attention to the chat, and since that's usually my job to handle that for the presenter, I'm just going to ask you to speak up instead. 
 
-I will also say I'm doing my best to keep the discussion on the graphics instead of the political situation. Should any snark creep in unnecessarily, please remember that snark is my own opinion and not that of the university. 
+I will also say I'm doing my best to keep the discussion on the graphics instead of the political situation. Should any snark creep in accidentally, please remember that snark is my own opinion and not that of the university. 
 
 
 ---
-
 .pull-left[
-## `electionViz` 
+## electionViz
 
-[https://github.com/heike/electionViz](https://github.com/heike/electionViz)
+[`r icon::fa("github")` heike/electionViz](https://github.com/heike/electionViz)
 
 ```{r, eval = F, include = T}
 devtools::install_github("heike/electionViz")
@@ -153,7 +170,8 @@ fivethirtyeight_update(
   polls="president_polls") %>% 
   filter(
     !is.na(state), 
-    population %in% c("lv", "rv")) %>%
+    population %in% 
+      c("lv", "rv")) %>%
   
   # Last 5 polls
   polls_filter(
@@ -198,9 +216,9 @@ gg_states +
   geom_point(aes(x = pct_diff, colour = pct_diff>0, shape=source),
              size = 2, data = state_3) +
   scale_colour_party("Party", labels=c("Democrat", "Republican")) +
-  scale_x_continuous("Percent Difference", breaks=c(-60,-40,-20,0,20,40,60), 
-                     limits=c(-60,60),
-                     labels = c("←\nMore Dem", "40","20",0,20, 40, "→\nMore Rep")) +
+  scale_x_continuous("Percent Difference", breaks=c(-80, -60,-40,-20,0,20,40,60), 
+                     limits=c(NA,65),
+                     labels = c("←\nMore Dem", "60", "40","20",0,20, 40, "→\nMore Rep")) +
   theme(legend.position="bottom") +
   scale_shape_manual("Source", values = c(1, 19)) +
   ggtitle(sprintf("Polls of likely or registered voters,\n%s to %s", min(state_1$end_date), max(state_1$end_date))) + 
@@ -210,7 +228,7 @@ gg_states +
 
 ???
 
-The ElectionViz package is at the moment available only on github and still under active development. We wanted to make it easy to include the most up-to-date data, so we have functions to get the latest polls from several different sources, as well as functions that will substitute data from the last election for areas that haven't been polled (which seems to at this point only include the third district in Nebraska.)
+The ElectionViz package is at the moment available only on github and still under active development. We wanted to make it easy to include the most up-to-date data, so we have functions to get the latest polls from several different sources, as well as functions that will substitute data from the last election for areas that haven't been polled (which seems to at this point only include the third district in Nebraska.) Once election results are in and validated from 2020 we'll add that data to the package as well - currently, it contains data from past presidential elections and very detailed data on 2016's election. 
 
 ---
 class:middle,center,inverse
@@ -218,7 +236,7 @@ class:middle,center,inverse
 
 ---
 ```{r results='asis', echo = F, include = T, cache=F}
-i1 <- img_modal(src = "figure/1883-stat-atlas-county-map.jpg", alt = "1880 Election Results by County from the Statistical Atlas", other=list(width="90%", class ="center"))
+i1 <- img_modal(src = "figure/1883-stat-atlas-county-map.jpg", alt = "1880 Election Results by County from the Statistical Atlas", other=list(width="90%", style="margin-left:auto;margin-right:auto;max-width='100%';", class ="center"))
 i2 <- img_modal(src = "figure/1883-key.png", alt = "Key", other=list(height="50px"))
 i3 <- img_modal(src = "figure/1883-by-state.png", alt = "1880 Election Results by State from the Statistical Atlas", other=list(height="50px"))
 i4 <- img_modal(src = "figure/1883-popular-vote-sub2.png", alt = "1880 Election Results (Popular Vote)", other=list(height="50px"))
@@ -228,12 +246,15 @@ i7 <- img_modal(src = "figure/1883-presidential-vote.png", alt = "1880 Election 
 
 c(str_split(i1, "\\n", simplify = T)[1:2],
   str_split(i1, "\\n", simplify = T)[3:12],
+  "<div style='display:inline-block;margin-left;auto;margin-right:auto;width=100%;'>",
   str_split(i2, "\\n", simplify = T)[1:2],
   str_split(i3, "\\n", simplify = T)[1:2],
   str_split(i4, "\\n", simplify = T)[1:2],
   str_split(i5, "\\n", simplify = T)[1:2],
   str_split(i6, "\\n", simplify = T)[1:2],
   str_split(i7, "\\n", simplify = T)[1:2],
+  "</div>",
+  "<div style='display:inline-block'><a href='https://www.youtube.com/watch?v=JHw5_1Hopsc' class='tiny'>Video Link: Lithography (how this chart was made)</a></div>",
   str_split(i2, "\\n", simplify = T)[3:12],
   str_split(i3, "\\n", simplify = T)[3:12],
   str_split(i4, "\\n", simplify = T)[3:12],
@@ -242,7 +263,9 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
   str_split(i7, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
 ```
 
-[Source](https://www.loc.gov/resource/g3701gm.gct00009/?sp=40)
+
+
+.small.bottom[[See the page from the Library of Congress](https://www.loc.gov/resource/g3701gm.gct00009/?sp=40)]
 
 ???
 
@@ -250,9 +273,9 @@ The first chart I want to show you is, as best as I can tell, the first US elect
 
 The main part of the spread is this map, which isn't so different from our election maps today (except for e.g. the gaping hole in the middle of Oklahoma, Texas, Kansas, and Nebraska, where there weren't any votes for various resasons.) The map shows the popular vote as a proportion of the total vote, using a bivariate color scale for the two parties.
 
-When we zoom in to see the key, though, we can see that the two parties are assigned colors that are exactly the opposite of what we use today (though the two parties in 1880 were very different from the parties of the same name today). Increasing amount/density of color is used to show an increasingly partisan vote. These maps were made with lithography, which meant that someone had to apply wax to soapstone very precisely to remove areas of color from the chart; for each color ink used, this process had to be repeated *precisely* in order to generate a color chart. It was a ton of work. You can see a little bit of misalignment in the greenback vote rectangle that shows how the process worked. 
+When we zoom in to see the key, though, we can see that the two parties are assigned colors that are exactly the opposite of what we use today (though the two parties in 1880 were very different from the parties of the same name today). Increasing amount/density of color is used to show an increasingly partisan vote. These maps were made with lithography, which meant that someone had to apply grease to stone very precisely to provide areas of color to the chart (and in mirror image, too!); for each color ink used, this process had to be repeated *precisely* in order to generate a color chart. It was a ton of work. You can see a little bit of misalignment in the greenback vote rectangle that shows how the process worked. 
 
-Personally, I'll take a moment to be very grateful for ggplot2. I don't have the patience for lithography.
+Personally, I'll take a moment to be very grateful for ggplot2. I don't have the patience (or the steady hand) for lithography.
 
 The spread also includes a state-level summnary map, which is again not so different from how we'd show things today.
 
@@ -264,16 +287,16 @@ The next piece of the chart that I want to highlight (and yes, there is a ton of
 
 The last feature of this chart I'd like to highlight is one that I had to alter a bit to fit on the slide. Across the bottom of this spread is a chart showing the total vote, with all of the minor candidates as well. So you can very effectively see that Scattering and Weaver had very little support relative to Hancock and Garfield, but that either minor candidate could have thrown the popular vote!
 
-We don't use scales like this very often anymore, which is something of a shame - it really makes the point effectively, even though I did have to chop the graph up into several pieces in order to get it to fit. 
+We don't use scales like this very often anymore, which is something of a shame - it really makes the point effectively, even though I did have to chop the graph up into several pieces in order to get it to fit on my slide. 
 
 
 ---
 ## A few definitions
 
+- **chloropleth** - a map which is shaded according to a numeric variable
+
 - **cartogram** - a map which distorts the geometry of the regions to convey information about another variable (e.g. electoral vote or population rather than area)
     <!-- - [How cartograms are created](http://www.geog.ucsb.edu/~kclarke/G232/ToblerCartograms.pdf) -->
-
-- **chloropleth** - a map which is shaded according to a numeric variable
 
 [![](figure/cartogram-demo.png)](https://www.washingtonpost.com/graphics/politics/2016-election/how-election-maps-lie/)
 
@@ -293,11 +316,15 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 
 ???
 
-A few definitions are in order here, since I decided to start in with maps. A cartogram is a map which distorts the geometry fo the regions to show information about another variable. A chloropleth map is a map with shading corresponding to another (non spatial) variable.
+A few definitions are in order here, since I decided to start in with maps. A chloropleth map is a map with shading corresponding to another (non spatial) variable, such as the percentage of the vote for a candidate (as in the 1880 map I just showed). 
 
-So the 1880 election map is a chloropleth map but isn't a cartogram. Cartograms have become more popular since the advent of computer graphics meant that we didn't have to painstakingly apply layers of wax to soapstone by hand in order to create graphical forms. It's much easier to let a computer make a cartogram than to draw one by hand.
+A cartogram is a map which distorts the geometry of the regions to show information about another variable. 
 
-In the image shown here, which I have taken from the Washington post (if you are looking at these slides online, you can click on the picture to get the original source), shows several different ways to show the same data, summarized differently. You can shade the map differently to show the proportion of the vote instead of the winner, and you can shift the geography to show different levels of population density distribution. These types of continuous cartograms are sometimes very hard to read - so hard that they destroy the original point, which is to represent the individual voters instead of the geographic land where they reside.
+Cartograms have become more popular since the advent of computer graphics meant that we didn't have to painstakingly apply layers of grease to stone by hand in order to create graphical forms. It's much easier to let a computer make a cartogram than to draw one by hand.
+
+In the image shown here, which I have taken from the Washington post (if you are looking at these slides online, you can click on the picture to get the original source), shows several different ways to show the same data, summarized differently. You can shade the map differently to show the proportion of the vote instead of the winner, and you can shift the geography to show different levels of population density distribution. These types of continuous cartograms are sometimes very hard to read - so hard that they don't necessarily achieve the original point, which is to represent the individual voters instead of the geographic land where they reside, because your attention is so focused on the grotesque shape that doesn't bear any resemblance to the geographic area. 
+
+As with many things in graphics, sometimes the cure is worse than the disease. 
 
 
 ---
@@ -335,20 +362,39 @@ By the advent of computer graphics, in 1992, the shapes were somewhat more preci
 
 The next two attempts are both from 2004; one is a square cartogram showing the electoral votes of each state; with shading that shows the percentage of the vote. I find this cartogram a bit odd in that somehow Kansas is east of and north of Nebraska (and North/south dakota?) - but cartograms are hard to make because it's not easy to compromise on area and still maintain the approximate shape. 
 
-Another 2004 map shows the results by population density, which is I believe a relatively good attempt to show the popular vote as a result of "total amount of color" - what isn't clear is how easily we aggregate over color intensity. 
+Another 2004 map shows the results by population density, which is I believe a relatively good attempt to show the popular vote as a result of "total amount of color" - what isn't clear is how easily we aggregate over color intensity. This is where research on how graphics are perceived is important - if we know how people make these types of decisions, then we can say "this is an effective way to make the point" or "this is not an effective way to make the point" - but now, we don't have the data to back it up.
 
-In 2012, they also show two different attempts at displaying the results: county-level chloropleth maps first, and with county-level dots showing the size of the vote margin. In both cases, they're using county as a proxy for voting unit, but votes are aggregated at the precinct level and at the state level (or in the case of Nebraska and Maine, at the precinct, district, and state level). So county isn't a great approximation of anything, really; it's not totally clear whether either map actually achieves the objective. 
+In 2012, they also show two different attempts at displaying the results: county-level chloropleth maps first, and with county-level dots showing the size of the vote margin. In both cases, they're using county as a proxy for voting unit, but votes are aggregated at the precinct level and at the state level (or in the case of Nebraska and Maine, at the precinct, district, and state level). So county isn't a great approximation of anything, really; it's not totally clear to me whether either map actually achieves the objective. 
 
 The point is that if there were one perfect way to show election results, NYT probably would have found it by now...
 
 ---
 ## Election Maps - NYT
 
-[![When polls close](figure/2020-nyt-when-polls-close.png)](https://www.nytimes.com/interactive/2020/us/politics/poll-closing-times.html)
+```{r results='asis', echo = F, include = T, cache=F}
+i1 <- img_modal(src = "figure/202011040822-nyt-map-bystate.png", alt = "2020 by state", 
+                other=list(style="object-fit:contain;max-width:48%;max-height:200px;margin-left:auto;margin-right:auto;width:48%"))
+i2 <- img_modal(src = "figure/202011040823-nyt-cartogram-results.png", alt = "2020 cartogram", 
+                other=list(style="object-fit:contain;max-width:48%;max-height:200px;margin-left:auto;margin-right:auto;width:48%"))
+i3 <- img_modal(src = "figure/202011040823-nyt-bubble-lead-size.png", alt = "2020 size of lead",
+                other=list(style="object-fit:contain;max-width:48%;max-height:200px;margin-left:auto;margin-right:auto;width:48%"))
+i4 <- img_modal(src = "figure/202011040824-nyt-shift-from-2016.png", alt = "2020 shift from 2016",
+                other=list(style="object-fit:contain;max-width:48%;max-height:200px;margin-left:auto;margin-right:auto;width:48%"))
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i3, "\\n", simplify = T)[1:2],
+  str_split(i4, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:12],
+  str_split(i2, "\\n", simplify = T)[3:12],
+  str_split(i3, "\\n", simplify = T)[3:12],
+  str_split(i4, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
+```
+<!-- [![](figure/2020-nyt-battlegrounds.png)](https://www.nytimes.com/interactive/2020/us/politics/battleground-states-trump-biden.html) -->
 
+[Link](https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html)
 ???
 
-Here is a chart from yesterday's NYT showing when polls close - they're using an exploded cartogram, which at least allows for a bit better spatial positioning. 
+These charts are the NYT primary options to see the election results this year. They've opted to show the geographic map, the cartogram, the bubble chart with the size of the lead, and then a chart showing the change from 2016 which I'll talk about in more depth later. 
 
 ---
 ## Election Maps - Washington Post
@@ -359,16 +405,19 @@ Here is a chart from yesterday's NYT showing when polls close - they're using an
 
 Here's another cartogram, this time from the washington post in 2016. It uses diamonds, which are an interesting choice; it's also showing polling instead of actual returns. 
 
----
-## Election Maps - FiveThirtyEight
+<!-- --- -->
+<!-- ## Election Maps - FiveThirtyEight -->
 
-[![](figure/2020-house-forecast-20201101-538.png)](https://projects.fivethirtyeight.com/2020-election-forecast/house/)
+<!-- [![](figure/2020-house-forecast-20201101-538.png)](https://projects.fivethirtyeight.com/2020-election-forecast/house/) -->
 
-???
+<!-- ??? -->
 
-The last cartogram I decided to show you from the media is actually for the House seats and not the presidential race. I put this presentation together over the weekend; and I've updated it somewhat to show the newest graphics, but I didn't have infinite time over the last day or so. I like the hexagonal cartogram too, and especially like the fact that each state is broken up - it makes it easier to maintain some sort of spatial similarity (though IL bordering NE is ... irritating). 
+<!-- The last cartogram I decided to show you from the media is actually for the House seats and not the presidential race. I put this presentation together over the weekend; and I've updated it somewhat to show the newest graphics, but I didn't have infinite time over the last day or so. I like the hexagonal cartogram too, and especially like the fact that each state is broken up - it makes it easier to maintain some sort of spatial similarity (though IL bordering NE is ... irritating).  -->
 
-I also like the solid/likely/lean color scale - it preserves the important parts while reducing the visual complexity of the situation. The other part of this graphic I really like is the summary at the bottom comparing the forecast to the status quo, with the uncertainty shown as well - it's clear that there is a chance for an increased majority, but not a huge chance. So the aggregated summary really helps me with integrating the map information into a "what does this mean in reality" situation.
+<!-- I also like the solid/likely/lean color scale - it preserves the important parts while reducing the visual complexity of the situation. The other part of this graphic I really like is the summary at the bottom comparing the forecast to the status quo, with the uncertainty shown as well - it's clear that there is a chance for an increased majority, but not a huge chance. So the aggregated summary really helps me with integrating the map information into a "what does this mean in reality" situation. -->
+
+
+<!-- At any rate, I can't figure out why on earth their results coverage doesn't have the same format as their forecast coverage. They're using geographic maps for the results, which is really irritating because it's really hard to see the urban districts. I'll stop ranting now, but ugh. -->
 
 <!-- --- -->
 <!-- <iframe src="https://s3.us-east-2.amazonaws.com/wiscontext-viz/cartograms/election_gov_2018.html" width="100%" height="600px"></iframe> -->
@@ -378,31 +427,61 @@ I also like the solid/likely/lean color scale - it preserves the important parts
 ---
 ## 2020 Roundup
 
-
 ```{r results='asis', echo = F, include = T, cache=F}
-i1 <- img_modal(src = "figure/2020-nrk-results.png", alt = "2020 NRK (Norwegian) https://www.nrk.no/spesial/presidentvalget---resultater-1.15226425", other=list(width="32%"))
-i2 <- img_modal(src = "figure/2020-new-yorker-results-dashboard.png", alt = "New Yorker Cartogram https://www.newyorker.com/news/election-2020/live-2020-presidential-election-results", other=list(width="32%"))
-i3 <- img_modal(src = "figure/2020-zeitde-dashboard.png", alt = "Zeit Online dashboard https://www.zeit.de/politik/ausland/2020-11/us-wahl-ergebnisse-donald-trump-joe-biden-auszaehlung-hochrechnung-live", other=list(width="32%"))
-i4 <- img_modal(src = "figure/2020-bloomberg.png", alt = "Bloomberg Dashboard https://www.bloomberg.com/graphics/2020-us-election-results", other=list(width="32%"))
-i5 <- img_modal(src = "figure/2020-wsj-dashboard.png", alt = "Wall Street Journal dashboard https://www.wsj.com/election-results-2020/", other=list(width="32%"))
+i1 <- img_modal(src = "figure/2020-nrk-results.png", 
+                alt = "2020 NRK (Norwegian)",
+                link="https://www.nrk.no/spesial/presidentvalget---resultater-1.15226425", 
+                other=list(style="object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%"))
+i2 <- img_modal(src = "figure/2020-new-yorker-results-dashboard.png", 
+                alt = "New Yorker Cartogram",
+                link= "https://www.newyorker.com/news/election-2020/live-2020-presidential-election-results", 
+                other=list(style="object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%"))
+i3 <- img_modal(src = "figure/2020-zeitde-dashboard.png", 
+                alt = "Zeit Online",
+                link="https://www.zeit.de/politik/ausland/2020-11/us-wahl-ergebnisse-donald-trump-joe-biden-auszaehlung-hochrechnung-live",
+                other=list(style="object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%"))
+i4 <- img_modal(src = "figure/2020-bloomberg.png", 
+                alt = "Bloomberg",
+                link="https://www.bloomberg.com/graphics/2020-us-election-results",
+                other=list(style="object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%"))
+i5 <- img_modal(src = "figure/2020-fox-dashboard.png", 
+                alt = "Fox News",
+                link="https://www.foxnews.com/elections/2020/general-results",
+                other=list("max-height"="200px", "max-width" = "32%", width = "auto", height = "200px", margin = "auto"))
+i6 <- img_modal(src = "figure/2020-npr.png", 
+                alt = "NPR",
+                link="https://apps.npr.org/elections20-interactive/#/president",
+                other=list(style="object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%"))
 c(str_split(i1, "\\n", simplify = T)[1:2],
   str_split(i2, "\\n", simplify = T)[1:2],
   str_split(i3, "\\n", simplify = T)[1:2],
+  "<br/><br/>",
   str_split(i4, "\\n", simplify = T)[1:2],
   str_split(i5, "\\n", simplify = T)[1:2],
+  str_split(i6, "\\n", simplify = T)[1:2],
   str_split(i1, "\\n", simplify = T)[3:12],
   str_split(i2, "\\n", simplify = T)[3:12],
   str_split(i3, "\\n", simplify = T)[3:12],
   str_split(i4, "\\n", simplify = T)[3:12],
-  str_split(i5, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
+  str_split(i5, "\\n", simplify = T)[3:12],
+  str_split(i6, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
 ```
 
-[NYT options](https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html)
+???
+
+Finally, I've pulled together a few other maps from various foreign and domestic news sources we haven't seen yet. One thing I noticed while putting this together is how few places actually do Nebraska and Maine correctly. For a brief instant, NPR had the NE-1st district as going for Biden, and I was scrambling around trying to find other news sources that could corroborate that, because it seemed so unlikely. 
+
+---
+
+## A brief instant
+
+![](figure/2020-npr-blue-brief-instant.png)
+
 
 ---
 ## Maps in ElectionViz
 
-```{r, fig.width = 6, fig.height = 4, out.width = c("45%", "55%"), echo = F}
+```{r electionvizmaps, fig.width = 6, fig.height = 4, out.width = c("45%", "55%"), include = F, echo = F}
 states <- state_1 %>%
   polls_plus(electoral_votes_2016) %>%
   mutate(
@@ -446,6 +525,18 @@ state_mapping %>% left_join(state_3, by = c("state_name" = "state")) %>%
   theme(legend.position = "none") +
   ggtitle("Hexbin Cartogram by Electoral Votes (2020 polls+)")
 ```
+```{r results='asis', echo = F, include = T, cache=F}
+i1 <- img_modal(src = "index_files/figure-html/electionvizmaps-1.png", 
+                alt = "Hexbin Cartogram by State",
+                other=list(style="object-fit:contain;max-width:49%;max-height:400px;margin-left:auto;margin-right:auto;width:49%"))
+i2 <- img_modal(src = "index_files/figure-html/electionvizmaps-2.png", 
+                alt = "Hexbin Cartogram by Electoral Votes",
+                other=list(style="object-fit:contain;max-width:49%;max-height:400px;margin-left:auto;margin-right:auto;width:49%"))
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:12],
+  str_split(i2, "\\n", simplify = T)[3:12]) %>% paste(collapse = "\n") %>% cat()
+```
 
 ???
 
@@ -487,6 +578,7 @@ Here's the 2020 version, which has mostly changed so that it's tilted diagonally
 label_fix <- c("District of Columbia" = "DC", "Maine CD" = "ME", "Nebraska CD" = "NE",
                "Rhode Island" = "RI", "New Hampshire" = "NH", "Wyoming" = "WY", "New York" = "NY",
                "Vermont" = "VT", "West Virginia" = "WV", "Kansas"="KS", "Montana" = "MT",
+               "Nevada" = "NV", "South Carolina" = "SC", "Arkansas" = "AR",
                "New Mexico" = "NM", "Hawaii" = "HI", "Connecticut" = "CT",
                "Delaware" = "DE", "Colorado" = "CO", "Maine" = "ME", "Alaska" = "AK", 
                "South Dakota" = "SD", "North Dakota" = "ND", "Mississippi" = "MI", "Nebraska" = "NE")
@@ -531,7 +623,7 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 
 ```
 
-.bottom[Images from [12 notable election visualization techniques](https://www.visualisingdata.com/2016/11/12-notable-election-visualisation-techniques/) post]
+.small.bottom[Images from [12 notable election visualization techniques](https://www.visualisingdata.com/2016/11/12-notable-election-visualisation-techniques/) post]
 
 ```{r, fig.width = 6, fig.height = 4, echo = F}
 label_fix2 <- c("District of Columbia" = "DC", "Maine CD" = "ME", "Nebraska CD" = "NE")
@@ -594,11 +686,13 @@ The only thing I'm not wild about here is that it doesn't quite give you a sense
 ---
 ## Paths to the White House
 
-[![2012 NYT Path to the White House](figure/2012-NYT-path-white-house.png)](https://www.nytimes.com/elections/2012/results/president/scenarios.html#app)
+[![2020 NYT Path to the White House](figure/2020-nyt-paths-to-win.png)](https://www.nytimes.com/interactive/2020/11/03/us/elections/forecast-uncounted-votes-president.html)
 
 ???
 
-Another type of chart that has been relatively common historically is the "choose your own adventure" chart. This version, from 2012, used an actual tree to allow visitors to select which state would go to which candidate, and then to see the possible paths to victory for each candidate based on those choices.
+Another type of chart that has been relatively common historically is the "choose your own adventure" chart. This version was first introduced in 2012, and uses an actual tree to allow visitors to select which state would go to which candidate, and then to see the possible paths to victory for each candidate based on those choices.
+
+Buried in the NYT coverage, you can see the graphic updated with the remaining states whose results aren't yet completely counted. I'm fond of this graphic, so it was nice to see it make a return this year.
 
 ---
 ## Paths to the White House
@@ -607,7 +701,7 @@ Another type of chart that has been relatively common historically is the "choos
 
 ???
 
-This option doesn't quite have the same organizational appeal, but allows you to interact all the same. The one thing I don't like here is that we're bad at area and particularly bad with circles, so the "270 to win" threshold lines are not the most intuitive or easy-to-read and compare mechanisms to show getting past a threshold.
+This version was the more prominent pre-election option; it doesn't quite have the same organizational appeal, but allows you to interact and play the what-if game. The one thing I don't like here is that we're bad at area and particularly bad with circles, so the "270 to win" threshold lines are not the most intuitive or easy-to-read and compare mechanisms to show getting past a threshold.
 
 ---
 ## Explore the Ways to Win
@@ -655,11 +749,12 @@ The problem is that not everyone really understood what they were showing - a lo
 
 - [Beyond the Needle: Probability Experts Assess 2020 race](https://apnews.com/article/election-2020-donald-trump-hillary-clinton-elections-nate-silver-a5b62d04f8747702c0ab3ae61423219b)
 
-- ['The Needle' Won't Be Used on Election Night](https://politicalwire.com/2020/10/24/the-needle-wont-be-used-on-election-night/)
+<!-- - ['The Needle' Won't Be Used on Election Night](https://politicalwire.com/2020/10/24/the-needle-wont-be-used-on-election-night/)      -->
+<!-- .small[(for the overall election; it was still used for state-level results)] -->
 
 ???
 
-As a result, this is maybe one of the most hated election graphics ever; I've provided a few different assessments of the needle's problems if you're interested. But the NYT used the needle throughout the 2020 primaries; it was announced a bit before this year's general election that the needle wouldn't be making an appearance.
+As a result, this is maybe one of the most hated election graphics ever; I've provided a few different assessments of the needle's problems if you're interested. But the NYT used the needle throughout the 2020 primaries; instead of using it to show the full results this year, the times confined itself to showing the 
 
 ---
 <iframe src="http://presidential-plinko.com/" width = "100%" height = "600px"></iframe>
@@ -697,18 +792,29 @@ This is an interesting way to show the distribution symmetry. I'm not completely
 ---
 ## "Wave" Graphics
 
-![](figure/2018-guardian-blue-wave.png)
+[![](figure/2018-guardian-blue-wave.png)](https://www.theguardian.com/us-news/ng-interactive/2018/nov/07/blue-wave-or-blue-ripple-a-visual-guide-to-the-democrats-gains)
 
 ???
 
 The last chart I want to show is from 2018's "blue wave" election showing the size and direction of the swing in each location. It's not clear whether the swing shown is percentage or population shift, but the overall spatial clustering of the shifts is a very interesting way to do things - I really like what this chart shows.
 
-I expect in the next few days or weeks we'll see a similar chart for 2020.
+The NYT seems to have liked this graphic enough to make it part of their standard 2020 coverage, though its impact wasn't nearly as great for showing presidential results, in my opinion, especially because precinct-level results weren't coming in all that quickly, leaving "no change" and "no result" as the same visual affect. 
+
+---
+## "Wave" Graphics
+
+[![Washington post election results](figure/2016-redrew-election-map.png)](https://www.washingtonpost.com/graphics/politics/2016-election/election-results-from-coast-to-coast/)
+
+???
+
+This graphic shows a similar idea - the width is the vote margin, the height is the total votes cast. Stroke size indicates a landslide (50%+) county. This is from 2016 - I haven't yet seen a similar one for 2020.
 
 ---
 ## Other Factors affecting Election Graphics
 
 - Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
+
+- Split electoral votes - many charts don't show NE and ME correctly
 
 - Parliamentary system (UK, Canada, Aus, NZ), Proportional Representation (e.g. Germany), Electoral College
     
@@ -724,6 +830,21 @@ In compiling these pictures for you, I came across a few other factors I didn't 
 The electoral system we use also impacts how these graphics are shown - with electionViz, we made the conscious choice not to bother with generalizing some variables to allow for other electoral systems, because these graphics don't really work for those systems anyways. You need different types of graphics for parliamentary systems, proportional representation, etc., and things that work for the electoral college are pretty much specific to the US.
 
 The other thing that is very interesting is that the data you'd want to make these graphics isn't always available. For instance, this year, exit poll data is basically not worth looking at, for the first time in a long time. Senate elections, too, are tricky - we don't elect all senators each 2 year election, so you have to find a way to show "not up for re-election".
+
+
+---
+class:middle,inverse
+# .emph[Group Participation]
+
+---
+## Partisanship and Swing States
+
+[![](figure/2020-tableau-swing-states.png)](https://public.tableau.com/en-us/gallery/partisanship-swing-states-us-elections#gallery-page-container)
+
+---
+## Gender Gap and Representation
+
+[![](figure/congress-gender-gap-tableau.png)](https://public.tableau.com/en-us/gallery/men-and-women-us-house-representatives?gallery=votd)
 
 
 ---

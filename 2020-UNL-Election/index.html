@@ -6,6 +6,9 @@
     <meta name="author" content="Susan Vanderplas .small[(joint work with Kiegan Rice, Heike Hofmann)]" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+    <script src="libs/anchor-sections/anchor-sections.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&family=Roboto:ital,wght@0,500;1,500&display=swap');
     </style>
@@ -18,7 +21,7 @@ class: center, middle, inverse, title-slide
 
 # Election Graphics
 ### Susan Vanderplas<br>.small[(joint work with Kiegan Rice, Heike Hofmann)]
-### 03 November, 2020
+### 04 November, 2020
 
 ---
 
@@ -79,21 +82,20 @@ class: center, middle, inverse, title-slide
 .small[.bottom[Find these slides at https://srvanderplas.github.io/Presentations/2020-UNL-Election/]]
 ???
 
-Today, I'll be talking a bit about election graphics, and showing off a package that I've been slowly building with Heike Hofmann and Kiegan Rice to provide a way to generate some of the most interesting election graphics in R. 
+Today, I'll be talking a bit about election graphics, and showing off a package that I've been slowly building with Heike Hofmann and Kiegan Rice to provide a way to generate some of the most interesting election graphics in R. The package is still under active development (to be honest, we were waiting for some election results that weren't 2016 in the hopes that we could show some cool differences between 2016 and 2020 - the jury is still out on that one). 
 
-I'll start by showing you the basic functionality of ElectionViz, and then I'll do a general tour of different types of election related charts, showing you the ones we've added to electionViz as we go along.
+I'll start by showing you the basic functionality of electionViz, and then I'll do a general tour of different types of election related charts, showing you the ones we've added to electionViz as we go along. With the election currently undecided (at least as of this morning) I'm sure we've all spent more time than expected staring at graphics like this. 
 
-Feel free to interrupt, ask questions, and make comments as we go. I'm pretty awful at paying attention to the chat, so just interrupt.
+Feel free to interrupt, ask questions, and make comments as we go. I'm pretty awful at paying attention to the chat, and since that's usually my job to handle that for the presenter, I'm just going to ask you to speak up instead. 
 
-I will also say I'm doing my best to keep the discussion on the graphics instead of the political situation. Should any snark creep in unnecessarily, please remember that snark is my own opinion and not that of the university. 
+I will also say I'm doing my best to keep the discussion on the graphics instead of the political situation. Should any snark creep in accidentally, please remember that snark is my own opinion and not that of the university. 
 
 
 ---
-
 .pull-left[
-## `electionViz` 
+## electionViz
 
-[https://github.com/heike/electionViz](https://github.com/heike/electionViz)
+[<i class="fab  fa-github "></i> heike/electionViz](https://github.com/heike/electionViz)
 
 
 
@@ -105,7 +107,8 @@ fivethirtyeight_update(
   polls="president_polls") %&gt;% 
   filter(
     !is.na(state), 
-    population %in% c("lv", "rv")) %&gt;%
+    population %in% 
+      c("lv", "rv")) %&gt;%
   
   # Last 5 polls
   polls_filter(
@@ -121,7 +124,7 @@ state_poll_df &lt;- state_polls %&gt;%
 
 ???
 
-The ElectionViz package is at the moment available only on github and still under active development. We wanted to make it easy to include the most up-to-date data, so we have functions to get the latest polls from several different sources, as well as functions that will substitute data from the last election for areas that haven't been polled (which seems to at this point only include the third district in Nebraska.)
+The ElectionViz package is at the moment available only on github and still under active development. We wanted to make it easy to include the most up-to-date data, so we have functions to get the latest polls from several different sources, as well as functions that will substitute data from the last election for areas that haven't been polled (which seems to at this point only include the third district in Nebraska.) Once election results are in and validated from 2020 we'll add that data to the package as well - currently, it contains data from past presidential elections and very detailed data on 2016's election. 
 
 ---
 class:middle,center,inverse
@@ -129,7 +132,7 @@ class:middle,center,inverse
 
 ---
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='img1883statatlascountymap' src='figure/1883-stat-atlas-county-map.jpg' alt='1880 Election Results by County from the Statistical Atlas' width='90%' class='center'&gt;
+&lt;img id='img1883statatlascountymap' src='figure/1883-stat-atlas-county-map.jpg' alt='1880 Election Results by County from the Statistical Atlas' width='90%' style='margin-left:auto;margin-right:auto;max-width='100%';' class='center'&gt;
 
 &lt;!-- The Modal --&gt;
 &lt;div id='modal1883statatlascountymap' class='modal'&gt;
@@ -140,6 +143,7 @@ class:middle,center,inverse
   &lt;!-- Modal Caption (Image Text) --&gt;
   &lt;div id='caption1883statatlascountymap' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
+&lt;div style='display:inline-block;margin-left;auto;margin-right:auto;width=100%;'&gt;
 &lt;!-- Trigger the Modal --&gt;
 &lt;img id='img1883key' src='figure/1883-key.png' alt='Key' height='50px'&gt;
 &lt;!-- Trigger the Modal --&gt;
@@ -152,6 +156,8 @@ class:middle,center,inverse
 &lt;img id='img1883voteratiosub' src='figure/1883-vote-ratio-sub.png' alt='1880 Election Results (Vote Ratio)' height='50px'&gt;
 &lt;!-- Trigger the Modal --&gt;
 &lt;img id='img1883presidentialvote' src='figure/1883-presidential-vote.png' alt='1880 Election Results (Presidential Vote)' height='50px'&gt;
+&lt;/div&gt;
+&lt;div style='display:inline-block'&gt;&lt;a href='https://www.youtube.com/watch?v=JHw5_1Hopsc' class='tiny'&gt;Video Link: Lithography (how this chart was made)&lt;/a&gt;&lt;/div&gt;
 
 &lt;!-- The Modal --&gt;
 &lt;div id='modal1883key' class='modal'&gt;
@@ -213,7 +219,9 @@ class:middle,center,inverse
   &lt;div id='caption1883presidentialvote' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-[Source](https://www.loc.gov/resource/g3701gm.gct00009/?sp=40)
+
+
+.small.bottom[[See the page from the Library of Congress](https://www.loc.gov/resource/g3701gm.gct00009/?sp=40)]
 
 ???
 
@@ -221,9 +229,9 @@ The first chart I want to show you is, as best as I can tell, the first US elect
 
 The main part of the spread is this map, which isn't so different from our election maps today (except for e.g. the gaping hole in the middle of Oklahoma, Texas, Kansas, and Nebraska, where there weren't any votes for various resasons.) The map shows the popular vote as a proportion of the total vote, using a bivariate color scale for the two parties.
 
-When we zoom in to see the key, though, we can see that the two parties are assigned colors that are exactly the opposite of what we use today (though the two parties in 1880 were very different from the parties of the same name today). Increasing amount/density of color is used to show an increasingly partisan vote. These maps were made with lithography, which meant that someone had to apply wax to soapstone very precisely to remove areas of color from the chart; for each color ink used, this process had to be repeated *precisely* in order to generate a color chart. It was a ton of work. You can see a little bit of misalignment in the greenback vote rectangle that shows how the process worked. 
+When we zoom in to see the key, though, we can see that the two parties are assigned colors that are exactly the opposite of what we use today (though the two parties in 1880 were very different from the parties of the same name today). Increasing amount/density of color is used to show an increasingly partisan vote. These maps were made with lithography, which meant that someone had to apply grease to stone very precisely to provide areas of color to the chart (and in mirror image, too!); for each color ink used, this process had to be repeated *precisely* in order to generate a color chart. It was a ton of work. You can see a little bit of misalignment in the greenback vote rectangle that shows how the process worked. 
 
-Personally, I'll take a moment to be very grateful for ggplot2. I don't have the patience for lithography.
+Personally, I'll take a moment to be very grateful for ggplot2. I don't have the patience (or the steady hand) for lithography.
 
 The spread also includes a state-level summnary map, which is again not so different from how we'd show things today.
 
@@ -235,16 +243,16 @@ The next piece of the chart that I want to highlight (and yes, there is a ton of
 
 The last feature of this chart I'd like to highlight is one that I had to alter a bit to fit on the slide. Across the bottom of this spread is a chart showing the total vote, with all of the minor candidates as well. So you can very effectively see that Scattering and Weaver had very little support relative to Hancock and Garfield, but that either minor candidate could have thrown the popular vote!
 
-We don't use scales like this very often anymore, which is something of a shame - it really makes the point effectively, even though I did have to chop the graph up into several pieces in order to get it to fit. 
+We don't use scales like this very often anymore, which is something of a shame - it really makes the point effectively, even though I did have to chop the graph up into several pieces in order to get it to fit on my slide. 
 
 
 ---
 ## A few definitions
 
+- **chloropleth** - a map which is shaded according to a numeric variable
+
 - **cartogram** - a map which distorts the geometry of the regions to convey information about another variable (e.g. electoral vote or population rather than area)
     &lt;!-- - [How cartograms are created](http://www.geog.ucsb.edu/~kclarke/G232/ToblerCartograms.pdf) --&gt;
-
-- **chloropleth** - a map which is shaded according to a numeric variable
 
 [![](figure/cartogram-demo.png)](https://www.washingtonpost.com/graphics/politics/2016-election/how-election-maps-lie/)
 
@@ -254,11 +262,15 @@ We don't use scales like this very often anymore, which is something of a shame 
 
 ???
 
-A few definitions are in order here, since I decided to start in with maps. A cartogram is a map which distorts the geometry fo the regions to show information about another variable. A chloropleth map is a map with shading corresponding to another (non spatial) variable.
+A few definitions are in order here, since I decided to start in with maps. A chloropleth map is a map with shading corresponding to another (non spatial) variable, such as the percentage of the vote for a candidate (as in the 1880 map I just showed). 
 
-So the 1880 election map is a chloropleth map but isn't a cartogram. Cartograms have become more popular since the advent of computer graphics meant that we didn't have to painstakingly apply layers of wax to soapstone by hand in order to create graphical forms. It's much easier to let a computer make a cartogram than to draw one by hand.
+A cartogram is a map which distorts the geometry of the regions to show information about another variable. 
 
-In the image shown here, which I have taken from the Washington post (if you are looking at these slides online, you can click on the picture to get the original source), shows several different ways to show the same data, summarized differently. You can shade the map differently to show the proportion of the vote instead of the winner, and you can shift the geography to show different levels of population density distribution. These types of continuous cartograms are sometimes very hard to read - so hard that they destroy the original point, which is to represent the individual voters instead of the geographic land where they reside.
+Cartograms have become more popular since the advent of computer graphics meant that we didn't have to painstakingly apply layers of grease to stone by hand in order to create graphical forms. It's much easier to let a computer make a cartogram than to draw one by hand.
+
+In the image shown here, which I have taken from the Washington post (if you are looking at these slides online, you can click on the picture to get the original source), shows several different ways to show the same data, summarized differently. You can shade the map differently to show the proportion of the vote instead of the winner, and you can shift the geography to show different levels of population density distribution. These types of continuous cartograms are sometimes very hard to read - so hard that they don't necessarily achieve the original point, which is to represent the individual voters instead of the geographic land where they reside, because your attention is so focused on the grotesque shape that doesn't bear any resemblance to the geographic area. 
+
+As with many things in graphics, sometimes the cure is worse than the disease. 
 
 
 ---
@@ -348,20 +360,69 @@ By the advent of computer graphics, in 1992, the shapes were somewhat more preci
 
 The next two attempts are both from 2004; one is a square cartogram showing the electoral votes of each state; with shading that shows the percentage of the vote. I find this cartogram a bit odd in that somehow Kansas is east of and north of Nebraska (and North/south dakota?) - but cartograms are hard to make because it's not easy to compromise on area and still maintain the approximate shape. 
 
-Another 2004 map shows the results by population density, which is I believe a relatively good attempt to show the popular vote as a result of "total amount of color" - what isn't clear is how easily we aggregate over color intensity. 
+Another 2004 map shows the results by population density, which is I believe a relatively good attempt to show the popular vote as a result of "total amount of color" - what isn't clear is how easily we aggregate over color intensity. This is where research on how graphics are perceived is important - if we know how people make these types of decisions, then we can say "this is an effective way to make the point" or "this is not an effective way to make the point" - but now, we don't have the data to back it up.
 
-In 2012, they also show two different attempts at displaying the results: county-level chloropleth maps first, and with county-level dots showing the size of the vote margin. In both cases, they're using county as a proxy for voting unit, but votes are aggregated at the precinct level and at the state level (or in the case of Nebraska and Maine, at the precinct, district, and state level). So county isn't a great approximation of anything, really; it's not totally clear whether either map actually achieves the objective. 
+In 2012, they also show two different attempts at displaying the results: county-level chloropleth maps first, and with county-level dots showing the size of the vote margin. In both cases, they're using county as a proxy for voting unit, but votes are aggregated at the precinct level and at the state level (or in the case of Nebraska and Maine, at the precinct, district, and state level). So county isn't a great approximation of anything, really; it's not totally clear to me whether either map actually achieves the objective. 
 
 The point is that if there were one perfect way to show election results, NYT probably would have found it by now...
 
 ---
 ## Election Maps - NYT
 
-[![When polls close](figure/2020-nyt-when-polls-close.png)](https://www.nytimes.com/interactive/2020/us/politics/poll-closing-times.html)
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img202011040822nytmapbystate' src='figure/202011040822-nyt-map-bystate.png' alt='2020 by state' style='object-fit:contain;max-width:48%;max-height:200px;margin-left:auto;margin-right:auto;width:48%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img202011040823nytcartogramresults' src='figure/202011040823-nyt-cartogram-results.png' alt='2020 cartogram' style='object-fit:contain;max-width:48%;max-height:200px;margin-left:auto;margin-right:auto;width:48%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img202011040823nytbubbleleadsize' src='figure/202011040823-nyt-bubble-lead-size.png' alt='2020 size of lead' style='object-fit:contain;max-width:48%;max-height:200px;margin-left:auto;margin-right:auto;width:48%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img202011040824nytshiftfrom2016' src='figure/202011040824-nyt-shift-from-2016.png' alt='2020 shift from 2016' style='object-fit:contain;max-width:48%;max-height:200px;margin-left:auto;margin-right:auto;width:48%'&gt;
 
+&lt;!-- The Modal --&gt;
+&lt;div id='modal202011040822nytmapbystate' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal202011040822nytmapbystate'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption202011040822nytmapbystate' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal202011040823nytcartogramresults' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal202011040823nytcartogramresults'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption202011040823nytcartogramresults' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal202011040823nytbubbleleadsize' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal202011040823nytbubbleleadsize'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption202011040823nytbubbleleadsize' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modal202011040824nytshiftfrom2016' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal202011040824nytshiftfrom2016'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption202011040824nytshiftfrom2016' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- [![](figure/2020-nyt-battlegrounds.png)](https://www.nytimes.com/interactive/2020/us/politics/battleground-states-trump-biden.html) --&gt;
+
+[Link](https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html)
 ???
 
-Here is a chart from yesterday's NYT showing when polls close - they're using an exploded cartogram, which at least allows for a bit better spatial positioning. 
+These charts are the NYT primary options to see the election results this year. They've opted to show the geographic map, the cartogram, the bubble chart with the size of the lead, and then a chart showing the change from 2016 which I'll talk about in more depth later. 
 
 ---
 ## Election Maps - Washington Post
@@ -372,16 +433,19 @@ Here is a chart from yesterday's NYT showing when polls close - they're using an
 
 Here's another cartogram, this time from the washington post in 2016. It uses diamonds, which are an interesting choice; it's also showing polling instead of actual returns. 
 
----
-## Election Maps - FiveThirtyEight
+&lt;!-- --- --&gt;
+&lt;!-- ## Election Maps - FiveThirtyEight --&gt;
 
-[![](figure/2020-house-forecast-20201101-538.png)](https://projects.fivethirtyeight.com/2020-election-forecast/house/)
+&lt;!-- [![](figure/2020-house-forecast-20201101-538.png)](https://projects.fivethirtyeight.com/2020-election-forecast/house/) --&gt;
 
-???
+&lt;!-- ??? --&gt;
 
-The last cartogram I decided to show you from the media is actually for the House seats and not the presidential race. I put this presentation together over the weekend; and I've updated it somewhat to show the newest graphics, but I didn't have infinite time over the last day or so. I like the hexagonal cartogram too, and especially like the fact that each state is broken up - it makes it easier to maintain some sort of spatial similarity (though IL bordering NE is ... irritating). 
+&lt;!-- The last cartogram I decided to show you from the media is actually for the House seats and not the presidential race. I put this presentation together over the weekend; and I've updated it somewhat to show the newest graphics, but I didn't have infinite time over the last day or so. I like the hexagonal cartogram too, and especially like the fact that each state is broken up - it makes it easier to maintain some sort of spatial similarity (though IL bordering NE is ... irritating).  --&gt;
 
-I also like the solid/likely/lean color scale - it preserves the important parts while reducing the visual complexity of the situation. The other part of this graphic I really like is the summary at the bottom comparing the forecast to the status quo, with the uncertainty shown as well - it's clear that there is a chance for an increased majority, but not a huge chance. So the aggregated summary really helps me with integrating the map information into a "what does this mean in reality" situation.
+&lt;!-- I also like the solid/likely/lean color scale - it preserves the important parts while reducing the visual complexity of the situation. The other part of this graphic I really like is the summary at the bottom comparing the forecast to the status quo, with the uncertainty shown as well - it's clear that there is a chance for an increased majority, but not a huge chance. So the aggregated summary really helps me with integrating the map information into a "what does this mean in reality" situation. --&gt;
+
+
+&lt;!-- At any rate, I can't figure out why on earth their results coverage doesn't have the same format as their forecast coverage. They're using geographic maps for the results, which is really irritating because it's really hard to see the urban districts. I'll stop ranting now, but ugh. --&gt;
 
 &lt;!-- --- --&gt;
 &lt;!-- &lt;iframe src="https://s3.us-east-2.amazonaws.com/wiscontext-viz/cartograms/election_gov_2018.html" width="100%" height="600px"&gt;&lt;/iframe&gt; --&gt;
@@ -391,24 +455,26 @@ I also like the solid/likely/lean color scale - it preserves the important parts
 ---
 ## 2020 Roundup
 
-
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='img2020nrkresults' src='figure/2020-nrk-results.png' alt='2020 NRK (Norwegian) https://www.nrk.no/spesial/presidentvalget---resultater-1.15226425' width='32%'&gt;
+&lt;img id='img2020nrkresults' src='figure/2020-nrk-results.png' alt='2020 NRK (Norwegian)' style='object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%'&gt;
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='img2020newyorkerresultsdashboard' src='figure/2020-new-yorker-results-dashboard.png' alt='New Yorker Cartogram https://www.newyorker.com/news/election-2020/live-2020-presidential-election-results' width='32%'&gt;
+&lt;img id='img2020newyorkerresultsdashboard' src='figure/2020-new-yorker-results-dashboard.png' alt='New Yorker Cartogram' style='object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%'&gt;
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='img2020zeitdedashboard' src='figure/2020-zeitde-dashboard.png' alt='Zeit Online dashboard https://www.zeit.de/politik/ausland/2020-11/us-wahl-ergebnisse-donald-trump-joe-biden-auszaehlung-hochrechnung-live' width='32%'&gt;
+&lt;img id='img2020zeitdedashboard' src='figure/2020-zeitde-dashboard.png' alt='Zeit Online' style='object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%'&gt;
+&lt;br/&gt;&lt;br/&gt;
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='img2020bloomberg' src='figure/2020-bloomberg.png' alt='Bloomberg Dashboard https://www.bloomberg.com/graphics/2020-us-election-results' width='32%'&gt;
+&lt;img id='img2020bloomberg' src='figure/2020-bloomberg.png' alt='Bloomberg' style='object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%'&gt;
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='img2020wsjdashboard' src='figure/2020-wsj-dashboard.png' alt='Wall Street Journal dashboard https://www.wsj.com/election-results-2020/' width='32%'&gt;
+&lt;img id='img2020foxdashboard' src='figure/2020-fox-dashboard.png' alt='Fox News' max-height='200px' max-width='32%' width='auto' height='200px' margin='auto'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='img2020npr' src='figure/2020-npr.png' alt='NPR' style='object-fit:contain;max-width:32%;max-height:200px;margin-left:auto;margin-right:auto;width:32%'&gt;
 
 &lt;!-- The Modal --&gt;
 &lt;div id='modal2020nrkresults' class='modal'&gt;
 
   &lt;!-- Modal Content (The Image) --&gt;
   &lt;img class='modal-content' id='imgmodal2020nrkresults'&gt;
-
+  &lt;a href='https://www.nrk.no/spesial/presidentvalget---resultater-1.15226425'&gt;Link&lt;/a&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
   &lt;div id='caption2020nrkresults' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -418,7 +484,7 @@ I also like the solid/likely/lean color scale - it preserves the important parts
 
   &lt;!-- Modal Content (The Image) --&gt;
   &lt;img class='modal-content' id='imgmodal2020newyorkerresultsdashboard'&gt;
-
+  &lt;a href='https://www.newyorker.com/news/election-2020/live-2020-presidential-election-results'&gt;Link&lt;/a&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
   &lt;div id='caption2020newyorkerresultsdashboard' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -428,7 +494,7 @@ I also like the solid/likely/lean color scale - it preserves the important parts
 
   &lt;!-- Modal Content (The Image) --&gt;
   &lt;img class='modal-content' id='imgmodal2020zeitdedashboard'&gt;
-
+  &lt;a href='https://www.zeit.de/politik/ausland/2020-11/us-wahl-ergebnisse-donald-trump-joe-biden-auszaehlung-hochrechnung-live'&gt;Link&lt;/a&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
   &lt;div id='caption2020zeitdedashboard' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -438,27 +504,70 @@ I also like the solid/likely/lean color scale - it preserves the important parts
 
   &lt;!-- Modal Content (The Image) --&gt;
   &lt;img class='modal-content' id='imgmodal2020bloomberg'&gt;
-
+  &lt;a href='https://www.bloomberg.com/graphics/2020-us-election-results'&gt;Link&lt;/a&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
   &lt;div id='caption2020bloomberg' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 &lt;!-- The Modal --&gt;
-&lt;div id='modal2020wsjdashboard' class='modal'&gt;
+&lt;div id='modal2020foxdashboard' class='modal'&gt;
 
   &lt;!-- Modal Content (The Image) --&gt;
-  &lt;img class='modal-content' id='imgmodal2020wsjdashboard'&gt;
-
+  &lt;img class='modal-content' id='imgmodal2020foxdashboard'&gt;
+  &lt;a href='https://www.foxnews.com/elections/2020/general-results'&gt;Link&lt;/a&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
-  &lt;div id='caption2020wsjdashboard' class='modal-caption'&gt;&lt;/div&gt;
+  &lt;div id='caption2020foxdashboard' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-[NYT options](https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html)
+&lt;!-- The Modal --&gt;
+&lt;div id='modal2020npr' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodal2020npr'&gt;
+  &lt;a href='https://apps.npr.org/elections20-interactive/#/president'&gt;Link&lt;/a&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='caption2020npr' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+???
+
+Finally, I've pulled together a few other maps from various foreign and domestic news sources we haven't seen yet. One thing I noticed while putting this together is how few places actually do Nebraska and Maine correctly. For a brief instant, NPR had the NE-1st district as going for Biden, and I was scrambling around trying to find other news sources that could corroborate that, because it seemed so unlikely. 
+
+---
+
+## A brief instant
+
+![](figure/2020-npr-blue-brief-instant.png)
+
 
 ---
 ## Maps in ElectionViz
 
-&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="45%" /&gt;&lt;img src="index_files/figure-html/unnamed-chunk-10-2.png" width="55%" /&gt;
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgelectionvizmaps1' src='index_files/figure-html/electionvizmaps-1.png' alt='Hexbin Cartogram by State' style='object-fit:contain;max-width:49%;max-height:400px;margin-left:auto;margin-right:auto;width:49%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgelectionvizmaps2' src='index_files/figure-html/electionvizmaps-2.png' alt='Hexbin Cartogram by Electoral Votes' style='object-fit:contain;max-width:49%;max-height:400px;margin-left:auto;margin-right:auto;width:49%'&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalelectionvizmaps1' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalelectionvizmaps1'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionelectionvizmaps1' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- The Modal --&gt;
+&lt;div id='modalelectionvizmaps2' class='modal'&gt;
+
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalelectionvizmaps2'&gt;
+
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionelectionvizmaps2' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
 
 ???
 
@@ -496,7 +605,7 @@ Here's the 2020 version, which has mostly changed so that it's tilted diagonally
 
 ## The Electoral Snake (electionViz)
 
-![](index_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -534,7 +643,7 @@ It's also a bit hard to get the color scale on the text right so that it's reada
   &lt;div id='caption2016FTelectiontower' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-.bottom[Images from [12 notable election visualization techniques](https://www.visualisingdata.com/2016/11/12-notable-election-visualisation-techniques/) post]
+.small.bottom[Images from [12 notable election visualization techniques](https://www.visualisingdata.com/2016/11/12-notable-election-visualisation-techniques/) post]
 
 
 
@@ -577,11 +686,13 @@ The only thing I'm not wild about here is that it doesn't quite give you a sense
 ---
 ## Paths to the White House
 
-[![2012 NYT Path to the White House](figure/2012-NYT-path-white-house.png)](https://www.nytimes.com/elections/2012/results/president/scenarios.html#app)
+[![2020 NYT Path to the White House](figure/2020-nyt-paths-to-win.png)](https://www.nytimes.com/interactive/2020/11/03/us/elections/forecast-uncounted-votes-president.html)
 
 ???
 
-Another type of chart that has been relatively common historically is the "choose your own adventure" chart. This version, from 2012, used an actual tree to allow visitors to select which state would go to which candidate, and then to see the possible paths to victory for each candidate based on those choices.
+Another type of chart that has been relatively common historically is the "choose your own adventure" chart. This version was first introduced in 2012, and uses an actual tree to allow visitors to select which state would go to which candidate, and then to see the possible paths to victory for each candidate based on those choices.
+
+Buried in the NYT coverage, you can see the graphic updated with the remaining states whose results aren't yet completely counted. I'm fond of this graphic, so it was nice to see it make a return this year.
 
 ---
 ## Paths to the White House
@@ -590,7 +701,7 @@ Another type of chart that has been relatively common historically is the "choos
 
 ???
 
-This option doesn't quite have the same organizational appeal, but allows you to interact all the same. The one thing I don't like here is that we're bad at area and particularly bad with circles, so the "270 to win" threshold lines are not the most intuitive or easy-to-read and compare mechanisms to show getting past a threshold.
+This version was the more prominent pre-election option; it doesn't quite have the same organizational appeal, but allows you to interact and play the what-if game. The one thing I don't like here is that we're bad at area and particularly bad with circles, so the "270 to win" threshold lines are not the most intuitive or easy-to-read and compare mechanisms to show getting past a threshold.
 
 ---
 ## Explore the Ways to Win
@@ -638,11 +749,12 @@ The problem is that not everyone really understood what they were showing - a lo
 
 - [Beyond the Needle: Probability Experts Assess 2020 race](https://apnews.com/article/election-2020-donald-trump-hillary-clinton-elections-nate-silver-a5b62d04f8747702c0ab3ae61423219b)
 
-- ['The Needle' Won't Be Used on Election Night](https://politicalwire.com/2020/10/24/the-needle-wont-be-used-on-election-night/)
+&lt;!-- - ['The Needle' Won't Be Used on Election Night](https://politicalwire.com/2020/10/24/the-needle-wont-be-used-on-election-night/)      --&gt;
+&lt;!-- .small[(for the overall election; it was still used for state-level results)] --&gt;
 
 ???
 
-As a result, this is maybe one of the most hated election graphics ever; I've provided a few different assessments of the needle's problems if you're interested. But the NYT used the needle throughout the 2020 primaries; it was announced a bit before this year's general election that the needle wouldn't be making an appearance.
+As a result, this is maybe one of the most hated election graphics ever; I've provided a few different assessments of the needle's problems if you're interested. But the NYT used the needle throughout the 2020 primaries; instead of using it to show the full results this year, the times confined itself to showing the 
 
 ---
 &lt;iframe src="http://presidential-plinko.com/" width = "100%" height = "600px"&gt;&lt;/iframe&gt;
@@ -680,18 +792,29 @@ This is an interesting way to show the distribution symmetry. I'm not completely
 ---
 ## "Wave" Graphics
 
-![](figure/2018-guardian-blue-wave.png)
+[![](figure/2018-guardian-blue-wave.png)](https://www.theguardian.com/us-news/ng-interactive/2018/nov/07/blue-wave-or-blue-ripple-a-visual-guide-to-the-democrats-gains)
 
 ???
 
 The last chart I want to show is from 2018's "blue wave" election showing the size and direction of the swing in each location. It's not clear whether the swing shown is percentage or population shift, but the overall spatial clustering of the shifts is a very interesting way to do things - I really like what this chart shows.
 
-I expect in the next few days or weeks we'll see a similar chart for 2020.
+The NYT seems to have liked this graphic enough to make it part of their standard 2020 coverage, though its impact wasn't nearly as great for showing presidential results, in my opinion, especially because precinct-level results weren't coming in all that quickly, leaving "no change" and "no result" as the same visual affect. 
+
+---
+## "Wave" Graphics
+
+[![Washington post election results](figure/2016-redrew-election-map.png)](https://www.washingtonpost.com/graphics/politics/2016-election/election-results-from-coast-to-coast/)
+
+???
+
+This graphic shows a similar idea - the width is the vote margin, the height is the total votes cast. Stroke size indicates a landslide (50%+) county. This is from 2016 - I haven't yet seen a similar one for 2020.
 
 ---
 ## Other Factors affecting Election Graphics
 
 - Majority/plurality voting, first-past-the-post, single transferable voting, ranked choice voting
+
+- Split electoral votes - many charts don't show NE and ME correctly
 
 - Parliamentary system (UK, Canada, Aus, NZ), Proportional Representation (e.g. Germany), Electoral College
     
@@ -707,6 +830,21 @@ In compiling these pictures for you, I came across a few other factors I didn't 
 The electoral system we use also impacts how these graphics are shown - with electionViz, we made the conscious choice not to bother with generalizing some variables to allow for other electoral systems, because these graphics don't really work for those systems anyways. You need different types of graphics for parliamentary systems, proportional representation, etc., and things that work for the electoral college are pretty much specific to the US.
 
 The other thing that is very interesting is that the data you'd want to make these graphics isn't always available. For instance, this year, exit poll data is basically not worth looking at, for the first time in a long time. Senate elections, too, are tricky - we don't elect all senators each 2 year election, so you have to find a way to show "not up for re-election".
+
+
+---
+class:middle,inverse
+# .emph[Group Participation]
+
+---
+## Partisanship and Swing States
+
+[![](figure/2020-tableau-swing-states.png)](https://public.tableau.com/en-us/gallery/partisanship-swing-states-us-elections#gallery-page-container)
+
+---
+## Gender Gap and Representation
+
+[![](figure/congress-gender-gap-tableau.png)](https://public.tableau.com/en-us/gallery/men-and-women-us-house-representatives?gallery=votd)
 
 
 ---
@@ -1088,6 +1226,74 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 </script>
 <script>
         /* Get the modal*/
+          var modal202011040822nytmapbystate = document.getElementById('modal202011040822nytmapbystate');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img202011040822nytmapbystate = document.getElementById('img202011040822nytmapbystate');
+          var modalImg202011040822nytmapbystate = document.getElementById('imgmodal202011040822nytmapbystate');
+          var captionText202011040822nytmapbystate = document.getElementById('caption202011040822nytmapbystate');
+          img202011040822nytmapbystate.onclick = function(){
+            modal202011040822nytmapbystate.style.display = 'block';
+            modalImg202011040822nytmapbystate.src = this.src;
+            captionText202011040822nytmapbystate.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg202011040822nytmapbystate.onclick = function() {
+            modal202011040822nytmapbystate.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal202011040823nytcartogramresults = document.getElementById('modal202011040823nytcartogramresults');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img202011040823nytcartogramresults = document.getElementById('img202011040823nytcartogramresults');
+          var modalImg202011040823nytcartogramresults = document.getElementById('imgmodal202011040823nytcartogramresults');
+          var captionText202011040823nytcartogramresults = document.getElementById('caption202011040823nytcartogramresults');
+          img202011040823nytcartogramresults.onclick = function(){
+            modal202011040823nytcartogramresults.style.display = 'block';
+            modalImg202011040823nytcartogramresults.src = this.src;
+            captionText202011040823nytcartogramresults.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg202011040823nytcartogramresults.onclick = function() {
+            modal202011040823nytcartogramresults.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal202011040823nytbubbleleadsize = document.getElementById('modal202011040823nytbubbleleadsize');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img202011040823nytbubbleleadsize = document.getElementById('img202011040823nytbubbleleadsize');
+          var modalImg202011040823nytbubbleleadsize = document.getElementById('imgmodal202011040823nytbubbleleadsize');
+          var captionText202011040823nytbubbleleadsize = document.getElementById('caption202011040823nytbubbleleadsize');
+          img202011040823nytbubbleleadsize.onclick = function(){
+            modal202011040823nytbubbleleadsize.style.display = 'block';
+            modalImg202011040823nytbubbleleadsize.src = this.src;
+            captionText202011040823nytbubbleleadsize.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg202011040823nytbubbleleadsize.onclick = function() {
+            modal202011040823nytbubbleleadsize.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal202011040824nytshiftfrom2016 = document.getElementById('modal202011040824nytshiftfrom2016');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img202011040824nytshiftfrom2016 = document.getElementById('img202011040824nytshiftfrom2016');
+          var modalImg202011040824nytshiftfrom2016 = document.getElementById('imgmodal202011040824nytshiftfrom2016');
+          var captionText202011040824nytshiftfrom2016 = document.getElementById('caption202011040824nytshiftfrom2016');
+          img202011040824nytshiftfrom2016.onclick = function(){
+            modal202011040824nytshiftfrom2016.style.display = 'block';
+            modalImg202011040824nytshiftfrom2016.src = this.src;
+            captionText202011040824nytshiftfrom2016.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg202011040824nytshiftfrom2016.onclick = function() {
+            modal202011040824nytshiftfrom2016.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
           var modal2020nrkresults = document.getElementById('modal2020nrkresults');
         /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
           var img2020nrkresults = document.getElementById('img2020nrkresults');
@@ -1156,19 +1362,70 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 </script>
 <script>
         /* Get the modal*/
-          var modal2020wsjdashboard = document.getElementById('modal2020wsjdashboard');
+          var modal2020foxdashboard = document.getElementById('modal2020foxdashboard');
         /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var img2020wsjdashboard = document.getElementById('img2020wsjdashboard');
-          var modalImg2020wsjdashboard = document.getElementById('imgmodal2020wsjdashboard');
-          var captionText2020wsjdashboard = document.getElementById('caption2020wsjdashboard');
-          img2020wsjdashboard.onclick = function(){
-            modal2020wsjdashboard.style.display = 'block';
-            modalImg2020wsjdashboard.src = this.src;
-            captionText2020wsjdashboard.innerHTML = this.alt;
+          var img2020foxdashboard = document.getElementById('img2020foxdashboard');
+          var modalImg2020foxdashboard = document.getElementById('imgmodal2020foxdashboard');
+          var captionText2020foxdashboard = document.getElementById('caption2020foxdashboard');
+          img2020foxdashboard.onclick = function(){
+            modal2020foxdashboard.style.display = 'block';
+            modalImg2020foxdashboard.src = this.src;
+            captionText2020foxdashboard.innerHTML = this.alt;
           }
           /* When the user clicks on the modalImg, close it*/
-          modalImg2020wsjdashboard.onclick = function() {
-            modal2020wsjdashboard.style.display = 'none';
+          modalImg2020foxdashboard.onclick = function() {
+            modal2020foxdashboard.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modal2020npr = document.getElementById('modal2020npr');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img2020npr = document.getElementById('img2020npr');
+          var modalImg2020npr = document.getElementById('imgmodal2020npr');
+          var captionText2020npr = document.getElementById('caption2020npr');
+          img2020npr.onclick = function(){
+            modal2020npr.style.display = 'block';
+            modalImg2020npr.src = this.src;
+            captionText2020npr.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImg2020npr.onclick = function() {
+            modal2020npr.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalelectionvizmaps1 = document.getElementById('modalelectionvizmaps1');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgelectionvizmaps1 = document.getElementById('imgelectionvizmaps1');
+          var modalImgelectionvizmaps1 = document.getElementById('imgmodalelectionvizmaps1');
+          var captionTextelectionvizmaps1 = document.getElementById('captionelectionvizmaps1');
+          imgelectionvizmaps1.onclick = function(){
+            modalelectionvizmaps1.style.display = 'block';
+            modalImgelectionvizmaps1.src = this.src;
+            captionTextelectionvizmaps1.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgelectionvizmaps1.onclick = function() {
+            modalelectionvizmaps1.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalelectionvizmaps2 = document.getElementById('modalelectionvizmaps2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgelectionvizmaps2 = document.getElementById('imgelectionvizmaps2');
+          var modalImgelectionvizmaps2 = document.getElementById('imgmodalelectionvizmaps2');
+          var captionTextelectionvizmaps2 = document.getElementById('captionelectionvizmaps2');
+          imgelectionvizmaps2.onclick = function(){
+            modalelectionvizmaps2.style.display = 'block';
+            modalImgelectionvizmaps2.src = this.src;
+            captionTextelectionvizmaps2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgelectionvizmaps2.onclick = function() {
+            modalelectionvizmaps2.style.display = 'none';
           }
 </script>
 <script>

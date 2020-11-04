@@ -157,6 +157,16 @@ div.remark-slide {
   display:inline-block;
 }
 
+.inline-left10{
+  margin-right:auto;
+  width:10%;
+  display:inline-block;
+}
+.inline-right90{
+  margin-left: auto;
+  width:88%;
+  display:inline-block;
+}
 .toprightfig{
   position:absolute;
   top:-10px;
@@ -181,5 +191,5 @@ div.remark-slide {
   left: 12%;
   position: absolute;
   bottom: 5px;
-  /*width: 100%;*/
+  width: 100%;
 }
