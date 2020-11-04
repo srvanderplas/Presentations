@@ -1,6 +1,6 @@
 ---
 title: "Election Graphics"
-author: "Susan Vanderplas<br>.small[(joint work with Kiegan Rice, Heike Hofmann)]"
+author: "Susan Vanderplas.small.bottom[joint work with Kiegan Rice, Heike Hofmann]"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   xaringan::moon_reader:
