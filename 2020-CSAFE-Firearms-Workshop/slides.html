@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Open Source Software in Forensics</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Susan Vanderplas" />
+    <meta name="date" content="2020-12-01" />
+    <script src="libs/header-attrs-2.5/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/csafe.css" type="text/css" />
+    <link rel="stylesheet" href="css/csafe-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/this-presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Open Source Software in Forensics
+### Susan Vanderplas
+### 2020-12-01
+
+---
+
+
+
+class: primary-blue
+## Software is not 
+
+.right-column[
+- Volkswagen's [pollution-control system used hidden code to circumvent EPA testing](https://www.nytimes.com/2015/09/23/nyregion/volkswagens-diesel-fraud-makes-critic-of-secret-code-a-prophet.html)
+
+- Proprietary, probabilistic genotyping software has been [protected in court](https://www.courtlistener.com/opinion/2768743/people-v-chubbs-ca24/), even though [errors have been identified during criminal trials](www.couriermail.com.au/news/queensland/queensland-authorities-confirm-miscode-affects-dna-evidence-in-criminal-cases/news-story/833c580d3f1c59039efd1a2ef55af92b)
+
+- Breathalyzer software challenges:
+    - [Unreliable calibration and environmental detection components](https://casetext.com/case/in-re-source-code-evidentiary-hearings-in-implied-consent-matters?page=542) resulted in breathalyzer evidence being barred from a Minnesota court
+    - [Source code audits confirmed the reliability of a different breathalyzer](https://caselaw.findlaw.com/nj-supreme-court/1094905.html) in a New Jersey supreme court case
+]
+.left-column[
+&lt;img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Volkswagen_Golf_VIII_IMG_2518.jpg/800px-Volkswagen_Golf_VIII_IMG_2518.jpg" style="width:100%;margin-left:auto;margin-right:auto;"/&gt; 
+&lt;img src="https://www.nist.gov/sites/default/files/styles/480_x_480_limit/public/images/mml/bmd/genetics/mixture_dna_1.jpg?itok=2aNdnKak" style="width:100%;margin-left:auto;margin-right:auto;"/&gt;
+
+&lt;img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Breathalyzer_on_citizen.jpg"  style="width:100%;margin-left:auto;margin-right:auto;"/&gt;
+]
+
+???
+
+This issue comes up in regulatory and legal circles fairly regularly. For instance, VW circumvented EPA testing with hidden source code - if they were required to submit the source code for the vehicle along with the vehicle, it would have been much more difficult to perpetrate fraud.
+
+We've also seen challenges with probabilistic genotyping software such as STRmix and TrueAllele. Several different courts have refused to allow the defense to examine the source code - instead, they're limited to cross-examination of the forensic examiner using the software. In our analogy, that's like interrogating someone else who bought the same muffin about whether or not it is gluten-free, kosher, contains eggs, etc - it really doesn't help that much, because they're not the one who made the muffin.
+
+This often works against the defense, but not always - source code examination was used by the NJ supreme court to validate a breathalyzer's reliability; it was also used by a Minnesota court to throw out evidence from an unreliable breathalyzer.
+
+---
+class: inverse-center-blue,center,middle
+## What is Source Code?&lt;br/&gt;&lt;br/&gt; Software?
+
+---
+class: primary-cyan
+## Source and Software
+
+Source Code | Software
+----------- |  --------
+![muffin recipe](images/muffin-recipe.jpg) | ![Chocolate muffin](images/muffin-11.jpg)
+
+???
+
+I'm a pretty food-motivated person, so lets take this into a more familiar area: recipes. 
+I've decided I'm hungry and I want to eat a muffin. So I walk down to my local coffee shop and I buy a muffin. So far, so good.
+
+In my analogy, source code is like the muffin recipe, and the software I use is like the muffin I bought - the source code is the "recipe" the computer uses to create the graphical interface I interact with.
+In this case, I have the muffin - the end result - but I don't have the recipe or know what went into that muffin. Most of the time, that's fine, but sometimes, it's a problem. 
+
+---
+class:secondary-cyan
+
+**Source code** is the directions the programmer gives the computer.
+
+![Source code and computers](images/source_code_computer.png)
+
+.footer[Cartoon from [Young Coder](https://medium.com/young-coder/the-difference-between-compiled-and-interpreted-languages-d54f66aa71f0) guest post on medium.com]
+
+
+---
+class:secondary-cyan
+
+To be used by the computer, .b[Source code] must be turned into computer code.
+
+![Source code is compiled so that the computer can understand](images/compiled_code_computer.png)
+
+Computer code is not human-readable, but it is usually what is distributed as **software**.
+
+.footer[Cartoon from [Young Coder](https://medium.com/young-coder/the-difference-between-compiled-and-interpreted-languages-d54f66aa71f0) guest post on medium.com]
+
+---
+class: primary-cyan
+## Source and Software
+
+In a legal setting, the software doesn't help us much: we can provide inputs and outputs, but we can't see the inner logic. We only see the surface, and even then, we might not find problem(s) that exist.
+
+&lt;img src="images/coffee-bean-illusion.png" width="75%" style="display: block; margin: auto;" /&gt;
+.footer[Image [source](https://www.huffingtonpost.co.uk/2015/12/30/coffee-bean-illusion_n_6105952.html)]
+
+---
+class: primary-cyan
+## Source and Software
+
+In a legal setting, the software doesn't help us much: we can provide inputs and outputs, but we can't see the inner logic. We only see the surface, and even then, we might not find problem(s) that exist.
+
+&lt;img src="images/coffee-bean-illusion2.png" width="75%" style="display: block; margin: auto;" /&gt;
+.footer[Image [source](https://www.huffingtonpost.co.uk/2015/12/30/coffee-bean-illusion_n_6105952.html)]
+
+---
+class:primary-cyan
+
+## Source and Software
+
+So how do we make sure our software is doing what it says it is doing?
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Software&lt;/th&gt;
+&lt;th&gt;Published paper Description&lt;/th&gt;
+&lt;th&gt;Source Code&lt;/th&gt;
+&lt;th&gt;Source + Documentation + Paper + How To&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src="images/muffin-11.jpg" alt="Chocolate muffin"&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src="images/muffin-pics.gif" alt="Making a muffin"&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src="images/muffin-recipe.jpg" alt="muffin recipe"&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src="images/muffin-recipe.gif" alt="Making a muffin"&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+???
+
+Generally speaking, peer review of methods is required. So we publish a paper showing how our method works, but this is not as informative as the source code, because the only thing precise enough to describe exactly how an algorithm is implemented is the source code. However, the paper is a very useful step in the process - just like a series of how-to steps is important for determining if you're making a recipe correctly.
+
+If we have the paper, the source code, any documentation, and a user manual, though, we are in very good shape - we can recreate our muffin from scratch, and identify exactly what went into it.
+
+
+---
+class: secondary-cyan
+## The Perfect Combination
+
+.move-down[.move-down[
+1. Method description (conceptual) - from the research paper/presentation
+
+2. Source code
+
+3. Source code documentation
+
+4. Written instructions for installation and use
+]]
+
+
+---
+class: inverse-center-grey,middle,center
+# So what do we mean by open source?
+
+
+---
+class:primary-red
+## "Free and Open Source Software"
+
+.pull-left[
+4 freedoms:
+
+1. Use the software for any purpose
+2. See the code and modify it
+3. Share copies of the software
+4. Share copies of modified software
+
+\#2 and \#4 require access to the source ("open source")
+
+"Free" here refers to your rights, not to the price of the software
+
+**Open Source** software is any software that allows the user to see the source code.
+].pull-right[
+![Software Freedom](images/free-software.svg)
+]
+
+---
+class:primary-red
+## Open Source in Forensics
+
+The use of open-source code is essential to maintaining public faith in the judicial process. 
+
+- Evidence is interpreted by algorithms
+
+- Algorithms provide a (hopefully unbiased) "score"
+
+- The defendant has been "accused" by the algorithm and should be able to examine it
+
+Additional advantages:
+
+- **Linus's Law**: "given enough eyeballs, all bugs are shallow"    
+Open-source code is more likely to have fixes for identified bugs (and bugs are more likely to be found)
+
+
+---
+class:primary-red
+## Open Source in Science
+There are other advantages, too:
+
+- Ability to reproduce results in papers
+
+- Efficient scientific progress
+
+- Easy comparisons between competing methods
+
+- Outsource some software validation and testing to the community
+
+- Gain a wider user base (more citations!)
+
+- "Inheritance" of projects once you no longer want to maintain them
+
+
+---
+class:primary-red
+## Why Not Open Source?
+
+1. **Pride** - Code is ugly and awkward, and making it "presentable" can be a lot of extra work.
+
+2. **Competition** - Force your competitors to reinvent the wheel to slow them down
+
+3. **There's no reward** - Why put in the extra effort for no good reason?
+
+4. **I'm not allowed** - It's too much of a hassle to navigate the release process at my organization
+
+
+---
+class:secondary-red
+## Why Open Source?
+
+1. **Pride**    
+*Making the code presentable makes it easier for you to reuse later, and ensures you get credit for your work*
+
+2. **Competition**    
+*Force your competitors to understand and fix your code! Become the standard option that everyone uses!*
+
+3. **There's no reward**    
+*You can release the code as a package, with another separate publication!*
+
+4. **I'm not allowed**    
+Government agencies have a responsibility to release their developments to the general public.    
+.small[[NIST](https://github.com/usnistgov), [Los Alamos](https://github.com/lanl), [Pacific Northwest](https://github.com/pnnl), [US DOJ](https://github.com/usdoj), [US Naval Research Lab](https://github.com/USNavalResearchLaboratory), [UK Ministry of Justice](https://github.com/ministryofjustice), [Canada DOJ](https://github.com/justicecanada)]    
+Many private organizations maintain open-source libraries to improve their software and contribute to the community's development.    
+.small[[Google](https://github.com/google), [Microsoft](https://github.com/microsoft), [Facebook](https://github.com/facebook), [Apple](https://github.com/apple)]
+
+---
+class:inverse-center-blue,middle
+# Baby Steps
+
+---
+class:primary-green
+## Steps toward Reproducible, Open-source Science
+
+
+0. Describe the methodology in the published paper, release uncurated code on request
+
+1. Describe the methodology in the published paper, provide reproducible code in a repository and link to it in the paper
+
+2. Describe the methodology in the published paper, provide reproducible code **and data** in a repository
+
+3. Archive the code, data, and paper in a curated repository on e.g. figshare
+
+---
+class:primary-green
+## Writing Reproducible Code
+
+- Make the code modular, so that each step is encapsulated in a reusable function
+
+- Make a habit of documenting each step in the code explicitly (Documentation-driven development)
+
+- Use unit and integration tests to document each function and record the output (to provide a log of how function results change over time)
+
+- Release your code as a package, with documentation, to make it easier for others to use (and cite) your work
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
