@@ -24,7 +24,7 @@ class: center, middle, inverse, title-slide
 
 
 class: primary-blue
-## Software is not 
+## Software, Law, and Regulation
 
 .right-column[
 - Volkswagen's [pollution-control system used hidden code to circumvent EPA testing](https://www.nytimes.com/2015/09/23/nyregion/volkswagens-diesel-fraud-makes-critic-of-secret-code-a-prophet.html)
@@ -87,7 +87,9 @@ To be used by the computer, .b[Source code] must be turned into computer code.
 
 ![Source code is compiled so that the computer can understand](images/compiled_code_computer.png)
 
-Computer code is not human-readable, but it is usually what is distributed as **software**.
+Computer code is not human-readable.
+
+**Software** is usually distributed as computer code.
 
 .footer[Cartoon from [Young Coder](https://medium.com/young-coder/the-difference-between-compiled-and-interpreted-languages-d54f66aa71f0) guest post on medium.com]
 
@@ -189,16 +191,19 @@ class:primary-red
 
 The use of open-source code is essential to maintaining public faith in the judicial process. 
 
-- Evidence is interpreted by algorithms
+- Evidence is interpreted by algorithms and examiners
 
-- Algorithms provide a (hopefully unbiased) "score"
+- Algorithms provide a (hopefully unbiased) "score" to assist examiners
 
-- The defendant has been "accused" by the algorithm and should be able to examine it
+- The defendant has been "accused" in part by the algorithm and should be able to examine it
 
 Additional advantages:
 
-- **Linus's Law**: "given enough eyeballs, all bugs are shallow"    
-Open-source code is more likely to have fixes for identified bugs (and bugs are more likely to be found)
+- **Linus's Law**: "given enough eyeballs, all bugs are shallow"
+
+    - Open-source code is more likely to have fixes for identified bugs (compared to proprietary code)
+    
+    - Bugs are more likely to be found
 
 
 ---
@@ -207,49 +212,65 @@ class:primary-red
 There are other advantages, too:
 
 - Ability to reproduce results in papers
+  - Comparisons between competing methods
+  - Replication of results on new data
 
 - Efficient scientific progress
+  - Don't have to reinvent the wheel every time
+  - Can easily modify others' code
 
-- Easy comparisons between competing methods
-
-- Outsource some software validation and testing to the community
-
-- Gain a wider user base (more citations!)
-
-- "Inheritance" of projects once you no longer want to maintain them
+- Software user community:
+  - Wider evaluation and testing of software
+  - Larger user base (more citations!)
+  - "Inheritance" of project maintenance
 
 
 ---
 class:primary-red
 ## Why Not Open Source?
 
-1. **Pride** - Code is ugly and awkward, and making it "presentable" can be a lot of extra work.
+- **Pride**
+  - Research-level code is ugly and awkward
+  - Making it "presentable" can be a lot of extra work    
+    - [Community Research and Academic Programming License](http://matt.might.net/articles/crapl/)
+    - [Open Source culture](https://fluca1978.github.io/2010/08/19/crapl-or-crap-of-university.html) - someone else will be proud to fix your ugly code
 
-2. **Competition** - Force your competitors to reinvent the wheel to slow them down
+- **Competition** 
+  - Force your competitors to reinvent the wheel to slow them down
+  - Why go through the extra effort to help them?
 
-3. **There's no reward** - Why put in the extra effort for no good reason?
+- **There's no reward**
 
-4. **I'm not allowed** - It's too much of a hassle to navigate the release process at my organization
-
+- **I'm not allowed** 
+  - Organization release processes can be complex
+  
 
 ---
 class:secondary-red
 ## Why Open Source?
 
-1. **Pride**    
-*Making the code presentable makes it easier for you to reuse later, and ensures you get credit for your work*
+- **Pride**    
+  - Making the code presentable makes it easier for you to reuse later
+  - Source code references (licensing) ensures you get credit for your work
 
-2. **Competition**    
-*Force your competitors to understand and fix your code! Become the standard option that everyone uses!*
+- **Competition**    
+  - Force your competitors to understand and fix your code
+  - Become the standard option that everyone uses
 
-3. **There's no reward**    
-*You can release the code as a package, with another separate publication!*
+- **There's no reward**
+  - You can release the code as a package, with another separate publication
 
-4. **I'm not allowed**    
-Government agencies have a responsibility to release their developments to the general public.    
-.small[[NIST](https://github.com/usnistgov), [Los Alamos](https://github.com/lanl), [Pacific Northwest](https://github.com/pnnl), [US DOJ](https://github.com/usdoj), [US Naval Research Lab](https://github.com/USNavalResearchLaboratory), [UK Ministry of Justice](https://github.com/ministryofjustice), [Canada DOJ](https://github.com/justicecanada)]    
-Many private organizations maintain open-source libraries to improve their software and contribute to the community's development.    
+---
+class:secondary-red
+## Why Open Source?
+
+- **I'm not allowed**    
+  - Government agencies have a responsibility to release their developments to the general public.    
+.small[[NIST](https://github.com/usnistgov), [Los Alamos](https://github.com/lanl), [Pacific Northwest](https://github.com/pnnl), [US DOJ](https://github.com/usdoj), [US Naval Research Lab](https://github.com/USNavalResearchLaboratory), [UK Min. of Justice](https://github.com/ministryofjustice), [Canada DOJ](https://github.com/justicecanada)]    
+  - Many private organizations maintain open-source libraries to improve their software and contribute to the community's development.    
 .small[[Google](https://github.com/google), [Microsoft](https://github.com/microsoft), [Facebook](https://github.com/facebook), [Apple](https://github.com/apple)]
+  - Small private companies have the most to gain from open source software - expert software developers in the community may contribute for free
+    - Open Source and free ($0) aren't synonymous. There are many different [open source business models](https://en.wikipedia.org/wiki/Business_models_for_open-source_software)
 
 ---
 class:inverse-center-blue,middle
