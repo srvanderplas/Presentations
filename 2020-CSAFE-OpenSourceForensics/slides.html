@@ -1,18 +1,27 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Open Source Software in Forensics</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Susan Vanderplas" />
+    <meta name="date" content="2020-12-01" />
+    <script src="libs/header-attrs-2.5/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/csafe.css" type="text/css" />
+    <link rel="stylesheet" href="css/csafe-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/this-presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Open Source Software in Forensics
+### Susan Vanderplas
+### 2020-12-01
+
 ---
-title: "Open Source Software in Forensics"
-author: "Susan Vanderplas"
-date: "2020-12-01"
-output:
-  xaringan::moon_reader:
-    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
-    css: ["default", "css/csafe.css", "css/csafe-fonts.css", "css/this-presentation.css"]
-    lib_dir: libs
-    nature:
-      countIncrementalSlides: false
----
-```{r setup, echo = F, include = F}
-knitr::opts_chunk$set(echo = F)
-```
+
+
 
 class: primary-blue
 ## Software is not 
@@ -27,10 +36,10 @@ class: primary-blue
     - [Source code audits confirmed the reliability of a different breathalyzer](https://caselaw.findlaw.com/nj-supreme-court/1094905.html) in a New Jersey supreme court case
 ]
 .left-column[
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Volkswagen_Golf_VIII_IMG_2518.jpg/800px-Volkswagen_Golf_VIII_IMG_2518.jpg" style="width:100%;margin-left:auto;margin-right:auto;"/> 
-<img src="https://www.nist.gov/sites/default/files/styles/480_x_480_limit/public/images/mml/bmd/genetics/mixture_dna_1.jpg?itok=2aNdnKak" style="width:100%;margin-left:auto;margin-right:auto;"/>
+&lt;img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Volkswagen_Golf_VIII_IMG_2518.jpg/800px-Volkswagen_Golf_VIII_IMG_2518.jpg" style="width:100%;margin-left:auto;margin-right:auto;"/&gt; 
+&lt;img src="https://www.nist.gov/sites/default/files/styles/480_x_480_limit/public/images/mml/bmd/genetics/mixture_dna_1.jpg?itok=2aNdnKak" style="width:100%;margin-left:auto;margin-right:auto;"/&gt;
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Breathalyzer_on_citizen.jpg"  style="width:100%;margin-left:auto;margin-right:auto;"/>
+&lt;img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Breathalyzer_on_citizen.jpg"  style="width:100%;margin-left:auto;margin-right:auto;"/&gt;
 ]
 
 ???
@@ -43,7 +52,7 @@ This often works against the defense, but not always - source code examination w
 
 ---
 class: inverse-center-blue,center,middle
-## What is Source Code?<br/><br/> Software?
+## What is Source Code?&lt;br/&gt;&lt;br/&gt; Software?
 
 ---
 class: primary-cyan
@@ -88,9 +97,7 @@ class: primary-cyan
 
 In a legal setting, the software doesn't help us much: we can provide inputs and outputs, but we can't see the inner logic. We only see the surface, and even then, we might not find problem(s) that exist.
 
-```{r out.width = "75%", fig.align="center"}
-knitr::include_graphics("images/coffee-bean-illusion.png")
-```
+&lt;img src="images/coffee-bean-illusion.png" width="75%" style="display: block; margin: auto;" /&gt;
 .footer[Image [source](https://www.huffingtonpost.co.uk/2015/12/30/coffee-bean-illusion_n_6105952.html)]
 
 ---
@@ -99,9 +106,7 @@ class: primary-cyan
 
 In a legal setting, the software doesn't help us much: we can provide inputs and outputs, but we can't see the inner logic. We only see the surface, and even then, we might not find problem(s) that exist.
 
-```{r out.width = "75%", fig.align="center"}
-knitr::include_graphics("images/coffee-bean-illusion2.png")
-```
+&lt;img src="images/coffee-bean-illusion2.png" width="75%" style="display: block; margin: auto;" /&gt;
 .footer[Image [source](https://www.huffingtonpost.co.uk/2015/12/30/coffee-bean-illusion_n_6105952.html)]
 
 ---
@@ -111,24 +116,24 @@ class:primary-cyan
 
 So how do we make sure our software is doing what it says it is doing?
 
-<table>
-<thead>
-<tr>
-<th>Software</th>
-<th>Published paper Description</th>
-<th>Source Code</th>
-<th>Source + Documentation + Paper + How To</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="images/muffin-11.jpg" alt="Chocolate muffin"></td>
-<td><img src="images/muffin-pics.gif" alt="Making a muffin"></td>
-<td><img src="images/muffin-recipe.jpg" alt="muffin recipe"></td>
-<td><img src="images/muffin-recipe.gif" alt="Making a muffin"></td>
-</tr>
-</tbody>
-</table>
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Source Code&lt;/th&gt;
+&lt;th&gt;Software&lt;/th&gt;
+&lt;th&gt;Published paper Description&lt;/th&gt;
+&lt;th&gt;Source + Documentation + Paper + How To&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src="images/muffin-recipe.jpg" alt="muffin recipe"&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src="images/muffin-11.jpg" alt="Chocolate muffin"&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src="images/muffin-pics.gif" alt="Making a muffin"&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src="images/muffin-recipe.gif" alt="Making a muffin"&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 ???
 
@@ -275,3 +280,107 @@ class:primary-green
 
 - Release your code as a package, with documentation, to make it easier for others to use (and cite) your work
 
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
