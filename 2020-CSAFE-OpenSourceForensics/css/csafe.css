@@ -5,120 +5,82 @@
   padding-right: 80px;
   padding-bottom: 40px;
   background-color: #fff;
+  background-size: contain;
+  background-position: 0 0;
 }
 
 /* Background images */
 .title-slide {
-  background-image: url("../images/title-slide-bkgd.svg");
-  background-size: contain;
-  background-position: 0 0;
-  background-color: #fff;
-  color: #003a70;
-}
-.title-slide .inverse {
-  background-image: url("../images/title-slide-bkgd.svg");
-  background-size: contain;
-  background-position: 0 0;
-  background-color: #fff;
+  background-image: url("../images/title-slide-bkgd.svg")!important;
   color: #003a70;
 }
 
 .inverse-blue, .inverse-center-blue {
   background-image: url("../images/inverse-slide-bkgd0.svg");
-  background-size: contain;
-  background-position: 0 0;
+  color: #fff;
+}
+.inverse-green, .inverse-center-green {
+  background-image: url("../images/inverse-slide-bkgd1.svg");
+  color: #fff;
+}
+.inverse-cyan, .inverse-center-cyan, .inverse, .inverse.center {
+  background-image: url("../images/inverse-slide-bkgd2.svg");
   color: #003a70;
 }
-
+.inverse-red, .inverse-center-red {
+  background-image: url("../images/inverse-slide-bkgd3.svg");
+  color: #fff;
+}
 .inverse-grey, .inverse-center-grey{
   background-image: url("../images/inverse-slide-bkgd4.svg");
-  background-size: contain;
-  background-position: 0 0;
-  background-color: #fff;
   color: #fff;
 }
 
 .primary-blue {
   background-image: url("../images/slide-bkgd0.svg");
-  background-size: contain;
-  background-position: 0 0;
-  background-color: #fff;
 }
-
 .primary-green {
   background-image: url("../images/slide-bkgd1.svg");
-  background-size: contain;
-  background-position: 0 0;
-  background-color: #fff;
 }
-
 .primary-cyan {
   background-image: url("../images/slide-bkgd2.svg");
-  background-size: contain;
-  background-position: 0 0;
-  background-color: #fff;
 }
-
 .primary-red {
   background-image: url("../images/slide-bkgd3.svg");
-  background-size: contain;
-  background-position: 0 0;
-  background-color: #fff;
 }
-
 .primary-grey {
   background-image: url("../images/slide-bkgd4.svg");
-  background-size: contain;
-  background-position: 0 0;
-  background-color: #fff;
 }
 
 .secondary-blue {
   background: url("../images/diag-slide-bkgd0.svg");
-  background-size: contain;
-  background-position: 0 0;
   background-color: #fff;
 }
-
 .secondary-green {
   background: url("../images/diag-slide-bkgd1.svg");
-  background-size: contain;
-  background-position: 0 0;
   background-color: #fff;
 }
-
 .secondary-cyan {
   background: url("../images/diag-slide-bkgd2.svg");
-  background-size: contain;
-  background-position: 0 0;
   background-color: #fff;
 }
-
-
 .secondary-red {
   background: url("../images/diag-slide-bkgd3.svg");
-  background-size: contain;
-  background-position: 0 0;
   background-color: #fff;
 }
-
 .secondary-grey {
   background: url("../images/diag-slide-bkgd4.svg");
-  background-size: contain;
-  background-position: 0 0;
   background-color: #fff;
 }
 
 /* Headers in the right place */
-.inverse-blue > h1:first-of-type, .inverse-grey > h1:first-of-type {
-  color: #ffffff;
-  text-align: left;
+[class*="inverse-"] > h1:first-of-type {
+  color: #fff;
+  /*font-family: Capitals,Impact,fantasy;*/
 }
 
-.inverse-center-blue > h1:first-of-type, .inverse-center-grey > h1:first-of-type {
-  margin: 0px;
+[class*="inverse-center"] > h1:first-of-type {
   text-align:center !important;
-  color: #ffffff;
 }
 
 .title-slide.inverse > h1:first-of-type {
@@ -126,7 +88,7 @@
   color: #003a70;
 }
 
-.title-slide.inv-center > h1:first-of-type {
+.title-slide.inverse.center > h1:first-of-type {
   text-align:center !important;
   color: #003a70;
 }
@@ -147,18 +109,9 @@ h1 { /* Title */
   text-align: left;
 }
 
-.primary-blue > h1:first-child, .primary-blue > h2:first-child, .primary-blue > h3:first-child,
-.primary-red > h1:first-child, .primary-red > h2:first-child, .primary-red > h3:first-child,
-.primary-green > h1:first-child, .primary-green > h2:first-child, .primary-green > h3:first-child,
-.primary-grey > h1:first-child, .primary-grey > h2:first-child, .primary-grey > h3:first-child,
-.primary-cyan > h1:first-child, .primary-cyan > h2:first-child, .primary-cyan > h3:first-child
-.secondary-blue > h1:first-child, .secondary-blue > h2:first-child, .secondary-blue > h3:first-child,
-.secondary-red > h1:first-child, .secondary-red > h2:first-child, .secondary-red > h3:first-child,
-.secondary-green > h1:first-child, .secondary-green > h2:first-child, .secondary-green > h3:first-child,
-.secondary-grey > h1:first-child, .secondary-grey > h2:first-child, .secondary-grey > h3:first-child,
-.secondary-cyan > h1:first-child, .secondary-cyan > h2:first-child, .secondary-cyan > h3:first-child,
-.inverse-blue > h1:first-child, .inverse-blue > h2:first-child, .inverse-blue > h3:first-child,
-.inverse-grey > h1:first-child, .inverse-grey > h2:first-child, .inverse-grey > h3:first-child {
+
+/* Text formatting */
+h1:first-child, h2:first-child, h3:first-child {
   top: 20px;
   left: 30px;
   right:80px;
@@ -166,7 +119,6 @@ h1 { /* Title */
   margin-bottom: 10px;
 }
 
-/* Text formatting */
 .secondary-blue h1, .secondary-blue h2, .secondary-blue h3,
 .primary-blue h1, .primary-blue h2, .primary-blue h3 {
   color: #003a70;
