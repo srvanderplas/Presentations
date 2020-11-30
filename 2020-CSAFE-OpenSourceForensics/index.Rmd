@@ -13,6 +13,18 @@ output:
 knitr::opts_chunk$set(echo = F)
 ```
 
+class:inverse-grey,middle
+## Overview
+
+- Why Software Matters
+
+- Concepts: Source code and Software
+
+- Introduction to Open Source
+
+- Moving toward Open Source Software
+
+---
 class: primary-blue
 ## Software, Law, and Regulation
 
@@ -183,7 +195,7 @@ class:primary-red
 class:primary-red
 ## Open Source in Forensics
 
-The use of open-source code is essential to maintaining public faith in the judicial process. 
+The use of open-source code is **essential to maintaining public faith** in the judicial process. 
 
 - Evidence is interpreted by algorithms and examiners
 
@@ -237,6 +249,7 @@ class:primary-red
 
 - **I'm not allowed** 
   - Organization release processes can be complex
+  - Liability concerns - who is responsible if there are errors?
   
 
 ---
@@ -265,6 +278,55 @@ class:secondary-red
 .small[[Google](https://github.com/google), [Microsoft](https://github.com/microsoft), [Facebook](https://github.com/facebook), [Apple](https://github.com/apple)]
   - Small private companies have the most to gain from open source software - expert software developers in the community may contribute for free
     - Open Source and free ($0) aren't synonymous. There are many different [open source business models](https://en.wikipedia.org/wiki/Business_models_for_open-source_software)
+    
+  - Guide to the legal considerations for open-source software: https://opensource.guide/legal/
+
+---
+class:secondary-red
+## Why Open Source?
+
+- **Liability**
+  - Open-source licenses typically place liability on the end-user for any defects or malfunctions in the software
+  - Because the code is written by a community, there is some diffusion of liability
+
+---
+class:secondary-red
+## Software Liability
+
+GNU General Public License 3.0
+
+.small[
+> 15 Disclaimer of Warranty.
+
+> **THERE IS NO WARRANTY FOR THE PROGRAM**, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM ???AS IS??? WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+> 16 Limitation of Liability.
+
+> **IN NO EVENT** UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING **WILL ANY COPYRIGHT HOLDER**, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, **BE LIABLE TO YOU FOR DAMAGES**, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), **EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.**
+]
+
+???
+
+Note that most of the license is not in all caps. So they're literally yelling at us.
+
+---
+class:secondary-red
+## Why Open Source?
+
+- **Liability**
+  - Open-source licenses typically place liability on the end-user for any defects or malfunctions in the software
+    
+      - Responsibility is to know how the software is working as an end-user
+      - This is already part of forensics - the examiner is the ultimate authority
+      - From a liability perspective, open-source is very compatible with forensics
+    
+  - Because the code is written by a community, there is some diffusion of liability
+  
+In forensics, where there isn't a single regulatory body, open-source may be a step private companies can take to reduce their own liability. 
+
+???
+
+It also happens to be the right thing to do and makes the system more fair for all parties. 
 
 ---
 class:inverse-green,center,middle
