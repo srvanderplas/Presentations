@@ -146,8 +146,6 @@ How many of you saw the non-coffee-bean in the picture? I had to look for a long
 
 The problem with software is that there is no software out there that is completely bug free. There are lots of programs that are thoroughly tested and may not have any critical bugs that interfere with system performance or affect the "output" - for instance, code in nuclear reactors and airplanes is thoroughly checked and validated, with many redundancies. But, if the public can't see the source code, that checking and validation process is entirely opaque. The FAA and the Nuclear Regulatory Commission provide some oversight and licensing for these situations in aviation and nuclear energy, but the legal system is a lot more decentralized. As a result, it's far more important that the software used in forensics be available to the general public for examination and analysis: it's along the same lines as being able to see what the other side in the adversarial system has in evidence. 
 
-And at this point, you may be saying, "well, I don't know how to read source code, so... I can't really help with this", or "even if you could read all the source code, you probably wouldn't be able to wade through it all to find the bugs"
-
 ---
 class:primary-cyan
 
@@ -175,6 +173,14 @@ So how do we make sure our software is doing what it says it is doing?
 </table>
 
 ???
+
+Source code doesn't exist in a vacuum, though. Any good programmer documents their code, providing some comments as to what's going on and how things work. Often, there's also formal user documentation, plus the associated papers where the methodology is validated in peer review (which is required for admissibility in court anyways). 
+
+I like to watch the British Baking Show, and there, often, they given the contestants a list of ingredients and very minimal instructions. They actually remove information from the written recipe. If our recipe looks like that, it's probably equivalent to source code with no comments... 
+
+The peer reviewed paper is another source for information - it describes the method and connects it to other available methods and pieces of information. So it's like the gif I've created with the pictures of each step... it's not enough to make the muffin from scratch (because you don't have the proportions of ingredients or even necessarily an idea of what the white powder is - is it self rising flour? All purpose? baking soda?), but it's certainly enough to give you a guided tour of what the process should look like. 
+
+What I'm proposing - is more akin to a cooking blog: you share not only the code, but the documentation and any associated papers (or citations to those papers). So it's like having the ingredients list, the instructions, the progress pictures -- like having the more informative gif that helps you see exactly what you need to do. With that set of tools, we have a decent chance of being able to recreate the muffin from scr
 
 Generally speaking, peer review of methods is required. So we publish a paper showing how our method works, but this is not as informative as the source code, because the only thing precise enough to describe exactly how an algorithm is implemented is the source code. However, the paper is a very useful step in the process - just like a series of how-to steps is important for determining if you're making a recipe correctly.
 
@@ -329,7 +335,7 @@ GNU General Public License 3.0
 .small[
 > 15 Disclaimer of Warranty.
 
-> **THERE IS NO WARRANTY FOR THE PROGRAM**, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM ???AS IS??? WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+> **THERE IS NO WARRANTY FOR THE PROGRAM**, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 
 > 16 Limitation of Liability.
 
