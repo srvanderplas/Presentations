@@ -146,8 +146,6 @@ How many of you saw the non-coffee-bean in the picture? I had to look for a long
 
 The problem with software is that there is no software out there that is completely bug free. There are lots of programs that are thoroughly tested and may not have any critical bugs that interfere with system performance or affect the "output" - for instance, code in nuclear reactors and airplanes is thoroughly checked and validated, with many redundancies. But, if the public can't see the source code, that checking and validation process is entirely opaque. The FAA and the Nuclear Regulatory Commission provide some oversight and licensing for these situations in aviation and nuclear energy, but the legal system is a lot more decentralized. As a result, it's far more important that the software used in forensics be available to the general public for examination and analysis: it's along the same lines as being able to see what the other side in the adversarial system has in evidence. 
 
-And at this point, you may be saying, "well, I don't know how to read source code, so... I can't really help with this", or "even if you could read all the source code, you probably wouldn't be able to wade through it all to find the bugs"
-
 ---
 class:primary-cyan
 
@@ -176,10 +174,13 @@ So how do we make sure our software is doing what it says it is doing?
 
 ???
 
-Generally speaking, peer review of methods is required. So we publish a paper showing how our method works, but this is not as informative as the source code, because the only thing precise enough to describe exactly how an algorithm is implemented is the source code. However, the paper is a very useful step in the process - just like a series of how-to steps is important for determining if you're making a recipe correctly.
+Source code doesn't exist in a vacuum, though. Any good programmer documents their code, providing some comments as to what's going on and how things work. Often, there's also formal user documentation, plus the associated papers where the methodology is validated in peer review (which is required for admissibility in court anyways). 
 
-If we have the paper, the source code, any documentation, and a user manual, though, we are in very good shape - we can recreate our muffin from scratch, and identify exactly what went into it.
+I like to watch the British Baking Show, and there, often, they given the contestants a list of ingredients and very minimal instructions. They actually remove information from the written recipe. If our recipe looks like that, it's probably equivalent to source code with no comments... 
 
+The peer reviewed paper is another source for information - it describes the method and connects it to other available methods and pieces of information. So it's like the gif I've created with the pictures of each step... it's not enough to make the muffin from scratch (because you don't have the proportions of ingredients or even necessarily an idea of what the white powder is - is it self rising flour? All purpose? baking soda?), but it's certainly enough to give you a guided tour of what the process should look like. Similarly, our papers, even the very thorough ones, don't usually contain enough information to completely reimplement a method from scratch: it turns out that the reason we write programs in R, C, python, etc. is that written language isn't precise enough to describe algorithms exactly. It might be very informative, but the source code is necessary to fully understand the process. 
+
+What I'm proposing - is more akin to a cooking blog: you share not only the code, but the documentation and any associated papers (or citations to those papers). So it's like having the ingredients list, the instructions, the progress pictures -- like having the more informative gif that helps you see exactly what you need to do. With that set of tools, we have a decent chance of being able to recreate the muffin from scratch. 
 
 ---
 class: secondary-cyan
@@ -195,11 +196,17 @@ class: secondary-cyan
 4. Written instructions for installation and use
 ]]
 
+???
+
+Essentially, the ideal combination of things we'd have to fully describe and demonstrate a piece of software would be the description of the method from the paper, the source code, the documentation for using that code (both programmer docummentation and user documentation), and a written set of instructions for installing and using the program. Obviously, depending on the amount of time and effort, some of these things are going to be patchier and less precise than we'd like them to be, but at least this way we have the puzzle pieces and just have to put them together properly. 
 
 ---
 class: inverse-red,middle,center
 # So what do we mean by open source?
 
+???
+
+Hopefully, at this point, you have a good idea of what I mean when I say source code, software, documentation, and where I'm going with this. The next thing I'm going to talk about briefly is open source. Like many areas, open-source has its own vocabulary and meanings behind common words, so when I say "freedom", I'm going to briefly explain what I mean by that. 
 
 ---
 class:primary-red
@@ -222,6 +229,21 @@ class:primary-red
 ![Software Freedom](images/free-software.svg)
 ]
 
+???
+
+In open source, we commonly talk about "free software", but that doesn't refer to the price tag. Instead, we're generally talking about some combination of the four "freedoms" listed here. 
+
+Specifically, the first freedom is the freedom to use the software for any purpose. If you've ever read the itunes user agreement, you know that it has a clause prohibiting you from violating US law, including (and it actually specifies this) development, design, manufacture, or production of nuclear, missile, or chemical and biological weapons. So-called free and open source software will generally not restrict you from developing weapons with a music player, but they might assume that you would find a better open-source program out there for your purposes, so I wouldn't ask about it on the forums.
+
+You generally also have the freedom when using free software to see and modify the code. So this requires, by default, that you have access to the code - that the software is open-source. But open-source software doesn't require that you allow any user to actually run the software for any purpose, or that you allow any of the other freedoms listed here. That's an important distinction - I'm of course happy to advocate for free and open source software, but for forensic purposes my big goal is to promote the open-source part - the rest of the freedoms are nice but not essential.
+
+The third freedom is the freedom to share the software - to pass a copy on to a friend or colleague. And the fourth is the freedom to share your modified version of the source code or compiled software.
+
+Now, freedoms 3 and 4 are really useful and important for scientific progress. So they're not nothing. But if you're using a common open-source license, generally speaking freedoms 1-4 are included.
+
+Note that nowhere in here is there any reference to money explicitly. There's an implicit part of freedom 3 that could go along with "free software" but there are lots of business models that revolve around open source software and still maintain these freedoms. Open source isn't anti-business or anti-intellectual-property; it's mostly concerned with being pro-knowledge and pro-science.
+
+
 ---
 class:primary-red
 ## Open Source in Forensics
@@ -242,6 +264,12 @@ Additional advantages:
     
     - Bugs are more likely to be found
 
+???
+
+Hopefully at this point you can see why I make the claim that open source is essential to maintaining public faith in the judicial process. We're advocating for a world in which the evidence is interpreted by examiners with the help of algorithms. These algorithms provide a score to help examiners, but as a result, the defendant is being "accused" in part by the algorithm. We have a constitutional right to confront our accusers, which means the defense and the prosecution should both be able to examine the source code and see how the algorithm arrived at the decision. 
+
+Another advantage to this model is that if the source code is available and being reviewed by the community, bugs are more likely to be found. No code is bug free - that's really important to understand. Generally we hope to reduce the impact of bugs through software testing. But, the assumptions I am operating under when I write software tests may not match how the software is being used in the lab - so it's good to have other people testing my code too, because they might test something I didn't think about. This has been examined with google projects - google open-sources some of its code, and the open-source code generally gets bugs identified and fixed faster than similar closed-source projects. 
+
 
 ---
 class:primary-red
@@ -260,6 +288,14 @@ There are other advantages, too:
   - Wider evaluation and testing of software
   - Larger user base (more citations!)
   - "Inheritance" of project maintenance
+
+???
+
+The open-source movement developed out of early academic computer science: at its core, it starts with the assumption that progress should be available for everyone to benefit from in proportion to their interest in the field in which progress is made. It's a radical idea.
+
+But, along with that means that we can more easily reproduce results in papers, compare competing methods, and replicate results on new data. This leads to more efficient progress in science: we can collaborate more, build off of past inventions - we don't have to rebuild everything constantly, and we're all working together instead of competing constantly (there are of course still competitions - some of the mailing lists are pretty passionate). 
+
+For the software user community, there are benefits too - projects can be maintained and inherited much more easily, instead of abandoned. As academics, we get to make use of a larger user base, which leads to more citations - even across disciplines. I've gotten inquiries about some of the shoe alignment software I wrote, and I believe it has at this point been used for several other non-shoe projects. And with that use, as software developers we get several advantages - we get to make connections across disciplines, but we also get other people identifying and sometimes fixing the bugs for us. This is a great advantage when the goal is to have nice, robust, reliable software.
 
 
 ---
@@ -282,6 +318,22 @@ class:primary-red
   - Organization release processes can be complex
   - Liability concerns - who is responsible if there are errors?
   
+???
+
+So why don't people open source their code by default?
+
+In some cases, it's just pure embarrassment. I try not to look at code that I wrote more than 3 years ago - it's awful - so why would I want to make that public?
+Plus, making it presentable can be agonizing, especially if certain parts are held together with duct tape and bailing wire.
+We're not the first people to have this issue - so much that someone proposed making a community research and academic programming license (which has the acronym CRAP-L). While this isn't a completely serious computing license, I find the idea to be helpful - you release the code in the state it's in, with no apologies, because doing so makes the community better and helps you improve. But I think the more positive way to look at it is that you're helping someone else contribute to the community too, by improving your code even if they're not familiar enough to innovate themselves. 
+
+Sometimes, we also get a bit competitive and don't want to help out that one annoying guy at the conference that's just going to be annoying during Q&A. But frankly, sometimes, my code would confuse them more than writing it over again, so... maybe it's better to release the code? (I'm mostly kidding). 
+
+Other arguments involve the academic and social rewards for releasing software - it doesn't necessarily e.g. get you tenure, so why bother? 
+
+But in my experience, the biggest argument against open source is that the process to make something open source is a bit scary and intimidating. I worked in nuclear power for a while, so I get it - lawyers are not something you generally seek out. But I managed to open source the code I wrote during that time, because they had explicit processes for how to do something and I could follow them. It just took a few emails back and forth with legal. 
+
+So now that I've argued the other side a little, I"m going to address each of these and explain why open-source is worth it.
+
 
 ---
 class:secondary-red
@@ -297,6 +349,16 @@ class:secondary-red
 
 - **There's no reward**
   - You can release the code as a package, with another separate publication
+  
+???
+
+If you're worried about your code being presentable, there are a few things to consider. One, you wrote the code and may want to build off of that research later. If you come back to it in 2 years, don't you want to have it in good condition so that you can figure out what's going on? The documentation and open-source process to make code presentable is a worthwhile investment for future you. 
+
+If pride is the issue, then use a license that requires attribution - that someone cite your code and your work if they reuse it. It's a nice ego boost, or so I would assume.
+
+If you're worried about helping your competitors, then maybe just let them fix your code - that's revenge enough in some cases. But also, what's sweeter than becoming the defacto standard otpion that everyone uses? That's winning in a way that publishing a paper first just isn't quite going to beat.
+
+On the academic side of things, I've found that it's very easy to publish the methods paper first, and then release the code as a separate software package that has its own publication. So you get double the publications for the effort of packaging things up nicely and making them available to the community. Plus, the software availability means that you have a much higher chance of being cited if someone is considering between multiple implementations of a method - the most user-friendly option gets the users!
 
 ---
 class:secondary-red
@@ -312,6 +374,15 @@ class:secondary-red
     
   - Guide to the legal considerations for open-source software: https://opensource.guide/legal/
 
+???
+
+The next issue is one that I think is a much more common perception than reality. 
+
+There are many public agencies which develop code and release it as part of their work, including NIST, NASA, national labs, the DOJ, the naval research lab, and equivalent organizations in other countries. These organizations do so because the taxpayers have already paid for the work, so they deserve to have access to it. Technically, I suppose, I could file FOIA requests for NIST code/data/methods, but that is a bit of a pain in the rear - it's easier for the researchers to just release the code directly. I'll talk about liability issues in a minute, don't worry. For now, it's enough to say that there is a lot of precedent for government organizations to provide their work as open-source software. 
+
+But, the same issue is true in organizations that are privately held or for-profit. Google, Microsoft, Facebook, and Apple all maintain large open-source projects that have broad user bases. But, small companies have even more to gain from open-source - by releasing the code, they can get access to a wider pool of developers and more extensive testing than they might be able to hire. It's really common for programmers to have side projects, hobby projects, and contribute to open-source projects on the weekend. Again, this type of model is not incompatible with for-profit operation - there are many diferent open source business models. What is important in the private business situation is to carefully set up the framework for open-surce. The opensource guide I've linked to is designed to help small businesses think through how to manage intellectual property and other considerations for open source software. 
+
+
 ---
 class:secondary-red
 ## Why Open Source?
@@ -319,6 +390,13 @@ class:secondary-red
 - **Liability**
   - Open-source licenses typically place liability on the end-user for any defects or malfunctions in the software
   - Because the code is written by a community, there is some diffusion of liability
+
+
+???
+
+The next big issue is liability - some organizations worry about releasing code because they're worried about the liability for the code being used (properly or improperly). Open source licenses are very explicit about putting liability on the user rather than the developer (I'll show an example in a minute). This is both a cya issue and an issue of practicality - if the code was contributed by an anonymous person, who do you sue? What if the code is written by 30+ collaborators who are all different organizations and where it isn't clear who exactly was responsible for the fault in the code? The community aspect of open-source is protective in that it actually diffuses the ability for the legal system to actually pursue liability claims. 
+
+This hasn't actually played out in court much, in part because it's not something that comes up often. But, it's worth pointing out that these licenses are explicit and that there are organizations who would jump to the defense of any open-souce community involved in such a lawsuit.
 
 ---
 class:secondary-red
@@ -329,7 +407,7 @@ GNU General Public License 3.0
 .small[
 > 15 Disclaimer of Warranty.
 
-> **THERE IS NO WARRANTY FOR THE PROGRAM**, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM ???AS IS??? WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+> **THERE IS NO WARRANTY FOR THE PROGRAM**, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 
 > 16 Limitation of Liability.
 
@@ -339,6 +417,9 @@ GNU General Public License 3.0
 ???
 
 Note that most of the license is not in all caps. So they're literally yelling at us.
+
+This is one of the more extreme open-source licenses, but it is very very explicit about the fact that there is no warranty and no liability implied or provided by use of the software.
+
 
 ---
 class:secondary-red
@@ -357,24 +438,45 @@ In forensics, where there isn't a single regulatory body, open-source may be a s
 
 ???
 
+Examining the liability issue, we can see that the end-user is the one that is deemed responsible for relying on the software. But this is already how forensics operates - the examiner testifies based on their expertise and their reputation as an examiner. The software isn't licensed to do that job, because the examiner is the ultimate authority. So from a liability perspective, this is a non-issue - if the examiner doesn't trust the software or believes it has made an inaccurate conclusion, then they should discount the results and justify why the results are wrong - which they already would do if the situation came up.
+
+So the liability issue (which is one of the big ones people worry about) is actually not really an issue in forensics, because of the way the system is structured.
+
 It also happens to be the right thing to do and makes the system more fair for all parties. 
 
 ---
 class:inverse-green,center,middle
 # Moving Toward Reproducible, Open-source Science
 
+???
+
+Hopefully I've convinced you that open-source is a good option, and something worth considering. But for those of you who develop software, you may be wondering how to get there. And for those of you who use software, you may be wondering how this open-source thing works in practice. 
+
 ---
 class:primary-green
 ## Steps toward Reproducible, Open-source Science
 
+0. Describe the methodology in the published paper
 
-0. Describe the methodology in the published paper, release uncurated code on request
+1. Describe the methodology in the published paper, release uncurated code on request
 
-1. Describe the methodology in the published paper, provide reproducible code in a repository and link to it in the paper
+2. Describe the methodology in the published paper, provide reproducible code in a repository and link to it in the paper
 
-2. Describe the methodology in the published paper, provide reproducible code **and data** in a repository
+3. Describe the methodology in the published paper, provide reproducible code **and data** in a repository
 
-3. Archive the code, data, and paper in a curated repository on e.g. figshare
+4. Archive the code, data, and paper in a curated repository on e.g. figshare
+
+???
+
+From a scientific perspective, I've assembled a basic hierarchy: the basic option is to describe your methodology in the published paper. General courtesy is that if someone asks for your code and data for replication purposes, you release it - so I've made that step 1. 
+
+If you're feeling a bit more open to open-source, then step 2 would be to put your code in a repository and link to it in the paper. Make it clear how people can get access to your results.
+
+Step 3 is to release your code and data - this makes your analysis fully reproducible, which is the bare minimum expectation for good science (or at least, it should be)
+
+Step 4 is to release the code, data, and paper in a curated repository, and as your methodology evolves, to continue linking new versions to that archive. This ensures long-term reproducibility in some form, so that the knowledge is not lost.
+
+Now, these are strictly steps for archival purposes. But what about making your results more friendly for the community to use and understand?
 
 ---
 class:primary-green
@@ -388,3 +490,41 @@ class:primary-green
 
 - Release your code as a package, with documentation, to make it easier for others to use (and cite) your work
 
+???
+
+If you write code with open-source end points in mind, then you actually start writing better, more useful code. 
+
+Making code modular allows it to be re-used later, or for you to swap modules in and out when you find a better way of doing things
+
+If you start with the documentation and then write the code, you tend to get clearer, cleaner functions that do only one task. So that's a really nice benefit because it's a lot easier to maintain - and you have the documentation when you come back to it.
+
+If you know others are going to contribute to your project, it's a good idea to write some basic tests that let you know if functions break based on other changes. That makes it easier to check other people's contributions, but it also improves your ability to debug and fix your own code.
+
+Finally, if you're starting out with the idea of reproducible, open-source, community contribution, software, then it's easy to just start out designing the code as a package. All of that documentation can be easily turned into a package website, and you can really save a ton of time by explaining the code as you write it instead of trying to go back and do that afterwards. 
+
+---
+class:secondary-green
+## Using Open Source code
+
+If you're on the end-user side of the spectrum, there are open-source options for most of the common programs out there
+
+- Photoshop : GiMP
+
+- Microsoft Office : Libre Office
+
+- Matlab : R, Octave, NumPy
+
+- Edge : Chromium : Firefox (continuum of freedom)
+
+- Windows : Linux
+
+Professionally, free and open-source software may have less official corporate support, but often has better response and faster bug fixes (for software that is commonly used). 
+
+Source code auditability is critical for forensics, and should be a major consideration when deciding which platform to use. 
+
+
+???
+
+I've listed a few open-source alternatives to common software packages, just for you to explore if you're interested. But the more important takeaway here is that this is an issue that is going to come up more and more as forensics starts to use more algorithms. Right now, it's not 100% that defendents will get to look at the source code, but it's just a matter of time until this issue is more prominent.
+
+I would urge those of you on the lab side of things to be aware of the issues involved with proprietary software and hardware that locks you in to proprietary software. If there is an open option (hardware or software) you may find that investing in that option early will save you some pain in the long run. For instance, buying microscopes that use open data formats is one good step, but if you find an option that has support for open platforms as well as potentially having a closed platform, then that may give you more options in the future as the legal situation evolves. p

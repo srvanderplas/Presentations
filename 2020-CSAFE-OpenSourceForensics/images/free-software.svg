@@ -10,8 +10,8 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="192.1mm"
-   height="138.6mm"
-   viewBox="0 0 192.1 138.6"
+   height="148.6mm"
+   viewBox="0 0 192.1 148.6"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
@@ -25,29 +25,29 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.9899"
-     inkscape:cx="250.4"
-     inkscape:cy="280.4"
+     inkscape:zoom="1.4"
+     inkscape:cx="318"
+     inkscape:cy="339.7"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false">
     <sodipodi:guide
-       position="-7.301,-121.8"
+       position="-7.299,-111.8"
        orientation="0,793.7"
        id="guide10"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="202.7,-121.8"
+       position="202.6,-111.8"
        orientation="-1123,0"
        id="guide12"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="202.7,175.2"
+       position="202.6,185.2"
        orientation="0,-793.7"
        id="guide14"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="-7.301,175.2"
+       position="-7.299,185.2"
        orientation="1123,0"
        id="guide16"
        inkscape:locked="false" />
@@ -60,7 +60,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -173,5 +173,23 @@
          y="165.3"
          style="fill:#40b4e5;fill-opacity:1;stroke-width:0.2646"
          id="tspan974" /></text>
+    <ellipse
+       style="opacity:0.37;vector-effect:none;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.2646;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path124"
+       cx="106.2"
+       cy="136.2"
+       rx="49.19"
+       ry="48.92" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.4672px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.2646"
+       x="93.5"
+       y="181.1"
+       id="text128"><tspan
+         sodipodi:role="line"
+         id="tspan126"
+         x="93.5"
+         y="181.1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.0556px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;opacity:0.475;fill:#5f5f5f;fill-opacity:1;stroke-width:0.2646">open source</tspan></text>
   </g>
 </svg>
