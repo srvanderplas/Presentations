@@ -54,9 +54,9 @@ class: primary-blue
 
 This issue comes up in regulatory and legal circles fairly regularly. For instance, VW circumvented EPA testing with hidden source code - if they were required to submit the source code for the vehicle along with the vehicle, it would have been much more difficult to perpetrate fraud.
 
-We've also seen challenges with probabilistic genotyping software such as STRmix and TrueAllele. Several different courts have refused to allow the defense to examine the source code - instead, they're limited to cross-examination of the forensic examiner using the software. In our analogy, that's like interrogating someone else who bought the same muffin about whether or not it is gluten-free, kosher, contains eggs, etc - it really doesn't help that much, because they're not the one who made the muffin.
+We've also seen challenges with probabilistic genotyping software such as STRmix and TrueAllele. Several different courts have refused to allow the defense to examine the source code - instead, they're limited to cross-examination of the forensic examiner using the software. 
 
-While the DNA examples tend to work against the defense, there isn't really a bias here. While source code examination was used by the NJ supreme court to validate a breathalyzer's reliability; it was also used by a Minnesota court to throw out evidence from an unreliable breathalyzer.
+While the DNA examples tend to work against the defense, there isn't really a bias for one side or the other. While source code examination was used by the NJ supreme court to validate a breathalyzer's reliability; it was also used by a Minnesota court to throw out evidence from an unreliable breathalyzer.
 
 ---
 class: inverse-blue,center,middle
@@ -126,7 +126,7 @@ knitr::include_graphics("images/coffee-bean-illusion.png")
 
 ???
 
-In a way, figuring out the inner workings of software is like trying to sort through coffee beans and decide which ones are bad. You can see the surface, and you can sometimes identify problems. But you might miss something right in front of you, and you know that there are potentially many more issues that you can't observe at all. 
+In a way, figuring out the inner workings of software from the user interface or the compiled files is like trying to sort through coffee beans and decide which ones are bad. You can see the surface, and you can sometimes identify obvious problems. But you might miss something right in front of you, and you know that there are potentially many more issues that you can't observe at all. 
 
 
 ---
@@ -144,7 +144,10 @@ knitr::include_graphics("images/coffee-bean-illusion2.png")
 
 How many of you saw the non-coffee-bean in the picture? I had to look for a long time before I found it the first time. 
 
-The problem with software is that there is no software out there that is completely bug free. There are lots of programs that are thoroughly tested and may not have any critical bugs that interfere with system performance or affect the "output" - for instance, code in nuclear reactors and airplanes is thoroughly checked and validated, with many redundancies. But, if the public can't see the source code, that checking and validation process is entirely opaque. The FAA and the Nuclear Regulatory Commission provide some oversight and licensing for these situations in aviation and nuclear energy, but the legal system is a lot more decentralized. As a result, it's far more important that the software used in forensics be available to the general public for examination and analysis: it's along the same lines as being able to see what the other side in the adversarial system has in evidence. 
+The problem with software is that there is no software out there that is completely bug free. 
+There are lots of programs that are thoroughly tested and may not have any critical bugs that interfere with system performance or affect the "output" - for instance, code in nuclear reactors and airplanes is thoroughly checked and validated, with many redundancies, and licensed by the appropriate federal agency. So even if the code isn't available, there's some trust that people who know what they're doing have checked the code.
+
+The legal system is more decentralized: there isn't a central authority for checking that the software are valid under a set of circumstances. As a result, it is important that the software used in forensics be available to the general public for examination and analysis, to build trust in the tools which underlie the legal and criminal justice systems.
 
 ---
 class:primary-cyan
@@ -174,9 +177,11 @@ So how do we make sure our software is doing what it says it is doing?
 
 ???
 
-Source code doesn't exist in a vacuum, though. Any good programmer documents their code, providing some comments as to what's going on and how things work. Often, there's also formal user documentation, plus the associated papers where the methodology is validated in peer review (which is required for admissibility in court anyways). 
+Hopefully, you're to the point of considering that the source code may be important. I'd like to illustrate just how important the development ecosystem is by returning to our muffin analogy.
 
-I like to watch the British Baking Show, and there, often, they given the contestants a list of ingredients and very minimal instructions. They actually remove information from the written recipe. If our recipe looks like that, it's probably equivalent to source code with no comments... 
+I like to watch the British Baking Show, and there, often, they given the contestants a list of ingredients and very minimal instructions. They actually remove information from the written recipe. If our recipe looks like that, it's probably equivalent to source code with no comments... but most programmers add comments that help to explain their code (like a full recipe that hasn't been redacted).
+
+In addition, usually the method is documented with a peer-reviewed paper that 
 
 The peer reviewed paper is another source for information - it describes the method and connects it to other available methods and pieces of information. So it's like the gif I've created with the pictures of each step... it's not enough to make the muffin from scratch (because you don't have the proportions of ingredients or even necessarily an idea of what the white powder is - is it self rising flour? All purpose? baking soda?), but it's certainly enough to give you a guided tour of what the process should look like. Similarly, our papers, even the very thorough ones, don't usually contain enough information to completely reimplement a method from scratch: it turns out that the reason we write programs in R, C, python, etc. is that written language isn't precise enough to describe algorithms exactly. It might be very informative, but the source code is necessary to fully understand the process. 
 
