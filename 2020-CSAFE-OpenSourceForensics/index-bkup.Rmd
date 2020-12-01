@@ -178,14 +178,9 @@ Source code doesn't exist in a vacuum, though. Any good programmer documents the
 
 I like to watch the British Baking Show, and there, often, they given the contestants a list of ingredients and very minimal instructions. They actually remove information from the written recipe. If our recipe looks like that, it's probably equivalent to source code with no comments... 
 
-The peer reviewed paper is another source for information - it describes the method and connects it to other available methods and pieces of information. So it's like the gif I've created with the pictures of each step... it's not enough to make the muffin from scratch (because you don't have the proportions of ingredients or even necessarily an idea of what the white powder is - is it self rising flour? All purpose? baking soda?), but it's certainly enough to give you a guided tour of what the process should look like. 
+The peer reviewed paper is another source for information - it describes the method and connects it to other available methods and pieces of information. So it's like the gif I've created with the pictures of each step... it's not enough to make the muffin from scratch (because you don't have the proportions of ingredients or even necessarily an idea of what the white powder is - is it self rising flour? All purpose? baking soda?), but it's certainly enough to give you a guided tour of what the process should look like. Similarly, our papers, even the very thorough ones, don't usually contain enough information to completely reimplement a method from scratch: it turns out that the reason we write programs in R, C, python, etc. is that written language isn't precise enough to describe algorithms exactly. It might be very informative, but the source code is necessary to fully understand the process. 
 
-What I'm proposing - is more akin to a cooking blog: you share not only the code, but the documentation and any associated papers (or citations to those papers). So it's like having the ingredients list, the instructions, the progress pictures -- like having the more informative gif that helps you see exactly what you need to do. With that set of tools, we have a decent chance of being able to recreate the muffin from scr
-
-Generally speaking, peer review of methods is required. So we publish a paper showing how our method works, but this is not as informative as the source code, because the only thing precise enough to describe exactly how an algorithm is implemented is the source code. However, the paper is a very useful step in the process - just like a series of how-to steps is important for determining if you're making a recipe correctly.
-
-If we have the paper, the source code, any documentation, and a user manual, though, we are in very good shape - we can recreate our muffin from scratch, and identify exactly what went into it.
-
+What I'm proposing - is more akin to a cooking blog: you share not only the code, but the documentation and any associated papers (or citations to those papers). So it's like having the ingredients list, the instructions, the progress pictures -- like having the more informative gif that helps you see exactly what you need to do. With that set of tools, we have a decent chance of being able to recreate the muffin from scratch. 
 
 ---
 class: secondary-cyan
@@ -201,11 +196,17 @@ class: secondary-cyan
 4. Written instructions for installation and use
 ]]
 
+???
+
+Essentially, the ideal combination of things we'd have to fully describe and demonstrate a piece of software would be the description of the method from the paper, the source code, the documentation for using that code (both programmer docummentation and user documentation), and a written set of instructions for installing and using the program. Obviously, depending on the amount of time and effort, some of these things are going to be patchier and less precise than we'd like them to be, but at least this way we have the puzzle pieces and just have to put them together properly. 
 
 ---
 class: inverse-red,middle,center
 # So what do we mean by open source?
 
+???
+
+Hopefully, at this point, you have a good idea of what I mean when I say source code, software, documentation, and where I'm going with this. The next thing I'm going to talk about briefly is open source. Like many areas, open-source has its own vocabulary and meanings behind common words, so when I say "freedom", I'm going to briefly explain what I mean by that. 
 
 ---
 class:primary-red
@@ -227,6 +228,10 @@ class:primary-red
 ].pull-right[
 ![Software Freedom](images/free-software.svg)
 ]
+
+???
+
+In open source, we commonly talk about "free software", but that doesn't refer to the price tag. Instead, we're generally talking about some combination of the four "freedoms" listed here. 
 
 ---
 class:primary-red
