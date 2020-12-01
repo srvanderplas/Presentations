@@ -511,7 +511,9 @@ Finally, if you're starting out with the idea of reproducible, open-source, comm
 class:secondary-green
 ## Using Open Source code
 
-If you're on the end-user side of the spectrum, there are open-source options for most of the common programs out there
+While open-source, doesn't necessarily mean free, there are many free AND open-source software packages
+
+These are as good (though slightly different) than their expensive, closed-source counterparts.
 
 - Photoshop : GiMP
 
@@ -519,11 +521,9 @@ If you're on the end-user side of the spectrum, there are open-source options fo
 
 - Matlab : R, Octave, NumPy
 
-- Edge : Chromium : Firefox (continuum of freedom)
+- Edge : Chromium : Firefox (continuum of freedoms)
 
 - Windows : Linux
-
-Professionally, free and open-source software may have less official corporate support, but often has better response and faster bug fixes (for software that is commonly used). 
 
 Source code auditability is critical for forensics, and should be a major consideration when deciding which platform to use. 
 
@@ -532,4 +532,4 @@ Source code auditability is critical for forensics, and should be a major consid
 
 I've listed a few open-source alternatives to common software packages, just for you to explore if you're interested. But the more important takeaway here is that this is an issue that is going to come up more and more as forensics starts to use more algorithms. Right now, it's not 100% that defendents will get to look at the source code, but it's just a matter of time until this issue is more prominent.
 
-I would urge those of you on the lab side of things to be aware of the issues involved with proprietary software and hardware that locks you in to proprietary software. If there is an open option (hardware or software) you may find that investing in that option early will save you some pain in the long run. For instance, buying microscopes that use open data formats is one good step, but if you find an option that has support for open platforms as well as potentially having a closed platform, then that may give you more options in the future as the legal situation evolves. p
+I would urge those of you on the lab side of things to be aware of the issues involved with proprietary software and hardware that locks you in to proprietary software. If there is an open option (hardware or software) you may find that investing in that option early will save you some pain in the long run. For instance, buying microscopes that use open data formats is one good step, but if you find an option that has support for open platforms as well as potentially having a closed platform, then that may give you more options in the future as the legal situation evolves. 
