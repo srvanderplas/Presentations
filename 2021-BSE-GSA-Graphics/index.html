@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>How to Make Good Charts</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Susan Vanderplas" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&family=Roboto:ital,wght@0,500;1,500&display=swap');
+    </style>
+    <link rel="stylesheet" href="unl.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# How to Make Good Charts
+### Susan Vanderplas
+### 22 January, 2021
+
+---
+
+
+
+
+## What do you see?
+
+.center[
+![](https://www.moillusions.com/wp-content/uploads/2009/12/Mysterious-Dalmatian-Optical-Illusion.jpg)
+]
+.bottom[Image source: https://www.moillusions.com/mysterious-dots-optical-illusion/]
+
+---
+## What do you see?
+
+.center[
+![](dalmation.png)
+]
+
+???
+
+Vision, in general, involves a *lot* of unconscious pattern recognition. If we can harness that power, we can show people data in a way that doesn't require a lot of thought for them to engage with the data.
+
+---
+## It's not just an illusion - it's a photo
+
+.center[
+![:scale 50%](dalmation_life_1965.png)
+]
+
+.bottom[Life Magazine, 19 Feb 1965]
+
+---
+## Why Graphics Matter
+
+.large.center[Graphics are a form of .large.emph.cerulean[external cognition] that allow us to think about the .large.emph.red[data] rather than the .large.emph.gray[chart]]
+
+--
+
+&lt;br/&gt;&lt;br/&gt;
+
+.large.red[Good graphics take advantage of how the brain works]
+
+- preattentive processing
+
+- perceptual grouping
+
+- awareness of visual limitations
+
+---
+class: inverse
+## Example
+
+&lt;img src="index_files/figure-html/HR-diagram-1.png" width="100%" /&gt;
+
+
+???
+
+This is a famous chart in astronomy - it shows the life cycle of a star, classifying it by its brightness and color. The interesting thing is that it wasn't originally intended to show the life cycle of a star - it was originaly intended to show the relationship between the two - and at the time, it wasn't known that the star's life cycle governed the relationship. But, when you look at the chart, it's very clear that there is a relationship, and stars can take several different paths through the "life cycle" depending on their type. 
+
+Through the rest of this talk, we'll explore some of the features that make the HR diagram (and other good charts) effective.
+
+---
+## Spot the Difference
+
+&lt;img src="index_files/figure-html/preattentive1-1.png" width="49.5%" /&gt;&lt;img src="index_files/figure-html/preattentive1-2.png" width="49.5%" /&gt;
+
+---
+## Spot the Difference
+
+&lt;img src="index_files/figure-html/preattentive2-1.png" width="49.5%" /&gt;&lt;img src="index_files/figure-html/preattentive2-2.png" width="49.5%" /&gt;
+
+---
+## Preattentive perception 
+
+- Occurs automatically (no effort)
+
+- Color, shape, angle 
+
+- Combinations of preattentive features require attention
+    - Unless you double-encode    
+    (use different features for the same variable)
+
+
+&lt;br/&gt;&lt;br/&gt;
+
+
+.emph.center.cerulean.huge[Using preattentive features reduces the amount of work your viewer has to expend to understand your chart]
+
+---
+## What do you see?
+
+gestalt images
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
