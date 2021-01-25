@@ -16,7 +16,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, message = F, warning = F}
-knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, error = F)
+knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, error = F, dpi = 300)
 knitr::opts_chunk$set(dev.args=list(bg="transparent"))
 library(tidyverse)
 library(gridExtra)
@@ -190,4 +190,189 @@ qplot(data=data, x=x, y=y, color=factor(color), shape=factor(shape), size=I(5))+
 ---
 ## What do you see?
 
-gestalt images
+.center[![](IllusoryContour.png)]
+
+???
+
+What do you see here? 3 pac-men shapes and 3 acute angles? No? 
+
+I see 3 circles, a triangle with a black outline, and a white triangle with no outline.  But... that's not really what's there, is it?
+
+I'll talk next about the Gestalt laws, but if you can't remember them, just remember this saying - "The whole is greater than the sum of the parts" - just as here, what we see is more orderly than what is actually there.
+
+---
+## Gestalt Laws of Perception
+
+.center[![](gestalt.jpg)]
+
+???
+
+The Gestalt laws are a set of rules for how we interpret ambiguity in the visual scene. 
+
+The law of Closure says that it's easier to interpret things if you imagine them as a closed figure - it's more likely that a closed figure is for instance obstructed, than that it is a set of more complex, less meaningful figures. This is sometimes also stated as the "law of good figure"
+
+the law of Proximity says that things that are close together are likely part of the same unit. So you might interpret things as a dalmation instead of a series of blobs of black ink. 
+
+The law of continuation says that figures with edges that are smooth are more likely to be continuous than things with edges that are sharp angles. 
+
+the law of similarity says that things are likely to be viewed as part of a group if they look similar. 
+
+Then, the law of figure/ground helps explain why we see both the tree and the AL figure combination here - we have contextual information that helps us simplify the picture into two groups - the figure (the tree), and the background (the AL); thsi also helps us separate the AL from the white background behind it. 
+
+There are a few other gestalt laws, but these are the main ones.
+
+Now, let's talk about how these laws apply to charts! I swear, I didn't forget that I am supposed to be talking about data visualization.
+
+---
+## Gestalt Laws in Data Visualization
+
+```{r, fig.width = 8, fig.height = 4, out.width = "100%"}
+tmp <- tibble(x = c(-1, 0, 1), y = c(1, -1, 1), group = c(1, 2, 3)) %>%
+  mutate(x = map(x, rnorm, n = 100, sd = .75), y = map(y, rnorm, n = 100, sd = .75)) %>%
+  unnest(x, y) 
+
+library(gridExtra)
+grid.arrange(
+ggplot(tmp, aes(x = x, y = y, shape = factor(group))) + geom_point() + guides(shape = "none") + theme_minimal() + theme(axis.title = element_blank(), axis.text = element_blank()) + coord_fixed(),
+ggplot(tmp, aes(x = x, y = y, color = factor(group))) + geom_point() + guides(color = "none") + theme_minimal() + theme(axis.title = element_blank(), axis.text = element_blank()) + coord_fixed(),
+nrow = 1)
+
+```
+
+- Proximity
+
+- Similarity
+
+
+---
+## Gestalt Laws in Data Visualization
+
+```{r, fig.width = 8, fig.height = 4, out.width = "100%"}
+
+tmp <- tibble(g1 = 1, x = seq(-2, 2, .01), y = -sin(pi*x)) %>%
+  bind_rows(tibble(x = seq(-2, 2, .01), y = 0, g1 = 2)) %>%
+  mutate(color = factor(floor(x)), size = as.numeric(color) %% 2)
+
+ggplot(tmp, aes(x = x, y = y, group = g1)) + geom_line() + scale_size_continuous(range = c(.75, 1.25)) + guides(size = "none", color = "none") + theme_minimal() + theme(axis.title = element_blank(), axis.text = element_blank()) + coord_fixed()
+```
+
+---
+## Gestalt Laws in Data Visualization
+
+
+```{r, fig.width = 8, fig.height = 4, out.width = "100%"}
+grid.arrange(
+ggplot(tmp, aes(x = x, y = y, group = g1, color = color, size = size)) + geom_line() + scale_size_continuous(range = c(.75, 1.25)) + guides(size = "none", color = "none") + theme_minimal() + theme(axis.title = element_blank(), axis.text = element_blank()) + coord_fixed(),
+
+ggplot(tmp, aes(x = x, y = y, group = g1, color = g1, size = g1)) + geom_line() + scale_size_continuous(range = c(.75, 1.25)) + guides(size = "none", color = "none") + theme_minimal() + theme(axis.title = element_blank(), axis.text = element_blank()) + coord_fixed(),
+nrow = 1)
+```
+
+- Good continuation
+
+---
+## Which one is different?
+
+.center[![:scale 70%](set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png)]
+
+---
+## Which one is different?
+
+.center[![:scale 70%](set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png)]
+
+---
+## Plot Annotations Matter!
+
+.pull-left[
+
+.center[![](set-48-k-5-sdline-0.45-sdgroup-0.25-TREND.png)]
+
+- Plot 12: 59.1% 
+- Plot 5:  9.1% 
+- Other plots: 31.7% 
+
+]
+.pull-right[
+
+.center[![](set-48-k-5-sdline-0.45-sdgroup-0.25-COLOR.png)]
+
+- Plot 12: 9.7%
+- Plot 5: 29.0% 
+- Plot 18: 32.3% 
+- Other plots: 29.0% 
+
+]
+
+???
+
+Add annotations to your plots based on what you want to emphasize. If you want to show the trend (or deviations from it), add a line and maybe a confidence band. If you want to show clustering, use ellipses and color and/or shape. 
+
+What you add to the plot helps to determine what people will see in the data!
+
+
+---
+## Visual Limitations
+
+- Not all graphical representations are equally accurate
+
+- Optical illusions 
+
+- Designing plots for disabilities
+
+---
+## Accuracy of Graphical Judgements
+
+1. Position along a common scale (most accurate)
+    - scatter plot
+2. Position along nonaligned scale
+    - multiple scatter plots
+3. Length
+    - bar chart
+4. Angle, Slope
+    - pie chart
+5. Area
+    - bubble chart
+6. Volume, Density, Color saturation
+    - heatmap
+7. Color hue (least accurate)
+
+
+???
+
+When you design a visualization, try to make the most important variables represented by dimensions that are accurate.
+
+In some cases, we only care about relative accuracy - for those, things like color saturation are fine for encoding information. 
+
+You may have heard people talk about how awful pie charts are - that's because anything that can be put into a pie chart can also be put into a bar chart, which will be read more accurately. 
+
+---
+## Optical Illusions
+
+![](curve-difference.png)
+
+???
+
+We're really bad at judging vertical distance, as well. If you need to show the difference between two curves, you should attempt to find a different way to do it than showing both curves on the same chart - for instance, plot the difference alongside the two curves.
+
+
+---
+## Designing for Accessibility
+
+- Low visual acuity:
+    - High contrast (bright/dark)
+    - large font size
+    - textures/patterns can be hard to make out
+
+- Colorblindness:
+    - Safest: design for a black-and-white photocopier
+    - Avoid rainbow gradients
+    - If you need a 2-color gradient, use blue/purple - white - orange (safe for most types of colorblindness)
+    
+- R packages for accessibility
+    - ajrgodfrey/BrailleR - translate plots into text descriptions for screen readers
+    - sonify - represent data using sound
+    - gt - tables with metadata that is easy for screen readers
+
+???
+
+Unfortunately, there is relatively little research on other disabilities + statistical graphics
