@@ -190,3 +190,45 @@ credentials cached with your operating system's credential manager
 - SSH:     
 set up a SSH key (or use one already there) and add the key to git    
 [Instructions](https://happygitwithr.com/ssh-keys.html#ssh-keys-1)
+
+
+---
+## Using git within RStudio
+
+- 2 options for creating projects: Local first, or Remote first
+
+- Remote first:
+  - Create the repository on GitHub and clone to your machine using RStudio
+  - Add any "starter files" AFTER you clone
+  - Create the repository with a README file
+  
+- Local first:
+  - Create a RStudio project on your local machine and tick the "Create a git repository" box
+  - Add any "starter files" and commit with git
+  - Create a blank repo on GitHub (NO README!)
+  - Follow GitHub's instructions for adding a remote
+
+---
+## RStudio git integration
+
+![](rstudio-git-tab.png)
+
+- Diff button
+- Commit button
+- Pull button
+- Push button
+- History button
+- Settings
+- Repository/branch
+- Refresh
+
+---
+## RStudio git integration
+
+![](rstudio-diff-btn.png)
+
+---
+## RStudio git integration
+
+![](rstudio-commit-btn.png)
+
