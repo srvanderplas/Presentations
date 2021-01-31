@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Version Control with git and GitHub</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.6/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="unl.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Version Control with git and GitHub
+### 31 January, 2021
+
+---
+
+
+
+
+## Resources
+
+.large[
+- [Happy Git and GitHub for the useR](https://happygitwithr.com/index.html)    
+Jenny Bryan's fabulous book about Git and GitHub w/ an R/RStudio focus
+
+- Github's [getting started guide](https://docs.github.com/en/github/getting-started-with-github)
+
+- Stat 850 information on [using version control](https://srvanderplas.github.io/unl-stat850/tools.html#using-version-control)
+
+- These slides: https://srvanderplas.github.io/Presentations/2021-Dept-git/index.html
+]
+
+---
+## Why version control?
+
+.center[![:scale 50%](https://phdcomics.com/comics/archive/phd101212s.gif)]
+
+
+---
+## Why version control?
+
+- Log what you changed along with the state of your code/paper
+    - keep a working version and experiment with changes
+
+- Share your work 
+    - [Paper preprints](https://github.com/srvanderplas/AnnualReviewStatisticsVisualization/blob/master/Visualization.pdf), corresponding code and data...
+    - Host [package documentation](https://srvanderplas.github.io/ImageAlignR/index.html)
+    - Host a [personal website](https://srvanderplas.netlify.app/)
+
+- Collaborate - individuals work independently, git handles merging versions
+
+- Report bugs and propose bug fixes for other projects
+--
+&lt;br/&gt;&lt;br/&gt;
+
+.center.emph.cerulean[It's a bit painful to start with but makes so many parts of research easier in the long run]
+
+---
+class:inverse
+## Introduce yourself to git
+
+In the shell, tell `git` who you are and what your email address is:
+
+```
+git config --global user.name 'Jane Doe'
+git config --global user.email 'jane@example.com'
+git config --global --list
+```
+
+OR, use the `usethis` package to do this for you
+
+
+```r
+library(usethis)
+use_git_config(user.name = "Jane Doe", 
+               user.email = "jane@example.com")
+```
+
+.emph.cerulean.center[Use the email address associated with your GitHub account!]
+
+---
+## How does it work?
+
+- Each project/paper is a repository
+
+- git works off of a `.git` folder in the repository
+    - index of files tracked
+    - configuration files
+    - other arcane stuff
+    
+- You tell git what to track with `git add &lt;file&gt;`
+
+- You tell git what changes to record with `git stage`
+
+- You summarize the staged changes with `git commit`
+
+- `git` handles keeping track of the index, versions, changes, etc.
+
+--
+&lt;br/&gt;&lt;br/&gt;
+
+.center.emph.cerulean[So far, we've just talked about `git` on your local machine]
+
+---
+## How it works
+
+![git add diagram: add tels git to add the file to the index of files git is monitoring](https://srvanderplas.github.io/unl-stat850/image/git-add.png)
+
+---
+## How it works
+
+![git commit the changed line](https://srvanderplas.github.io/unl-stat850/image/git-commit.png)
+
+git commit works best with small, local changes that form a cohesive unit - so e.g. "Fixed feature XYZ in function ABC"
+
+---
+##  How it works: Git and GitHub
+
+- `git` runs on your local machine
+
+- GitHub runs in the cloud
+
+- `git push` tells GitHub to update the cloud version to what is on your local machine
+
+- `git pull` tells your local machine to update its version based on what's on GitHub
+
+---
+##  How it works: Git and GitHub
+
+.pull-left[
+![GitHub workflow](https://srvanderplas.github.io/unl-stat850/image/git_push_diagram.png)].pull-right[
+![](https://srvanderplas.github.io/unl-stat850/image/git_pull_diagram.png)
+]
+
+---
+## Workflow
+
+In general, your work flow will be
+
+1. Clone the project or create a new repository
+
+2. Make some changes
+
+3. Stage the changes with git add
+
+4. Commit the changes with git commit
+
+5. .cerulean[Pull any changes from the remote repository]
+
+6. .cerulean[Resolve any merge conflicts]
+
+7. Push the changes (and merged files) with git push
+
+.emph.center.cerulean[These steps aren't necessary if you're working alone on a single machine]
+
+---
+class:inverse
+## Try it out
+
+1. Create a new repository on github and include a README (so that you can pull the repository down)
+
+    - go to https://github.com/&lt;your username&gt;, Click the plus sign in the top right corner
+    - give your repository a name
+    - check the Add a README file box
+
+2. Click the green CODE button and copy the HTTPS address
+
+3. Start a new project in RStudio from Version Control and paste the URL into the appropriate box.    
+Alternative: use the shell to `git clone` your repository
+
+4. On your machine, edit the README to say "This is my test repository". Save, add, and commit your change
+
+5. Push your change to the GitHub repository. Did it update?
+
+
+.center[[More detailed steps here](https://happygitwithr.com/push-pull-github.html)]
+
+---
+## Authentication
+
+Options: HTTPS and SSH
+
+- HTTPS:     
+credentials cached with your operating system's credential manager    
+[Instructions](https://happygitwithr.com/credential-caching.html) 
+
+
+- SSH:     
+set up a SSH key (or use one already there) and add the key to git    
+[Instructions](https://happygitwithr.com/ssh-keys.html#ssh-keys-1)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

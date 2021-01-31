@@ -1,0 +1,192 @@
+---
+title: "Version Control with git and GitHub"
+# author: "Susan Vanderplas"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "unl.css"]
+    lib_dir: libs
+    nature:
+      beforeInit: "macros.js"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE, message = F, warning = F}
+knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, error = F, dpi = 300)
+knitr::opts_chunk$set(dev.args=list(bg="transparent"))
+library(tidyverse)
+library(gridExtra)
+```
+
+## Resources
+
+.large[
+- [Happy Git and GitHub for the useR](https://happygitwithr.com/index.html)    
+Jenny Bryan's fabulous book about Git and GitHub w/ an R/RStudio focus
+
+- Github's [getting started guide](https://docs.github.com/en/github/getting-started-with-github)
+
+- Stat 850 information on [using version control](https://srvanderplas.github.io/unl-stat850/tools.html#using-version-control)
+
+- These slides: https://srvanderplas.github.io/Presentations/2021-Dept-git/index.html
+]
+
+---
+## Why version control?
+
+.center[![:scale 50%](https://phdcomics.com/comics/archive/phd101212s.gif)]
+
+
+---
+## Why version control?
+
+- Log what you changed along with the state of your code/paper
+    - keep a working version and experiment with changes
+
+- Share your work 
+    - [Paper preprints](https://github.com/srvanderplas/AnnualReviewStatisticsVisualization/blob/master/Visualization.pdf), corresponding code and data...
+    - Host [package documentation](https://srvanderplas.github.io/ImageAlignR/index.html)
+    - Host a [personal website](https://srvanderplas.netlify.app/)
+
+- Collaborate - individuals work independently, git handles merging versions
+
+- Report bugs and propose bug fixes for other projects
+--
+<br/><br/>
+
+.center.emph.cerulean[It's a bit painful to start with but makes so many parts of research easier in the long run]
+
+---
+class:inverse
+## Introduce yourself to git
+
+In the shell, tell `git` who you are and what your email address is:
+
+```
+git config --global user.name 'Jane Doe'
+git config --global user.email 'jane@example.com'
+git config --global --list
+```
+
+OR, use the `usethis` package to do this for you
+
+```{r, eval = F, echo = T}
+library(usethis)
+use_git_config(user.name = "Jane Doe", 
+               user.email = "jane@example.com")
+```
+
+.emph.cerulean.center[Use the email address associated with your GitHub account!]
+
+---
+## How does it work?
+
+- Each project/paper is a repository
+
+- git works off of a `.git` folder in the repository
+    - index of files tracked
+    - configuration files
+    - other arcane stuff
+    
+- You tell git what to track with `git add <file>`
+
+- You tell git what changes to record with `git stage`
+
+- You summarize the staged changes with `git commit`
+
+- `git` handles keeping track of the index, versions, changes, etc.
+
+--
+<br/><br/>
+
+.center.emph.cerulean[So far, we've just talked about `git` on your local machine]
+
+---
+## How it works
+
+![git add diagram: add tels git to add the file to the index of files git is monitoring](https://srvanderplas.github.io/unl-stat850/image/git-add.png)
+
+---
+## How it works
+
+![git commit the changed line](https://srvanderplas.github.io/unl-stat850/image/git-commit.png)
+
+git commit works best with small, local changes that form a cohesive unit - so e.g. "Fixed feature XYZ in function ABC"
+
+---
+##  How it works: Git and GitHub
+
+- `git` runs on your local machine
+
+- GitHub runs in the cloud
+
+- `git push` tells GitHub to update the cloud version to what is on your local machine
+
+- `git pull` tells your local machine to update its version based on what's on GitHub
+
+---
+##  How it works: Git and GitHub
+
+.pull-left[
+![GitHub workflow](https://srvanderplas.github.io/unl-stat850/image/git_push_diagram.png)].pull-right[
+![](https://srvanderplas.github.io/unl-stat850/image/git_pull_diagram.png)
+]
+
+---
+## Workflow
+
+In general, your work flow will be
+
+1. Clone the project or create a new repository
+
+2. Make some changes
+
+3. Stage the changes with git add
+
+4. Commit the changes with git commit
+
+5. .cerulean[Pull any changes from the remote repository]
+
+6. .cerulean[Resolve any merge conflicts]
+
+7. Push the changes (and merged files) with git push
+
+.emph.center.cerulean[These steps aren't necessary if you're working alone on a single machine]
+
+---
+class:inverse
+## Try it out
+
+1. Create a new repository on github and include a README (so that you can pull the repository down)
+
+    - go to https://github.com/<your username>, Click the plus sign in the top right corner
+    - give your repository a name
+    - check the Add a README file box
+
+2. Click the green CODE button and copy the HTTPS address
+
+3. Start a new project in RStudio from Version Control and paste the URL into the appropriate box.    
+Alternative: use the shell to `git clone` your repository
+
+4. On your machine, edit the README to say "This is my test repository". Save, add, and commit your change
+
+5. Push your change to the GitHub repository. Did it update?
+
+
+.center[[More detailed steps here](https://happygitwithr.com/push-pull-github.html)]
+
+---
+## Authentication
+
+Options: HTTPS and SSH
+
+- HTTPS:     
+credentials cached with your operating system's credential manager    
+[Instructions](https://happygitwithr.com/credential-caching.html) 
+
+
+- SSH:     
+set up a SSH key (or use one already there) and add the key to git    
+[Instructions](https://happygitwithr.com/ssh-keys.html#ssh-keys-1)
