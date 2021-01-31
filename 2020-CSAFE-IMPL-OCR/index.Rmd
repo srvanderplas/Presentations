@@ -82,12 +82,12 @@ class: inverse-grey,middle,center
 ---
 class:primary-grey
 
-![OCR4all screenshot](OCR4all.png)
+.img75[![OCR4all screenshot](OCR4all.png)]
 
 ---
 class:primary-grey
 
-![OCR4all screenshot](OCR4all_steps.png)
+.img75[![OCR4all screenshot](OCR4all_steps.png)]
 
 ---
 class:primary-grey
