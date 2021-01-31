@@ -232,3 +232,22 @@ set up a SSH key (or use one already there) and add the key to git
 
 ![](rstudio-commit-btn.png)
 
+???
+
+You can push and pull from this interface directly, or use the smaller buttons in the git tab to do the same thing
+
+---
+## Rstudio git integration
+
+![](rstudio-history-btn2.png)
+
+???
+
+The history tab lets you see what got added and removed when, and by whom (if you're working with multiple people). It's incredibly useful if you're working with a group, or on a project that has lots of moving parts. 
+
+You can also identify merges and conflicting branches -- this is helpful for figuring out where something went wrong (if it did). Or just for mocking collaborators who didn't pull before they started working.
+
+---
+## What if I run into trouble?
+
+.center[![:scale 50%](https://imgs.xkcd.com/comics/git.png)]

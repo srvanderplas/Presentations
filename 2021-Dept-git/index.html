@@ -190,6 +190,67 @@ credentials cached with your operating system's credential manager
 - SSH:     
 set up a SSH key (or use one already there) and add the key to git    
 [Instructions](https://happygitwithr.com/ssh-keys.html#ssh-keys-1)
+
+
+---
+## Using git within RStudio
+
+- 2 options for creating projects: Local first, or Remote first
+
+- Remote first:
+  - Create the repository on GitHub and clone to your machine using RStudio
+  - Add any "starter files" AFTER you clone
+  - Create the repository with a README file
+  
+- Local first:
+  - Create a RStudio project on your local machine and tick the "Create a git repository" box
+  - Add any "starter files" and commit with git
+  - Create a blank repo on GitHub (NO README!)
+  - Follow GitHub's instructions for adding a remote
+
+---
+## RStudio git integration
+
+![](rstudio-git-tab.png)
+
+- Diff button
+- Commit button
+- Pull button
+- Push button
+- History button
+- Settings
+- Repository/branch
+- Refresh
+
+---
+## RStudio git integration
+
+![](rstudio-diff-btn.png)
+
+---
+## RStudio git integration
+
+![](rstudio-commit-btn.png)
+
+???
+
+You can push and pull from this interface directly, or use the smaller buttons in the git tab to do the same thing
+
+---
+## Rstudio git integration
+
+![](rstudio-history-btn2.png)
+
+???
+
+The history tab lets you see what got added and removed when, and by whom (if you're working with multiple people). It's incredibly useful if you're working with a group, or on a project that has lots of moving parts. 
+
+You can also identify merges and conflicting branches -- this is helpful for figuring out where something went wrong (if it did). Or just for mocking collaborators who didn't pull before they started working.
+
+---
+## What if I run into trouble?
+
+.center[![:scale 50%](https://imgs.xkcd.com/comics/git.png)]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
