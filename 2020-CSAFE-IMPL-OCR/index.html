@@ -85,6 +85,12 @@ class: primary-red
 Most of these tools are built on the same underlying programs - tesseract for OCR, unpaper for some of the image cleaning, imagemagick for some other image cleaning functions.
 
 ---
+class: inverse-grey,middle,center
+
+# Demo
+
+
+---
 class:primary-grey
 
 ![OCR4all screenshot](OCR4all.png)
@@ -95,15 +101,40 @@ class:primary-grey
 ![OCR4all screenshot](OCR4all_steps.png)
 
 ---
-class:primary-cyan
-## Cyan slide
+class:primary-grey
 
-Here's a pretty cyan slide
+![OCR4all screenshot - centralized process](OCR_Overall_process.png)
+---
+class:primary-cyan
+## Overall Goal
+
+- Start with automatic processing using OCR4all
+    - manual checking for correctness (region recognition, line segmentation, ground truth production)
+
+    - Train new models for text recognition specific to transcript text
+
+- Begin to automate the process once (if?) patterns emerge
+
+- Goal is mostly-accurate text added into the PDF transcripts
+
+--
+&lt;br/&gt;&lt;br/&gt;
+.large.center[
+Several undergraduate ISU Data Science students will be working on this as a capstone project during Spring 2021
+]
 
 ---
-class:inverse-green, center
-# A green inverse slide
-## With centering
+class:primary-green
+## Long-term goal
+
+- Topic modeling of the transcript contents
+    - type of testimony (DNA, trace, firearms/toolmark, tread, etc.)
+    - lists of common keywords for each topic
+    - database of page references for predicted testimony types
+
+- Automatic incorporation of newly added transcripts (if model for OCR is good enough)
+
+- Database accessible via CSAFE Internal site for anyone to use
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
