@@ -95,6 +95,10 @@
   color: var(--blue);
   text-align: left;
 }
+.title-slide > h2 { /* Subtitle */
+  color: var(--grey);
+  text-align: center;
+}
 .title-slide > h3:first-of-type { /* Author */
   color: var(--blue);
   text-align: left;

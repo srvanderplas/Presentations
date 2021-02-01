@@ -1,5 +1,6 @@
 ---
-title: "The Shoe Study from Hell"
+title: "Welcome to Forensic Statistics"
+subtitle: "(The Study of Doom)"
 author: "Susan Vanderplas"
 output:
   xaringan::moon_reader:
@@ -75,13 +76,25 @@ class: primary-red
 
 - Not enough play time with the collection instruments
 
+???
+
+This particular issue was discovered at the end of the experiment - the 2d digital scanner came with a turntable no one had noticed. Turns out, the turntable was a bit slower, but produced much higher resolution scans. So of course, we changed the protocol to use the turntable for the last round of scans... too bad they didn't match the rest of the scans, right?
+
 --
 
 - Modifying data collection procedures mid-experiment to account for helpful suggestions from collaborators
 
+???
+
+We went through several rounds of modifications to the digital photography protocol, involving backgrounds, rulers, and other accessories that made the photos more useful... but also made any automatic processing of those photographs nearly impossible. 
+
 --
 
 - Supplier changes - background and sticky film color don't matter, right?
+
+???
+
+This one wasn't really anyone's fault, per se - the supplier we used for the experiment changed their supplier, and suddenly we were using film with a different background and different tint than before. In the grand scheme of things, this is not much, but it really complicated any processing I was attempting to automate.
 
 --
 
@@ -90,17 +103,30 @@ class: primary-red
 
 .center[<img width="33%" alt="inside out angry gif" src="https://media1.tenor.com/images/54d526fd183bb842780b9df05ebf6af6/tenor.gif?itemid=5628546"/>]
 
+
+???
+
+By far the biggest problem with this study, though, was that no one had a plan for how to analyze the data. There was no pipeline to remove e.g. the background information from the images, or to clean the images - because none of the people involved had ever worked with images before. They had no idea what they were getting into. So I'd been working on this for 6 months when I managed to actually get 2 images aligned *some* of the time, and my boss is looking at me like I am insane for doing a happy dance in the office, because she had no idea it was going to be that big of an issue.
+
 ---
 class:primary-cyan
 ## Epilogue
 
 - 3 years after the study is completed, we're still struggling to build that analysis pipeline
 
+<br/><br/>
 - We've discovered that certain patterns of shoes make for easier analysis... but the Nike/Adidas models we originally picked aren't among them.
 
+<br/><br/>
 - It's very difficult to get a paper published describing the database without any actual analysis work to go with it
 
+???
 
+The study has been completed for about 3 years now, and I'm still working on building a proper analysis pipeline. We've actually gone back to even more fundamental research - trying to figure out what we can even detect, and what the sources of error are, when we take a print. In many other forensics disciplines, you can remove the "class characteristics" - the shared patterns between two items of the same manufacture - very easily, but with shoes... it's much harder and may be impossible to do. 
+
+It's frustrating that sometimes you don't realize how little you know until you actually try to do something, but I don't think we're unique in this kind of mishap: we had some of the most respected specialists in forensics, experimental design, and metrology working with us to design this experiment. 
+
+The best thing I can suggest to avoid this type of mishap in the future is to go *very* slow and to ensure you can analyze some pilot data before you jump into the deep end feet first. Otherwise, you end up with Terabytes of data, and more existential questions than answers.
 
 ---
 class:inverse-green,center
@@ -113,3 +139,4 @@ class:inverse-green,center
 
 <div style="text-align:left;margin-top:80px;">
 This work was partially funded by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement #70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.</div>
+
