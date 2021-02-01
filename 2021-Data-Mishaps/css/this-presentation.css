@@ -1,0 +1,21 @@
+
+/* Convenient position modifiers */
+.move-margin {
+  position: absolute;
+  margin: auto;
+  top: 227px; bottom: 50px; right: 10px;
+  max-width: 160px;
+  max-height:400px;
+}
+
+.move-up {
+  padding-top:-50px !important;
+}
+
+.move-down {
+  padding-top:50px !important;
+}
+
+.move-left {
+  margin-left:-25px !important;
+}

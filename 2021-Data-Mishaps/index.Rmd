@@ -1,0 +1,115 @@
+---
+title: "The Shoe Study from Hell"
+author: "Susan Vanderplas"
+output:
+  xaringan::moon_reader:
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    css: ["default", "css/csafe.css", "css/csafe-fonts.css", "css/this-presentation.css"]
+    lib_dir: libs
+    nature:
+      countIncrementalSlides: false
+---
+
+class: primary-blue
+## A Brief Intro to Forensic Statistics
+
+- Big challenge: Validate ad-hoc visual methods scientifically
+
+- Unknowns: every shoe in the world, with every wear pattern possible, infinite potential for incidental damage
+
+- Simpler questions: 
+
+    - Can we distinguish shoes of the same make/model/size?
+    
+    - How do shoes accumulate damage over time?
+    
+    - What measurement methods are best?
+    
+    - Do lab methods translate to "real world" crime scenes?
+    
+???
+
+Back in 2015, the National Institute for Standards and Technology created a center of excellence in forensic statistics, with the goal of doing basic research to hopefully add statistical foundations to forensic science. 
+
+There was a lot of pressure to get things up off the ground quickly, which meant that suddenly a bunch of statisticians were working with types of data they'd really never messed with before. But data is data, right, and we were excited.
+
+The problem in forensics is that forensic examiners were making statements like "This shoe made this print to the exclusion of all other shoes in the world", with the only evidence for that claim being the experience of the examiner. So one of the early identified issues that CSAFE tackled was data collection - generating databases for research purposes, to validate statistical methods that would be developed to match shoe prints and make probabilistic statements supported by data instead of personal experience.
+
+Since we knew assembling a database of every shoe in the world was impossible (we're crazy, but not that crazy), we decided to start "small" - with a few questions that were seen as foundational to our ability to create algorithms to assess the statistical probability that two shoes matched - that's the holy grail. 
+
+Starting small, incidentally, meant that we tried to answer all 4 of these questions at the same time.
+
+
+---
+class: secondary-blue
+## Longitudinal Shoe Study
+
+
+- 160 Pairs of shoes, each worn for ~6 months
+
+- 2 shoe models with different patterns and sole materials
+    - 4 half-sizes for each shoe model
+
+- 7 different methods for imaging the shoes
+
+- 3-4 different time points
+
+<table width="100%">
+<tr class="blank"><td><img src="small-005772L_20171031_2_1_1_csafe_bpbryson.jpg" alt="Digital Scan Image - Nike"/></td><td><img src="small-005772L_20171213_4_1_1_csafe_jekruse.jpg" alt="Camera Image - Nike"/></td><td><img src="small-005772L_20171211_5_1_1_csafe_kruse-bryson-zwart.jpg" alt="Film Image - Nike"/></td><td><img src="small-005772L_20180411_6_1_1_kruse_zwart_Kruse.jpg" alt="Paper Image - Nike"/></td><td><img src="3d_shoes_Participant_005_Turntable_scan.png" alt="3D scan - high quality - Nike"/></td><td>
+<img src="small-005772L_20171108_7_1_1_csafe_bpbryson.jpg" alt = "Realistic crime scene print - Nike"/></td></tr>
+<tr class="blank"><td><img src="small-007961L_20171031_2_1_1_csafe_bpbryson.jpg"  alt="Digital Scan Image - Adidas"/></td><td><img src="small-007961L_20171030_4_1_1_csafe_hdzwart.jpg" alt="Camera Image - Adidas"/></td><td><img src="small-007961L_20171211_5_1_1_csafe_kruse-bryson-zwart.jpg" alt="Film Image - Adidas"/></td><td><img src="small-007961L_20180411_6_1_1_kruse_zwart_Kruse.jpg" alt="Paper Image - Adidas"/></td><td><img src="3d_shoes_Participant_007_Turntable_scan.png" alt="3D scan - high quality - Adidas"/></td><td>
+<img src="small-007961L_20171108_7_1_1_csafe_bpbryson.jpg" alt = "Realistic crime scene print - Adidas"/></td></tr>
+</table>
+
+???
+
+So in collaboration with a group at NIST whose primary interest was metrology - how to measure things - we set this experiment up. We had 2D digital scans, 3D digital scans, the old-fashioned fingerprint powder and sticky film, and a few other methods that various forensic scientists wanted us to try. 
+
+As you can imagine, this experiment was pretty expensive - 160 pairs of shoes, plus the measurement equipment, plus the lab workers to take all of the measurements. The experiment was designed and run by statisticians and people who measure things professionally - so there were extensive protocols for measurement developed, and we controlled things like whether pebbles were removed from the shoes before imaging, and what kind of socks the lab workers wore during data collection. 
+
+---
+class: primary-red
+## Things Fall Apart ...
+
+<img src="3d_shoes_Participant_005_Turntable_scan.png" width="35%" alt="3D scan using the turntable (high res)" style = "position:relative;left:10%;"/><img src="3d_shoes_Participant_005_Handheld_scan.png" width="35%"  style = "position:absolute;right:10%;" alt="3D scan using the handheld protocol (low res)"/>
+
+- Not enough play time with the collection instruments
+
+--
+
+- Modifying data collection procedures mid-experiment to account for helpful suggestions from collaborators
+
+--
+
+- Supplier changes - background and sticky film color don't matter, right?
+
+--
+
+- Analysis pipeline? It's just data, we can figure out how to analyze it later
+
+
+.center[<img width="33%" alt="inside out angry gif" src="https://media1.tenor.com/images/54d526fd183bb842780b9df05ebf6af6/tenor.gif?itemid=5628546"/>]
+
+---
+class:primary-cyan
+## Epilogue
+
+- 3 years after the study is completed, we're still struggling to build that analysis pipeline
+
+- We've discovered that certain patterns of shoes make for easier analysis... but the Nike/Adidas models we originally picked aren't among them.
+
+- It's very difficult to get a paper published describing the database without any actual analysis work to go with it
+
+
+
+---
+class:inverse-green,center
+# Acknowledgements
+
+<div style="margin-left:30%;margin-right:30%;text-align:left">
+<h3>Collaborators</h3>
+<ul><li>Alicia Carriquiry<li>Guillermo Basulto-Elias<li>James Kruse<li>Soyoung Park</ul>
+</div>
+
+<div style="text-align:left;margin-top:80px;">
+This work was partially funded by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement #70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.</div>
