@@ -1,0 +1,68 @@
+---
+title: "CSAFE 2.0 Template"
+author: "Susan Vanderplas"
+date: "2020-11-25"
+output:
+  xaringan::moon_reader:
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    css: ["default", "css/csafe.css", "css/csafe-fonts.css", "css/this-presentation.css"]
+    lib_dir: libs
+    nature:
+      countIncrementalSlides: false
+---
+
+class: inverse-blue, center, middle
+# Basics
+
+---
+class: primary-blue
+## Blue slide
+
+- Each slide type (except the title slide) comes in 5 colors: **.blue[blue], .green[green], .cyan[cyan], .red[red], .grey[grey]**
+    
+- Slide types: 
+    - inverse (previous slide), 
+    - primary (this slide), 
+    - secondary (next slide)
+
+- Most defaults are set up to e.g. change slide number color for the color and slide type.
+
+---
+class: secondary-blue
+# Secondary slide
+
+Include other csafe images like so (with color versions):
+.img50[![](images/equation-blue.svg)]
+This uses a new class, img50, to make the image 50% of the container width.
+
+.footer[This is a footer note]
+
+---
+class: primary-red
+# Red primary slide
+
+.pull-left[
+.img75[![another image](images/dots-red.svg)]
+].pull-right[
+Normal xaringan classes still work, but I've added some new ones too
+
+
+This uses a new class, img75, to make the image 75% of the container width.
+] 
+
+---
+class:primary-grey
+### Grey slide
+
+Here's a boring grey slide with a h3 header
+
+---
+class:primary-cyan
+## Cyan slide
+
+Here's a pretty cyan slide
+
+---
+class:inverse-green, center
+# A green inverse slide
+## With centering
