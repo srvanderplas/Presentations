@@ -28,6 +28,8 @@ Jenny Bryan's fabulous book about Git and GitHub w/ an R/RStudio focus
 
 - Github's [getting started guide](https://docs.github.com/en/github/getting-started-with-github)
 
+- Software Carpentry's [git](https://swcarpentry.github.io/git-novice/) lessons
+
 - Stat 850 information on [using version control](https://srvanderplas.github.io/unl-stat850/tools.html#using-version-control)
 
 - These slides: https://srvanderplas.github.io/Presentations/2021-Dept-git/index.html
@@ -57,6 +59,53 @@ Jenny Bryan's fabulous book about Git and GitHub w/ an R/RStudio focus
 <br/><br/>
 
 .center.emph.cerulean[It's a bit painful to start with but makes so many parts of research easier in the long run]
+
+
+---
+## How it works (conceptually)
+
+.center[![](https://swcarpentry.github.io/git-novice/fig/play-changes.svg)]
+
+We're all familiar with track changes in word processing software
+
+
+.bottom[Image from Software Carpentry's [git lesson](https://swcarpentry.github.io/git-novice/01-basics/index.html)]
+
+---
+## How it works (conceptually)
+
+.center[![](https://swcarpentry.github.io/git-novice/fig/versions.svg)]
+
+.bottom[Image from Software Carpentry's [git lesson](https://swcarpentry.github.io/git-novice/01-basics/index.html)]
+
+Separate changes applied to the original document = two different end results
+
+???
+
+If changes are separate from the document itself, you can think about "playing back" different sets of changes on the base document, with the end result of different versions of that document.
+
+---
+## How it works (conceptually)
+
+.center[![](https://swcarpentry.github.io/git-novice/fig/merge.svg)]
+
+.bottom[Image from Software Carpentry's [git lesson](https://swcarpentry.github.io/git-novice/01-basics/index.html)]
+
+This allows multiple users to change the same document and merge changes
+
+???
+
+You can even think about multiple users changing the same document - as long as they don't change the same part of the document, you can merge the changes easily. If they change the same section of the document, there is a merge conflict that you have to manually resolve (but hopefully that conflict is limited to a small section of the document).
+
+---
+## How it works (conceptually)
+
+.center[![](https://swcarpentry.github.io/git-novice/fig/play-changes.svg)]
+
+If you store the changes separately from the original document.... it's like an infinite multi-user "undo" button
+
+.bottom[Image from Software Carpentry's [git lesson](https://swcarpentry.github.io/git-novice/01-basics/index.html)]
+
 
 ---
 class:inverse
@@ -108,23 +157,17 @@ use_git_config(user.name = "Jane Doe",
 
 ![git add diagram: add tels git to add the file to the index of files git is monitoring](https://srvanderplas.github.io/unl-stat850/image/git-add.png)
 
+git add tells git to monitor changes to a file (and "stages" the original version)
+
 ---
 ## How it works
 
 ![git commit the changed line](https://srvanderplas.github.io/unl-stat850/image/git-commit.png)
 
+git commit records a change or set of changes to a file.
+
+
 git commit works best with small, local changes that form a cohesive unit - so e.g. "Fixed feature XYZ in function ABC"
-
----
-##  How it works: Git and GitHub
-
-- `git` runs on your local machine
-
-- GitHub runs in the cloud
-
-- `git push` tells GitHub to update the cloud version to what is on your local machine
-
-- `git pull` tells your local machine to update its version based on what's on GitHub
 
 ---
 ##  How it works: Git and GitHub
@@ -134,12 +177,24 @@ git commit works best with small, local changes that form a cohesive unit - so e
 ![](https://srvanderplas.github.io/unl-stat850/image/git_pull_diagram.png)
 ]
 
+???
+
+
+- `git` runs on your local machine
+
+- GitHub runs in the cloud
+
+- `git push` tells GitHub to update the cloud version to what is on your local machine
+
+- `git pull` tells your local machine to update its version based on what's on GitHub
+
+
 ---
 ## Workflow
 
 In general, your work flow will be
 
-1. Clone the project or create a new repository
+1. Clone or "fork" an existing project or create a new repository
 
 2. Make some changes
 
@@ -155,27 +210,7 @@ In general, your work flow will be
 
 .emph.center.cerulean[These steps aren't necessary if you're working alone on a single machine]
 
----
-class:inverse
-## Try it out
-
-1. Create a new repository on github and include a README (so that you can pull the repository down)
-
-    - go to https://github.com/<your username>, Click the plus sign in the top right corner
-    - give your repository a name
-    - check the Add a README file box
-
-2. Click the green CODE button and copy the HTTPS address
-
-3. Start a new project in RStudio from Version Control and paste the URL into the appropriate box.    
-Alternative: use the shell to `git clone` your repository
-
-4. On your machine, edit the README to say "This is my test repository". Save, add, and commit your change
-
-5. Push your change to the GitHub repository. Did it update?
-
-
-.center[[More detailed steps here](https://happygitwithr.com/push-pull-github.html)]
+Note: if using the shell, you may also need a bit of help with the text editor. See [SWCarpentry](https://swcarpentry.github.io/git-novice/02-setup/index.html) for more details
 
 ---
 ## Authentication
@@ -186,11 +221,40 @@ Options: HTTPS and SSH
 credentials cached with your operating system's credential manager    
 [Instructions](https://happygitwithr.com/credential-caching.html) 
 
+```{r, eval =F}
+install.packages(c("usethis", "gitcreds"))
+
+usethis::create_github_token()
+gitcreds::gitcreds_set()
+```
+
 
 - SSH:     
 set up a SSH key (or use one already there) and add the key to git    
 [Instructions](https://happygitwithr.com/ssh-keys.html#ssh-keys-1)
 
+
+
+---
+class:inverse
+## Try it out
+
+1. Create a new repository on github and include a README (so that you can pull the repository down)
+
+    - go to https://github.com/<your username>, Click the plus sign in the top right corner
+    - give your repository a name
+    - check the Add a README file box
+
+2. Click the green CODE button and copy the HTTPS or SSH address
+
+3. Use the shell to `git clone` your repository
+
+4. On your machine, edit the README to say "This is my test repository". Save, add, and commit your change using the shell
+
+5. Push your change to the GitHub repository. Did it update?
+
+
+.center[[More detailed steps here](https://happygitwithr.com/push-pull-github.html)]
 
 ---
 ## Using git within RStudio
@@ -223,12 +287,12 @@ set up a SSH key (or use one already there) and add the key to git
 - Refresh
 
 ---
-## RStudio git integration
+## RStudio - Diff button
 
 ![](rstudio-diff-btn.png)
 
 ---
-## RStudio git integration
+## RStudio commit button
 
 ![](rstudio-commit-btn.png)
 
@@ -247,7 +311,74 @@ The history tab lets you see what got added and removed when, and by whom (if yo
 
 You can also identify merges and conflicting branches -- this is helpful for figuring out where something went wrong (if it did). Or just for mocking collaborators who didn't pull before they started working.
 
+
+---
+class:inverse
+## Try it out (Rstudio)
+
+1. Create a new repository on github and include a README (so that you can pull the repository down)
+
+    - go to https://github.com/<your username>, Click the plus sign in the top right corner
+    - give your repository a name
+    - check the Add a README file box
+
+2. Click the green CODE button and copy the HTTPS or SSH address
+
+3. Create a new RStudio project using version control, and paste the repository address into the URL box
+
+4. On your machine, edit the README to say "This is my test repository". Save, add, and commit your change using RStudio's interface
+
+5. Push your change to the GitHub repository. Did it update?
+
+
+.center[[More detailed steps here](https://happygitwithr.com/push-pull-github.html)]
+
+
 ---
 ## What if I run into trouble?
 
 .center[![:scale 50%](https://imgs.xkcd.com/comics/git.png)]
+
+
+---
+## Things to avoid
+
+- Nested folders with git repositories
+
+- Files over 50 MB (if you use GitHub)
+
+- Having git track files that are generated from other files (plots, PDFs, etc.)
+    - unless you need to store them on github/make them available (e.g. final versions of papers)
+
+- Don't add anything to a public GitHub repository you don't want to be public
+    - copyrighted material (papers, etc)
+    - passwords
+    - student information
+    
+- Only commit files that you changed yourself!
+    - avoid adding .DS_Store, .directory, etc. to git
+
+```{r, echo = T, eval = F}
+usethis::git_vaccinate() 
+# ignores common nuisance files at the user level
+```
+    
+
+---
+## What about git's other features?
+
+- Branching
+    - useful for projects where you have a working "release" copy and are also actively developing new features
+    - can also be used to host documentation, etc. on GitHub
+    
+    
+- [Collaboration](https://swcarpentry.github.io/git-novice/08-collab/index.html)
+    - Add other users to your remote repository on GitHub
+    - Always pull before you start working (and frequently during work)
+    - Commit and push frequently! (smaller merge conflicts)
+    
+- [Ignore files](https://swcarpentry.github.io/git-novice/06-ignore/index.html)
+    - File named .gitignore in each sub-directory
+    - Add file names (or e.g. *.docx) to ignore 
+    - good for large files, sensitive data, etc.
+    
