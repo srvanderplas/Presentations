@@ -40,13 +40,9 @@ class: primary-blue
     
 ???
 
-Back in 2015, the National Institute for Standards and Technology created a center of excellence in forensic statistics, with the goal of doing basic research to hopefully add statistical foundations to forensic science. 
+Forensic science has been questioned in the past decade, particularly because examiners make statements like "This shoe made this print to the exclusion of all other shoes in the world", with the only evidence for that claim being the experience of the examiner. 
 
-There was a lot of pressure to get things up off the ground quickly, which meant that suddenly a bunch of statisticians were working with types of data they'd really never messed with before. But data is data, right, and we were excited.
-
-The problem in forensics is that forensic examiners were making statements like "This shoe made this print to the exclusion of all other shoes in the world", with the only evidence for that claim being the experience of the examiner. So one of the early identified issues that CSAFE tackled was data collection - generating databases for research purposes, to validate statistical methods that would be developed to match shoe prints and make probabilistic statements supported by data instead of personal experience.
-
-Since we knew assembling a database of every shoe in the world was impossible (we're crazy, but not that crazy), we decided to start "small" - with a few questions that were seen as foundational to our ability to create algorithms to assess the statistical probability that two shoes matched - that's the holy grail. 
+In order to validate forensic disciplines, we need to collect data. Since we knew assembling a database of every shoe in the world was impossible, we decided to start "small" - with a few questions that were seen as foundational to our ability to create algorithms to assess the statistical probability that two prints matched.
 
 Starting small, incidentally, meant that we tried to answer all 4 of these questions at the same time.
 
@@ -74,9 +70,11 @@ class: secondary-blue
 
 ???
 
-So in collaboration with a group at NIST whose primary interest was metrology - how to measure things - we set this experiment up. We had 2D digital scans, 3D digital scans, the old-fashioned fingerprint powder and sticky film, and a few other methods that various forensic scientists wanted us to try. 
+We collaborated with a group at NIST who primarily work in metrology - how to measure things - to set this experiment up. We had 7 different methods for gathering data, and a thorough procedure to control for how the data was collected - right down to the socks the undergraduates wore as they created the shoe prints. As you can imagine, this experiment was pretty expensive - 160 pairs of shoes, plus the measurement equipment, plus the lab workers to take all of the measurements.
 
-As you can imagine, this experiment was pretty expensive - 160 pairs of shoes, plus the measurement equipment, plus the lab workers to take all of the measurements. The experiment was designed and run by statisticians and people who measure things professionally - so there were extensive protocols for measurement developed, and we controlled things like whether pebbles were removed from the shoes before imaging, and what kind of socks the lab workers wore during data collection. 
+It was a pretty cool (and extensive) study - bigger than anything anyone had done before, and we were making the data available to the community for free!
+
+So let me tell you how things fell apart.
 
 ---
 class: primary-red
@@ -98,13 +96,15 @@ This particular issue was discovered at the end of the experiment - the 2d digit
 
 We went through several rounds of modifications to the digital photography protocol, involving backgrounds, rulers, and other accessories that made the photos more useful... but also made any automatic processing of those photographs nearly impossible. 
 
+Every single batch of photos taken has different background, rulers, and general configuration. 
+
 --
 
-- Supplier changes - background and sticky film color don't matter, right?
+- We didn't control for who was wearing the shoes
 
 ???
 
-This one wasn't really anyone's fault, per se - the supplier we used for the experiment changed their supplier, and suddenly we were using film with a different background and different tint than before. In the grand scheme of things, this is not much, but it really complicated any processing I was attempting to automate.
+It turns out that it really matters who is wearing the shoes - the features that show up in the prints are different when the weight distribution is different. So while we controlled for the socks people wore, we didn't control for who was wearing those socks. It's really hard to compare print-to-print when you don't control for who is wearing the shoes. 
 
 --
 
@@ -120,19 +120,22 @@ By far the biggest problem with this study, though, was that no one had a plan f
 
 ---
 class:primary-cyan
-## Epilogue
+## What we learned
 
-- 3 years after the study is completed, we're still struggling to build that analysis pipeline
-
-&lt;br/&gt;&lt;br/&gt;
-- We've discovered that certain patterns of shoes make for easier analysis... but the Nike/Adidas models we originally picked aren't among them.
+- The analysis pipeline is the most important part of the project, and can inform how you collect the data
 
 &lt;br/&gt;&lt;br/&gt;
-- It's very difficult to get a paper published describing the database without any actual analysis work to go with it
+- Certain patterns of shoes make for easier analysis... but the Nike/Adidas models we originally picked aren't among them.
+
+&lt;br/&gt;&lt;br/&gt;
+- There's little interest in databases that don't have a demonstration of how the database should be analyzed
+
+&lt;br/&gt;&lt;br/&gt;
+- We should teach statisticians how to collect data
 
 ???
 
-The study has been completed for about 3 years now, and I'm still working on building a proper analysis pipeline. We've actually gone back to even more fundamental research - trying to figure out what we can even detect, and what the sources of error are, when we take a print. In many other forensics disciplines, you can remove the "class characteristics" - the shared patterns between two items of the same manufacture - very easily, but with shoes... it's much harder and may be impossible to do. 
+The study has been completed for about 3 years now, and I'm still working on building a proper analysis pipeline.
 
 It's frustrating that sometimes you don't realize how little you know until you actually try to do something, but I don't think we're unique in this kind of mishap: we had some of the most respected specialists in forensics, experimental design, and metrology working with us to design this experiment. 
 
