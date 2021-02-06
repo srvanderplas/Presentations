@@ -1,7 +1,7 @@
 ---
 title: "Welcome to Forensic Statistics"
 subtitle: "(The Study of Doom)"
-author: "Susan Vanderplas"
+author: "Susan Vanderplas<br/>@srvanderplas"
 output:
   xaringan::moon_reader:
     mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
