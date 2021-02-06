@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Parallelizing your code in R</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.6/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="unl.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Parallelizing your code in R
+### 06 February, 2021
+
+---
+
+
+
+
+## Resources
+
+.large[
+- [Parallel Computing intro](https://nceas.github.io/oss-lessons/parallel-computing-in-r/parallel-computing-in-r.html) by Matt Jones
+
+- [Parallel Computation](https://bookdown.org/rdpeng/rprogdatascience/parallel-computation.html) by Roger Peng
+
+]
+
+---
+## Basic Definitions
+
+| Concurrent | Parallel |
+| :----------: | :----------: |
+| &lt;img src="https://www.angelaholdsworth.com/wp-content/uploads/2014/11/Mom-Juggling-671x1024.jpg" alt="Mom juggling tasks" height="300px"/&gt; | ![Calvin and Hobbes](calvin-parallel.png) |
+| Multiple tasks in progress at one time | Multiple tasks run simultaneously |
+| `future` package | `parallel` package |
+
+
+.bottom[Images from [angelaholdsworth.com](https://www.angelaholdsworth.com/wp-content/uploads/2014/11/Mom-Juggling-671x1024.jpg) and gocomics.com via [Bill Watterson](https://www.gocomics.com/calvinandhobbes/1990/01/11)]
+
+---
+## Basic Definitions
+
+| Concurrent | Parallel |
+| :----------: | :----------: |
+| ![](https://www.guru99.com/images/1/082319_0623_CPUCoreMult1.png) | ![](https://www.guru99.com/images/1/082319_0623_CPUCoreMult2.png) |
+| Multiple tasks in progress at one time | Multiple tasks run simultaneously |
+| `future` package | `parallel` package |
+
+.bottom[Images from [guru99.com](https://www.guru99.com/cpu-core-multicore-thread.html)]
+---
+## Hidden Parallelism
+
+- Most statistical calculations use linear algebra libraries written in e.g. C or C++
+    - BLAS (basic linear algebra subroutines) libraries
+
+- These  libraries have versions that are parallel by default
+    - No special code
+    - parallel computing handled for you automatically
+    
+- Microsoft R Open provides these libraries
+    - You can also compile R against e.g. [parallel AMD/Intel libraries, Accellerate (mac), or ATLAS](https://bookdown.org/rdpeng/rprogdatascience/parallel-computation.html#hidden-parallelism) 
+    - see the R installation manual [BLAS](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#BLAS) section
+    
+    
+---
+## Hidden Parallelism
+
+![](https://mran.microsoft.com/assets/img/ElapsedTimeGraphic.18be8ccd.png)
+
+[Speeds up certain tasks considerably](https://mran.microsoft.com/documents/rro/multithread) under the right circumstances
+
+---
+## Cores, Threads, Processes
+
+.center[![:scale 65%](https://miro.medium.com/max/2400/0*OrJ6SWAS2ATYskoI.png)]
+
+???
+
+A thread is a job
+
+A process is a set of one or more threads with some memory and file access
+
+A core is the part of the computer that does the calculations
+
+.bottom[Picture from https://medium.com/@tarunjain07/multi-vs-multi-cb9b0ec382ad]
+---
+## Cores, Threads, Processes
+
+.center[![:scale 65%](https://miro.medium.com/max/2400/0*Hbpge6P55qrcObre.png)]
+
+.bottom[Picture from https://medium.com/@tarunjain07/multi-vs-multi-cb9b0ec382ad]
+
+???
+
+Some processors have hyper-threading - so a computer core can handle multiple "threads" at the same time. This is optimized on the processor level, and you generally don't have a lot of control over it other than being aware of how many parallel jobs you can assign to your machine.
+
+---
+## Forking and Clustering
+
+UNIX-based operating systems allow "forking" processes
+
+![](forking.svg)
+
+- Entire R session is copied over (lazily)
+
+- If you don't overwrite variables, this is fast (nothing actually copied)
+
+- Spawns many different "child" processes, each theoretically assigned its own core
+
+
+---
+## Forking 
+
+
+```r
+library(parallel)
+detectCores()
+```
+
+```
+## [1] 16
+```
+
+```r
+r &lt;- mclapply(1:10,  
+              ## Do nothing for 10 seconds
+              function(i) { Sys.sleep(10) }, 
+              ## Split this job across 10 cores
+              mc.cores = 10)      
+```
+
+
+---
+## Forking and Clutering
+
+Windows doesn't allow forking. On Windows, you have to use a cluster. 
+
+.center.img75[![](snow.svg)]
+
+- Explicitly copy data to/from clusters (takes time + memory)
+
+
+---
+## "Embarrassingly Parallel"
+
+- Multiple independent pieces of a problem are executed simultaneously
+
+
+```
+## # A tibble: 736 x 3
+## # Groups:   city [46]
+##    city     year total_volume
+##    &lt;chr&gt;   &lt;int&gt;        &lt;dbl&gt;
+##  1 Abilene  2000    108575000
+##  2 Abilene  2001    114365000
+##  3 Abilene  2002    118675000
+##  4 Abilene  2003    135675000
+##  5 Abilene  2004    159670000
+##  6 Abilene  2005    198855000
+##  7 Abilene  2006    227530000
+##  8 Abilene  2007    232062585
+##  9 Abilene  2008    192520335
+## 10 Abilene  2009    202357756
+## # … with 726 more rows
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
