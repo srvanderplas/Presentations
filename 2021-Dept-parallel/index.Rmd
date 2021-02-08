@@ -82,13 +82,21 @@ By default, R can do some things concurrently (though you can enhance its abilit
 ???
 
 There's one relatively simple way to take advantage of parallel processing without having to do anything to your code: by using libraries that do the linear algebra calculations that are parallel by default.
-    
+
+Microsoft R open is built with these libraries by default, but you can enable different libraries that aren't microsoft-specific in base R if you follow the R installation manual instructions. 
+
 ---
 ## Hidden Parallelism
 
 ![](https://mran.microsoft.com/assets/img/ElapsedTimeGraphic.18be8ccd.png)
 
 [Speeds up certain tasks considerably](https://mran.microsoft.com/documents/rro/multithread) under the right circumstances
+
+???
+
+If Microsoft's benchmarks are to be believed, this can massively speed up certain calculations. It won't fix everything, of course. 
+
+To talk more about parallelization, however, we're going to have to get into some computer architecture issues. So let's talk about processes, threads, and cores.
 
 ---
 ## Cores, Threads, Processes
@@ -104,6 +112,7 @@ A process is a set of one or more threads with some memory and file access
 A core is the part of the computer that does the calculations
 
 .bottom[Picture from https://medium.com/@tarunjain07/multi-vs-multi-cb9b0ec382ad]
+
 ---
 ## Cores, Threads, Processes
 
@@ -114,6 +123,8 @@ A core is the part of the computer that does the calculations
 ???
 
 Some processors have hyper-threading - so a computer core can handle multiple "threads" at the same time. This is optimized on the processor level, and you generally don't have a lot of control over it other than being aware of how many parallel jobs you can assign to your machine.
+
+What's important to remember in all of this is that any "thread" has some associated memory and information. The art of parallelizing your code is figuring out how to balance copying information around relative to how many threads you're running.
 
 ---
 ## Forking and Clustering
@@ -128,31 +139,57 @@ UNIX-based operating systems allow "forking" processes
 
 - Spawns many different "child" processes, each theoretically assigned its own core
 
+???
+
+The reason this is important is that the operating system determines how the jobs are scheduled and how threads are allocated to hardware. In UNIX systems (mac and Linux) you can do something called "forking".
+
+Essentially, the base process "spawns" a child process, copying memory and file access over, to carry out a new thread.
+
+This is very fast (for the programmer), and very simple - you don't have to set up shared objects between threads, because the whole process is copied. Think of it as a clone, Calvin and Hobbes style. 
+
+However, if you change any of those objects that get copied over, your memory usage can blow up very quickly. 
 
 ---
-## Forking 
+## Parallelization using `mclapply` 
 
 ```{r, echo = T}
 library(parallel)
 detectCores()
 
+system.time(
+r_serial <- lapply(1:10, function(i) {Sys.sleep(2)})
+)
+
+system.time(
 r <- mclapply(1:10,  
-              ## Do nothing for 10 seconds
-              function(i) { Sys.sleep(10) }, 
+              ## Do nothing for 2 seconds
+              function(i) { Sys.sleep(2) }, 
               ## Split this job across 10 cores
               mc.cores = 10)      
+)
 
 ```
+???
 
+Obviously, this is a pretty trivial parallel job. But, you can see how it's invoked - instead of lapply, you use mclapply. You tell it how many cores you want to use, and the parallel package handles the details. There's a slight increase in system time to handle the overhead, but overall it's approximately 10x faster to use mclapply.
+
+I believe that if you use mclapply on Windows, you get default lapply behavior (or at least, that was the case at one point...) - I don't have a windows machine to test this out on.
 
 ---
 ## Forking and Clutering
 
-Windows doesn't allow forking. On Windows, you have to use a cluster. 
+Windows doesn't allow forking. On Windows, you have to use a PSOCK cluster. 
 
 .center.img75[![](snow.svg)]
 
 - Explicitly copy data to/from clusters (takes time + memory)
+
+???
+
+Because this is controlled at the operating system level, you have to handle Windows separately. All operating systems allow PSOCK clusters, but they are more complicated to set up. 
+
+In a PSOCK cluster, you have to explicitly copy over any packages or objects you need the parallel jobs to have access to. This is much more memory efficient than copying the entire process, but it also takes more user time, and specifying everything exactly takes more computer time. So there's a higher overhead, but the memory usage is more efficient.
+
 
 
 ---
