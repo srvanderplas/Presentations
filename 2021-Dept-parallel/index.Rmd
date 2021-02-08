@@ -14,7 +14,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, message = F, warning = F}
-knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, error = F, dpi = 300)
+knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, error = F, dpi = 300, cache = T)
 knitr::opts_chunk$set(dev.args=list(bg="transparent"))
 library(tidyverse)
 library(gridExtra)
@@ -173,7 +173,7 @@ r <- mclapply(1:10,
 
 Obviously, this is a pretty trivial parallel job. But, you can see how it's invoked - instead of lapply, you use mclapply. You tell it how many cores you want to use, and the parallel package handles the details. There's a slight increase in system time to handle the overhead, but overall it's approximately 10x faster to use mclapply.
 
-I believe that if you use mclapply on Windows, you get default lapply behavior (or at least, that was the case at one point...) - I don't have a windows machine to test this out on.
+If you use mclapply on Windows, you get default lapply behavior. So to handle parallel processing on Windows, you have to use a slightly different approach.
 
 ---
 ## Forking and Clutering
@@ -191,19 +191,248 @@ Because this is controlled at the operating system level, you have to handle Win
 In a PSOCK cluster, you have to explicitly copy over any packages or objects you need the parallel jobs to have access to. This is much more memory efficient than copying the entire process, but it also takes more user time, and specifying everything exactly takes more computer time. So there's a higher overhead, but the memory usage is more efficient.
 
 
+---
+## Parallelization using `makeCluster` 
+```{r, echo = T}
+library(parallel)
+cl <- makePSOCKcluster(10)
+
+system.time(
+r_serial <- lapply(1:10, function(i) {Sys.sleep(2)})
+)
+
+system.time(
+r <- parLapply(cl, # use the cluster 
+               1:10,  
+               ## Do nothing for 2 seconds
+               function(i) { Sys.sleep(2) })      
+)
+
+stopCluster(cl)
+```
+???
+
+In this trivial example, it is much faster to use a PSOCK cluster because there's nothing to copy over - no overhead - so the parallel jobs execute in nearly exactly the time you'd expect a parallel process to take.
+
+---
+## Parallelization using `makeCluster` 
+```{r, echo = T}
+library(parallel)
+cl <- makeForkCluster(10)
+
+system.time(
+r_serial <- lapply(1:10, function(i) {Sys.sleep(2)})
+)
+
+system.time(
+r <- parLapply(cl, # use the cluster 
+               1:10,  
+               ## Do nothing for 2 seconds
+               function(i) { Sys.sleep(2) })      
+)
+
+stopCluster(cl)
+```
+???
+
+If we instead make a Fork cluster, we have a bit more system overhead because the processes are copied over -- but not much, and it's not a hugely significant difference. 
+
+
+---
+## Concurrency with `future`
+
+The `future` package is used to assist with concurrency - not holding up one result based on finishing another calculation.
+
+.pull-left[
+```{r, echo = T}
+v <- {
+  cat("Hello World")
+  3.14
+}
+
+v
+
+```
+
+- Executed immediately
+- value recalled when requested
+
+].pull-right[
+```{r, echo = T}
+library(future)
+
+v %<-% {
+  cat("Hello World")
+  3.14
+}
+
+v
+```
+
+- Executed only when value requested
+- print statement happens upon value request
+]
+
+???
+
+Why am I all of a sudden talking about concurrency?
+
+This type of delayed evaluation can make parallelization very easy. 
+
+We can choose to execute that future expression in a separate R process asynchronously. 
+
+
+---
+## Concurrency with `future`
+
+The `future` package is used to assist with concurrency - not holding up one result based on finishing another calculation.
+
+.pull-left[
+```{r, echo = T}
+v <- {
+  cat("Hello World")
+  3.14
+}
+
+v
+
+```
+
+- Executed immediately
+- value recalled when requested
+
+].pull-right[
+```{r, echo = T}
+library(future)
+plan(multisession) # Use asynchronous separate process
+
+v %<-% {
+  cat("Hello World")
+  3.14
+}
+
+v
+```
+
+- Executed only when value requested
+- print statement happens upon value request
+]
+
+???
+
+In this case, our main R session doesn't have to wait around for the results of the assignment of `v` - we only have to wait around for the result once we use `v` (e.g. print it out). 
+
+---
+## Futures
+
+### Synchronous (non-parallel)
+Name | OSes | Description
+---- | ---- | ----
+sequential |	all |	sequentially and in the current R process
+transparent |	all |	as sequential w/ early signaling and w/out local (for debugging)
+
+### Asynchronous (parallel)
+Name | OSes | Description
+---- | ---- | ----
+multisession |	all |	background R sessions (on current machine)
+multicore |	not Windows/not RStudio |	forked R processes (on current machine)
+cluster |	all |	external R sessions on current, local, and/or remote machines
+remote |	all |	Simple access to remote R sessions
+
+???
+
+Future tries to detect your global variables, export them automatically, and manage the resulting memory challenges. It's less to think about (when it works). 
+
+The biggest reason (for me) to know about the future package is that it makes it easy to use the furrr package. Since I tend to use purrr variants instead of lapply, the furrr package makes it easy to parallelize code in-place. 
 
 ---
 ## "Embarrassingly Parallel"
 
 - Multiple independent pieces of a problem are executed simultaneously
 
+- Think bootstrap, drawing new samples, or even fitting models to different sets of data separately.
+
+- You can use `mclapply`, `parLapply`, or the `furrr` package variants `future_map`, `future_pmap`, which have better type-specific options
+
 ```{r}
-library(tidyverse)
-library(parallel)
+library(furrr)
 
-data(txhousing)
-txhousing %>% group_by(city, year) %>% 
-  summarize(total_volume = sum(volume))
-
-
+# This uses PSOCK clusters
+plan(multisession, workers = 8)
+# Simple version
+future_walk(1:10, ~Sys.sleep(2))
 ```
+
+
+---
+## "Embarrassingly Parallel" Problems
+
+```{r, echo = T}
+library(furrr)
+data(txhousing)
+
+# Fit a simple linear model
+fit_gam <- function(.)
+  lm(sales ~ factor(month) + year + listings, data = .)
+
+# This uses PSOCK clusters
+plan(multisession, workers = 8)
+```
+
+???
+
+Here, let's suppose we want to fit a linear model for each city in the txhousing dataset.
+
+
+---
+## Data Transfer takes time!
+
+```{r, echo = T}
+# parallel
+system.time(
+txhousing %>%
+  nest(-city) %>%
+  mutate(model = future_map(data, fit_lm))
+)
+
+# not parallel
+system.time(
+txhousing %>%
+  nest(-city) %>%
+  mutate(model = map(data, fit_lm))
+)
+```
+
+???
+
+We find that it actually takes a lot more time to parallelize it than it does to not parallelize it, because data transfer between the processes is a significant component of the time. 
+
+
+---
+## Data Transfer takes time!
+
+```{r, echo = T}
+library(mgcv)
+plan(multisession, workers = 6)
+# Fit a simple gam model
+fit_gam <- function(.)
+  gam(sales ~ factor(month) + s(year, bs = 'ps') + s(listings), data = ., , method="REML")
+
+# parallel
+system.time(
+txhousing %>%
+  nest(-city) %>%
+  mutate(model = future_map(data, fit_gam))
+)
+
+# not parallel
+system.time(
+txhousing %>%
+  nest(-city) %>%
+  mutate(model = map(data, fit_gam))
+)
+```
+
+???
+
+If we instead fit a more complicated model, the computational time we save by parallelizing is (sometimes) actually larger than the setup time for the cluster.

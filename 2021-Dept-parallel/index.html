@@ -81,13 +81,21 @@ By default, R can do some things concurrently (though you can enhance its abilit
 ???
 
 There's one relatively simple way to take advantage of parallel processing without having to do anything to your code: by using libraries that do the linear algebra calculations that are parallel by default.
-    
+
+Microsoft R open is built with these libraries by default, but you can enable different libraries that aren't microsoft-specific in base R if you follow the R installation manual instructions. 
+
 ---
 ## Hidden Parallelism
 
 ![](https://mran.microsoft.com/assets/img/ElapsedTimeGraphic.18be8ccd.png)
 
 [Speeds up certain tasks considerably](https://mran.microsoft.com/documents/rro/multithread) under the right circumstances
+
+???
+
+If Microsoft's benchmarks are to be believed, this can massively speed up certain calculations. It won't fix everything, of course. 
+
+To talk more about parallelization, however, we're going to have to get into some computer architecture issues. So let's talk about processes, threads, and cores.
 
 ---
 ## Cores, Threads, Processes
@@ -103,6 +111,7 @@ A process is a set of one or more threads with some memory and file access
 A core is the part of the computer that does the calculations
 
 .bottom[Picture from https://medium.com/@tarunjain07/multi-vs-multi-cb9b0ec382ad]
+
 ---
 ## Cores, Threads, Processes
 
@@ -113,6 +122,8 @@ A core is the part of the computer that does the calculations
 ???
 
 Some processors have hyper-threading - so a computer core can handle multiple "threads" at the same time. This is optimized on the processor level, and you generally don't have a lot of control over it other than being aware of how many parallel jobs you can assign to your machine.
+
+What's important to remember in all of this is that any "thread" has some associated memory and information. The art of parallelizing your code is figuring out how to balance copying information around relative to how many threads you're running.
 
 ---
 ## Forking and Clustering
@@ -127,9 +138,18 @@ UNIX-based operating systems allow "forking" processes
 
 - Spawns many different "child" processes, each theoretically assigned its own core
 
+???
+
+The reason this is important is that the operating system determines how the jobs are scheduled and how threads are allocated to hardware. In UNIX systems (mac and Linux) you can do something called "forking".
+
+Essentially, the base process "spawns" a child process, copying memory and file access over, to carry out a new thread.
+
+This is very fast (for the programmer), and very simple - you don't have to set up shared objects between threads, because the whole process is copied. Think of it as a clone, Calvin and Hobbes style. 
+
+However, if you change any of those objects that get copied over, your memory usage can blow up very quickly. 
 
 ---
-## Forking 
+## Parallelization using `mclapply` 
 
 
 ```r
@@ -142,47 +162,385 @@ detectCores()
 ```
 
 ```r
-r &lt;- mclapply(1:10,  
-              ## Do nothing for 10 seconds
-              function(i) { Sys.sleep(10) }, 
-              ## Split this job across 10 cores
-              mc.cores = 10)      
+system.time(
+r_serial &lt;- lapply(1:10, function(i) {Sys.sleep(2)})
+)
 ```
 
+```
+##    user  system elapsed 
+##   0.016   0.000  20.029
+```
+
+```r
+system.time(
+r &lt;- mclapply(1:10,  
+              ## Do nothing for 2 seconds
+              function(i) { Sys.sleep(2) }, 
+              ## Split this job across 10 cores
+              mc.cores = 10)      
+)
+```
+
+```
+##    user  system elapsed 
+##   0.020   0.029   2.016
+```
+???
+
+Obviously, this is a pretty trivial parallel job. But, you can see how it's invoked - instead of lapply, you use mclapply. You tell it how many cores you want to use, and the parallel package handles the details. There's a slight increase in system time to handle the overhead, but overall it's approximately 10x faster to use mclapply.
+
+If you use mclapply on Windows, you get default lapply behavior. So to handle parallel processing on Windows, you have to use a slightly different approach.
 
 ---
 ## Forking and Clutering
 
-Windows doesn't allow forking. On Windows, you have to use a cluster. 
+Windows doesn't allow forking. On Windows, you have to use a PSOCK cluster. 
 
 .center.img75[![](snow.svg)]
 
 - Explicitly copy data to/from clusters (takes time + memory)
 
+???
+
+Because this is controlled at the operating system level, you have to handle Windows separately. All operating systems allow PSOCK clusters, but they are more complicated to set up. 
+
+In a PSOCK cluster, you have to explicitly copy over any packages or objects you need the parallel jobs to have access to. This is much more memory efficient than copying the entire process, but it also takes more user time, and specifying everything exactly takes more computer time. So there's a higher overhead, but the memory usage is more efficient.
+
+
+---
+## Parallelization using `makeCluster` 
+
+```r
+library(parallel)
+cl &lt;- makePSOCKcluster(10)
+
+system.time(
+r_serial &lt;- lapply(1:10, function(i) {Sys.sleep(2)})
+)
+```
+
+```
+##    user  system elapsed 
+##   0.002   0.000  20.017
+```
+
+```r
+system.time(
+r &lt;- parLapply(cl, # use the cluster 
+               1:10,  
+               ## Do nothing for 2 seconds
+               function(i) { Sys.sleep(2) })      
+)
+```
+
+```
+##    user  system elapsed 
+##   0.002   0.000   2.005
+```
+
+```r
+stopCluster(cl)
+```
+???
+
+In this trivial example, it is much faster to use a PSOCK cluster because there's nothing to copy over - no overhead - so the parallel jobs execute in nearly exactly the time you'd expect a parallel process to take.
+
+---
+## Parallelization using `makeCluster` 
+
+```r
+library(parallel)
+cl &lt;- makeForkCluster(10)
+
+system.time(
+r_serial &lt;- lapply(1:10, function(i) {Sys.sleep(2)})
+)
+```
+
+```
+##    user  system elapsed 
+##   0.001   0.000  20.018
+```
+
+```r
+system.time(
+r &lt;- parLapply(cl, # use the cluster 
+               1:10,  
+               ## Do nothing for 2 seconds
+               function(i) { Sys.sleep(2) })      
+)
+```
+
+```
+##    user  system elapsed 
+##   0.000   0.002   2.004
+```
+
+```r
+stopCluster(cl)
+```
+???
+
+If we instead make a Fork cluster, we have a bit more system overhead because the processes are copied over -- but not much, and it's not a hugely significant difference. 
+
+
+---
+## Concurrency with `future`
+
+The `future` package is used to assist with concurrency - not holding up one result based on finishing another calculation.
+
+.pull-left[
+
+```r
+v &lt;- {
+  cat("Hello World")
+  3.14
+}
+```
+
+```
+## Hello World
+```
+
+```r
+v
+```
+
+```
+## [1] 3.14
+```
+
+- Executed immediately
+- value recalled when requested
+
+].pull-right[
+
+```r
+library(future)
+
+v %&lt;-% {
+  cat("Hello World")
+  3.14
+}
+
+v
+```
+
+```
+## Hello World
+```
+
+```
+## [1] 3.14
+```
+
+- Executed only when value requested
+- print statement happens upon value request
+]
+
+???
+
+Why am I all of a sudden talking about concurrency?
+
+This type of delayed evaluation can make parallelization very easy. 
+
+We can choose to execute that future expression in a separate R process asynchronously. 
+
+
+---
+## Concurrency with `future`
+
+The `future` package is used to assist with concurrency - not holding up one result based on finishing another calculation.
+
+.pull-left[
+
+```r
+v &lt;- {
+  cat("Hello World")
+  3.14
+}
+```
+
+```
+## Hello World
+```
+
+```r
+v
+```
+
+```
+## [1] 3.14
+```
+
+- Executed immediately
+- value recalled when requested
+
+].pull-right[
+
+```r
+library(future)
+plan(multisession) # Use asynchronous separate process
+
+v %&lt;-% {
+  cat("Hello World")
+  3.14
+}
+
+v
+```
+
+```
+## Hello World
+```
+
+```
+## [1] 3.14
+```
+
+- Executed only when value requested
+- print statement happens upon value request
+]
+
+???
+
+In this case, our main R session doesn't have to wait around for the results of the assignment of `v` - we only have to wait around for the result once we use `v` (e.g. print it out). 
+
+---
+## Futures
+
+### Synchronous (non-parallel)
+Name | OSes | Description
+---- | ---- | ----
+sequential |	all |	sequentially and in the current R process
+transparent |	all |	as sequential w/ early signaling and w/out local (for debugging)
+
+### Asynchronous (parallel)
+Name | OSes | Description
+---- | ---- | ----
+multisession |	all |	background R sessions (on current machine)
+multicore |	not Windows/not RStudio |	forked R processes (on current machine)
+cluster |	all |	external R sessions on current, local, and/or remote machines
+remote |	all |	Simple access to remote R sessions
+
+???
+
+Future tries to detect your global variables, export them automatically, and manage the resulting memory challenges. It's less to think about (when it works). 
+
+The biggest reason (for me) to know about the future package is that it makes it easy to use the furrr package. Since I tend to use purrr variants instead of lapply, the furrr package makes it easy to parallelize code in-place. 
 
 ---
 ## "Embarrassingly Parallel"
 
 - Multiple independent pieces of a problem are executed simultaneously
 
+- Think bootstrap, drawing new samples, or even fitting models to different sets of data separately.
+
+- You can use `mclapply`, `parLapply`, or the `furrr` package variants `future_map`, `future_pmap`, which have better type-specific options
+
+
+
+
+---
+## "Embarrassingly Parallel" Problems
+
+
+```r
+library(furrr)
+data(txhousing)
+
+# Fit a simple linear model
+fit_gam &lt;- function(.)
+  lm(sales ~ factor(month) + year + listings, data = .)
+
+# This uses PSOCK clusters
+plan(multisession, workers = 8)
+```
+
+???
+
+Here, let's suppose we want to fit a linear model for each city in the txhousing dataset.
+
+
+---
+## Data Transfer takes time!
+
+
+```r
+# parallel
+system.time(
+txhousing %&gt;%
+  nest(-city) %&gt;%
+  mutate(model = future_map(data, fit_lm))
+)
+```
 
 ```
-## # A tibble: 736 x 3
-## # Groups:   city [46]
-##    city     year total_volume
-##    &lt;chr&gt;   &lt;int&gt;        &lt;dbl&gt;
-##  1 Abilene  2000    108575000
-##  2 Abilene  2001    114365000
-##  3 Abilene  2002    118675000
-##  4 Abilene  2003    135675000
-##  5 Abilene  2004    159670000
-##  6 Abilene  2005    198855000
-##  7 Abilene  2006    227530000
-##  8 Abilene  2007    232062585
-##  9 Abilene  2008    192520335
-## 10 Abilene  2009    202357756
-## # … with 726 more rows
+##    user  system elapsed 
+##   0.117   0.016   0.642
 ```
+
+```r
+# not parallel
+system.time(
+txhousing %&gt;%
+  nest(-city) %&gt;%
+  mutate(model = map(data, fit_lm))
+)
+```
+
+```
+##    user  system elapsed 
+##   0.041   0.000   0.041
+```
+
+???
+
+We find that it actually takes a lot more time to parallelize it than it does to not parallelize it, because data transfer between the processes is a significant component of the time. 
+
+
+---
+## Data Transfer takes time!
+
+
+```r
+library(mgcv)
+plan(multisession, workers = 6)
+# Fit a simple gam model
+fit_gam &lt;- function(.)
+  gam(sales ~ factor(month) + s(year, bs = 'ps') + s(listings), data = ., , method="REML")
+
+# parallel
+system.time(
+txhousing %&gt;%
+  nest(-city) %&gt;%
+  mutate(model = future_map(data, fit_gam))
+)
+```
+
+```
+##    user  system elapsed 
+##   0.123   0.009   1.906
+```
+
+```r
+# not parallel
+system.time(
+txhousing %&gt;%
+  nest(-city) %&gt;%
+  mutate(model = map(data, fit_gam))
+)
+```
+
+```
+##    user  system elapsed 
+##   1.220   0.015   1.236
+```
+
+???
+
+If we instead fit a more complicated model, the computational time we save by parallelizing is (sometimes) actually larger than the setup time for the cluster.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
