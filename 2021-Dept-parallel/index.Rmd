@@ -41,6 +41,13 @@ library(gridExtra)
 
 .bottom[Images from [angelaholdsworth.com](https://www.angelaholdsworth.com/wp-content/uploads/2014/11/Mom-Juggling-671x1024.jpg) and gocomics.com via [Bill Watterson](https://www.gocomics.com/calvinandhobbes/1990/01/11)]
 
+???
+
+I like to think of concurrency as what moms tend to do- they're juggling multiple tasks simultaneously, but even if they switch tasks very quickly, they're still usually working on one task at a time. 
+
+Parallel processing, however, is a different thing - it's like having multiple people, each doing their own task. 
+
+
 ---
 ## Basic Definitions
 
@@ -51,6 +58,13 @@ library(gridExtra)
 | `future` package | `parallel` package |
 
 .bottom[Images from [guru99.com](https://www.guru99.com/cpu-core-multicore-thread.html)]
+
+???
+
+To put this a different way, here are task graphs for concurrent and parallel processes. In parallel processing, all of the tasks are being worked on at the same time; in concurrent processing, there's only one task at a time, but the processor switches back and forth.
+
+By default, R can do some things concurrently (though you can enhance its abilities using the future package). 
+
 ---
 ## Hidden Parallelism
 
@@ -64,7 +78,10 @@ library(gridExtra)
 - Microsoft R Open provides these libraries
     - You can also compile R against e.g. [parallel AMD/Intel libraries, Accellerate (mac), or ATLAS](https://bookdown.org/rdpeng/rprogdatascience/parallel-computation.html#hidden-parallelism) 
     - see the R installation manual [BLAS](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#BLAS) section
-    
+
+???
+
+There's one relatively simple way to take advantage of parallel processing without having to do anything to your code: by using libraries that do the linear algebra calculations that are parallel by default.
     
 ---
 ## Hidden Parallelism
