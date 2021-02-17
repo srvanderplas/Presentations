@@ -535,3 +535,19 @@ checking dependencies in R code ... WARNING
 checking R code for possible problems ... NOTE
 hello: no visible binding for global variable ???string???
 ```
+
+
+---
+## Other things to check out
+
+- Unit testing    
+Make sure all of your functions work, keep bugs from reappearing, and track your package's reliability
+
+- Continuous Integration w/ Github Actions or TravisCI    
+Rebuild and check your package, build documentation, and run unit tests with every git commit
+
+- Code coverage    
+See what parts of your code have corresponding unit tests and which parts do not
+
+- Package vignettes    
+Longer-form demonstrations of package features. See e.g. the `imager` package, which has a great collection of vignettes.
