@@ -1,0 +1,180 @@
+---
+title: "Visual Statistics"
+subtitle: "Communication and Graphical Testing"
+author: "Susan Vanderplas"
+date: "March 16, 2021"
+output:
+  xaringan::moon_reader:
+    css: ["default", "unl.css"]
+    lib_dir: libs
+    includes:
+      in_header: header.html
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+class:middle
+## Why do we use Visualizations?
+
+.large.center[https://pollev.com/susanvanderp753]
+<!-- <iframe src="https://pollev-embeds.com/discourses/dFoDVGNn2jsoUu9hww9D9/respond" width="800px" height="500px"></iframe> -->
+
+---
+
+## Why do we use Visualizations?
+<iframe src="https://embed.polleverywhere.com/discourses/NFICXszwVrNRqLfxPe5fy?controls=none&short_poll=true" width="800px" height="500px"></iframe>
+
+
+---
+class:inverse
+## The Good, the Bad, and the Ugly
+
+![The Hertzsprung-Russell Diagram](../2021-BSE-GSA-Graphics/index_files/figure-html/HR-diagram-1.png)
+???
+
+When drawn well, statistical graphics help us understand our data and see things that we didn't know were there. The relationship between star magnitude, star color, and spectral class wasn't well understood until someone created a chart like this that showed the color index (or spectral class) against the absolute brightness. Then, it was much easier to see that the chart described a life-cycle - stars start out in the main sequence, and then become giants, dwarfs, or slowly change spectral class over time as they cool down in temperature.
+
+Well designed graphs can help us understand the natural phenomenon behind the raw numerical data we've collected.
+
+---
+class:inverse
+## The Good, the Bad, and the Ugly
+
+<iframe src="https://xkcd.com/2126/#comic" width="800px" height="500px"/>
+
+???
+
+Of course, even decent visualizations can't compensate for lousy data... 
+
+
+---
+class:inverse
+## The Good, the Bad, and the Ugly
+
+.center[![Excel Graph](https://www.excel-easy.com/data-analysis/images/charts/switched-column-chart.png)]
+
+???
+
+And as always, there are multiple ways to show some data, not all of which are optimal. So we could easily show this as 3 lines, across multiple months, which would let you see the relative change in Bear, Dolphin, and Whale populations each month, while also letting you easily compare across months. 
+
+---
+class:inverse
+## The Good, the Bad, and the Ugly
+
+![Top 500 Supercomputers by Processor Family](https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Processor_families_in_TOP500_supercomputers.svg/1280px-Processor_families_in_TOP500_supercomputers.svg.png)
+
+???
+
+As with anything, graphics require a combination of "art" and "science" - you not only have to use the best method to display the data (which this isn't, necessarily), you also have to use some judgement as to how to show what you're hoping to show... and this is a good example of what happens when that doesn't happen. 
+
+---
+class:middle,center,inverse
+# Statistical Visualizations
+
+???
+
+I'm going to start out talking about some basic definitions, and then I'll show you one of my favorite ways that we use to determine how well statistical charts work.
+
+---
+## Statistics and Charts
+
+.pull-left[
+A **statistic** is a quantity computed from values in a sample used for a statistical purpose    
+.small[Source: [Wikipedia](https://en.wikipedia.org/wiki/Statistic)]
+]
+.pull-right[
+A **chart** is a graphical representation for data visualization, in which the data is represented by symbols    
+.small[Source: [Wikipedia](https://en.wikipedia.org/wiki/Chart)]
+]
+
+<br/><br/>
+
+--
+
+.center.large[But, charts are computed from values in a sample (usually) and used for a statistical purpose]
+
+<br/><br/>
+
+--
+
+.xx.center.emph.cerulean[So... charts **are** statistics!]
+
+---
+## Testing Statistics
+
+- If statistics are charts, then what is the reference distribution? 
+
+- What constitutes an "extreme" or "significant" chart?
+
+.pull-left[
+Hypothesis testing:
+
+- take a sample
+
+- calculate a test statistic
+
+- compare test statistic to reference distribution    
+(formed by $H_0$)
+
+- if it is unlikely, reject null hypothesis
+].pull-right[
+Graphical hypothesis testing:
+- take a sample
+
+- create a test statistic/graph
+
+- compare graph to a reference distribution of other graphs generated under $H_0$
+
+- if test graph "stands out" then reject null hypothesis
+]
+
+
+---
+## Testing Statistics: Example
+.bottom[Data from [Tidy Tuesday, 2020-09-01](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-09-01/readme.md)]
+```{r, include = F, cache = T}
+tuesdata <- tidytuesdayR::tt_load('2020-09-01')
+```
+
+```{r, echo = F, message = F, fig.width = 8, fig.height = 5, out.width = "100%"}
+library(tidyverse)
+df <- tuesdata$key_crop_yields %>%
+  filter(Entity == "Americas") %>%
+  rename(Corn = `Maize (tonnes per hectare)`)
+
+ggplot(df, aes(x = Year, y = Corn, group = Entity)) + 
+  geom_line() + 
+  ggtitle("Maize Production in the Americas") + 
+  scale_y_continuous("Tonnes per hectare")
+```
+
+???
+
+Suppose we have this data, and we want to determine whether there is a linear increase in Maize production over time. 
+
+If we were testing this statistically, we'd fit a linear regression to the data, and test to see whether the slope is equal to 0, right?
+
+We can do that graphically as well: take the residuals from the linear regression on the actual data, and generate other slopes according to our hypothesis that the slope is actually 0.
+
+---
+## Testing Statistics: Example
+lineup(null_lm(tip ~ total_bill, method = 'rotate'), tips.reg)
+ggplot() +
+  geom_point(aes(x = total_bill, y = .resid)) +
+  facet_wrap(~ .sample)
+```{r}
+library(nullabor)
+fit <- lm(Year ~ Corn, data = df)
+fit.reg <- tibble(df, .resid = residuals(fit), .fitted = fitted(fit))
+coefficients(fit)
+
+lineup_df <- nullabor::lineup(method = null_ts(Corn,), 
+                              fit.reg, n = 20, pos = 15)
+ggplot(lineup_df, aes(x = Year, y = .fitted - .resid)) + geom_line() + facet_wrap(~.sample)
+```
