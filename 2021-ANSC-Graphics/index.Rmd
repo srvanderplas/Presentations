@@ -895,3 +895,5 @@ To me, this means that not only is visual inference incredibly powerful for asse
 
 - Our perception is more complicated than most statistical models    
 (and also, hard to trick/evade!)
+
+
