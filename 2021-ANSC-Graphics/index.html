@@ -299,6 +299,178 @@ I'm going to skip over how we designed the simulation model, because we don't ha
 
 10 Aesthetics  `\(\times\)` 54 data sets = 540 plots
 
+
+---
+## Experimental Design
+
+- 1201 participants from Mechanical Turk
+
+- Each participant evaluates 10 plots (12010 evaluations)
+
+    - Each `\(\sigma_C \times \sigma_T\)` value with one replicate, randomized across `\(K\)` values
+    - All 10 aesthetic types
+    
+- Participants select the plot or plots which are most different
+
+    - Provide a short explanation
+    - Rate confidence level
+
+???
+
+The experiment is set up as a balanced incomplete block design, where each participant sees all 10 aesthetic types, and 9 distinct variability combinations, randomized across number of groups. Participants are instructed to select the plots which are most different, and then asked to briefly explain their reasoning and rate their confidence in their answer. 
+
+---
+## Results
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="80%" /&gt;
+
+Most participants identified a mix of cluster and trend targets
+
+???
+
+We expect that there will be more cluster plot identifications than trend plot identifications, as there are more aesthetic combinations which emphasize clustering. This plot shows that most participants identified some cluster and some trend target plots; that is, that participants were sensitive to the different aesthetics in the charts.
+
+---
+## Results
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="80%" /&gt;
+
+???
+
+This plot shows the aesthetic types and proportion of target plot selections. Participants were more likely to choose cluster targets across plot aesthetic types.  When ellipses were present, there were many more participants selecting null plots; we will discuss why this occurred at the end of the presentation. 
+
+---
+## Faceoff Model
+
+- Examine trials in which participants identified at least one target: 
+9959 trials
+
+
+- Compare P(select cluster target) to P(select trend target)
+
+`$$C_{ijk} := \left\{\begin{array}{c}\text{Participant }k\text{ selects the cluster target }\\
+\text{for dataset }j\text{ with aesthetic }i\end{array}\right\}$$`
+
+???
+
+We fit several models to the participant responses, but the most interesting of these models is a conditional model which analyzes only trials in which participants selected one of the target plots. We compare the probability that participants select the cluster target to the probability that participants select the trend target, modeling the implicit choice between the two competing data generating models. 
+
+---
+## Faceoff Model
+
+`$$\text{logit} P(C_{ijk}|C_{ijk}\cup T_{ijk}) = \mathbf{W}\alpha + \mathbf{X}\beta + \mathbf{J}\gamma + \mathbf{K}\eta$$`
+
+- `\(\alpha\)`: vector of fixed effects describing data parameters `\(\sigma_C,\sigma_T, K\)`
+
+- `\(\beta\)`: vector of fixed effects describing aesthetics `\(1 \leq i \leq 10\)`
+
+- `\(\gamma_j\)`: random effect of dataset, `\(\gamma_j\sim N(0, \sigma^2_{\text{data}})\)`
+
+- `\(\eta_k\)`: random effect of participant `\(\eta_k\sim N(0, \sigma^2_{\text{participant}})\)`
+
+- `\(\epsilon_{ijk}\)`: error associated with single evaluation of plot `\(ij\)` by participant `\(k\)`, `\(\epsilon_{ijk}\sim N(0, \sigma^2_e)\)`
+
+???
+
+The faceoff model is a logistic mixed effects model, with fixed effects describing the effects of data parameters sigma C, sigma T, and K, as well as the effects of the aesthetics. We include random effects to describe dataset and participant variability, as well as the error associated with each plot identification by a single participant. All errors are orthogonal due to the study design and are assumed to be iid. 
+
+---
+## Faceoff Model
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="75%" /&gt;
+
+???
+
+Overall, when there are multiple aesthetics which emphasize point similarity over linear continuity, participants are more likely to identify the cluster target relative to the trend target. When viewing graphical displays, the Gestalt principal of similarity tends to dominate over the gestalt principal of 
+
+Interestingly, the two conflict conditions produce opposite effects - with color, ellipse, trend, and error, participants are significantly more likely to select the trend target; with color and trend, participants are significantly more likely to select the cluster target. This may be because the ellipses in the linear target are all in a line, which, when combined with the error bands may serve to further highlight the continuity of the points. This effect is related to the gestalt principal of common region, which, when combined with the continuity effect would strengthen the likelihood of participant detection of the trend target plot. When the ellipses and error bands are not present, the principal of common region is not recruited and the similarity effect dominates over the continuity effect created by the trend line. 
+
+In addition, while not shown here, the estimates for parameters alpha_C and alpha_T are highly significant: as variability increases, the strength of the target's signal decreases and the probability of detecting the corresponding target also decreases.
+
+
+
+---
+## Responses: Plain plots
+
+&lt;img src="index_files/figure-html/reasoning-plain-1.png" width="100%" /&gt;
+
+???
+
+We asked participants to briefly describe their reasoning for choosing a specific plot or plots. We removed stopwords and "stemmed" answers so that "groups", "group", "grouping", "grouped" are all the same word, then plotted the words used in the reasoning as wordclouds, where the size of the word is proportional to the frequency of its appearance in the participant explanations. 
+
+These 3 wordclouds show participant reasoning for participants who selected null plots, cluster targets, and trend targets, respectively, when shown a lineup with no additional aesthetics. Participants who selected cluster targets were clearly concerned with the clustered nature of the points; participants who selected the trend target were more concerned with the linear relationship between x and y. Participants who selected null plots were concerned with variability and outliers. As we didn't give the participants guidance on what feature to judge "different" by, it is not surprising that some selected features other than clustering and linear trends. 
+
+---
+## Responses: Trend
+
+&lt;img src="index_files/figure-html/reasoning-trend-1.png" width="100%" /&gt;
+
+???
+
+When a trend line aesthetic is added to the plots, the reasoning changes somewhat for participants identifying cluster target and null plots. Participants who selected cluster targets talk about the separation (presumably, the linear trend line separating the groups) between lines, points, and groups of points; participants who selected null plots talk about the outliers, angle of the trend line, and spread of points around the line.
+
+---
+## Responses: Color
+
+&lt;img src="index_files/figure-html/reasoning-color-1.png" width="100%" /&gt;
+
+???
+When points are colored by group, participants who select null plots use the color of the points to highlight the outliers which they are using as cues. The logic for selecting the cluster or trend target plots does not change much, but the reasoning of those who selected null plots demonstrates that the color aesthetic facilitates description of outlying points. Even though participants selected the wrong plot, in many cases they still used logic indicating that the gestalt organization of the plot through color cues is quite powerful.
+
+---
+## Responses: Color + Ellipse
+
+&lt;img src="index_files/figure-html/reasoning-colorellipse-1.png" width="100%" /&gt;
+
+???
+
+When Color and Ellipses are shown, it is clear that participants who selected the cluster targets did so because the clusters were "distinct" or "didn't touch" or didn't overlap. Separation and space, as well as cluster size/cohesion are also commonly expressed sentiments.
+
+The addition of ellipses does also emphasize the linear trend target more than we had initially hoped - in many cases, a line of ellipses serves to create a sense of continuity due to the spatial arrangement of the ellipses. In most cases, though, this effect was minor compared to the visual weight of the small, compact clustered groups of points surrounded by an ellipse.
+
+At the beginning of the results section, we talked about how plots with ellipse aesthetics were more likely to lead to null plot selection. Participant explanations provide some additional insight: Words like "one", "two", "oval", and "missing" provide clues as to what exactly was so different about some of these plots. I've reproduced a plot on the next slide to demonstrate this effect.
+
+---
+## Participant Reasoning 
+
+
+.center[&lt;img src="figure/89903c2363590827b167328f09a9f076.png" width = "70%" class="one-col-image" style="margin-bottom:auto;"/&gt;]
+
+--
+
+Some of the null plots were missing an ellipse - We failed to enforce group size constraints on k-means algorithm.
+
+???
+
+The addition of the ellipse aesthetic highlighted the fact that some groups had as few as one or two points. These groups were assigned using the k-means algorithm, which doesn't by default have a constraint on the sizes of groups. With 540 plots and 10800 panels to proofread before running the experiment, we missed the fact that some null plots were missing an ellipse, as a group needs at least 3 points to have a valid bounding ellipse.
+
+It's safe to say that there was a strong effect of the ellipse aesthetic; however, that effect did not induce participants to act in the hypothesized manner by selecting the target plots. Working with humans is difficult sometimes.
+
+We re-ran this experiment with more even null plot cluster allocation, but hit an additional snag: participants cued in on the odd cluster shapes generated from the mixture model. They were still using the ellipses, but once again, the features participants made their decision on weren't the features we expected them to examine. 
+
+To me, this means that not only is visual inference incredibly powerful for assessing single plots, and when used in designed experiments like this one; it's also a good way to test data when you aren't entirely sure what effect is most important. By manipulating the plot, using the lineup procedure, and asking for feedback, you can crowdsource what features people cue onto and determine which features are most critical to model effectively. 
+
+
+---
+## Conclusion
+
+- Plot aesthetics matter
+    - non-additive effects
+    - what do you want to emphasize?
+
+--
+
+- Multiple encoding is useful -     
+  "show the data" in a way that makes it easy to understand
+
+--
+
+- Lineups are powerful tools for understanding graphical perception
+
+--
+
+- Our perception is more complicated than most statistical models    
+(and also, hard to trick/evade!)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

@@ -23,7 +23,7 @@ class:middle
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(dpi = 300, echo = F)
+knitr::opts_chunk$set(dpi = 300, echo = F, message = F, warning = F)
 library(tidyverse)
 library(gridExtra)
 suppressPackageStartupMessages(library(nullabor))
@@ -32,7 +32,7 @@ source("code/MixtureLineups.R")
 source("code/theme_lineup.R")
 ```
 
-```{r color-scheme-setup}
+```{r color-scheme-setup, include = F}
 
 colors <-  c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
              "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf")
@@ -492,10 +492,14 @@ grid.rect(x = 0, y = 0, width = 1, height = .5, gp = gpar(lwd = 2, col = "black"
 ## Experimental Design
 
 - 1201 participants from Mechanical Turk
+
 - Each participant evaluates 10 plots (12010 evaluations)
+
     - Each $\sigma_C \times \sigma_T$ value with one replicate, randomized across $K$ values
     - All 10 aesthetic types
+    
 - Participants select the plot or plots which are most different
+
     - Provide a short explanation
     - Rate confidence level
 
@@ -507,10 +511,13 @@ The experiment is set up as a balanced incomplete block design, where each parti
 ## Results
 ```{r, fig.width = 6, fig.height = 3, out.width = "80%"}
 load("data/modeldata.Rdata")
+modeldata <- modeldata %>% ungroup()
+
 user.data <- modeldata %>% group_by(individualID) %>% 
 summarize(answers=length(individualID),
           cluster=sum(cluster.correct),
-          trend=sum(trend.correct))
+          trend=sum(trend.correct)) %>%
+  ungroup()
 clusters <- as.data.frame(table(user.data$cluster))
 trends <- as.data.frame(table(user.data$trend))
 names(clusters) <- c("x", "Cluster")
@@ -561,9 +568,9 @@ fac.order <- levels(with(faceoff, reorder(label,label,function(x) -length(x))))
 modeldata$label <- factor(modeldata$label, levels=fac.order)
 
 totals <- modeldata %>% group_by(label, plottype) %>% summarize(eval=length(label), type="Total")
-correct.totals <- faceoff %>% group_by(label, plottype) %>% summarize(eval=length(label), type="Correct")
+correct.totals <- faceoff %>% group_by(label, plottype) %>% summarize(eval=length(label), type="Correct") %>% ungroup()
 
-sub.totals <- modeldata %>% group_by(label, plottype, simpleoutcome) %>% summarize(eval=length(label))
+sub.totals <- modeldata %>% group_by(label, plottype, simpleoutcome) %>% summarize(eval=length(label)) %>% ungroup()
 sub.totals <- merge(sub.totals, md, by="plottype")
 
 totals <- rbind(totals, correct.totals)
@@ -601,7 +608,10 @@ This plot shows the aesthetic types and proportion of target plot selections. Pa
 ---
 ## Faceoff Model
 
-- Examine trials in which participants identified at least one target (`r nrow(faceoff)`)
+- Examine trials in which participants identified at least one target: 
+`r nrow(faceoff)` trials
+
+
 - Compare P(select cluster target) to P(select trend target)
 
 $$C_{ijk} := \left\{\begin{array}{c}\text{Participant }k\text{ selects the cluster target }\\
@@ -616,10 +626,14 @@ We fit several models to the participant responses, but the most interesting of 
 
 $$\text{logit} P(C_{ijk}|C_{ijk}\cup T_{ijk}) = \mathbf{W}\alpha + \mathbf{X}\beta + \mathbf{J}\gamma + \mathbf{K}\eta$$
 
-- $\alpha$: vector of fixed effects describing the effect of data parameters $\sigma_C,\sigma_T, K$
-- $\beta$: vector of fixed effects describing the effect of aesthetics $1 \leq i \leq 10$
+- $\alpha$: vector of fixed effects describing data parameters $\sigma_C,\sigma_T, K$
+
+- $\beta$: vector of fixed effects describing aesthetics $1 \leq i \leq 10$
+
 - $\gamma_j$: random effect of dataset, $\gamma_j\sim N(0, \sigma^2_{\text{data}})$
+
 - $\eta_k$: random effect of participant $\eta_k\sim N(0, \sigma^2_{\text{participant}})$
+
 - $\epsilon_{ijk}$: error associated with single evaluation of plot $ij$ by participant $k$, $\epsilon_{ijk}\sim N(0, \sigma^2_e)$
 
 ???
@@ -740,9 +754,9 @@ words$plot <- map(words$list, makeWordcloud)
 ```
 
 ---
-## Participant Reasoning: Plain plots
+## Responses: Plain plots
 
-```{r reasoning-plain, fig.width = 12, fig.height = 4, include = T, out.width = "100%"}
+```{r reasoning-plain, fig.width = 12, fig.height = 5, include = T, out.width = "100%"}
 plain_words <- filter(words, plottype == "plain") %>%
   arrange(simpleoutcome)
 
@@ -766,9 +780,9 @@ We asked participants to briefly describe their reasoning for choosing a specifi
 These 3 wordclouds show participant reasoning for participants who selected null plots, cluster targets, and trend targets, respectively, when shown a lineup with no additional aesthetics. Participants who selected cluster targets were clearly concerned with the clustered nature of the points; participants who selected the trend target were more concerned with the linear relationship between x and y. Participants who selected null plots were concerned with variability and outliers. As we didn't give the participants guidance on what feature to judge "different" by, it is not surprising that some selected features other than clustering and linear trends. 
 
 ---
-## Participant Reasoning: Trend plots
+## Responses: Trend
 
-```{r reasoning-trend, fig.width = 12, fig.height = 4, include = T, out.width = "100%"}
+```{r reasoning-trend, fig.width = 12, fig.height = 5, include = T, out.width = "100%"}
 trend_words <- filter(words, plottype == "trend") %>%
   arrange(simpleoutcome)
 
@@ -790,9 +804,9 @@ grid.arrange(
 When a trend line aesthetic is added to the plots, the reasoning changes somewhat for participants identifying cluster target and null plots. Participants who selected cluster targets talk about the separation (presumably, the linear trend line separating the groups) between lines, points, and groups of points; participants who selected null plots talk about the outliers, angle of the trend line, and spread of points around the line.
 
 ---
-## Participant Reasoning: Color plots
+## Responses: Color
 
-```{r reasoning-color, fig.width = 12, fig.height = 4, include = T, out.width = "100%"}
+```{r reasoning-color, fig.width = 12, fig.height = 5, include = T, out.width = "100%"}
 color_words <- filter(words, plottype == "color") %>%
   arrange(simpleoutcome)
 
@@ -813,9 +827,9 @@ grid.arrange(
 When points are colored by group, participants who select null plots use the color of the points to highlight the outliers which they are using as cues. The logic for selecting the cluster or trend target plots does not change much, but the reasoning of those who selected null plots demonstrates that the color aesthetic facilitates description of outlying points. Even though participants selected the wrong plot, in many cases they still used logic indicating that the gestalt organization of the plot through color cues is quite powerful.
 
 ---
-## Participant Reasoning: Color + Ellipse plots
+## Responses: Color + Ellipse
 
-```{r reasoning-colorellipse, fig.width = 12, fig.height = 4, include = T, out.width = "100%"}
+```{r reasoning-colorellipse, fig.width = 12, fig.height = 5, include = T, out.width = "100%"}
 color_ellipse <- filter(words, plottype == "colorEllipse") %>%
   arrange(simpleoutcome)
 
@@ -833,6 +847,7 @@ grid.arrange(
 ```
 
 ???
+
 When Color and Ellipses are shown, it is clear that participants who selected the cluster targets did so because the clusters were "distinct" or "didn't touch" or didn't overlap. Separation and space, as well as cluster size/cohesion are also commonly expressed sentiments.
 
 The addition of ellipses does also emphasize the linear trend target more than we had initially hoped - in many cases, a line of ellipses serves to create a sense of continuity due to the spatial arrangement of the ellipses. In most cases, though, this effect was minor compared to the visual weight of the small, compact clustered groups of points surrounded by an ellipse.
@@ -843,7 +858,7 @@ At the beginning of the results section, we talked about how plots with ellipse 
 ## Participant Reasoning 
 
 
-<img src="figure/89903c2363590827b167328f09a9f076.png" width = "50%" class="one-col-image" style="margin-bottom:auto;"/>
+.center[<img src="figure/89903c2363590827b167328f09a9f076.png" width = "70%" class="one-col-image" style="margin-bottom:auto;"/>]
 
 --
 
@@ -857,6 +872,8 @@ It's safe to say that there was a strong effect of the ellipse aesthetic; howeve
 
 We re-ran this experiment with more even null plot cluster allocation, but hit an additional snag: participants cued in on the odd cluster shapes generated from the mixture model. They were still using the ellipses, but once again, the features participants made their decision on weren't the features we expected them to examine. 
 
+To me, this means that not only is visual inference incredibly powerful for assessing single plots, and when used in designed experiments like this one; it's also a good way to test data when you aren't entirely sure what effect is most important. By manipulating the plot, using the lineup procedure, and asking for feedback, you can crowdsource what features people cue onto and determine which features are most critical to model effectively. 
+
 
 ---
 ## Conclusion
@@ -864,5 +881,17 @@ We re-ran this experiment with more even null plot cluster allocation, but hit a
 - Plot aesthetics matter
     - non-additive effects
     - what do you want to emphasize?
+
+--
+
 - Multiple encoding is useful -     
   "show the data" in a way that makes it easy to understand
+
+--
+
+- Lineups are powerful tools for understanding graphical perception
+
+--
+
+- Our perception is more complicated than most statistical models    
+(and also, hard to trick/evade!)
